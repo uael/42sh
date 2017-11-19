@@ -23,3 +23,11 @@ inline char	*ft_strchr(char const *s, int c)
 			return ((char *)s - 1);
 	return (NULL);
 }
+
+inline char	*ft_strmchr(char const *s, char const *c)
+{
+	while (*s)
+		if (ft_strchr(c, *s++))
+			return ((char *)s - 1);
+	return (NULL);
+}

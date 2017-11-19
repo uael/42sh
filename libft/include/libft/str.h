@@ -30,6 +30,7 @@ extern void		*ft_memset(void *b, int c, size_t len);
 
 extern char		*ft_strcat(char *dest, char const *src);
 extern char		*ft_strchr(char const *s, int c);
+extern char		*ft_strmchr(char const *s, char const *c);
 extern int		ft_strcmp(char const *s1, char const *s2);
 extern void		ft_strclr(char *s);
 extern char		*ft_strcpy(char *dest, char const *src);
