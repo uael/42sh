@@ -19,6 +19,10 @@
 # include "int.h"
 # include "str.h"
 
+# include "io/ifstream.h"
+# include "io/istream.h"
+# include "io/imstream.h"
+
 extern ssize_t	ft_putc(int fd, char c);
 extern ssize_t	ft_putl(int fd, char const *s);
 extern ssize_t	ft_putf(int fd, float n, int precision, uint8_t base);
