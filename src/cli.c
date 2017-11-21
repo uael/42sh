@@ -27,11 +27,11 @@ int	main(void)
 			{
 				if (tok.id.id == MSH_TOK_FOR)
 					ft_putl(1, "for");
-				else if (tok.id.id == MSH_TOK_KDO)
+				else if (tok.id.id == MSH_TOK_DO)
 					ft_putl(1, "do");
-				else if (tok.id.id == MSH_TOK_KIN)
+				else if (tok.id.id == MSH_TOK_IN)
 					ft_putl(1, "in");
-				else if (tok.id.id == MSH_TOK_DNE)
+				else if (tok.id.id == MSH_TOK_DONE)
 					ft_putl(1, "done");
 			}
 	return (EXIT_SUCCESS);

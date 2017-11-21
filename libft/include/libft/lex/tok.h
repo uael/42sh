@@ -17,18 +17,11 @@
 # include "src.h"
 # include "tokv.h"
 
-union			u_tok
-{
-	uint32_t	id;
-	t_tokv		*val;
-};
-
 typedef struct	s_tok
 {
-	uint16_t	lws;
-	t_bool		is_id;
-	union u_tok	id;
+	uint32_t	id;
 	t_loc		loc;
+	t_tokv		*val;
 }				t_tok;
 
 #endif
