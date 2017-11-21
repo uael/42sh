@@ -26,8 +26,8 @@ static inline int8_t	lexer_scan_one(t_lexer *self, char peek, t_src *src)
 	val = ft_vec_end(&self->vals);
 	FT_INIT(val, t_tokv);
 	tok.id.val = val;
-	rule = ft_vec_begin(&self->rules) - 1;
-	while (++rule < ft_vec_end(&self->rules))
+	rule = (t_lrule *)ft_vec_begin(&self->rules) - 1;
+	while (++rule < (t_lrule *)ft_vec_end(&self->rules))
 		if ((r = (*rule)(&tok, peek, src)) == -1)
 			return (-1);
 		else if (r == 0)
@@ -35,14 +35,14 @@ static inline int8_t	lexer_scan_one(t_lexer *self, char peek, t_src *src)
 			tok.loc.len = (uint16_t)(src->cur.cur - tok.loc.cur);
 			if (!tok.is_id)
 				++self->vals.len;
-			return ((int8_t)(ft_vec_pushc(&self->toks, &tok) ? 1 : -1));
+			return ((int8_t)(ft_vec_pushc(&self->toks, &tok) ? 0 : -1));
 		}
-	return (0);
+	return (1);
 }
 
 inline ssize_t			ft_lexer_scan(t_lexer *self, size_t n)
 {
-	ssize_t	c;
+	size_t	c;
 	int8_t	r;
 	t_src	*src;
 	char	peek;

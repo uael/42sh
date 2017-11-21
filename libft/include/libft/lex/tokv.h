@@ -54,8 +54,8 @@ typedef struct	s_tokv
 	union u_val	val;
 }				t_tokv;
 
-extern void		ft_tokv_init_str(t_tokv *self, char *str);
-extern void		ft_tokv_init_ident(t_tokv *self, char *ident);
+extern t_bool	ft_tokv_init_str(t_tokv *self, char *str);
+extern t_bool	ft_tokv_init_ident(t_tokv *self, char *ident);
 extern void		ft_tokv_init_i8(t_tokv *self, int8_t i);
 extern void		ft_tokv_init_i16(t_tokv *self, int16_t i);
 extern void		ft_tokv_init_i32(t_tokv *self, int32_t i);
