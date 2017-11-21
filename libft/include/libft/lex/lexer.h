@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libft/lex.h                                        :+:      :+:    :+:   */
+/*   libft/lex/lexer.h                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,13 +10,26 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFT_LEX_H
-# define LIBFT_LEX_H
+#ifndef LIBFT_LEX_LEXER_H
+# define LIBFT_LEX_LEXER_H
 
-# include "lex/lexer.h"
-# include "lex/loc.h"
-# include "lex/src.h"
-# include "lex/tok.h"
-# include "lex/tokv.h"
+# include "tok.h"
+
+typedef int8_t		(*t_lrule)(t_tok *, char, t_src *);
+
+typedef struct		s_lexer
+{
+	t_vec			srcs;
+	t_vec			toks;
+	t_vec			vals;
+	t_vec			rules;
+}					t_lexer;
+
+extern void			ft_lexer_ctor(t_lexer *self);
+extern void			ft_lexer_dtor(t_lexer *self);
+extern t_bool		ft_lexer_init_file(t_lexer *self, char const *filename);
+extern t_bool		ft_lexer_init_str(t_lexer *self, char const *s);
+extern t_bool		ft_lexer_init_nstr(t_lexer *self, char const *s, size_t n);
+extern ssize_t		ft_lexer_scan(t_lexer *self, size_t n);
 
 #endif

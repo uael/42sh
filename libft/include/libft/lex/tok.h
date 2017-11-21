@@ -26,7 +26,7 @@ union			u_tok
 typedef struct	s_tok
 {
 	uint16_t	lws;
-	t_bool		is_is;
+	t_bool		is_id;
 	union u_tok	id;
 	t_loc		loc;
 }				t_tok;
