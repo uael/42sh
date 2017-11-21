@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libft/lib.h                                        :+:      :+:    :+:   */
+/*   libft/lex/src.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,20 +10,30 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFT_LIB_H
-# define LIBFT_LIB_H
+#include "libft/lex/src.h"
 
-# include <stdlib.h>
+inline void		ft_src_init_file(t_src *self, char const *filename)
+{
+	FT_INIT(self, t_src);
+	self->cur.col = self->cur.line = 1;
+	ft_istream_open(&self->in, filename);
+}
 
-# include "tys.h"
-# include "cty.h"
-# include "mem.h"
+inline void		ft_src_init_str(t_src *self, char const *str)
+{
+	FT_INIT(self, t_src);
+	self->cur.col = self->cur.line = 1;
+	ft_istream_mopen(&self->in, str);
+}
 
-# define FT_INIT(S, TY) ft_memset(S, 0, sizeof(TY))
+inline void		ft_src_init_nstr(t_src *self, char const *str, size_t n)
+{
+	FT_INIT(self, t_src);
+	self->cur.col = self->cur.line = 1;
+	ft_istream_mnopen(&self->in, str, n);
+}
 
-extern int64_t	ft_atoi(char const *str);
-extern double	ft_atod(char const *str);
-extern char		*ft_itoa(int64_t n, uint8_t base);
-extern char		*ft_utoa(uint64_t n, uint8_t base);
-
-#endif
+inline void		ft_src_dtor(t_src *self)
+{
+	ft_istream_close(&self->in);
+}

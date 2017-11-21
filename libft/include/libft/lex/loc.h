@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libft/lib.h                                        :+:      :+:    :+:   */
+/*   libft/lex/loc.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,20 +10,20 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFT_LIB_H
-# define LIBFT_LIB_H
+#ifndef LIBFT_LEX_LOC_H
+# define LIBFT_LEX_LOC_H
 
-# include <stdlib.h>
+# include "../tys.h"
 
-# include "tys.h"
-# include "cty.h"
-# include "mem.h"
+struct s_src;
 
-# define FT_INIT(S, TY) ft_memset(S, 0, sizeof(TY))
-
-extern int64_t	ft_atoi(char const *str);
-extern double	ft_atod(char const *str);
-extern char		*ft_itoa(int64_t n, uint8_t base);
-extern char		*ft_utoa(uint64_t n, uint8_t base);
+typedef struct	s_loc
+{
+	struct s_src	*src;
+	uint16_t		line;
+	uint16_t		col;
+	uint32_t		cur;
+	uint16_t		len;
+}				t_loc;
 
 #endif

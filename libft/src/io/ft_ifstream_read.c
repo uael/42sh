@@ -18,7 +18,7 @@ static inline ssize_t	ifs_cpy(t_ifstream *s, char **b, size_t *l, size_t c)
 	ssize_t	r;
 
 	r = s->len - c;
-	if (r > *l)
+	if (r > (ssize_t)*l)
 	{
 		ft_memcpy(*b, s->buf + c, *l * sizeof(char));
 		s->cur += *l;

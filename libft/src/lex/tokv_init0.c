@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libft/lib.h                                        :+:      :+:    :+:   */
+/*   libft/lex/tokv_init0.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,20 +10,39 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFT_LIB_H
-# define LIBFT_LIB_H
+#include "libft/lex/tokv.h"
 
-# include <stdlib.h>
+inline void	ft_tokv_init_i8(t_tokv *self, int8_t i)
+{
+	FT_INIT(self, t_tokv);
+	self->kind = TOKV_I8;
+	self->val.i8 = i;
+}
 
-# include "tys.h"
-# include "cty.h"
-# include "mem.h"
+inline void	ft_tokv_init_i16(t_tokv *self, int16_t i)
+{
+	FT_INIT(self, t_tokv);
+	self->kind = TOKV_I16;
+	self->val.i16 = i;
+}
 
-# define FT_INIT(S, TY) ft_memset(S, 0, sizeof(TY))
+inline void	ft_tokv_init_i32(t_tokv *self, int32_t i)
+{
+	FT_INIT(self, t_tokv);
+	self->kind = TOKV_I32;
+	self->val.i32 = i;
+}
 
-extern int64_t	ft_atoi(char const *str);
-extern double	ft_atod(char const *str);
-extern char		*ft_itoa(int64_t n, uint8_t base);
-extern char		*ft_utoa(uint64_t n, uint8_t base);
+inline void	ft_tokv_init_i64(t_tokv *self, int64_t i)
+{
+	FT_INIT(self, t_tokv);
+	self->kind = TOKV_I64;
+	self->val.i64 = i;
+}
 
-#endif
+inline void	ft_tokv_init_f32(t_tokv *self, float f)
+{
+	FT_INIT(self, t_tokv);
+	self->kind = TOKV_F32;
+	self->val.f32 = f;
+}

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libft/lib.h                                        :+:      :+:    :+:   */
+/*   libft/lex/tok.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,20 +10,25 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFT_LIB_H
-# define LIBFT_LIB_H
+#ifndef LIBFT_LEX_TOK_H
+# define LIBFT_LEX_TOK_H
 
-# include <stdlib.h>
+# include "loc.h"
+# include "src.h"
+# include "tokv.h"
 
-# include "tys.h"
-# include "cty.h"
-# include "mem.h"
+union			u_tok
+{
+	uint32_t	id;
+	t_tokv		*val;
+};
 
-# define FT_INIT(S, TY) ft_memset(S, 0, sizeof(TY))
-
-extern int64_t	ft_atoi(char const *str);
-extern double	ft_atod(char const *str);
-extern char		*ft_itoa(int64_t n, uint8_t base);
-extern char		*ft_utoa(uint64_t n, uint8_t base);
+typedef struct	s_tok
+{
+	uint16_t	lws;
+	t_bool		is_is;
+	union u_tok	id;
+	t_loc		loc;
+}				t_tok;
 
 #endif

@@ -15,8 +15,8 @@ set(CMAKE_C_FLAGS "")
 set(CMAKE_C_FLAGS_DEBUG "")
 set(CMAKE_C_FLAGS_RELEASE "")
 
-set(minishell_HDR ${minishell_INC_DIR}/minishell.h)
-file(GLOB_RECURSE minishell_HDRS ${minishell_HDRS} ${minishell_INC_DIR}/ls/*.h)
+set(minishell_HDR ${minishell_INC_DIR}/msh.h)
+file(GLOB_RECURSE minishell_HDRS ${minishell_HDRS} ${minishell_INC_DIR}/msh/*.h)
 file(GLOB_RECURSE minishell_SRCS ${minishell_SRCS} ${minishell_SRC_DIR}/*.c)
 
 add_executable(minishell ${minishell_HDR} ${minishell_HDRS} ${minishell_SRCS})

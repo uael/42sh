@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libft/lib.h                                        :+:      :+:    :+:   */
+/*   libft/lex/src.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,20 +10,24 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFT_LIB_H
-# define LIBFT_LIB_H
+#ifndef LIBFT_LEX_SRC_H
+# define LIBFT_LEX_SRC_H
 
-# include <stdlib.h>
+# include "../io.h"
+# include "loc.h"
 
-# include "tys.h"
-# include "cty.h"
-# include "mem.h"
+typedef struct	s_src
+{
+	t_istream	in;
+	t_loc		cur;
+}				t_src;
 
-# define FT_INIT(S, TY) ft_memset(S, 0, sizeof(TY))
-
-extern int64_t	ft_atoi(char const *str);
-extern double	ft_atod(char const *str);
-extern char		*ft_itoa(int64_t n, uint8_t base);
-extern char		*ft_utoa(uint64_t n, uint8_t base);
+extern void		ft_src_init_file(t_src *self, char const *filename);
+extern void		ft_src_init_str(t_src *self, char const *str);
+extern void		ft_src_init_nstr(t_src *self, char const *str, size_t n);
+extern void		ft_src_dtor(t_src *self);
+extern char		ft_src_peek(t_src *self, size_t n);
+extern ssize_t	ft_src_get(t_src *self, char *buf, size_t n);
+extern char		ft_src_next(t_src *self);
 
 #endif

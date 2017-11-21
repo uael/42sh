@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libft/lib.h                                        :+:      :+:    :+:   */
+/*   libft/lex/src_peek.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,20 +10,32 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFT_LIB_H
-# define LIBFT_LIB_H
+#include "libft/lex/src.h"
 
-# include <stdlib.h>
+inline char		ft_src_peek(t_src *self, size_t n)
+{
+	return (ft_istream_peek(&self->in, n));
+}
 
-# include "tys.h"
-# include "cty.h"
-# include "mem.h"
+inline ssize_t	ft_src_get(t_src *self, char *buf, size_t n)
+{
+	return (ft_istream_get(&self->in, buf, n));
+}
 
-# define FT_INIT(S, TY) ft_memset(S, 0, sizeof(TY))
+inline char		ft_src_next(t_src *self)
+{
+	char c;
 
-extern int64_t	ft_atoi(char const *str);
-extern double	ft_atod(char const *str);
-extern char		*ft_itoa(int64_t n, uint8_t base);
-extern char		*ft_utoa(uint64_t n, uint8_t base);
-
-#endif
+	if (!(c = ft_istream_getc(&self->in)))
+		return (c);
+	++self->cur.cur;
+	if (c == '\r')
+		return (ft_src_next(self));
+	if (c == '\v' || c == '\f' || c == '\n')
+	{
+		++self->cur.line;
+		self->cur.col = 0;
+	}
+	++self->cur.col;
+	return (ft_src_peek(self, 0));
+}

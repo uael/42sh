@@ -72,7 +72,7 @@ inline ssize_t			ft_ifstream_get(t_ifstream *self, char *buf, size_t len)
 
 inline char				ft_ifstream_peek(t_ifstream *self, size_t n)
 {
-	if (n > ft_ifs_bufferize(self, n + 1))
+	if ((ssize_t)n > ft_ifs_bufferize(self, n + 1))
 		return ('\0');
 	return (self->buf[self->cur - self->beg + n]);
 }

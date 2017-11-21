@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libft/lib.h                                        :+:      :+:    :+:   */
+/*   libft/lex/tokv_dtor.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,20 +10,12 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFT_LIB_H
-# define LIBFT_LIB_H
+#include "libft/lex/tokv.h"
 
-# include <stdlib.h>
-
-# include "tys.h"
-# include "cty.h"
-# include "mem.h"
-
-# define FT_INIT(S, TY) ft_memset(S, 0, sizeof(TY))
-
-extern int64_t	ft_atoi(char const *str);
-extern double	ft_atod(char const *str);
-extern char		*ft_itoa(int64_t n, uint8_t base);
-extern char		*ft_utoa(uint64_t n, uint8_t base);
-
-#endif
+inline void	ft_tokv_dtor(t_tokv *self)
+{
+	if (self->kind == TOKV_IDENT)
+		ft_dstr_dtor(&self->val.ident, NULL);
+	if (self->kind == TOKV_STR)
+		ft_dstr_dtor(&self->val.str, NULL);
+}

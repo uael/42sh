@@ -18,6 +18,7 @@
 # include "libft/fs.h"
 # include "libft/int.h"
 # include "libft/io.h"
+# include "libft/lex.h"
 # include "libft/lib.h"
 # include "libft/math.h"
 # include "libft/mem.h"
