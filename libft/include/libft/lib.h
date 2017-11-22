@@ -21,9 +21,12 @@
 
 # define FT_INIT(S, TY) ft_memset(S, 0, sizeof(TY))
 
+typedef void	(*t_dtor)(void *i);
+
 extern int64_t	ft_atoi(char const *str);
 extern double	ft_atod(char const *str);
 extern char		*ft_itoa(int64_t n, uint8_t base);
 extern char		*ft_utoa(uint64_t n, uint8_t base);
+extern int8_t	ft_dtor(int8_t code, t_dtor dtor, void *arg);
 
 #endif

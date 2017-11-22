@@ -28,6 +28,7 @@ extern void		ft_src_init_nstr(t_src *self, char const *str, size_t n);
 extern void		ft_src_dtor(t_src *self);
 extern char		ft_src_peek(t_src *self, size_t n);
 extern ssize_t	ft_src_get(t_src *self, char *buf, size_t n);
-extern char		ft_src_next(t_src *self);
+extern char		ft_src_next(t_src *self, char *peek);
+extern char		ft_src_nnext(t_src *self, size_t n, char *peek);
 
 #endif

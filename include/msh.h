@@ -58,7 +58,6 @@ enum		e_msh_tok
 	MSH_TOK_ASSIGN = '=',
 	MSH_TOK_GTH = '>',
 	MSH_TOK_LBRACKET = '[',
-	MSH_TOK_LSLASH = '\\',
 	MSH_TOK_RBRACKET = ']',
 	MSH_TOK_LCURLY = '{',
 	MSH_TOK_PIPE = '|',

@@ -1,27 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cli.c                                              :+:      :+:    :+:   */
+/*   ft_dtor.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/22 13:05:55 by null             ###   ########.fr       */
+/*   Updated: 2017/11/22 12:17:52 by null             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
+#include "libft/lib.h"
 
-#include "msh.h"
-
-int	main(void)
+inline int8_t	ft_dtor(int8_t code, t_dtor dtor, void *arg)
 {
-	t_lexer lexer;
-	t_tok	tok;
-
-	if (!ft_lexer_init_str(&lexer, "for in do done\n") || !msh_lex(&lexer))
-		return (EXIT_FAILURE);
-	while (ft_lexer_next(&lexer, &tok))
-		printf("TOKEN %d\n", tok.id);
-	return (EXIT_SUCCESS);
+	if (dtor && arg)
+		(*dtor)(arg);
+	return (code);
 }

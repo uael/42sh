@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/17 10:03:31 by null             ###   ########.fr       */
+/*   Updated: 2017/11/22 10:29:53 by null             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 
 typedef struct	s_tok
 {
-	uint32_t	id;
+	uint8_t		id;
 	t_loc		loc;
 	t_tokv		*val;
 }				t_tok;
