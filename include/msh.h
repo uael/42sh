@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/18 19:43:27 by null             ###   ########.fr       */
+/*   Updated: 2017/11/22 18:12:30 by null             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ enum		e_msh_tok
 	MSH_TOK_LAMP,
 	MSH_TOK_RAMP,
 	MSH_TOK_CMP,
-	MAH_TOK_RARROW,
+	MSH_TOK_RARROW,
 	MSH_TOK_TAB = '\t',
 	MSH_TOK_EOL = '\n',
 	MSH_TOK_RPIPE = MSH_TOK_EOL + 1,
@@ -45,7 +45,6 @@ enum		e_msh_tok
 	MSH_TOK_THEN,
 	MSH_TOK_UNTIL,
 	MSH_TOK_WHILE,
-	MSH_TOK_NUM,
 	MSH_TOK_WORD,
 	MSH_TOK_SPACE = ' ',
 	MSH_TOK_NOT = '!',
@@ -64,6 +63,9 @@ enum		e_msh_tok
 	MSH_TOK_RCURLY = '}',
 };
 
-extern t_bool	msh_lex(t_lexer *self);
+#define MSH_EXIT(code, lexer) exit(ft_dtor((t_ret)(code), msh_dtor, lexer))
+
+extern void		msh_dtor(t_lexer *lexer);
+extern t_ret	msh_lex(t_lexer *self);
 
 #endif

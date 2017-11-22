@@ -19,7 +19,8 @@ inline ssize_t			ft_imstream_read(t_imstream *self, char *b, size_t len)
 		len = self->len;
 	if (len)
 	{
-		ft_memcpy(b, self->buf + self->cur, len * sizeof(char));
+		if (b)
+			ft_memcpy(b, self->buf + self->cur, len * sizeof(char));
 		self->cur += len;
 	}
 	return (len);

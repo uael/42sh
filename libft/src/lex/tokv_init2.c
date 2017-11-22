@@ -12,18 +12,18 @@
 
 #include "libft/lex/tokv.h"
 
-inline t_bool	ft_tokv_init_str(t_tokv *self, char *str)
+inline t_ret	ft_tokv_init_str(t_tokv *self, char *str)
 {
 	FT_INIT(self, t_tokv);
 	self->kind = TOKV_STR;
 	ft_dstr_ctor(&self->val.str);
-	return ((t_bool)(ft_dstr_append(&self->val.str, str) != NULL));
+	return ((t_ret)(ft_dstr_append(&self->val.str, str) ? RET_OK : RET_ERR));
 }
 
-inline t_bool	ft_tokv_init_ident(t_tokv *self, char *ident)
+inline t_ret	ft_tokv_init_ident(t_tokv *self, char *id)
 {
 	FT_INIT(self, t_tokv);
 	self->kind = TOKV_IDENT;
 	ft_dstr_ctor(&self->val.ident);
-	return ((t_bool)(ft_dstr_append(&self->val.ident, ident) != NULL));
+	return ((t_ret)(ft_dstr_append(&self->val.ident, id) ? RET_OK : RET_ERR));
 }

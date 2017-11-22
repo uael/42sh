@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:33 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/17 09:51:01 by null             ###   ########.fr       */
+/*   Updated: 2017/11/22 16:35:30 by null             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,14 +20,17 @@ static inline ssize_t	ifs_cpy(t_ifstream *s, char **b, size_t *l, size_t c)
 	r = s->len - c;
 	if (r > (ssize_t)*l)
 	{
-		ft_memcpy(*b, s->buf + c, *l * sizeof(char));
+		if (*b)
+			ft_memcpy(*b, s->buf + c, *l * sizeof(char));
 		s->cur += *l;
 		return (*l);
 	}
-	ft_memcpy(*b, s->buf + c, r * sizeof(char));
+	if (*b)
+		ft_memcpy(*b, s->buf + c, r * sizeof(char));
 	s->cur += r;
 	*l -= r;
-	*b += r;
+	if (*b)
+		*b += r;
 	return (-3);
 }
 
@@ -42,7 +45,7 @@ static inline ssize_t	ifs_buf(t_ifstream *s, char **b, size_t *l, size_t c)
 		if (r < FT_PAGE_SIZE)
 			return (r);
 		*l -= r;
-		*b += r;
+		*b ? *b += r : *b;
 	}
 	else
 	{
@@ -62,28 +65,28 @@ static inline ssize_t	ifs_buf(t_ifstream *s, char **b, size_t *l, size_t c)
 
 inline ssize_t			ft_ifstream_read(t_ifstream *self, char *b, size_t len)
 {
+	size_t	beg;
 	size_t	cur;
 	ssize_t	r;
-	char	*beg;
 
 	if (!self->filename || self->fd < 0)
 		return (0);
 	else
 	{
-		beg = b;
+		beg = len;
 		while (len)
 		{
 			cur = self->cur - self->beg;
 			if (self->len - cur > 0 && (r = ifs_cpy(self, &b, &len, cur)) >= 0)
 				return (r);
 			else if ((r = ifs_buf(self, &b, &len, cur)) >= 0)
-				return (b - beg + r);
+				return (beg - len + r);
 			if (r == -1)
 				return (-1);
 			if (r == -2)
 				break ;
 		}
-		return (b - beg);
+		return (beg - len);
 	}
 }
 

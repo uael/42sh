@@ -12,25 +12,25 @@
 
 #include "libft/lex/src.h"
 
-inline void		ft_src_init_file(t_src *self, char const *filename)
+inline t_ret	ft_src_init_file(t_src *self, char const *filename)
 {
 	FT_INIT(self, t_src);
 	self->cur.col = self->cur.line = 1;
-	ft_istream_open(&self->in, filename);
+	return (ft_istream_open(&self->in, filename));
 }
 
-inline void		ft_src_init_str(t_src *self, char const *str)
+inline t_ret	ft_src_init_str(t_src *self, char const *str)
 {
 	FT_INIT(self, t_src);
 	self->cur.col = self->cur.line = 1;
-	ft_istream_mopen(&self->in, str);
+	return (ft_istream_mopen(&self->in, str));
 }
 
-inline void		ft_src_init_nstr(t_src *self, char const *str, size_t n)
+inline t_ret	ft_src_init_nstr(t_src *self, char const *str, size_t n)
 {
 	FT_INIT(self, t_src);
 	self->cur.col = self->cur.line = 1;
-	ft_istream_mnopen(&self->in, str, n);
+	return (ft_istream_mnopen(&self->in, str, n));
 }
 
 inline void		ft_src_dtor(t_src *self)

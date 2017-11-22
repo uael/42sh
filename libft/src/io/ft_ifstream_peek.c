@@ -54,25 +54,30 @@ static inline ssize_t	ft_ifs_bufferize(t_ifstream *self, size_t len)
 
 inline char				ft_ifstream_getc(t_ifstream *self)
 {
-	char c;
+	char	c;
+	ssize_t	s;
 
-	if (ft_ifstream_read(self, &c, 1) == 1)
+	if ((s = ft_ifstream_read(self, &c, 1)) == 1)
 		return (c);
-	return ('\0');
+	return ((char)(s < 0 ? -1 : 0));
 }
 
-inline ssize_t			ft_ifstream_get(t_ifstream *self, char *buf, size_t len)
+inline ssize_t			ft_ifstream_get(t_ifstream *self, char *buf, size_t n)
 {
 	ssize_t l;
 
-	if ((l = ft_ifs_bufferize(self, len)) > 0)
-		ft_memcpy(buf, self->buf + self->cur - self->beg, len);
+	if ((l = ft_ifs_bufferize(self, n)) > 0)
+		ft_memcpy(buf, self->buf + self->cur - self->beg, n);
 	return (l);
 }
 
-inline char				ft_ifstream_peek(t_ifstream *self, size_t n)
+inline t_ret			ft_ifstream_peek(t_ifstream *self, char *c, size_t n)
 {
-	if ((ssize_t)n > ft_ifs_bufferize(self, n + 1))
-		return ('\0');
-	return (self->buf[self->cur - self->beg + n]);
+	ssize_t s;
+
+	if ((s = ft_ifs_bufferize(self, n + 1)) < (ssize_t)n)
+		return (s < 0 ? RET_ERR : RET_NOK);
+	if (c)
+		*c = self->buf[self->cur - self->beg + n];
+	return (RET_OK);
 }

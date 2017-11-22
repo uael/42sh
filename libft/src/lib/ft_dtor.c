@@ -12,7 +12,7 @@
 
 #include "libft/lib.h"
 
-inline int8_t	ft_dtor(int8_t code, t_dtor dtor, void *arg)
+inline t_ret	ft_dtor(t_ret code, t_dtor dtor, void *arg)
 {
 	if (dtor && arg)
 		(*dtor)(arg);

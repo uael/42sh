@@ -17,24 +17,24 @@ inline void		ft_ifstream_flush(t_ifstream *self)
 	(void)self;
 }
 
-inline t_bool	ft_ifstream_rewind(t_ifstream *self, size_t n)
+inline t_ret	ft_ifstream_rewind(t_ifstream *self, size_t n)
 {
 	(void)self;
 	(void)n;
-	return (0);
+	return (RET_ERR);
 }
 
-inline t_bool	ft_ifstream_forward(t_ifstream *self, size_t n)
+inline t_ret	ft_ifstream_forward(t_ifstream *self, size_t n)
 {
 	(void)self;
 	(void)n;
-	return (0);
+	return (RET_ERR);
 }
 
-inline t_bool	ft_ifstream_seek(t_ifstream *self, size_t off)
+inline t_ret	ft_ifstream_seek(t_ifstream *self, size_t off)
 {
 	if (!self->filename || self->fd < 0)
-		return (0);
+		return (RET_NOK);
 	if (self->cur > off)
 		return (ft_ifstream_rewind(self, self->cur - off));
 	return (ft_ifstream_forward(self, off - self->cur));

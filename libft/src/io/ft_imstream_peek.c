@@ -12,13 +12,6 @@
 
 #include "libft/io/imstream.h"
 
-inline char		ft_imstream_getc(t_imstream *self)
-{
-	if (self->len - self->cur)
-		return (self->buf[self->cur++]);
-	return ('\0');
-}
-
 inline ssize_t	ft_imstream_get(t_imstream *self, char *buf, size_t len)
 {
 	if (len > self->len)
@@ -28,12 +21,14 @@ inline ssize_t	ft_imstream_get(t_imstream *self, char *buf, size_t len)
 	return (len);
 }
 
-inline char		ft_imstream_peek(t_imstream *self, size_t n)
+inline t_ret	ft_imstream_peek(t_imstream *self, char *c, size_t n)
 {
 	size_t cur;
 
 	cur = self->cur + n;
-	if (cur <= self->len)
-		return (self->buf[cur]);
-	return ('\0');
+	if (cur > self->len)
+		return (RET_NOK);
+	if (c)
+		*c = self->buf[cur];
+	return (RET_OK);
 }

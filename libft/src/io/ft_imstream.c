@@ -12,24 +12,24 @@
 
 #include "libft/io/imstream.h"
 
-inline t_bool	ft_imstream_open(t_imstream *self, char const *str)
+inline t_ret	ft_imstream_open(t_imstream *self, char const *str)
 {
 	FT_INIT(self, t_imstream);
 	self->buf = str;
 	self->len = ft_strlen(str);
-	return (1);
+	return (RET_OK);
 }
 
-inline t_bool	ft_imstream_nopen(t_imstream *self, char const *str, size_t n)
+inline t_ret	ft_imstream_nopen(t_imstream *self, char const *str, size_t n)
 {
 	FT_INIT(self, t_imstream);
 	self->buf = str;
 	self->len = n;
-	return (1);
+	return (RET_OK);
 }
 
-inline t_bool	ft_imstream_close(t_imstream *self)
+inline t_ret	ft_imstream_close(t_imstream *self)
 {
 	FT_INIT(self, t_imstream);
-	return (1);
+	return (RET_OK);
 }
