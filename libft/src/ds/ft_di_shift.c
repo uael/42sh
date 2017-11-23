@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_vu_unshiftn.c                                   :+:      :+:    :+:   */
+/*   ft_di_shiftn.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,29 +10,29 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/ds/vec.h"
+#include "libft/ds/deq.h"
 
-inline uint8_t	*ft_vu8_unshift(t_vu8 *self)
+inline t_bool	ft_di8_shift(t_di8 *self, int8_t *out)
 {
-	return (ft_vu8_unshiftn(self, 1));
+	return ((t_bool)(ft_di8_shiftn(self, 1, out) == 1));
 }
 
-inline uint16_t	*ft_vu16_unshift(t_vu16 *self)
+inline t_bool	ft_di16_shift(t_di16 *self, int16_t *out)
 {
-	return (ft_vu16_unshiftn(self, 1));
+	return ((t_bool)(ft_di16_shiftn(self, 1, out) == 1));
 }
 
-inline uint32_t	*ft_vu32_unshift(t_vu32 *self)
+inline t_bool	ft_di32_shift(t_di32 *self, int32_t *out)
 {
-	return (ft_vu32_unshiftn(self, 1));
+	return ((t_bool)(ft_di32_shiftn(self, 1, out) == 1));
 }
 
-inline uint64_t	*ft_vu64_unshift(t_vu64 *self)
+inline t_bool	ft_di64_shift(t_di64 *self, int64_t *out)
 {
-	return (ft_vu64_unshiftn(self, 1));
+	return ((t_bool)(ft_di64_shiftn(self, 1, out) == 1));
 }
 
-inline void		*ft_vec_unshift(t_vec *self)
+inline t_bool	ft_dqstr_shift(t_dqstr *self, char **out)
 {
-	return (ft_vec_unshiftn(self, 1));
+	return ((t_bool)(ft_dqstr_shiftn(self, 1, out) == 1));
 }

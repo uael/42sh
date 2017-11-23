@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/22 13:06:42 by null             ###   ########.fr       */
+/*   Updated: 2017/11/23 08:26:48 by null             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,9 @@ extern t_ret	ft_lexer_init_file(t_lexer *self, char const *filename);
 extern t_ret	ft_lexer_init_str(t_lexer *self, char const *s);
 extern t_ret	ft_lexer_init_nstr(t_lexer *self, char const *s, size_t n);
 extern ssize_t	ft_lexer_scan(t_lexer *self, size_t n);
-extern int8_t	ft_lexer_peek(t_lexer *self, size_t n, t_tok *peek);
+extern t_ret	ft_lexer_peek(t_lexer *self, size_t n, t_tok *peek);
 extern ssize_t	ft_lexer_next(t_lexer *self, size_t n, t_tok *peek);
 extern size_t	ft_lexer_skip(t_lexer *self, size_t n, t_tok *prevs);
+extern t_ret	ft_lexer_match(t_tok *tok, t_src *src, size_t n, uint8_t id);
 
 #endif

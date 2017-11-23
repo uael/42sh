@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_vu_unshiftn.c                                   :+:      :+:    :+:   */
+/*   ft_du_remove.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,29 +10,29 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/ds/vec.h"
+#include "libft/ds/deq.h"
 
-inline uint8_t	*ft_vu8_unshift(t_vu8 *self)
+inline t_bool	ft_du8_remove(t_du8 *self, size_t idx, uint8_t *out)
 {
-	return (ft_vu8_unshiftn(self, 1));
+	return ((t_bool)(ft_du8_removen(self, idx, 1, out) == 1));
 }
 
-inline uint16_t	*ft_vu16_unshift(t_vu16 *self)
+inline t_bool	ft_du16_remove(t_du16 *self, size_t idx, uint16_t *out)
 {
-	return (ft_vu16_unshiftn(self, 1));
+	return ((t_bool)(ft_du16_removen(self, idx, 1, out) == 1));
 }
 
-inline uint32_t	*ft_vu32_unshift(t_vu32 *self)
+inline t_bool	ft_du32_remove(t_du32 *self, size_t idx, uint32_t *out)
 {
-	return (ft_vu32_unshiftn(self, 1));
+	return ((t_bool)(ft_du32_removen(self, idx, 1, out) == 1));
 }
 
-inline uint64_t	*ft_vu64_unshift(t_vu64 *self)
+inline t_bool	ft_du64_remove(t_du64 *self, size_t idx, uint64_t *out)
 {
-	return (ft_vu64_unshiftn(self, 1));
+	return ((t_bool)(ft_du64_removen(self, idx, 1, out) == 1));
 }
 
-inline void		*ft_vec_unshift(t_vec *self)
+inline t_bool	ft_deq_remove(t_deq *self, size_t idx, void *out)
 {
-	return (ft_vec_unshiftn(self, 1));
+	return ((t_bool)(ft_deq_removen(self, idx, 1, out) == 1));
 }

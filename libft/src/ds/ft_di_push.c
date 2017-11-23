@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_vu_unshiftn.c                                   :+:      :+:    :+:   */
+/*   ft_di_push.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,29 +10,29 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/ds/vec.h"
+#include "libft/ds/deq.h"
 
-inline uint8_t	*ft_vu8_unshift(t_vu8 *self)
+inline int8_t	*ft_di8_push(t_di8 *self)
 {
-	return (ft_vu8_unshiftn(self, 1));
+	return (ft_di8_pushn(self, 1));
 }
 
-inline uint16_t	*ft_vu16_unshift(t_vu16 *self)
+inline int16_t	*ft_di16_push(t_di16 *self)
 {
-	return (ft_vu16_unshiftn(self, 1));
+	return (ft_di16_pushn(self, 1));
 }
 
-inline uint32_t	*ft_vu32_unshift(t_vu32 *self)
+inline int32_t	*ft_di32_push(t_di32 *self)
 {
-	return (ft_vu32_unshiftn(self, 1));
+	return (ft_di32_pushn(self, 1));
 }
 
-inline uint64_t	*ft_vu64_unshift(t_vu64 *self)
+inline int64_t	*ft_di64_push(t_di64 *self)
 {
-	return (ft_vu64_unshiftn(self, 1));
+	return (ft_di64_pushn(self, 1));
 }
 
-inline void		*ft_vec_unshift(t_vec *self)
+inline char		**ft_dqstr_push(t_dqstr *self)
 {
-	return (ft_vec_unshiftn(self, 1));
+	return (ft_dqstr_pushn(self, 1));
 }

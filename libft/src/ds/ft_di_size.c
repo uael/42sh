@@ -1,38 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_vu_unshiftn.c                                   :+:      :+:    :+:   */
+/*   ft_di_size.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:33 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/07 09:53:34 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/11/23 09:31:13 by null             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/ds/vec.h"
+#include "libft/ds/deq.h"
 
-inline uint8_t	*ft_vu8_unshift(t_vu8 *self)
+inline size_t	ft_di8_size(t_di8 *self)
 {
-	return (ft_vu8_unshiftn(self, 1));
+	return (self->len - self->cur);
 }
 
-inline uint16_t	*ft_vu16_unshift(t_vu16 *self)
+inline size_t	ft_di16_size(t_di16 *self)
 {
-	return (ft_vu16_unshiftn(self, 1));
+	return (self->len - self->cur);
 }
 
-inline uint32_t	*ft_vu32_unshift(t_vu32 *self)
+inline size_t	ft_di32_size(t_di32 *self)
 {
-	return (ft_vu32_unshiftn(self, 1));
+	return (self->len - self->cur);
 }
 
-inline uint64_t	*ft_vu64_unshift(t_vu64 *self)
+inline size_t	ft_di64_size(t_di64 *self)
 {
-	return (ft_vu64_unshiftn(self, 1));
+	return (self->len - self->cur);
 }
 
-inline void		*ft_vec_unshift(t_vec *self)
+inline size_t	ft_dqstr_size(t_dqstr *self)
 {
-	return (ft_vec_unshiftn(self, 1));
+	return (self->len - self->cur);
 }
