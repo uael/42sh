@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/22 16:35:30 by null             ###   ########.fr       */
+/*   Updated: 2017/11/23 06:59:04 by null             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,19 @@ typedef struct	s_istream
 	enum e_istream	kind;
 	union u_istream	u;
 }				t_istream;
+
+t_istream		*cin;
+
+extern ssize_t	ft_cin_read(char *buf, size_t len);
+extern ssize_t	ft_cin_readf(char *fmt, ...);
+extern ssize_t	ft_cin_vreadf(char *fmt, va_list ap);
+extern ssize_t	ft_cin_get(char *buf, size_t n);
+extern t_ret	ft_cin_peek(char *c, size_t n);
+extern void		ft_cin_flush(void);
+extern t_ret	ft_cin_rewind(size_t n);
+extern t_ret	ft_cin_forward(size_t n);
+extern t_ret	ft_cin_seek(size_t off);
+extern size_t	ft_cin_tell(void);
 
 extern t_ret	ft_istream_open(t_istream *self, char const *filename);
 extern t_ret	ft_istream_mopen(t_istream *self, char const *str);

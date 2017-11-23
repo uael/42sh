@@ -18,7 +18,7 @@
 
 typedef struct	s_src
 {
-	t_istream	in;
+	t_istream	*in;
 	t_loc		cur;
 }				t_src;
 
