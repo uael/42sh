@@ -19,3 +19,13 @@ inline void	ft_tokv_dtor(t_tokv *self)
 	if (self->kind == TOKV_STR)
 		ft_dstr_dtor(&self->val.str, NULL);
 }
+
+inline t_dstr	*ft_tokv_str(t_tokv *self)
+{
+	return (&self->val.str);
+}
+
+inline t_dstr	*ft_tokv_ident(t_tokv *self)
+{
+	return (&self->val.ident);
+}

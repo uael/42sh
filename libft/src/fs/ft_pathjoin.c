@@ -33,3 +33,20 @@ inline char	*ft_pathjoin(char const *p1, char const *p2)
 		ft_strcpy(r + l1 + ds, p2);
 	return (r);
 }
+
+inline char	*ft_pathcat(char *dst, char const *src)
+{
+	size_t	l1;
+	size_t	l2;
+	t_bool	ds;
+
+	l1 = ft_strlen(dst);
+	if (!(l2 = ft_strlen(src)) && !l1)
+		return (dst);
+	ds = (t_bool)((!l1 || dst[l1 - 1] != '/') && (!l2 || src[0] != '/'));
+	if (ds)
+		ft_strcpy(dst + l1, "/");
+	if (l2)
+		ft_strcpy(dst + l1 + ds, src);
+	return (dst);
+}

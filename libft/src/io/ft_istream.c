@@ -14,7 +14,7 @@
 
 static t_istream	_cin =
 {
-	ISTREAM_FILE, { { NULL, 0, NULL, 0, 0, 0, 0, 0 } }
+	ISTREAM_FILE, { { NULL, STDIN_FILENO, NULL, 0, 0, 0, 0, 0 } }
 };
 
 t_istream			*cin = &_cin;

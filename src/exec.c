@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/23 15:19:55 by null             ###   ########.fr       */
+/*   Updated: 2017/11/23 18:11:04 by null             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,24 +22,20 @@ static void		msh_sigint_hdl(int signo)
 	signal(SIGINT, msh_sigint_hdl);
 }
 
-static t_ret	msh_cmd(t_msh *self, char *path, char **args)
+static t_ret	msh_cmd(t_msh *self, char *exe, char **av)
 {
 	pid_t	pid;
 
-	pid = fork();
 	signal(SIGINT, msh_sigint_hdl);
-	if (pid == 0)
-		execve(path, args, self->env.buf);
+	if ((pid = fork()) == 0)
+		execve(exe, av, self->env.buf);
 	else if (pid < 0)
-	{
-		ft_putl(1, "Execution failed.");
 		return (RET_ERR);
-	}
 	wait(&pid);
 	return (RET_OK);
 }
 
-static t_ret	msh_cmd_nf(t_msh *self, t_ret ret, char *cmd)
+static t_ret	msh_cmd_nf(t_msh *self, t_ret ret, char *exe)
 {
 	t_tok *tok;
 
@@ -50,36 +46,48 @@ static t_ret	msh_cmd_nf(t_msh *self, t_ret ret, char *cmd)
 		return (ret);
 	(void)self;
 	ft_puts(2, "msh: command not found: '");
-	ft_puts(2, cmd);
+	ft_puts(2, exe);
 	ft_putl(2, "'.");
 	return (RET_NOK);
 }
 
+static t_shrule	msh_bi(t_tok *tok)
+{
+	t_dstr	*ident;
+
+	ident = ft_tok_ident(tok);
+	if (strcmp("echo", ident->buf) == 0)
+		return (msh_bi_echo);
+	if (strcmp("cd", ident->buf) == 0)
+		return (msh_bi_cd);
+	if (strcmp("setenv", ident->buf) == 0)
+		return (msh_bi_setenv);
+	if (strcmp("unsetenv", ident->buf) == 0)
+		return (msh_bi_unsetenv);
+	if (strcmp("unsetenv", ident->buf) == 0)
+		return (msh_bi_env);
+	if (strcmp("unsetenv", ident->buf) == 0)
+		return (msh_bi_exit);
+	return (NULL);
+}
+
 inline t_ret	msh_exec(t_msh *self, t_tok *tok)
 {
-	t_tok	*end;
-	t_vstr	av;
-	t_ret	ret;
-	char	*ex;
+	t_vstr		av;
+	t_ret		ret;
+	t_dstr		*ident;
+	char		exe[4096];
+	t_shrule	rule;
 
-	if ((ret = msh_path_lookup(self, ft_dstr_begin(&tok->val->val.ident),
-		S_IFREG | S_IXUSR, &ex)) != RET_OK)
-		return (msh_cmd_nf(self, ret, ft_dstr_begin(&tok->val->val.ident)));
-	ft_vstr_ctor(&av);
-	if (!ft_vstr_pushc(&av, ex))
+	if ((rule = msh_bi(tok)))
+		return ((*rule)(self, tok));
+	ident = ft_tok_ident(tok);
+	if ((ret = msh_path_lookup(self, ft_dstr_begin(ident),
+		S_IFREG | S_IXUSR, exe)) != RET_OK)
+		return (msh_cmd_nf(self, ret, ft_dstr_begin(ident)));
+	if (msh_av(self, &av, exe) == RET_ERR)
 		return (RET_ERR);
-	while ((end = msh_next(self, NULL)) && end->id)
-		if (end->id == MSH_TOK_WORD)
-		{
-			if (!ft_vstr_pushc(&av, end->val->val.ident.buf))
-				return (RET_ERR);
-		}
-		else if (!ft_strchr(" \t", end->id))
-			break ;
-	if (!ft_vstr_pushc(&av, NULL))
-		return (RET_ERR);
-	ret = msh_cmd(self, ex, av.buf);
-	free(ex);
+	ret = msh_cmd(self, exe, av.buf);
 	ft_vstr_dtor(&av, NULL);
 	return (ret);
 }

@@ -1,30 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libft/lex/tok.h                                    :+:      :+:    :+:   */
+/*   libft/lex/tokv_dtor.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/22 10:29:53 by null             ###   ########.fr       */
+/*   Updated: 2017/11/23 17:12:31 by null             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFT_LEX_TOK_H
-# define LIBFT_LEX_TOK_H
+#include "libft/lex/tok.h"
 
-# include "loc.h"
-# include "src.h"
-# include "tokv.h"
-
-typedef struct	s_tok
+inline t_dstr	*ft_tok_str(t_tok *self)
 {
-	uint8_t		id;
-	t_loc		loc;
-	t_tokv		*val;
-}				t_tok;
+	return (ft_tokv_str(self->val));
+}
 
-extern t_dstr	*ft_tok_str(t_tok *self);
-extern t_dstr	*ft_tok_ident(t_tok *self);
-
-#endif
+inline t_dstr	*ft_tok_ident(t_tok *self)
+{
+	return (ft_tokv_ident(self->val));
+}

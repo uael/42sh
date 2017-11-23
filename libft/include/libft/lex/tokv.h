@@ -67,5 +67,7 @@ extern void		ft_tokv_init_u64(t_tokv *self, uint64_t i);
 extern void		ft_tokv_init_f32(t_tokv *self, float f);
 extern void		ft_tokv_init_f64(t_tokv *self, double f);
 extern void		ft_tokv_dtor(t_tokv *self);
+extern t_dstr	*ft_tokv_str(t_tokv *self);
+extern t_dstr	*ft_tokv_ident(t_tokv *self);
 
 #endif

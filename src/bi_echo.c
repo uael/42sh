@@ -1,30 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libft/lex/tok.h                                    :+:      :+:    :+:   */
+/*   bi_echo.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/22 10:29:53 by null             ###   ########.fr       */
+/*   Updated: 2017/11/23 18:41:10 by null             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFT_LEX_TOK_H
-# define LIBFT_LEX_TOK_H
+#include "msh.h"
 
-# include "loc.h"
-# include "src.h"
-# include "tokv.h"
-
-typedef struct	s_tok
+inline t_ret	msh_bi_echo(t_msh *self, t_tok *tok)
 {
-	uint8_t		id;
-	t_loc		loc;
-	t_tokv		*val;
-}				t_tok;
-
-extern t_dstr	*ft_tok_str(t_tok *self);
-extern t_dstr	*ft_tok_ident(t_tok *self);
-
-#endif
+	(void)self;
+	(void)tok;
+	return (RET_NOK);
+}
