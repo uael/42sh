@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/17 10:03:31 by null             ###   ########.fr       */
+/*   Updated: 2017/11/23 14:38:40 by null             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,5 +35,6 @@ extern double	ft_atod(char const *str);
 extern char		*ft_itoa(int64_t n, uint8_t base);
 extern char		*ft_utoa(uint64_t n, uint8_t base);
 extern t_ret	ft_dtor(t_ret code, t_dtor dtor, void *arg);
+extern void		ft_pfree(void **);
 
 #endif

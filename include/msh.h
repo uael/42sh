@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/22 18:12:30 by null             ###   ########.fr       */
+/*   Updated: 2017/11/23 14:56:55 by null             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,9 +63,38 @@ enum		e_msh_tok
 	MSH_TOK_RCURLY = '}',
 };
 
-#define MSH_EXIT(code, lexer) exit(ft_dtor((t_ret)(code), msh_dtor, lexer))
+#define MSH_EXIT(code, msh) exit(ft_dtor((t_ret)(code), (t_dtor)msh_dtor, msh))
 
-extern void		msh_dtor(t_lexer *lexer);
 extern t_ret	msh_lex(t_lexer *self);
+
+typedef struct	s_msh
+{
+	t_lexer		lexer;
+	t_dstr		out;
+	t_dstr		err;
+	t_vstr		env;
+}				t_msh;
+
+typedef t_ret	(*t_shrule)(t_msh *, t_tok *);
+
+extern t_shrule	g_msh_rules[UINT8_MAX];
+
+extern t_ret	msh_init_stream(t_msh *self, char **env, t_istream *stream);
+extern t_ret	msh_init_file(t_msh *self, char **env, char const *filename);
+extern t_ret	msh_init_str(t_msh *self, char **env, char const *str);
+extern t_ret	msh_init_nstr(t_msh *self, char **env, char const *s, size_t n);
+extern void		msh_dtor(t_msh *self);
+extern t_ret	msh_prompt(t_msh *self, char *prompt);
+extern t_ret	msh_path_lookup(t_msh *self, char *file, int mode, char **ex);
+extern t_ret	msh_initenv(t_msh *self, char **env);
+extern char		**msh_getenv(t_msh *self, char *var);
+extern t_ret	msh_setenv(t_msh *self, char *var, char *val);
+extern t_tok	*msh_peek(t_msh *self);
+extern t_tok	*msh_peekn(t_msh *self, size_t n);
+extern t_tok	*msh_next(t_msh *self, t_tok **next);
+extern t_tok	*msh_consume(t_msh *self, uint8_t id);
+extern t_ret	msh(t_msh *self);
+
+extern t_ret	msh_exec(t_msh *self, t_tok *tok);
 
 #endif

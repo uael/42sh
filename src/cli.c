@@ -6,46 +6,25 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/23 07:41:18 by null             ###   ########.fr       */
+/*   Updated: 2017/11/23 11:58:54 by null             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
-
 #include "msh.h"
 
-extern t_ret	msh_lex_word(t_tok *tok, char peek, t_src *src);
-extern t_ret	msh_lex_syntax(t_tok *tok, char peek, t_src *src);
-
-void			msh_dtor(t_lexer *lexer)
+int	main(int ac, char **av, char **env)
 {
-	ft_lexer_dtor(lexer);
-}
+	t_msh sh;
 
-t_ret			msh_lex(t_lexer *self)
-{
-	t_lrule *it;
-
-	if (!(it = ft_vec_pushn(&self->rules, 2)))
-		return (RET_ERR);
-	*it = msh_lex_word;
-	*(it + 1) = msh_lex_syntax;
-	return (RET_OK);
-}
-
-int				main(void)
-{
-	t_lexer lexer;
-	t_tok	tok;
-
-	if (ft_lexer_init_stream(&lexer, cin) || msh_lex(&lexer) < 0)
+	(void)ac;
+	(void)av;
+	if (msh_init_stream(&sh, env, cin))
 		return (EXIT_FAILURE);
-	while (ft_lexer_next(&lexer, 1, &tok))
+	if (msh(&sh))
 	{
-		printf("TOKEN %d\n", tok.id);
-		if (tok.id == '\n')
-			break ;
+		msh_dtor(&sh);
+		return (EXIT_FAILURE);
 	}
-	ft_lexer_dtor(&lexer);
+	msh_dtor(&sh);
 	return (EXIT_SUCCESS);
 }

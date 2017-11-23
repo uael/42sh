@@ -35,7 +35,7 @@ static inline t_ret	lexer_scan_one(t_lexer *self, char peek, t_src *src)
 			tok.loc.len = (uint16_t)(src->cur.cur - tok.loc.cur);
 			if (tok.val)
 				++self->vals.len;
-			return (ft_vec_pushc(&self->toks, &tok) ? RET_OK : RET_ERR);
+			return (ft_deq_pushc(&self->toks, &tok) ? RET_OK : RET_ERR);
 		}
 	return (RET_NOK);
 }
@@ -50,14 +50,14 @@ inline ssize_t			ft_lexer_scan(t_lexer *self, size_t n)
 	c = 0;
 	while (c < n)
 	{
-		if (ft_vec_size(&self->srcs) == 0)
+		if (ft_deq_size(&self->srcs) == 0)
 			break ;
-		src = ft_vec_at(&self->srcs, 0);
+		src = ft_deq_at(&self->srcs, 0);
 		if ((r = ft_src_peek(src, &peek, 0)) == RET_ERR)
 			return (RET_ERR);
 		else if (r == RET_NOK)
 		{
-			ft_vec_shift(&self->srcs, NULL);
+			ft_deq_shift(&self->srcs, NULL);
 			continue ;
 		}
 		if ((r = lexer_scan_one(self, peek, src)) == RET_ERR)

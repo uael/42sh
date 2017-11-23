@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/23 08:00:46 by null             ###   ########.fr       */
+/*   Updated: 2017/11/23 08:03:29 by null             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,17 +15,9 @@
 #define M(p, c) (s[p] == (c))
 #define W MSH_TOK_WORD
 #define TOK(T) MSH_TOK_ ## T
+#define MATCH(tok, src, n, id) ft_lexer_match(tok, src, n, id)
 
-static inline t_ret	msh_match(t_tok *tok, t_src *src, size_t n, uint8_t id)
-{
-	tok->id = id;
-	tok->val = NULL;
-	if (ft_src_next(src, NULL, n) < 0)
-		return (RET_ERR);
-	return (RET_OK);
-}
-
-inline t_ret		msh_lex_syntax(t_tok *tok, char peek, t_src *src)
+inline t_ret			msh_lex_syntax(t_tok *tok, char peek, t_src *src)
 {
 	char	b[3];
 	char	*c;
@@ -37,19 +29,19 @@ inline t_ret		msh_lex_syntax(t_tok *tok, char peek, t_src *src)
 			if (b[n++] == '\n')
 				break ;
 	if (n == 3 && b[0] == '>' && b[1] == '>' && b[2] == '-')
-		return (msh_match(tok, src, 3, MSH_TOK_RARROW));
+		return (MATCH(tok, src, 3, MSH_TOK_RARROW));
 	if (n >= 2 && b[1] == '>' && (b[0] == '>' || b[0] == '&'))
-		return (msh_match(tok, src, 2, b[0] == '>' ? TOK(RSHIFT) : TOK(AMPR)));
+		return (MATCH(tok, src, 2, b[0] == '>' ? TOK(RSHIFT) : TOK(AMPR)));
 	if (n >= 2 && b[0] == '>' && b[1] == '&')
-		return (msh_match(tok, src, 2, MSH_TOK_RAMP));
+		return (MATCH(tok, src, 2, MSH_TOK_RAMP));
 	if (n >= 2 && b[1] == '|' && (b[0] == '>' || b[0] == '|'))
-		return (msh_match(tok, src, 2, b[0] == '>' ? TOK(RPIPE) : TOK(LOR)));
+		return (MATCH(tok, src, 2, b[0] == '>' ? TOK(RPIPE) : TOK(LOR)));
 	if (n >= 2 && b[0] == '<' && (b[1] == '>' || b[1] == '<'))
-		return (msh_match(tok, src, 2, b[1] == '>' ? TOK(CMP) : TOK(LSHIFT)));
+		return (MATCH(tok, src, 2, b[1] == '>' ? TOK(CMP) : TOK(LSHIFT)));
 	if (n >= 2 && b[1] == '&' && (b[0] == '<' || b[0] == '&'))
-		return (msh_match(tok, src, 2, b[0] == '<' ? TOK(LAMP ): TOK(LAND)));
+		return (MATCH(tok, src, 2, b[0] == '<' ? TOK(LAMP ): TOK(LAND)));
 	if (n >= 1 && (c = ft_strchr("=\t\n !&()-;<=>[]{|}", peek)))
-		return (msh_match(tok, src, 1, (uint8_t)*c));
+		return (MATCH(tok, src, 1, (uint8_t)*c));
 	return (RET_NOK);
 }
 
@@ -129,5 +121,16 @@ inline t_ret			msh_lex_word(t_tok *tok, char peek, t_src *src)
 		tok->val->kind = TOKV_IDENT;
 	else
 		ft_dstr_dtor(dstr, (void *)(tok->val = NULL));
+	return (RET_OK);
+}
+
+inline t_ret			msh_lex(t_lexer *self)
+{
+	t_lrule *it;
+
+	if (!(it = ft_vec_pushn(&self->rules, 2)))
+		return (RET_ERR);
+	*it = msh_lex_word;
+	*(it + 1) = msh_lex_syntax;
 	return (RET_OK);
 }

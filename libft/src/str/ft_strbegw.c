@@ -1,28 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_dtor.c                                          :+:      :+:    :+:   */
+/*   ft_strbegw.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/23 14:39:14 by null             ###   ########.fr       */
+/*   Created: 2017/11/07 09:53:23 by alucas-           #+#    #+#             */
+/*   Updated: 2017/11/23 12:30:38 by null             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/lib.h"
+#include "libft/str.h"
 
-inline void		ft_pfree(void **ptr)
+inline char	*ft_strbegw(char const *s1, char const *s2, char stop)
 {
-	if (!ptr)
-		return ;
-	free(*ptr);
-	*ptr = NULL;
-}
+	char const *s3;
 
-inline t_ret	ft_dtor(t_ret code, t_dtor dtor, void *arg)
-{
-	if (dtor && arg)
-		(*dtor)(arg);
-	return (code);
+	s3 = s2;
+	while (((uint8_t)*s1 == (uint8_t)*s2) && *s1 && *s2 != stop)
+	{
+		++s1;
+		++s2;
+	}
+	return (*s2 == stop ? (char *)s3 : NULL);
 }

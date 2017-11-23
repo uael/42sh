@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/17 10:03:31 by null             ###   ########.fr       */
+/*   Updated: 2017/11/23 11:46:11 by null             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,5 +45,6 @@ extern size_t	ft_strnlen(char const *str, size_t size);
 extern char		*ft_strnstr(char const *str, char const *f, size_t l);
 extern char		*ft_strrchr(char const *s, int c);
 extern char		*ft_strstr(char const *haystack, char const *needle);
+extern char		*ft_strbegw(char const *s1, char const *s2, char stop);
 
 #endif
