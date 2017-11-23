@@ -12,52 +12,72 @@
 
 #include "libft/lex/lexer.h"
 
-inline void		ft_lexer_ctor(t_lexer *self)
+inline t_ret	ft_lexer_init_stream(t_lexer *self, t_istream *stream)
 {
+	t_src	src;
+	t_src	*s;
+
 	FT_INIT(self, t_lexer);
 	ft_vec_ctor(&self->rules, sizeof(t_lrule));
 	ft_vec_ctor(&self->srcs, sizeof(t_src));
 	ft_vec_ctor(&self->toks, sizeof(t_tok));
 	ft_vec_ctor(&self->vals, sizeof(t_tokv));
+	ft_src_init_stream(&src, stream);
+	if (!(s = ft_vec_pushc(&self->srcs, &src)))
+		return (RET_ERR);
+	s->cur.src = self->srcs.buf;
+	return (RET_OK);
 }
 
-inline t_bool	ft_lexer_init_file(t_lexer *self, char const *filename)
+inline t_ret	ft_lexer_init_file(t_lexer *self, char const *filename)
 {
 	t_src	src;
 	t_src	*s;
 
-	ft_lexer_ctor(self);
+	FT_INIT(self, t_lexer);
+	ft_vec_ctor(&self->rules, sizeof(t_lrule));
+	ft_vec_ctor(&self->srcs, sizeof(t_src));
+	ft_vec_ctor(&self->toks, sizeof(t_tok));
+	ft_vec_ctor(&self->vals, sizeof(t_tokv));
 	ft_src_init_file(&src, filename);
 	if (!(s = ft_vec_pushc(&self->srcs, &src)))
-		return (0);
+		return (RET_ERR);
 	s->cur.src = self->srcs.buf;
-	return (1);
+	return (RET_OK);
 }
 
-inline t_bool	ft_lexer_init_str(t_lexer *self, char const *str)
+inline t_ret	ft_lexer_init_str(t_lexer *self, char const *str)
 {
 	t_src	src;
 	t_src	*s;
 
-	ft_lexer_ctor(self);
+	FT_INIT(self, t_lexer);
+	ft_vec_ctor(&self->rules, sizeof(t_lrule));
+	ft_vec_ctor(&self->srcs, sizeof(t_src));
+	ft_vec_ctor(&self->toks, sizeof(t_tok));
+	ft_vec_ctor(&self->vals, sizeof(t_tokv));
 	ft_src_init_str(&src, str);
 	if (!(s = ft_vec_pushc(&self->srcs, &src)))
-		return (0);
+		return (RET_ERR);
 	s->cur.src = self->srcs.buf;
-	return (1);
+	return (RET_OK);
 }
 
-inline t_bool	ft_lexer_init_nstr(t_lexer *self, char const *str, size_t n)
+inline t_ret	ft_lexer_init_nstr(t_lexer *self, char const *str, size_t n)
 {
 	t_src	src;
 	t_src	*s;
 
-	ft_lexer_ctor(self);
+	FT_INIT(self, t_lexer);
+	ft_vec_ctor(&self->rules, sizeof(t_lrule));
+	ft_vec_ctor(&self->srcs, sizeof(t_src));
+	ft_vec_ctor(&self->toks, sizeof(t_tok));
+	ft_vec_ctor(&self->vals, sizeof(t_tokv));
 	ft_src_init_nstr(&src, str, n);
 	if (!(s = ft_vec_pushc(&self->srcs, &src)))
-		return (0);
+		return (RET_ERR);
 	s->cur.src = self->srcs.buf;
-	return (1);
+	return (RET_OK);
 }
 
 inline void		ft_lexer_dtor(t_lexer *self)

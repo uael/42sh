@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/22 18:12:30 by null             ###   ########.fr       */
+/*   Updated: 2017/11/23 07:41:18 by null             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,11 +38,14 @@ int				main(void)
 	t_lexer lexer;
 	t_tok	tok;
 
-	if (!ft_lexer_init_str(&lexer, "for < > in do done\n") ||
-		msh_lex(&lexer) < 0)
+	if (ft_lexer_init_stream(&lexer, cin) || msh_lex(&lexer) < 0)
 		return (EXIT_FAILURE);
 	while (ft_lexer_next(&lexer, 1, &tok))
+	{
 		printf("TOKEN %d\n", tok.id);
+		if (tok.id == '\n')
+			break ;
+	}
 	ft_lexer_dtor(&lexer);
 	return (EXIT_SUCCESS);
 }

@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/22 18:12:30 by null             ###   ########.fr       */
+/*   Updated: 2017/11/23 08:00:46 by null             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,11 @@ inline t_ret		msh_lex_syntax(t_tok *tok, char peek, t_src *src)
 	char	*c;
 	ssize_t	n;
 
-	if ((n = (ft_src_get(src, b, 3))) <= 0)
-		return (n < 0 ? RET_ERR : RET_NOK);
+	n = 0;
+	if ((b[n++] = peek) != '\n')
+		while (n < 3 && ft_src_peek(src, b + n, (size_t)n) == RET_OK)
+			if (b[n++] == '\n')
+				break ;
 	if (n == 3 && b[0] == '>' && b[1] == '>' && b[2] == '-')
 		return (msh_match(tok, src, 3, MSH_TOK_RARROW));
 	if (n >= 2 && b[1] == '>' && (b[0] == '>' || b[0] == '&'))
@@ -41,10 +44,8 @@ inline t_ret		msh_lex_syntax(t_tok *tok, char peek, t_src *src)
 		return (msh_match(tok, src, 2, MSH_TOK_RAMP));
 	if (n >= 2 && b[1] == '|' && (b[0] == '>' || b[0] == '|'))
 		return (msh_match(tok, src, 2, b[0] == '>' ? TOK(RPIPE) : TOK(LOR)));
-	if (n >= 2 && b[0] == '<' && b[1] == '>')
-		return (msh_match(tok, src, 2, MSH_TOK_CMP));
-	if (n >= 2 && b[0] == '<' && b[1] == '<')
-		return (msh_match(tok, src, 2, MSH_TOK_LSHIFT));
+	if (n >= 2 && b[0] == '<' && (b[1] == '>' || b[1] == '<'))
+		return (msh_match(tok, src, 2, b[1] == '>' ? TOK(CMP) : TOK(LSHIFT)));
 	if (n >= 2 && b[1] == '&' && (b[0] == '<' || b[0] == '&'))
 		return (msh_match(tok, src, 2, b[0] == '<' ? TOK(LAMP ): TOK(LAND)));
 	if (n >= 1 && (c = ft_strchr("=\t\n !&()-;<=>[]{|}", peek)))

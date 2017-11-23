@@ -6,16 +6,15 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:33 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/23 07:01:00 by null             ###   ########.fr       */
+/*   Updated: 2017/11/23 07:21:44 by null             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft/io/istream.h"
 
-static char			_cin_buf[FT_PAGE_SIZE];
 static t_istream	_cin =
 {
-	ISTREAM_FILE, { { NULL, 0, _cin_buf, 0, 0, 0, 0, 0 } }
+	ISTREAM_FILE, { { NULL, 0, NULL, 0, 0, 0, 0, 0 } }
 };
 
 t_istream			*cin = &_cin;

@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/22 16:35:30 by null             ###   ########.fr       */
+/*   Updated: 2017/11/22 17:48:49 by null             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ inline ssize_t		ft_src_next(t_src *self, char *peek, size_t n)
 	char	b[n];
 
 	p = peek ? peek : b;
-	if ((s = ft_istream_read(&self->in, p, n)) < 0)
+	if ((s = ft_istream_read(self->in ? self->in : &self->in_own, p, n)) < 0)
 		return (s);
 	i = -1;
 	while (++i < s)
@@ -35,10 +35,10 @@ inline ssize_t		ft_src_next(t_src *self, char *peek, size_t n)
 
 inline ssize_t	ft_src_get(t_src *self, char *buf, size_t n)
 {
-	return (ft_istream_get(&self->in, buf, n));
+	return (ft_istream_get(self->in ? self->in : &self->in_own, buf, n));
 }
 
 inline t_ret	ft_src_peek(t_src *self, char *c, size_t n)
 {
-	return (ft_istream_peek(&self->in, c, n));
+	return (ft_istream_peek(self->in ? self->in : &self->in_own, c, n));
 }

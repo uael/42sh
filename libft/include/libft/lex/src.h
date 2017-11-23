@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/22 16:35:30 by null             ###   ########.fr       */
+/*   Updated: 2017/11/23 06:56:48 by null             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,11 @@
 typedef struct	s_src
 {
 	t_istream	*in;
+	t_istream	in_own;
 	t_loc		cur;
 }				t_src;
 
+extern t_ret	ft_src_init_stream(t_src *self, t_istream *stream);
 extern t_ret	ft_src_init_file(t_src *self, char const *filename);
 extern t_ret	ft_src_init_str(t_src *self, char const *str);
 extern t_ret	ft_src_init_nstr(t_src *self, char const *str, size_t n);

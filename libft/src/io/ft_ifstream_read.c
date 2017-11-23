@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:33 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/22 16:35:30 by null             ###   ########.fr       */
+/*   Updated: 2017/11/23 07:21:44 by null             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static inline ssize_t	ifs_cpy(t_ifstream *s, char **b, size_t *l, size_t c)
 	ssize_t	r;
 
 	r = s->len - c;
-	if (r > (ssize_t)*l)
+	if (r >= (ssize_t)*l)
 	{
 		if (*b)
 			ft_memcpy(*b, s->buf + c, *l * sizeof(char));
@@ -69,8 +69,8 @@ inline ssize_t			ft_ifstream_read(t_ifstream *self, char *b, size_t len)
 	size_t	cur;
 	ssize_t	r;
 
-	if (!self->filename || self->fd < 0)
-		return (0);
+	if (self->fd < 0)
+		return (-1);
 	else
 	{
 		beg = len;
