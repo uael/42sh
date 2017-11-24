@@ -18,7 +18,7 @@ CFLAGS += -Wall -Werror -Wextra -O3
 SRC_PATH = ./src/
 INC_PATH = ./include/
 OBJ_PATH = ./obj/
-OBJ_PATHS = cty ds fs int io lib math mem str
+OBJ_PATHS = cty ds fs int io lex lib math mem str
 
 OBJ_SUB_PATHS = $(addprefix $(OBJ_PATH),$(OBJ_PATHS))
 OBJ_NAME = $(SRC_NAME:.c=.o)
@@ -121,17 +121,96 @@ SRC_NAME += \
 	ds/ft_vu_unshiftc.c \
 	ds/ft_vu_unshiftn.c \
 	ds/ft_vu_unshiftnc.c \
+	ds/ft_di_at.c \
+	ds/ft_di_begin.c \
+	ds/ft_di_ctor.c \
+	ds/ft_di_dtor.c \
+	ds/ft_di_end.c \
+	ds/ft_di_ensure.c \
+	ds/ft_di_grow.c \
+	ds/ft_di_pop.c \
+	ds/ft_di_popn.c \
+	ds/ft_di_push.c \
+	ds/ft_di_pushc.c \
+	ds/ft_di_pushn.c \
+	ds/ft_di_pushnc.c \
+	ds/ft_di_put.c \
+	ds/ft_di_putc.c \
+	ds/ft_di_putn.c \
+	ds/ft_di_putnc.c \
+	ds/ft_di_realloc.c \
+	ds/ft_di_remove.c \
+	ds/ft_di_removen.c \
+	ds/ft_di_shift.c \
+	ds/ft_di_shiftn.c \
+	ds/ft_di_size.c \
+	ds/ft_di_unshift.c \
+	ds/ft_di_unshiftc.c \
+	ds/ft_di_unshiftn.c \
+	ds/ft_di_unshiftnc.c \
+	ds/ft_du_at.c \
+	ds/ft_du_begin.c \
+	ds/ft_du_ctor.c \
+	ds/ft_du_dtor.c \
+	ds/ft_du_end.c \
+	ds/ft_du_ensure.c \
+	ds/ft_du_grow.c \
+	ds/ft_du_pop.c \
+	ds/ft_du_popn.c \
+	ds/ft_du_push.c \
+	ds/ft_du_pushc.c \
+	ds/ft_du_pushn.c \
+	ds/ft_du_pushnc.c \
+	ds/ft_du_put.c \
+	ds/ft_du_putc.c \
+	ds/ft_du_putn.c \
+	ds/ft_du_putnc.c \
+	ds/ft_du_realloc.c \
+	ds/ft_du_remove.c \
+	ds/ft_du_removen.c \
+	ds/ft_du_shift.c \
+	ds/ft_du_shiftn.c \
+	ds/ft_du_size.c \
+	ds/ft_du_unshift.c \
+	ds/ft_du_unshiftc.c \
+	ds/ft_du_unshiftn.c \
+	ds/ft_du_unshiftnc.c \
 	fs/ft_basename.c \
 	fs/ft_isdots.c \
 	fs/ft_pathjoin.c \
 	int/ft_intlen.c \
 	int/ft_intstr.c \
+	io/ft_cin_read.c \
+	io/ft_cin_seek.c \
+	io/ft_ifstream.c \
+	io/ft_ifstream_peek.c \
+	io/ft_ifstream_read.c \
+	io/ft_ifstream_seek.c \
+	io/ft_imstream.c \
+	io/ft_imstream_peek.c \
+	io/ft_imstream_read.c \
+	io/ft_imstream_seek.c \
+	io/ft_istream.c \
+	io/ft_istream_peek.c \
+	io/ft_istream_read.c \
+	io/ft_istream_seek.c \
 	io/ft_padn.c \
 	io/ft_putc.c \
 	io/ft_putl.c \
 	io/ft_putn.c \
 	io/ft_puts.c \
+	lex/lexer.c \
+	lex/lexer_peek.c \
+	lex/lexer_scan.c \
+	lex/src.c \
+	lex/src_peek.c \
+	lex/tok.c \
+	lex/tokv_dtor.c \
+	lex/tokv_init0.c \
+	lex/tokv_init1.c \
+	lex/tokv_init2.c \
 	lib/ft_atoi.c \
+	lib/ft_dtor.c \
 	lib/ft_itoa.c \
 	math/ft_imax.c \
 	math/ft_imin.c \
@@ -150,6 +229,7 @@ SRC_NAME += \
 	str/ft_memmove.c \
 	str/ft_memrcpy.c \
 	str/ft_memset.c \
+	str/ft_strbegw.c \
 	str/ft_strcat.c \
 	str/ft_strchr.c \
 	str/ft_strclr.c \

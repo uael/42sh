@@ -22,5 +22,7 @@ inline char	*ft_strbegw(char const *s1, char const *s2, char stop)
 		++s1;
 		++s2;
 	}
-	return (*s2 == stop ? (char *)s3 : NULL);
+	if (stop)
+		return (*s2 == stop ? (char *)s3 : NULL);
+	return (!*s1 ? (char *)s3 : NULL);
 }

@@ -100,7 +100,7 @@ typedef struct	s_deq
 	size_t		cur;
 }				t_deq;
 
-typedef size_t	t_vsz;
+typedef size_t	t_dsz;
 
 extern void		ft_di8_ctor(t_di8 *s);
 extern void		ft_di8_dtor(t_di8 *s, void(*idtor)(int8_t *i));
@@ -316,7 +316,7 @@ extern uint16_t	*ft_du16_unshiftnc(t_du16 *s, uint16_t const *b, size_t n);
 extern uint16_t	*ft_du16_unshift(t_du16 *s);
 extern uint16_t	*ft_du16_unshiftc(t_du16 *s, uint16_t item);
 extern uint16_t	*ft_du16_putn(t_du16 *s, size_t i, size_t n);
-extern uint16_t	*ft_du16_putnc(t_du16 *s, size_t i, uint16_t const *b, t_vsz n);
+extern uint16_t	*ft_du16_putnc(t_du16 *s, size_t i, uint16_t const *b, t_dsz n);
 extern uint16_t	*ft_du16_put(t_du16 *s, size_t i);
 extern uint16_t	*ft_du16_putc(t_du16 *s, size_t i, uint16_t item);
 extern size_t	ft_du16_popn(t_du16 *s, size_t n, uint16_t *out);
@@ -344,7 +344,7 @@ extern uint32_t	*ft_du32_unshiftnc(t_du32 *s, uint32_t const *b, size_t n);
 extern uint32_t	*ft_du32_unshift(t_du32 *s);
 extern uint32_t	*ft_du32_unshiftc(t_du32 *s, uint32_t item);
 extern uint32_t	*ft_du32_putn(t_du32 *s, size_t i, size_t n);
-extern uint32_t	*ft_du32_putnc(t_du32 *s, size_t i, uint32_t const *b, t_vsz n);
+extern uint32_t	*ft_du32_putnc(t_du32 *s, size_t i, uint32_t const *b, t_dsz n);
 extern uint32_t	*ft_du32_put(t_du32 *s, size_t i);
 extern uint32_t	*ft_du32_putc(t_du32 *s, size_t i, uint32_t item);
 extern size_t	ft_du32_popn(t_du32 *s, size_t n, uint32_t *out);
@@ -372,7 +372,7 @@ extern uint64_t	*ft_du64_unshiftnc(t_du64 *s, uint64_t const *b, size_t n);
 extern uint64_t	*ft_du64_unshift(t_du64 *s);
 extern uint64_t	*ft_du64_unshiftc(t_du64 *s, uint64_t item);
 extern uint64_t	*ft_du64_putn(t_du64 *s, size_t i, size_t n);
-extern uint64_t	*ft_du64_putnc(t_du64 *s, size_t i, uint64_t const *b, t_vsz n);
+extern uint64_t	*ft_du64_putnc(t_du64 *s, size_t i, uint64_t const *b, t_dsz n);
 extern uint64_t	*ft_du64_put(t_du64 *s, size_t i);
 extern uint64_t	*ft_du64_putc(t_du64 *s, size_t i, uint64_t item);
 extern size_t	ft_du64_popn(t_du64 *s, size_t n, uint64_t *out);

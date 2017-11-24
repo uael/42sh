@@ -17,7 +17,7 @@
 #define TOK(T) MSH_TOK_ ## T
 #define MATCH(tok, src, n, id) ft_lexer_match(tok, src, n, id)
 
-inline t_ret			msh_lex_syntax(t_tok *tok, char peek, t_src *src)
+static inline t_ret		msh_lex_syntax(t_tok *tok, char peek, t_src *src)
 {
 	char	b[3];
 	char	*c;
@@ -100,7 +100,7 @@ static inline t_ret		msh_isletter(char peek, t_src *src, t_bool *kw)
 	return (RET_OK);
 }
 
-inline t_ret			msh_lex_word(t_tok *tok, char peek, t_src *src)
+static inline t_ret		msh_lex_word(t_tok *tok, char peek, t_src *src)
 {
 	t_dstr		*dstr;
 	t_bool		kw;

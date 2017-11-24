@@ -10,6 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <sys/stat.h>
+
 #include "msh.h"
 
 static inline char	*msh_cwd(t_msh *self)
@@ -28,7 +30,7 @@ static inline char	*msh_cwd(t_msh *self)
 		return (path);
 	if (path[l = ft_strlen(h)] != '\0')
 		ft_memmove(path + 1, path + l, (l - 1) * sizeof(char));
-	ft_strcpy(path, "~");
+	*path = '~';
 	return (path);
 }
 

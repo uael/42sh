@@ -10,8 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <wait.h>
-
 #include "msh.h"
 
 static void		msh_sigint_hdl(int signo)
