@@ -232,7 +232,7 @@ extern char		**ft_dqstr_unshiftnc(t_dqstr *s, char const **b, size_t n);
 extern char		**ft_dqstr_unshift(t_dqstr *s);
 extern char		**ft_dqstr_unshiftc(t_dqstr *s, char *item);
 extern char		**ft_dqstr_putn(t_dqstr *s, size_t i, size_t n);
-extern char		**ft_dqstr_putnc(t_dqstr *s, size_t i, char const **b, size_t n);
+extern char		**ft_dqstr_putnc(t_dqstr *s, t_dsz i, char const **b, size_t n);
 extern char		**ft_dqstr_put(t_dqstr *s, size_t i);
 extern char		**ft_dqstr_putc(t_dqstr *s, size_t i, char *item);
 extern size_t	ft_dqstr_popn(t_dqstr *s, size_t n, char **out);

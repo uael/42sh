@@ -63,8 +63,8 @@ enum		e_msh_tok
 	MSH_TOK_RCURLY = '}',
 };
 
-#define MSH_EXIT(code, msh) exit(ft_dtor((code),(t_dtor)msh_dtor, msh, NULL))
-#define CMD_NOK(msg) ft_dtor(RET_NOK, NULL, NULL, (msg))
+# define MSH_EXIT(code, msh) exit(ft_dtor((code),(t_dtor)msh_dtor, msh, NULL))
+# define CMD_NOK(msg) ft_dtor(RET_NOK, NULL, NULL, (msg))
 
 extern t_ret	msh_lex(t_lexer *self);
 

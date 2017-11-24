@@ -35,6 +35,6 @@ extern double	ft_atod(char const *str);
 extern char		*ft_itoa(int64_t n, uint8_t base);
 extern char		*ft_utoa(uint64_t n, uint8_t base);
 extern t_ret	ft_dtor(int code, t_dtor dtor, void *arg, char const *msg);
-extern void		ft_pfree(void **);
+extern void		ft_pfree(void **pptr);
 
 #endif

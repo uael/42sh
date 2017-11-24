@@ -14,7 +14,6 @@
 
 static t_msh	*g_sh;
 
-
 inline void		msh_sigint_hdl(int sign)
 {
 	(void)sign;
