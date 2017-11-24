@@ -57,19 +57,19 @@ static t_shcmd	msh_bi(t_tok *tok)
 	t_dstr	*ident;
 
 	ident = ft_tok_ident(tok);
-	if (strcmp("cd", ident->buf) == 0)
+	if (ft_strcmp("cd", ident->buf) == 0)
 		return (msh_bi_cd);
-	if (strcmp("echo", ident->buf) == 0)
+	if (ft_strcmp("echo", ident->buf) == 0)
 		return (msh_bi_echo);
-	if (strcmp("env", ident->buf) == 0)
+	if (ft_strcmp("env", ident->buf) == 0)
 		return (msh_bi_env);
-	if (strcmp("exit", ident->buf) == 0)
+	if (ft_strcmp("exit", ident->buf) == 0)
 		return (msh_bi_exit);
-	if (strcmp("setenv", ident->buf) == 0)
+	if (ft_strcmp("setenv", ident->buf) == 0)
 		return (msh_bi_setenv);
-	if (strcmp("unsetenv", ident->buf) == 0)
+	if (ft_strcmp("unsetenv", ident->buf) == 0)
 		return (msh_bi_unsetenv);
-	if (strcmp("unsetenv", ident->buf) == 0)
+	if (ft_strcmp("unsetenv", ident->buf) == 0)
 		return (msh_bi_env);
 	return (NULL);
 }

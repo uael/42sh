@@ -26,11 +26,7 @@ inline t_tok	*msh_peek(t_msh *self)
 	t_ret	r;
 
 	if ((r = ft_lexer_peek(&self->lexer, 0, &tok)) == RET_ERR)
-	{
-		if (errno)
-			perror("msh: unable to read");
 		MSH_EXIT(EXIT_FAILURE, self);
-	}
 	return (r == RET_OK ? tok : NULL);
 }
 
@@ -40,11 +36,7 @@ inline t_tok	*msh_peekn(t_msh *self, size_t n)
 	t_ret	r;
 
 	if ((r = ft_lexer_peek(&self->lexer, n, &tok)) == RET_ERR)
-	{
-		if (errno)
-			perror("msh: unable to read");
 		MSH_EXIT(EXIT_FAILURE, self);
-	}
 	return (r == RET_OK ? tok : NULL);
 }
 
@@ -54,11 +46,7 @@ inline t_tok	*msh_next(t_msh *self, t_tok **next)
 	ssize_t	s;
 
 	if ((s = ft_lexer_next(&self->lexer, 1, &tok)) < 0)
-	{
-		if (errno)
-			perror("msh: unable to read");
 		MSH_EXIT(EXIT_FAILURE, self);
-	}
 	if (next)
 		*next = msh_peek(self);
 	return (s == 1 ? tok : NULL);
@@ -71,11 +59,7 @@ inline t_tok	*msh_consume(t_msh *self, uint8_t id)
 	char	buf[20];
 
 	if ((s = ft_lexer_next(&self->lexer, 1, &tok)) < 0)
-	{
-		if (errno)
-			perror("msh: unable to read");
 		MSH_EXIT(EXIT_FAILURE, self);
-	}
 	if (s && tok->id != id)
 	{
 		ft_puts(1, "unexpected token '");
