@@ -16,7 +16,7 @@ static void		msh_sigint_hdl(int signo)
 {
 	if (signo != SIGINT)
 		return ;
-	ft_puts(1, "\n");
+	ft_putc(1, '\n');
 	signal(SIGINT, msh_sigint_hdl);
 }
 
