@@ -76,6 +76,8 @@ inline t_ret		msh_path_lookup(t_msh *self, char *f, int mode, char ret[])
 	char		*sep;
 	struct stat	s;
 
+	if (!*f)
+		return (RET_NOK);
 	if (*f == '/' && ft_strcpy(ret, f))
 		return (RET_OK);
 	if (!(path = msh_getenv(self, "PATH")))

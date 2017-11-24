@@ -74,11 +74,11 @@ static inline uint8_t	msh_keyword(char const *s, size_t l)
 	return ((uint8_t)((l == 2 && M(0, 'f') && M(1, 'i')) ? MSH_TOK_FI : W));
 }
 
-static inline t_ret		msh_isletter(char peek, t_src *src, t_bool *kw)
+static inline t_ret		msh_pp(char peek, t_src *src, t_bool *kw, char t)
 {
 	if (peek != '\\')
 	{
-		if (ft_strchr("|&;<>()$`\\\"' \n\t", peek) == NULL)
+		if (t == peek || ft_strchr("|&;<>()$`\\\"' \n\t", peek) == NULL)
 		{
 			if (!ft_isalpha(peek))
 				*kw = 0;
@@ -86,15 +86,18 @@ static inline t_ret		msh_isletter(char peek, t_src *src, t_bool *kw)
 		}
 		return (RET_NOK);
 	}
-	*kw = 0;
-	if (ft_src_peek(src, &peek, 1) == RET_OK && peek == '\n')
+	if (ft_src_peek(src, &peek, 1) == (*kw = 0) && peek == '\n')
 	{
 		if (ft_src_next(src, NULL, 2) < 0 || ft_src_peek(src, &peek, 0) < 0)
 			return (RET_ERR);
-		return (msh_isletter(peek, src, kw));
+		return (msh_pp(peek, src, kw, t));
 	}
 	if (!ft_strchr("|&;<>()$`\\\"' \n\t", peek))
 		return (RET_NOK);
+	if (t == '\'' && peek != t)
+		return (RET_OK);
+	if (t == '"' && !ft_strchr("$`\"\\\n", peek))
+		return (RET_OK);
 	if (ft_src_next(src, NULL, 1) < 0)
 		return (RET_ERR);
 	return (RET_OK);
@@ -105,10 +108,13 @@ static inline t_ret		msh_lex_word(t_tok *tok, char peek, t_src *src)
 	t_dstr		*dstr;
 	t_bool		kw;
 	t_ret		r;
+	char		t;
 
-	kw = 1;
+	kw = !ft_strchr("'\"", peek);
 	ft_dstr_ctor(dstr = &tok->val->val.ident);
-	while (peek && (r = msh_isletter(peek, src, &kw)) == 0)
+	if (!kw && ft_strchr("'\"", t = peek) && ft_src_next(src, &peek, 1) < 0)
+		return (RET_ERR);
+	while (peek && (r = msh_pp(peek, src, &kw, t)) == 0)
 		if (ft_src_next(src, &peek, 1) < 0 || !ft_dstr_pushc(dstr, peek))
 			return (ft_dtor(RET_ERR, (t_dtor)ft_dstr_dtor, dstr, NULL));
 		else if ((r = ft_src_peek(src, &peek, 0)) != 0)
@@ -117,7 +123,9 @@ static inline t_ret		msh_lex_word(t_tok *tok, char peek, t_src *src)
 		return (ft_dtor(RET_ERR, (t_dtor)ft_dstr_dtor, dstr, NULL));
 	if (dstr->len == 0)
 		return (ft_dtor(RET_NOK, (t_dtor)ft_dstr_dtor, dstr, NULL));
-	if ((tok->id = kw ? msh_keyword(dstr->buf, dstr->len) : (uint8_t)W) == W)
+	if (*(ft_dstr_end(dstr) - 1) == t)
+		ft_dstr_pop(dstr, NULL);
+	if ((tok->id = (kw ? msh_keyword(dstr->buf, dstr->len) : (uint8_t)W)) == W)
 		tok->val->kind = TOKV_IDENT;
 	else
 		ft_dstr_dtor(dstr, (void *)(tok->val = NULL));
