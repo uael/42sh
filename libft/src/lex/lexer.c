@@ -14,6 +14,7 @@
 
 inline t_ret	ft_lexer_init_stream(t_lexer *self, t_istream *stream)
 {
+	t_ret	r;
 	t_src	src;
 	t_src	*s;
 
@@ -22,7 +23,8 @@ inline t_ret	ft_lexer_init_stream(t_lexer *self, t_istream *stream)
 	ft_deq_ctor(&self->srcs, sizeof(t_src));
 	ft_deq_ctor(&self->toks, sizeof(t_tok));
 	ft_vec_ctor(&self->vals, sizeof(t_tokv));
-	ft_src_init_stream(&src, stream);
+	if ((r = ft_src_init_stream(&src, stream)) != RET_OK)
+		return (r);
 	if (!(s = ft_deq_pushc(&self->srcs, &src)))
 		return (RET_ERR);
 	s->cur.src = self->srcs.buf;
@@ -31,6 +33,7 @@ inline t_ret	ft_lexer_init_stream(t_lexer *self, t_istream *stream)
 
 inline t_ret	ft_lexer_init_file(t_lexer *self, char const *filename)
 {
+	t_ret	r;
 	t_src	src;
 	t_src	*s;
 
@@ -39,7 +42,8 @@ inline t_ret	ft_lexer_init_file(t_lexer *self, char const *filename)
 	ft_deq_ctor(&self->srcs, sizeof(t_src));
 	ft_deq_ctor(&self->toks, sizeof(t_tok));
 	ft_vec_ctor(&self->vals, sizeof(t_tokv));
-	ft_src_init_file(&src, filename);
+	if ((r = ft_src_init_file(&src, filename)) != RET_OK)
+		return (r);
 	if (!(s = ft_deq_pushc(&self->srcs, &src)))
 		return (RET_ERR);
 	s->cur.src = self->srcs.buf;
@@ -48,6 +52,7 @@ inline t_ret	ft_lexer_init_file(t_lexer *self, char const *filename)
 
 inline t_ret	ft_lexer_init_str(t_lexer *self, char const *str)
 {
+	t_ret	r;
 	t_src	src;
 	t_src	*s;
 
@@ -56,7 +61,8 @@ inline t_ret	ft_lexer_init_str(t_lexer *self, char const *str)
 	ft_deq_ctor(&self->srcs, sizeof(t_src));
 	ft_deq_ctor(&self->toks, sizeof(t_tok));
 	ft_vec_ctor(&self->vals, sizeof(t_tokv));
-	ft_src_init_str(&src, str);
+	if ((r = ft_src_init_str(&src, str)) != RET_OK)
+		return (r);
 	if (!(s = ft_deq_pushc(&self->srcs, &src)))
 		return (RET_ERR);
 	s->cur.src = self->srcs.buf;
@@ -65,6 +71,7 @@ inline t_ret	ft_lexer_init_str(t_lexer *self, char const *str)
 
 inline t_ret	ft_lexer_init_nstr(t_lexer *self, char const *str, size_t n)
 {
+	t_ret	r;
 	t_src	src;
 	t_src	*s;
 
@@ -73,7 +80,8 @@ inline t_ret	ft_lexer_init_nstr(t_lexer *self, char const *str, size_t n)
 	ft_deq_ctor(&self->srcs, sizeof(t_src));
 	ft_deq_ctor(&self->toks, sizeof(t_tok));
 	ft_vec_ctor(&self->vals, sizeof(t_tokv));
-	ft_src_init_nstr(&src, str, n);
+	if ((r = ft_src_init_nstr(&src, str, n)) != RET_OK)
+		return (r);
 	if (!(s = ft_deq_pushc(&self->srcs, &src)))
 		return (RET_ERR);
 	s->cur.src = self->srcs.buf;

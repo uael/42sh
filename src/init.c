@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include <stdio.h>
+#include <errno.h>
 
 #include "msh.h"
 
@@ -40,7 +41,19 @@ inline t_ret	msh_init_file(t_msh *self, char **env, char const *filename)
 	if ((r = msh_initenv(self, env)) != RET_OK)
 		return (r);
 	if ((r = ft_lexer_init_file(&self->lexer, filename)) != RET_OK)
+	{
+		if (errno == ENOENT)
+			ft_putl(2, "msh: No such file or directory");
+		else if (errno == EACCES)
+			ft_putl(2, "msh: Permission denied");
+		else if (errno == EISDIR)
+			ft_putl(2, "msh: Is a directory");
+		else if (errno == EBADF)
+			ft_putl(2, "msh: Bad file number");
+		else
+			ft_putl(2, "msh: Unable to open file");
 		return (r);
+	}
 	return (msh_lex(&self->lexer));
 }
 

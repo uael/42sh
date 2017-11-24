@@ -21,15 +21,29 @@ inline void		msh_sigint_hdl(int sign)
 	msh_prompt(g_sh, " \033[32m$\033[0m ");
 }
 
+int				sh_files(t_msh *sh, int ac, char **av, char **env)
+{
+	int i;
+
+	i = 0;
+	while (++i < ac)
+		if (msh_init_file(sh, env, av[i]) == 0)
+		{
+			msh(sh);
+			msh_dtor(sh);
+		}
+	return (EXIT_SUCCESS);
+}
+
 int				main(int ac, char **av, char **env)
 {
 	t_msh sh;
 
-	(void)ac;
-	(void)av;
+	g_sh = &sh;
+	if (ac > 1)
+		return (sh_files(&sh, ac, av, env));
 	if (msh_init_stream(&sh, env, g_cin))
 		return (EXIT_FAILURE);
-	g_sh = &sh;
 	signal(SIGINT, msh_sigint_hdl);
 	while (msh_prompt(&sh, " \033[32m$\033[0m ") == RET_OK)
 		if (msh(&sh))
