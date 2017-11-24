@@ -74,30 +74,31 @@ static inline uint8_t	msh_keyword(char const *s, size_t l)
 	return ((uint8_t)((l == 2 && M(0, 'f') && M(1, 'i')) ? MSH_TOK_FI : W));
 }
 
-static inline t_ret		msh_pp(char peek, t_src *src, t_bool *kw, char t)
+static inline t_ret		msh_pp(char *peek, t_src *src, char *t)
 {
-	if (peek != '\\')
+	t_ret	r;
+	ssize_t	s;
+
+	if ((*peek == '\'' || *peek == '\"') && (!*t || *t == *peek))
 	{
-		if (t == peek || ft_strchr("|&;<>()$`\\\"' \n\t", peek) == NULL)
-		{
-			if (!ft_isalpha(peek))
-				*kw = 0;
-			return (RET_OK);
-		}
-		return (RET_NOK);
+
+		*t = (char)(*t ? '\0' : *peek);
+		if ((s = ft_src_next(src, NULL, 1)) <= 0)
+			return (s < 0 ? RET_ERR : RET_NOK);
+		if ((r = ft_src_peek(src, peek, 0)) != 0)
+			return (r);
+		return (msh_pp(peek, src, t));
 	}
-	if (ft_src_peek(src, &peek, 1) == (*kw = 0) && peek == '\n')
-	{
-		if (ft_src_next(src, NULL, 2) < 0 || ft_src_peek(src, &peek, 0) < 0)
-			return (RET_ERR);
-		return (msh_pp(peek, src, kw, t));
-	}
-	if (!ft_strchr("|&;<>()$`\\\"' \n\t", peek))
+	if (!*t && *peek != '\\' && ft_strchr("|&;<>()$`\\\"' \n\t", *peek))
 		return (RET_NOK);
-	if (t == '\'' && peek != t)
+	else if (*peek != '\\')
 		return (RET_OK);
-	if (t == '"' && !ft_strchr("$`\"\\\n", peek))
-		return (RET_OK);
+	if ((r = ft_src_peek(src, peek, 1)) != 0)
+		return (r);
+	if (*t && !ft_strchr(*t == '\"' ? "$`\"\\\n" : "'", *peek))
+		return (RET_NOK);
+	if (!*t && !ft_strchr("|&;<>()$`\\\"' \n\t", *peek))
+		return (RET_NOK);
 	if (ft_src_next(src, NULL, 1) < 0)
 		return (RET_ERR);
 	return (RET_OK);
@@ -106,25 +107,27 @@ static inline t_ret		msh_pp(char peek, t_src *src, t_bool *kw, char t)
 static inline t_ret		msh_lex_word(t_tok *tok, char peek, t_src *src)
 {
 	t_dstr		*dstr;
+	ssize_t		s;
 	t_bool		kw;
 	t_ret		r;
 	char		t;
 
-	kw = !ft_strchr("'\"", peek);
+	t = '\0';
+	kw = 1;
 	ft_dstr_ctor(dstr = &tok->val->val.ident);
-	if (!kw && ft_strchr("'\"", t = peek) && ft_src_next(src, &peek, 1) < 0)
-		return (RET_ERR);
-	while (peek && (r = msh_pp(peek, src, &kw, t)) == 0)
-		if (ft_src_next(src, &peek, 1) < 0 || !ft_dstr_pushc(dstr, peek))
+	while (peek && (r = msh_pp(&peek, src, &t)) == 0)
+	{
+		if (!ft_dstr_pushc(dstr, peek))
 			return (ft_dtor(RET_ERR, (t_dtor)ft_dstr_dtor, dstr, NULL));
-		else if ((r = ft_src_peek(src, &peek, 0)) != 0)
+		if ((s = ft_src_next(src, NULL, 1)) < 0)
+			return (RET_ERR);
+		if ((r = ft_src_peek(src, &peek, 0)) != 0)
+			return (r);
+		if (s == 0)
 			break ;
-	if (r == RET_ERR)
-		return (ft_dtor(RET_ERR, (t_dtor)ft_dstr_dtor, dstr, NULL));
-	if (dstr->len == 0)
-		return (ft_dtor(RET_NOK, (t_dtor)ft_dstr_dtor, dstr, NULL));
-	if (*(ft_dstr_end(dstr) - 1) == t)
-		ft_dstr_pop(dstr, NULL);
+	}
+	if (r == RET_ERR || dstr->len == 0)
+		return (ft_dtor(r, (t_dtor)ft_dstr_dtor, dstr, NULL));
 	if ((tok->id = (kw ? msh_keyword(dstr->buf, dstr->len) : (uint8_t)W)) == W)
 		tok->val->kind = TOKV_IDENT;
 	else
