@@ -12,7 +12,7 @@
 
 #include "libft/lex/lexer.h"
 
-static inline t_ret	lexer_scan_one(t_lexer *self, char peek, t_src *src)
+static inline t_ret		lexer_scan_one(t_lexer *self, char peek, t_src *src)
 {
 	t_ret	r;
 	t_tok	tok;

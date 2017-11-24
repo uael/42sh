@@ -18,13 +18,14 @@ int	main(int ac, char **av, char **env)
 
 	(void)ac;
 	(void)av;
-	if (msh_init_stream(&sh, env, cin))
+	if (msh_init_stream(&sh, env, g_cin))
 		return (EXIT_FAILURE);
-	if (msh(&sh))
-	{
-		msh_dtor(&sh);
-		return (EXIT_FAILURE);
-	}
+	while (msh_prompt(&sh, " \033[32m$\033[0m ") == RET_OK)
+		if (msh(&sh))
+		{
+			msh_dtor(&sh);
+			return (EXIT_FAILURE);
+		}
 	msh_dtor(&sh);
 	return (EXIT_SUCCESS);
 }

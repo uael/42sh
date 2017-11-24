@@ -18,27 +18,27 @@ static inline char	*msh_cwd(t_msh *self)
 {
 	size_t	l;
 	char	cwd[4096 + 1];
-	char	*path;
+	char	*p;
 	char	**home;
 	char	*h;
 
-	path = getcwd(cwd, 4096);
-	if (!path || !(home = msh_getenv(self, "HOME")))
+	p = getcwd(cwd, 4096);
+	if (!p || !(home = msh_getenv(self, "HOME")))
 		return (NULL);
 	h = *home + 5;
-	if (!ft_strbegw(h, path))
-		return (path);
-	if (path[l = ft_strlen(h)] != '\0')
-		ft_memmove(path + 1, path + l, (l - 1) * sizeof(char));
+	if (!ft_strbegw(h, p))
+		return (p);
+	if (p[l = ft_strlen(h)] != '\0')
+		ft_memmove(p + 1, p + l, (ft_strlen(p) - l + 1) * sizeof(char));
 	else
-		path[1] = '\0';
-	*path = '~';
-	return (path);
+		p[1] = '\0';
+	*p = '~';
+	return (p);
 }
 
 inline t_ret		msh_prompt(t_msh *self, char *prompt)
 {
-	char	*cwd;
+	char *cwd;
 
 	if (!(cwd = msh_cwd(self)))
 		return (RET_ERR);
@@ -54,12 +54,15 @@ inline t_ret		msh_av(t_msh *self, t_vstr *av, char *exe)
 	ft_vstr_ctor(av);
 	if (!ft_vstr_pushc(av, exe))
 		return (RET_ERR);
-	while ((end = msh_next(self, NULL)) && end->id)
+	while ((end = msh_peek(self)) && end->id)
+	{
 		if (end->id == MSH_TOK_WORD &&
 			!ft_vstr_pushc(av, ft_tok_ident(end)->buf))
 			return (RET_ERR);
 		else if (end->id != MSH_TOK_WORD && !ft_strchr(" \t", end->id))
 			break ;
+		msh_next(self, NULL);
+	}
 	if (!ft_vstr_grow(av, 1))
 		return (RET_ERR);
 	FT_INIT(ft_vstr_end(av), char *);

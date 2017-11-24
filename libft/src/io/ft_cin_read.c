@@ -14,10 +14,10 @@
 
 inline ssize_t	ft_cin_read(char *buf, size_t len)
 {
-	return (ft_istream_read(cin, buf, len));
+	return (ft_istream_read(g_cin, buf, len));
 }
 
-ssize_t	ft_cin_readf(char *fmt, ...)
+ssize_t			ft_cin_readf(char *fmt, ...)
 {
 	va_list	ap;
 	ssize_t	n;
@@ -30,15 +30,15 @@ ssize_t	ft_cin_readf(char *fmt, ...)
 
 inline ssize_t	ft_cin_vreadf(char *fmt, va_list ap)
 {
-	return (ft_istream_vreadf(cin, fmt, ap));
+	return (ft_istream_vreadf(g_cin, fmt, ap));
 }
 
 inline ssize_t	ft_cin_get(char *buf, size_t n)
 {
-	return (ft_istream_get(cin, buf, n));
+	return (ft_istream_get(g_cin, buf, n));
 }
 
 inline t_ret	ft_cin_peek(char *c, size_t n)
 {
-	return (ft_istream_peek(cin, c, n));
+	return (ft_istream_peek(g_cin, c, n));
 }

@@ -21,19 +21,19 @@ inline int8_t	*ft_di8_unshiftn(t_di8 *self, size_t n)
 		return (NULL);
 	if (self->cur >= n)
 	{
-      self->cur -= n;
-      return (ft_di8_begin(self));
-    }
+		self->cur -= n;
+		return (ft_di8_begin(self));
+	}
 	else if (self->cur)
 	{
-      n -= self->cur;
-      self->cur = 0;
-    }
-    it = ft_di8_begin(self);
-    if ((len = ft_di8_size(self)))
-      ft_memmove(it + n, it, (len + 1) * sizeof(int8_t));
-    self->len += n;
-	return it;
+		n -= self->cur;
+		self->cur = 0;
+	}
+	it = ft_di8_begin(self);
+	if ((len = ft_di8_size(self)))
+		ft_memmove(it + n, it, (len + 1) * sizeof(int8_t));
+	self->len += n;
+	return (it);
 }
 
 inline int16_t	*ft_di16_unshiftn(t_di16 *self, size_t n)

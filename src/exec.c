@@ -37,9 +37,12 @@ static t_ret	msh_cmd_nf(t_msh *self, t_ret ret, char *exe)
 {
 	t_tok *tok;
 
-	while ((tok = msh_next(self, NULL)) && tok->id)
+	while ((tok = msh_peek(self)) && tok->id)
+	{
 		if (tok->id == '\n')
 			break ;
+		msh_next(self, NULL);
+	}
 	if (ret == RET_ERR)
 		return (ret);
 	(void)self;

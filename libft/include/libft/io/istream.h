@@ -34,7 +34,7 @@ typedef struct	s_istream
 	union u_istream	u;
 }				t_istream;
 
-t_istream		*cin;
+t_istream		*g_cin;
 
 extern ssize_t	ft_cin_read(char *buf, size_t len);
 extern ssize_t	ft_cin_readf(char *fmt, ...);

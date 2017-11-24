@@ -12,12 +12,12 @@
 
 #include "libft/io/istream.h"
 
-static t_istream	_cin =
+static t_istream	g_cin_pvt =
 {
 	ISTREAM_FILE, { { NULL, STDIN_FILENO, NULL, 0, 0, 0, 0, 0 } }
 };
 
-t_istream			*cin = &_cin;
+t_istream			*g_cin = &g_cin_pvt;
 
 inline t_ret		ft_istream_open(t_istream *self, char const *filename)
 {

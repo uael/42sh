@@ -39,7 +39,7 @@ static inline t_ret		msh_lex_syntax(t_tok *tok, char peek, t_src *src)
 	if (n >= 2 && b[0] == '<' && (b[1] == '>' || b[1] == '<'))
 		return (MATCH(tok, src, 2, b[1] == '>' ? TOK(CMP) : TOK(LSHIFT)));
 	if (n >= 2 && b[1] == '&' && (b[0] == '<' || b[0] == '&'))
-		return (MATCH(tok, src, 2, b[0] == '<' ? TOK(LAMP ): TOK(LAND)));
+		return (MATCH(tok, src, 2, b[0] == '<' ? TOK(LAMP) : TOK(LAND)));
 	if (n >= 1 && (c = ft_strchr("=\t\n !&()-;<=>[]{|}", peek)))
 		return (MATCH(tok, src, 1, (uint8_t)*c));
 	return (RET_NOK);

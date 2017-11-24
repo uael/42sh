@@ -12,7 +12,7 @@
 
 #include "libft/lex/src.h"
 
-inline ssize_t		ft_src_next(t_src *self, char *peek, size_t n)
+inline ssize_t	ft_src_next(t_src *self, char *peek, size_t n)
 {
 	ssize_t s;
 	ssize_t i;

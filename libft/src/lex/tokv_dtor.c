@@ -12,7 +12,7 @@
 
 #include "libft/lex/tokv.h"
 
-inline void	ft_tokv_dtor(t_tokv *self)
+inline void		ft_tokv_dtor(t_tokv *self)
 {
 	if (self->kind == TOKV_IDENT)
 		ft_dstr_dtor(&self->val.ident, NULL);

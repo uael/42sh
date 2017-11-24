@@ -14,25 +14,25 @@
 
 inline void		ft_cin_flush(void)
 {
-	return (ft_istream_flush(cin));
+	return (ft_istream_flush(g_cin));
 }
 
 inline t_ret	ft_cin_rewind(size_t n)
 {
-	return (ft_istream_rewind(cin, n));
+	return (ft_istream_rewind(g_cin, n));
 }
 
 inline t_ret	ft_cin_forward(size_t n)
 {
-	return (ft_istream_forward(cin, n));
+	return (ft_istream_forward(g_cin, n));
 }
 
 inline t_ret	ft_cin_seek(size_t off)
 {
-	return (ft_istream_seek(cin, off));
+	return (ft_istream_seek(g_cin, off));
 }
 
 inline size_t	ft_cin_tell(void)
 {
-	return (ft_istream_tell(cin));
+	return (ft_istream_tell(g_cin));
 }

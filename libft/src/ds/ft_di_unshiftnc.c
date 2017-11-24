@@ -52,11 +52,11 @@ inline int64_t	*ft_di64_unshiftnc(t_di64 *self, int64_t const *items, size_t n)
 	return (it);
 }
 
-inline char		**ft_dqstr_unshiftnc(t_dqstr *self, char const **items, size_t n)
+inline char		**ft_dqstr_unshiftnc(t_dqstr *s, char const **items, size_t n)
 {
 	char **it;
 
-	if (!(it = ft_dqstr_unshiftn(self, n)))
+	if (!(it = ft_dqstr_unshiftn(s, n)))
 		return (NULL);
 	ft_memcpy(it, items, n * sizeof(char *));
 	return (it);

@@ -93,28 +93,23 @@ inline t_tok	*msh_consume(t_msh *self, uint8_t id)
 inline t_ret	msh(t_msh *self)
 {
 	t_tok		*tok;
-	t_ret		ret;
 	t_shrule	rule;
 	char		buf[4096];
 
-	while ((ret = msh_prompt(self, " $ ")) == RET_OK)
-		if (!(tok = msh_peek(self)))
-			return (RET_NOK);
-		else if (tok->id == '\n')
+	while (1)
+		if (!(tok = msh_next(self, NULL)) || tok->id == '\n')
+			return (RET_OK);
+		else if (ft_strchr(";\t ", tok->id))
 			continue ;
 		else if (!(rule = g_msh_rules[tok->id]))
 		{
-			ft_puts(1, "unexpected token '");
+			ft_puts(2, "unexpected token '");
 			buf[ft_intstr(buf, tok->id, 10)] = 0;
-			ft_puts(1, buf);
-			ft_putl(1, "'.");
-			MSH_EXIT(EXIT_FAILURE, self);
+			ft_puts(2, buf);
+			if (ft_isprint(tok->id) && ft_putl(2, "', '"))
+				ft_putc(2, tok->id);
+			ft_putl(2, "'");
 		}
-		else
-		{
-			msh_next(self, NULL);
-			if ((ret = rule(self, tok)) == RET_ERR)
-				break ;
-		}
-	return (ret);
+		else if (rule(self, tok) == RET_ERR)
+			return (RET_ERR);
 }

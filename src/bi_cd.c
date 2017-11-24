@@ -18,7 +18,7 @@
 
 static char		*msh_cd_dir(t_msh *self, t_vstr *av)
 {
-	char **env;
+	char	**env;
 
 	if ((av->len == 1 || ft_strcmp(av->buf[1], "~") == 0) &&
 		(env = msh_getenv(self, "HOME")))
@@ -36,7 +36,7 @@ inline t_ret	msh_bi_cd(t_msh *self, t_vstr *av)
 	char		*path;
 	char		*cp;
 	char		**pwd;
-	int 		chd;
+	int			chd;
 	struct stat	s;
 
 	if (av->len > 2)
