@@ -15,6 +15,7 @@
 inline t_ret	msh_bi_echo(t_msh *self, t_vstr *av)
 {
 	(void)self;
-	(void)av;
+	if (av->len == 2)
+		ft_putl(1, av->buf[1]);
 	return (RET_NOK);
 }
