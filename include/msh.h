@@ -107,5 +107,6 @@ extern char		**msh_getenv(t_msh *self, char *var);
 extern t_ret	msh_setenv(t_msh *self, char *var, char *val);
 extern t_ret	msh_unsetenv(t_msh *self, char *var);
 extern t_ret	msh_path_lookup(t_msh *self, char *file, int mode, char *ret);
+extern void		msh_sigint_hdl(int sign);
 
 #endif

@@ -12,24 +12,24 @@
 
 #include "msh.h"
 
-static void		msh_sigint_hdl(int signo)
+static void		msh_fork_sigint_hdl(int signo)
 {
-	if (signo != SIGINT)
-		return ;
+	(void)signo;
 	ft_putc(1, '\n');
-	signal(SIGINT, msh_sigint_hdl);
+	ft_putc(0, '\n');
 }
 
 static t_ret	msh_cmd(t_msh *self, char *exe, char **av)
 {
 	pid_t	pid;
 
-	signal(SIGINT, msh_sigint_hdl);
 	if ((pid = fork()) == 0)
 		execve(exe, av, self->env.buf);
 	else if (pid < 0)
 		return (RET_ERR);
+	signal(SIGINT, msh_fork_sigint_hdl);
 	wait(&pid);
+	signal(SIGINT, msh_sigint_hdl);
 	return (RET_OK);
 }
 

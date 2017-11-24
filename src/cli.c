@@ -12,7 +12,17 @@
 
 #include "msh.h"
 
-int	main(int ac, char **av, char **env)
+static t_msh	*g_sh;
+
+
+inline void		msh_sigint_hdl(int sign)
+{
+	(void)sign;
+	ft_putc(0, '\n');
+	msh_prompt(g_sh, " \033[32m$\033[0m ");
+}
+
+int				main(int ac, char **av, char **env)
 {
 	t_msh sh;
 
@@ -20,6 +30,8 @@ int	main(int ac, char **av, char **env)
 	(void)av;
 	if (msh_init_stream(&sh, env, g_cin))
 		return (EXIT_FAILURE);
+	g_sh = &sh;
+	signal(SIGINT, msh_sigint_hdl);
 	while (msh_prompt(&sh, " \033[32m$\033[0m ") == RET_OK)
 		if (msh(&sh))
 		{

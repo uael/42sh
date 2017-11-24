@@ -53,6 +53,8 @@ inline ssize_t			ft_lexer_scan(t_lexer *self, size_t n)
 		if (ft_deq_size(&self->srcs) == 0)
 			break ;
 		src = ft_deq_at(&self->srcs, 0);
+		/*if (src->in->u.file.buf)
+			write(1, src->in->u.file.buf, src->in->u.file.len);*/
 		if ((r = ft_src_peek(src, &peek, 0)) == RET_ERR)
 			return (RET_ERR);
 		else if (r == RET_NOK)
