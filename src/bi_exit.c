@@ -14,7 +14,6 @@
 
 inline t_ret	msh_bi_exit(t_msh *self, t_vstr *av)
 {
-	(void)self;
 	(void)av;
-	return (RET_NOK);
+	MSH_EXIT(RET_OK, self);
 }

@@ -67,7 +67,7 @@ static t_shcmd	msh_bi(t_tok *tok)
 		return (msh_bi_unsetenv);
 	if (strcmp("unsetenv", ident->buf) == 0)
 		return (msh_bi_env);
-	if (strcmp("unsetenv", ident->buf) == 0)
+	if (strcmp("exit", ident->buf) == 0)
 		return (msh_bi_exit);
 	return (NULL);
 }
