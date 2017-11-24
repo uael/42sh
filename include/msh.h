@@ -64,6 +64,7 @@ enum		e_msh_tok
 };
 
 #define MSH_EXIT(code, msh) exit(ft_dtor((code),(t_dtor)msh_dtor, msh, NULL))
+#define CMD_NOK(msg) ft_dtor(RET_NOK, NULL, NULL, (msg))
 
 extern t_ret	msh_lex(t_lexer *self);
 
@@ -104,6 +105,7 @@ extern t_ret	msh_bi_exit(t_msh *self, t_vstr *av);
 extern t_ret	msh_initenv(t_msh *self, char **env);
 extern char		**msh_getenv(t_msh *self, char *var);
 extern t_ret	msh_setenv(t_msh *self, char *var, char *val);
+extern t_ret	msh_unsetenv(t_msh *self, char *var);
 extern t_ret	msh_path_lookup(t_msh *self, char *file, int mode, char *ret);
 
 #endif

@@ -14,7 +14,10 @@
 
 inline t_ret	msh_bi_setenv(t_msh *self, t_vstr *av)
 {
-	(void)self;
-	(void)av;
-	return (RET_NOK);
+	if (av->len != 3)
+		return (CMD_NOK("setenv: syntax error\nusage: setenv <key> <value>"));
+	if (!av->buf[1] || ft_strchr(av->buf[1], '=') ||
+		!av->buf[2] || ft_strchr(av->buf[2], '='))
+		return (CMD_NOK("setenv: syntax error\nusage: setenv <key> <value>"));
+	return (msh_setenv(self, av->buf[1], av->buf[2]));
 }

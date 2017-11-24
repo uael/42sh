@@ -14,7 +14,15 @@
 
 inline t_ret	msh_bi_unsetenv(t_msh *self, t_vstr *av)
 {
-	(void)self;
-	(void)av;
-	return (RET_NOK);
+	t_ret	ret;
+
+	if (av->len != 2)
+		return (CMD_NOK("unsetenv: syntax error\nusage: unsetenv <key>"));
+	if (!av->buf[1] || ft_strchr(av->buf[1], '='))
+		return (CMD_NOK("unsetenv: syntax error\nusage: unsetenv <key>"));
+	if ((ret = msh_unsetenv(self, av->buf[1])) == RET_ERR)
+		return (RET_ERR);
+	if (ret == RET_NOK)
+		return (CMD_NOK("unsetenv: Environ not found"));
+	return (RET_OK);
 }

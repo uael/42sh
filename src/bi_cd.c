@@ -14,8 +14,6 @@
 
 #include "msh.h"
 
-#define CMD_NOK(msg) ft_dtor(RET_NOK, NULL, NULL, (msg))
-
 static char		*msh_cd_dir(t_msh *self, t_vstr *av)
 {
 	char	**env;
