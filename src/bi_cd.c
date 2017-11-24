@@ -10,11 +10,51 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <sys/stat.h>
+
 #include "msh.h"
 
-inline t_ret	msh_bi_cd(t_msh *self, t_tok *tok)
+#define CMD_NOK(msg) ft_dtor(RET_NOK, NULL, NULL, (msg))
+
+static char		*msh_cd_dir(t_msh *self, t_vstr *av)
 {
-	(void)self;
-	(void)tok;
-	return (RET_NOK);
+	char **env;
+
+	if ((av->len == 1 || ft_strcmp(av->buf[1], "~") == 0) &&
+		(env = msh_getenv(self, "HOME")))
+		return (*env + 5);
+	if (av->len == 2 && ft_strcmp(av->buf[1], "-") == 0 &&
+		(env = msh_getenv(self, "OLDPWD")))
+		return (*env + 7);
+	if (av->len == 2)
+		return (av->buf[1]);
+	return (NULL);
+}
+
+inline t_ret	msh_bi_cd(t_msh *self, t_vstr *av)
+{
+	char		*path;
+	char		*cp;
+	char		**pwd;
+	int 		chd;
+	struct stat	s;
+
+	if (av->len > 2)
+		return (CMD_NOK("cd: Invalid number of arguments provided"));
+	if (!(path = msh_cd_dir(self, av)) && av->len == 1)
+		return (CMD_NOK("cd: Unable to retrieve path from env"));
+	if ((pwd = msh_getenv(self, "PWD")) &&
+		msh_setenv(self, "OLDPWD", *pwd + 4) == RET_ERR)
+		return (RET_ERR);
+	if (lstat(path, &s) < 0 || access(path, F_OK) != 0)
+		return (CMD_NOK("cd: No such file or directory"));
+	else if (!S_ISDIR(s.st_mode) && !S_ISLNK(s.st_mode))
+		return (CMD_NOK("cd: Is not a directory"));
+	else if (access(path, X_OK) != 0)
+		return (CMD_NOK("cd: Permission denied"));
+	if (!(cp = ft_strdup(path)))
+		return (RET_ERR);
+	(chd = chdir(path)) ? RET_OK : msh_setenv(self, "PWD", cp);
+	free(cp);
+	return (chd ? CMD_NOK("cd: Cannot change dir") : RET_OK);
 }

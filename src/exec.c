@@ -49,13 +49,13 @@ static t_ret	msh_cmd_nf(t_msh *self, t_ret ret, char *exe)
 	return (RET_NOK);
 }
 
-static t_shrule	msh_bi(t_tok *tok)
+static t_shcmd	msh_bi(t_tok *tok)
 {
 	t_dstr	*ident;
 
 	ident = ft_tok_ident(tok);
 	if (strcmp("echo", ident->buf) == 0)
-		return (msh_bi_echo);
+		return (msh_bi_cd);
 	if (strcmp("cd", ident->buf) == 0)
 		return (msh_bi_cd);
 	if (strcmp("setenv", ident->buf) == 0)
@@ -75,10 +75,15 @@ inline t_ret	msh_exec(t_msh *self, t_tok *tok)
 	t_ret		ret;
 	t_dstr		*ident;
 	char		exe[4096];
-	t_shrule	rule;
+	t_shcmd		rule;
 
 	if ((rule = msh_bi(tok)))
-		return ((*rule)(self, tok));
+	{
+		if (msh_av(self, &av, exe) == RET_ERR)
+			return (RET_ERR);
+		ret = ((*rule)(self, &av));
+		return (ft_dtor(ret, (t_dtor)ft_vstr_dtor, &av, NULL));
+	}
 	ident = ft_tok_ident(tok);
 	if ((ret = msh_path_lookup(self, ft_dstr_begin(ident),
 		S_IFREG | S_IXUSR, exe)) != RET_OK)

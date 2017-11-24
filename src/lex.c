@@ -110,13 +110,13 @@ static inline t_ret		msh_lex_word(t_tok *tok, char peek, t_src *src)
 	ft_dstr_ctor(dstr = &tok->val->val.ident);
 	while (peek && (r = msh_isletter(peek, src, &kw)) == 0)
 		if (ft_src_next(src, &peek, 1) < 0 || !ft_dstr_pushc(dstr, peek))
-			return (ft_dtor(RET_ERR, (t_dtor)ft_dstr_dtor, dstr));
+			return (ft_dtor(RET_ERR, (t_dtor)ft_dstr_dtor, dstr, NULL));
 		else if ((r = ft_src_peek(src, &peek, 0)) != 0)
 			break ;
 	if (r == RET_ERR)
-		return (ft_dtor(RET_ERR, (t_dtor)ft_dstr_dtor, dstr));
+		return (ft_dtor(RET_ERR, (t_dtor)ft_dstr_dtor, dstr, NULL));
 	if (dstr->len == 0)
-		return (ft_dtor(RET_NOK, (t_dtor)ft_dstr_dtor, dstr));
+		return (ft_dtor(RET_NOK, (t_dtor)ft_dstr_dtor, dstr, NULL));
 	if ((tok->id = kw ? msh_keyword(dstr->buf, dstr->len) : (uint8_t)W) == W)
 		tok->val->kind = TOKV_IDENT;
 	else

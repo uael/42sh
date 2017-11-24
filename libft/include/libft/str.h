@@ -45,6 +45,6 @@ extern size_t	ft_strnlen(char const *str, size_t size);
 extern char		*ft_strnstr(char const *str, char const *f, size_t l);
 extern char		*ft_strrchr(char const *s, int c);
 extern char		*ft_strstr(char const *haystack, char const *needle);
-extern char		*ft_strbegw(char const *s1, char const *s2, char stop);
+extern char		*ft_strbegw(char const *s1, char const *s2);
 
 #endif

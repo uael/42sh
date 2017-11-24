@@ -26,10 +26,12 @@ static inline char	*msh_cwd(t_msh *self)
 	if (!path || !(home = msh_getenv(self, "HOME")))
 		return (NULL);
 	h = *home + 5;
-	if (!ft_strbegw(h, path, '\0'))
+	if (!ft_strbegw(h, path))
 		return (path);
 	if (path[l = ft_strlen(h)] != '\0')
 		ft_memmove(path + 1, path + l, (l - 1) * sizeof(char));
+	else
+		path[1] = '\0';
 	*path = '~';
 	return (path);
 }
@@ -58,8 +60,9 @@ inline t_ret		msh_av(t_msh *self, t_vstr *av, char *exe)
 			return (RET_ERR);
 		else if (end->id != MSH_TOK_WORD && !ft_strchr(" \t", end->id))
 			break ;
-	if (!ft_vstr_pushc(av, NULL))
+	if (!ft_vstr_grow(av, 1))
 		return (RET_ERR);
+	FT_INIT(ft_vstr_end(av), char *);
 	return (RET_OK);
 }
 

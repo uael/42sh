@@ -36,9 +36,11 @@ inline char		**msh_getenv(t_msh *self, char *var)
 
 	if (!self->env.len || !(it = ft_vstr_begin(&self->env)))
 		return (NULL);
-	while (it != ft_vstr_end(&self->env) && it)
-		if (ft_strbegw(var, *(it++), '='))
-			return (it - 1);
+	while (it && it != ft_vstr_end(&self->env))
+		if (ft_strbegw(var, *it) && (*it)[ft_strlen(var)] == '=')
+			return (it);
+		else
+			++it;
 	return (NULL);
 }
 

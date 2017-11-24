@@ -12,9 +12,9 @@
 
 #include "msh.h"
 
-inline t_ret	msh_bi_exit(t_msh *self, t_tok *tok)
+inline t_ret	msh_bi_exit(t_msh *self, t_vstr *av)
 {
 	(void)self;
-	(void)tok;
+	(void)av;
 	return (RET_NOK);
 }

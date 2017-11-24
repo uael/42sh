@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "libft/lib.h"
+#include "libft/io.h"
 
 inline void		ft_pfree(void **ptr)
 {
@@ -20,9 +21,11 @@ inline void		ft_pfree(void **ptr)
 	*ptr = NULL;
 }
 
-inline t_ret	ft_dtor(t_ret code, t_dtor dtor, void *arg)
+inline t_ret	ft_dtor(int code, t_dtor dtor, void *arg, char const *msg)
 {
+	if (msg)
+		ft_putl(2, msg);
 	if (dtor && arg)
-		(*dtor)(arg);
-	return (code);
+		(*dtor)(arg, NULL);
+	return ((t_ret)code);
 }

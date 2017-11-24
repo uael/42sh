@@ -63,7 +63,7 @@ enum		e_msh_tok
 	MSH_TOK_RCURLY = '}',
 };
 
-#define MSH_EXIT(code, msh) exit(ft_dtor((t_ret)(code), (t_dtor)msh_dtor, msh))
+#define MSH_EXIT(code, msh) exit(ft_dtor((code),(t_dtor)msh_dtor, msh, NULL))
 
 extern t_ret	msh_lex(t_lexer *self);
 
@@ -76,6 +76,7 @@ typedef struct	s_msh
 }				t_msh;
 
 typedef t_ret	(*t_shrule)(t_msh *, t_tok *);
+typedef t_ret	(*t_shcmd)(t_msh *, t_vstr *);
 
 extern t_shrule	g_msh_rules[UINT8_MAX];
 
@@ -93,12 +94,12 @@ extern t_ret	msh(t_msh *self);
 extern t_ret	msh_av(t_msh *self, t_vstr *av, char *exe);
 extern t_ret	msh_prompt(t_msh *self, char *prompt);
 extern t_ret	msh_exec(t_msh *self, t_tok *tok);
-extern t_ret	msh_bi_echo(t_msh *self, t_tok *tok);
-extern t_ret	msh_bi_cd(t_msh *self, t_tok *tok);
-extern t_ret	msh_bi_setenv(t_msh *self, t_tok *tok);
-extern t_ret	msh_bi_unsetenv(t_msh *self, t_tok *tok);
-extern t_ret	msh_bi_env(t_msh *self, t_tok *tok);
-extern t_ret	msh_bi_exit(t_msh *self, t_tok *tok);
+extern t_ret	msh_bi_echo(t_msh *self, t_vstr *av);
+extern t_ret	msh_bi_cd(t_msh *self, t_vstr *av);
+extern t_ret	msh_bi_setenv(t_msh *self, t_vstr *av);
+extern t_ret	msh_bi_unsetenv(t_msh *self, t_vstr *av);
+extern t_ret	msh_bi_env(t_msh *self, t_vstr *av);
+extern t_ret	msh_bi_exit(t_msh *self, t_vstr *av);
 
 extern t_ret	msh_initenv(t_msh *self, char **env);
 extern char		**msh_getenv(t_msh *self, char *var);
