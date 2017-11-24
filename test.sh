@@ -87,9 +87,6 @@ function dotest {
 
 mkdir -p out
 job "Make" "make all" "make -C${PROJECT_PATH}"
-for test in ./test/*.sh; do
-  job "Test" "$(basename "${test%.*}")" "dotest ${test}"
-done
 job "Norm" "all" "donorm"
 
 rm ${OUT}
