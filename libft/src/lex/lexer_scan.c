@@ -15,28 +15,29 @@
 static inline t_ret		lexer_scan_one(t_lexer *self, char peek, t_src *src)
 {
 	t_ret	r;
-	t_tok	tok;
+	t_tok	t;
 	t_tokv	*val;
 	t_lrule	*rule;
 
-	FT_INIT(&tok, t_tok);
-	tok.loc = src->cur;
+	FT_INIT(&t, t_tok);
+	t.loc = src->cur;
 	if (!ft_vec_grow(&self->vals, 1))
 		return (RET_ERR);
 	val = ft_vec_end(&self->vals);
 	FT_INIT(val, t_tokv);
-	tok.val = val;
+	t.val = val;
 	rule = (t_lrule *)ft_vec_begin(&self->rules) - 1;
 	while (++rule < (t_lrule *)ft_vec_end(&self->rules))
-		if ((r = (*rule)(&tok, peek, src)) == RET_ERR)
+		if ((r = (*rule)(&t, peek, src)) == RET_ERR)
 			return (RET_ERR);
 		else if (r == RET_OK)
 		{
-			tok.loc.len = (uint16_t)(src->cur.cur - tok.loc.cur);
-			if (tok.val)
+			if ((t.loc.len = (uint16_t)(src->cur.cur - t.loc.cur)) && t.val)
 				++self->vals.len;
-			return (ft_deq_pushc(&self->toks, &tok) ? RET_OK : RET_ERR);
+			return (ft_deq_pushc(&self->toks, &t) ? RET_OK : RET_ERR);
 		}
+		else if ((r = ft_src_peek(src, &peek, 0)) != RET_OK)
+			return (r);
 	return (RET_NOK);
 }
 
