@@ -88,6 +88,8 @@ function dotest {
 mkdir -p out
 job "Make" "make all" "make -C${PROJECT_PATH}"
 job "Norm" "all" "donorm"
+job "Make" "make re" "make -C${PROJECT_PATH} re"
 
-rm ${OUT}
+rm ${OUT}cd /dev
+
 rm ${NORM_OUT}
