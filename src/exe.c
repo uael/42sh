@@ -102,7 +102,7 @@ inline t_ret		msh_exe_run(t_msh *self, t_vstr *av)
 	int		st;
 
 	if (access(av->buf[0], X_OK) != 0)
-		return (CMD_NOK("msh: Permission denied"));
+		return ((t_ret)(self->st = CMD_NOK("msh: Permission denied")));
 	if ((pid = fork()) == 0)
 		execve(av->buf[0], av->buf, self->env.buf);
 	else if (pid < 0)

@@ -45,7 +45,9 @@ static t_ret	msh_cd_test(char *exe, t_bool p)
 			return (CMD_NOK("cd: No such file or directory"));
 		if (!S_ISDIR(s.st_mode) && !S_ISLNK(s.st_mode))
 			return (CMD_NOK("cd: Is not a directory"));
-		if (access(exe, R_OK) != 0)
+		if (!S_ISLNK(s.st_mode) && !S_ISDIR(s.st_mode) )
+			return (CMD_NOK("cd: Not a directory"));
+		if (!S_ISLNK(s.st_mode) && access(exe, R_OK) != 0)
 			return (CMD_NOK("cd: Permission denied"));
 		if (p || !S_ISLNK(s.st_mode) || !(l = readlink(exe, path, PATH_MAX)))
 			return (RET_OK);

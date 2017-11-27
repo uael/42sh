@@ -24,15 +24,15 @@ static inline t_ret	msh_eval_word(t_msh *self, t_tok *tok)
 	{
 		if (msh_exe_av(self, &av, ft_tok_ident(tok)->buf) == RET_ERR)
 			return (RET_ERR);
-		return (ft_dtor(((*bi)(self, &av)), (t_dtor)ft_vstr_dtor, &av, NULL));
+		return (ft_dtor(self->st = (*bi)(self, &av),
+			(t_dtor)ft_vstr_dtor, &av, NULL));
 	}
 	ident = ft_tok_ident(tok);
 	if ((ret = msh_exe_lookup(self, ident->buf, S_IFREG | S_IXUSR, exe)) != 0)
 	{
-		if (ret != RET_ERR)
-			(void)(ft_puts(2, "msh: Command not found: '") &
-				ft_puts(2, ident->buf) & ft_putl(2, "'"));
-		return (msh_exe_av(self, NULL, NULL) < 0 ? RET_ERR : RET_NOK);
+		if ((self->st = RET_NOK) && ret != RET_ERR)
+			ft_putl(2, "msh: Command not found");
+		return (msh_exe_av(self, NULL, NULL) < 0 ? RET_ERR : (t_ret)self->st);
 	}
 	if (msh_exe_av(self, &av, exe) == RET_ERR)
 		return (RET_ERR);

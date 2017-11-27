@@ -100,7 +100,7 @@ inline t_ret	msh(t_msh *self)
 			return (RET_OK);
 		else if (ft_strchr(";\t ", tok->id))
 			continue ;
-		else if ((self->st = msh_eval(self, tok)) == RET_ERR)
+		else if (msh_eval(self, tok) == RET_ERR)
 			return (RET_ERR);
 		else
 			ft_lexer_clean(&self->lexer);
