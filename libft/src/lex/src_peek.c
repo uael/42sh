@@ -33,6 +33,15 @@ inline ssize_t	ft_src_next(t_src *self, char *peek, size_t n)
 	return (s);
 }
 
+inline t_ret	ft_src_getc(t_src *self, char *peek, char *next)
+{
+	ssize_t	s;
+
+	if ((s = ft_src_next(self, peek, 1)) <= 0)
+		return (s < 0 ? RET_ERR : RET_NOK);
+	return (ft_src_peek(self, next, 0));
+}
+
 inline ssize_t	ft_src_get(t_src *self, char *buf, size_t n)
 {
 	return (ft_istream_get(self->in ? self->in : &self->in_own, buf, n));

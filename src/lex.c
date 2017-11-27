@@ -77,14 +77,11 @@ static inline uint8_t	msh_keyword(char const *s, size_t l)
 static inline t_ret		msh_pp(char *peek, t_src *src, char *t)
 {
 	t_ret	r;
-	ssize_t	s;
 
 	if ((*peek == '\'' || *peek == '\"') && (!*t || *t == *peek))
 	{
 		*t = (char)(*t ? '\0' : *peek);
-		if ((s = ft_src_next(src, NULL, 1)) <= 0)
-			return (s < 0 ? RET_ERR : RET_NOK);
-		if ((r = ft_src_peek(src, peek, 0)) != 0)
+		if ((r = ft_src_getc(src, NULL, peek)) != 0)
 			return (r);
 		return (msh_pp(peek, src, t));
 	}
@@ -98,29 +95,22 @@ static inline t_ret		msh_pp(char *peek, t_src *src, char *t)
 		return (RET_NOK);
 	if (!*t && !ft_strchr("|&;<>()$`\\\"' \n\t", *peek))
 		return (RET_NOK);
-	return (ft_src_next(src, NULL, 1) < 0 ? RET_ERR : RET_OK);
+	return (ft_src_next(src, NULL, 1) != 1 ? RET_ERR : RET_OK);
 }
 
 static inline t_ret		msh_lex_word(t_tok *tok, char peek, t_src *src)
 {
 	t_dstr		*dstr;
-	ssize_t		s;
 	t_ret		r;
 	char		t;
 
 	t = '\0';
 	ft_dstr_ctor(dstr = &tok->val->val.ident);
 	while (peek && (r = msh_pp(&peek, src, &t)) == 0)
-	{
 		if (!ft_dstr_pushc(dstr, peek))
 			return (ft_dtor(RET_ERR, (t_dtor)ft_dstr_dtor, dstr, NULL));
-		if ((s = ft_src_next(src, NULL, 1)) < 0)
-			return (RET_ERR);
-		if ((r = ft_src_peek(src, &peek, 0)) != 0)
+		else if ((r = ft_src_getc(src, NULL, &peek)) != 0)
 			return (r);
-		if (s == 0)
-			break ;
-	}
 	if (r == RET_ERR || dstr->len == 0)
 		return (ft_dtor(r, (t_dtor)ft_dstr_dtor, dstr, NULL));
 	if ((tok->id = msh_keyword(dstr->buf, dstr->len)) == W)

@@ -30,6 +30,7 @@ extern t_ret	ft_src_init_nstr(t_src *self, char const *str, size_t n);
 extern void		ft_src_dtor(t_src *self);
 extern ssize_t	ft_src_next(t_src *self, char *peek, size_t n);
 extern ssize_t	ft_src_get(t_src *self, char *buf, size_t n);
+extern t_ret	ft_src_getc(t_src *self, char *peek, char *next);
 extern t_ret	ft_src_peek(t_src *self, char *c, size_t n);
 
 #endif

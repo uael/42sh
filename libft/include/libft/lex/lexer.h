@@ -34,6 +34,7 @@ extern size_t	ft_lexer_clean(t_lexer *self);
 extern ssize_t	ft_lexer_scan(t_lexer *self, size_t n);
 extern t_ret	ft_lexer_peek(t_lexer *self, size_t n, t_tok **peek);
 extern ssize_t	ft_lexer_next(t_lexer *self, size_t n, t_tok **peek);
+extern t_ret	ft_lexer_gett(t_lexer *self, t_tok **peek, t_tok **next);
 extern size_t	ft_lexer_skip(t_lexer *self, size_t n, t_tok **prevs);
 extern t_ret	ft_lexer_match(t_tok *tok, t_src *src, size_t n, uint8_t id);
 
