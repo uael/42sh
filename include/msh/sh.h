@@ -15,7 +15,7 @@
 
 # include <libft.h>
 
-# define MSH_EXIT(code, msh) exit(ft_dtor((code),(t_dtor)msh_dtor, msh, NULL))
+# define MSH_EXIT(code, msh) (exit(ft_dtor((code),(t_dtor)msh_dtor, msh, NULL)))
 
 typedef struct	s_msh
 {
@@ -23,6 +23,7 @@ typedef struct	s_msh
 	t_dstr		out;
 	t_dstr		err;
 	t_vstr		env;
+	int			st;
 }				t_msh;
 
 extern t_ret	msh_init_stream(t_msh *self, char **env, t_istream *stream);

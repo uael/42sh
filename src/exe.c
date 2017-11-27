@@ -73,13 +73,17 @@ static void			msh_exe_hdl(int signo)
 inline t_ret		msh_exe_run(t_msh *self, t_vstr *av)
 {
 	pid_t	pid;
+	int		st;
 
 	if ((pid = fork()) == 0)
 		execve(av->buf[0], av->buf, self->env.buf);
 	else if (pid < 0)
 		return (RET_ERR);
 	signal(SIGINT, msh_exe_hdl);
-	wait(&pid);
+	if (waitpid(pid, &st, 0) < 0)
+		MSH_EXIT(EXIT_FAILURE, self);
+	if (WIFEXITED(st))
+		self->st = WEXITSTATUS(st);
 	signal(SIGINT, msh_sigint_hdl);
 	return (RET_OK);
 }

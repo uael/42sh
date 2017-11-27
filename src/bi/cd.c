@@ -21,19 +21,19 @@ static char		*msh_cd_dir(t_msh *self, t_vstr *av)
 
 	if ((av->len == 1 || ft_strcmp(av->buf[1], "~") == 0) &&
 		(env = msh_getenv(self, "HOME")))
-		return (ft_strdup(*env + 5));
+		return (*env + 5);
 	if (av->len == 2 && ft_strcmp(av->buf[1], "-") == 0 &&
 		(env = msh_getenv(self, "OLDPWD")))
-		return (ft_strdup(*env + 7));
+		return (*env + 7);
 	if (av->len == 2)
-		return (ft_pathresolve(av->buf[1]));
+		return (av->buf[1]);
 	return (NULL);
 }
 
 inline t_ret	msh_bi_cd(t_msh *self, t_vstr *av)
 {
+	char 		buf[4096 + 1];
 	char		*path;
-	char		*cp;
 	char		**pwd;
 	int			chd;
 	struct stat	s;
@@ -49,12 +49,9 @@ inline t_ret	msh_bi_cd(t_msh *self, t_vstr *av)
 		return (CMD_NOK("cd: No such file or directory"));
 	else if (!S_ISDIR(s.st_mode) && !S_ISLNK(s.st_mode))
 		return (CMD_NOK("cd: Is not a directory"));
-	else if (access(path, X_OK) != 0)
+	else if (access(path, R_OK) != 0)
 		return (CMD_NOK("cd: Permission denied"));
-	if (!(cp = ft_strdup(path)))
+	if (!(chd = chdir(path)) && msh_setenv(self, "PWD", getcwd(buf, 4096)) < 0)
 		return (RET_ERR);
-	(chd = chdir(path)) ? RET_OK : msh_setenv(self, "PWD", cp);
-	free(cp);
-	free(path);
 	return (chd ? CMD_NOK("cd: Cannot change dir") : RET_OK);
 }

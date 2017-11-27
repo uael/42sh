@@ -14,6 +14,28 @@
 
 inline t_ret	msh_bi_exit(t_msh *self, t_vstr *av)
 {
-	(void)av;
-	MSH_EXIT(RET_OK, self);
+	size_t	i;
+	size_t	j;
+	char	*a;
+
+	if (av->len > 2)
+		return (CMD_NOK("exit: Too many arguments"));
+	if (av->len < 2)
+		MSH_EXIT(self->st, self);
+	a = av->buf[1];
+	if (!(i = ft_strlen(a)) || i > 19)
+	{
+		ft_putl(2, "exit: Invalid argument provided");
+		MSH_EXIT(EXIT_FAILURE, self);
+	}
+	j = 0;
+	while (j < i)
+		if (!ft_isdigit(a[j]) && !ft_isspace(a[j]))
+		{
+			ft_putl(2, "exit: Invalid argument provided");
+			MSH_EXIT(EXIT_FAILURE, self);
+		}
+		else
+			j++;
+	MSH_EXIT((int)ft_atoi(a), self);
 }

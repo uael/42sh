@@ -35,14 +35,13 @@ int				main(int ac, char **av, char **env)
 		msh_dtor(&sh);
 	}
 	else if (msh_init_stream(&sh, env, g_cin))
-		return (EXIT_FAILURE);
+		MSH_EXIT(EXIT_FAILURE, &sh);
 	else
 	{
 		signal(SIGINT, msh_sigint_hdl);
 		while (msh_prompt(&sh, " \033[32m$\033[0m ") == RET_OK)
 			if (msh(&sh))
 				MSH_EXIT(EXIT_FAILURE, &sh);
-		msh_dtor(&sh);
 	}
-	return (EXIT_SUCCESS);
+	MSH_EXIT(EXIT_SUCCESS, &sh);
 }

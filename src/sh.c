@@ -71,14 +71,14 @@ inline t_ret	msh_prompt(t_msh *self, char *prompt)
 	char	cwd[4096 + 1];
 	char	*p;
 	char	**home;
-	char	*h;
 
-	p = getcwd(cwd, 4096);
-	if (!p || !(home = msh_getenv(self, "HOME")))
+	if (!(p = getcwd(cwd, 4096)))
 		return (RET_ERR);
-	if (ft_strbegw((h = *home + 5), p))
+	if (msh_envadd(self, "PWD", p) == RET_ERR)
+		return (RET_ERR);
+	if ((home = msh_getenv(self, "HOME")) && ft_strbegw(*home + 5, p))
 	{
-		if (p[l = ft_strlen(h)] != '\0')
+		if (p[l = ft_strlen(*home + 5)] != '\0')
 			ft_memmove(p + 1, p + l, (ft_strlen(p) - l + 1) * sizeof(char));
 		else
 			p[1] = '\0';
