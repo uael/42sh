@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init.c                                             :+:      :+:    :+:   */
+/*   sh.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/23 14:39:45 by null             ###   ########.fr       */
+/*   Updated: 2017/11/23 15:10:56 by null             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 
 inline t_ret	msh_init_stream(t_msh *self, char **env, t_istream *stream)
 {
-	t_ret	r;
+	t_ret r;
 
 	FT_INIT(self, t_msh);
 	ft_vstr_ctor(&self->env);
@@ -57,40 +57,49 @@ inline t_ret	msh_init_file(t_msh *self, char **env, char const *filename)
 	return (msh_lex(&self->lexer));
 }
 
-inline t_ret	msh_init_str(t_msh *self, char **env, char const *str)
-{
-	t_ret r;
-
-	FT_INIT(self, t_msh);
-	ft_vstr_ctor(&self->env);
-	ft_dstr_ctor(&self->out);
-	ft_dstr_ctor(&self->err);
-	if ((r = msh_initenv(self, env)) != RET_OK)
-		return (r);
-	if ((r = ft_lexer_init_str(&self->lexer, str)) != RET_OK)
-		return (r);
-	return (msh_lex(&self->lexer));
-}
-
-inline t_ret	msh_init_nstr(t_msh *self, char **env, char const *s, size_t n)
-{
-	t_ret r;
-
-	FT_INIT(self, t_msh);
-	ft_vstr_ctor(&self->env);
-	ft_dstr_ctor(&self->out);
-	ft_dstr_ctor(&self->err);
-	if ((r = msh_initenv(self, env)) != RET_OK)
-		return (r);
-	if ((r = ft_lexer_init_nstr(&self->lexer, s, n)) != RET_OK)
-		return (r);
-	return (msh_lex(&self->lexer));
-}
-
 inline void		msh_dtor(t_msh *self)
 {
 	ft_dstr_dtor(&self->out, NULL);
 	ft_dstr_dtor(&self->err, NULL);
 	ft_vstr_dtor(&self->env, (void (*)(char **))ft_pfree);
 	ft_lexer_dtor(&self->lexer);
+}
+
+inline t_ret	msh_prompt(t_msh *self, char *prompt)
+{
+	size_t	l;
+	char	cwd[4096 + 1];
+	char	*p;
+	char	**home;
+	char	*h;
+
+	p = getcwd(cwd, 4096);
+	if (!p || !(home = msh_getenv(self, "HOME")))
+		return (RET_ERR);
+	if (ft_strbegw((h = *home + 5), p))
+	{
+		if (p[l = ft_strlen(h)] != '\0')
+			ft_memmove(p + 1, p + l, (ft_strlen(p) - l + 1) * sizeof(char));
+		else
+			p[1] = '\0';
+		*p = '~';
+	}
+	ft_puts(1, p);
+	ft_puts(1, prompt);
+	return (RET_OK);
+}
+
+inline t_ret	msh(t_msh *self)
+{
+	t_tok *tok;
+
+	while (1)
+		if (!(tok = msh_next(self, NULL)) || tok->id == '\n')
+			return (RET_OK);
+		else if (ft_strchr(";\t ", tok->id))
+			continue ;
+		else if (msh_eval(self, tok) == RET_ERR)
+			return (RET_ERR);
+		else
+			ft_lexer_clean(&self->lexer);
 }

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   msh.h                                              :+:      :+:    :+:   */
+/*   msh/eval.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,16 +10,14 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MSH_H
-# define MSH_H
+#ifndef MSH_EVAL_H
+# define MSH_EVAL_H
 
-# include "msh/bi.h"
-# include "msh/env.h"
-# include "msh/eval.h"
-# include "msh/exe.h"
-# include "msh/lex.h"
-# include "msh/sh.h"
-# include "msh/sig.h"
-# include "msh/toks.h"
+# include "sh.h"
+# include "exe.h"
+# include "bi.h"
+# include "lex.h"
+
+extern t_ret	msh_eval(t_msh *self, t_tok *tok);
 
 #endif

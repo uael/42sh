@@ -24,8 +24,8 @@ OBJ = $(addprefix $(OBJ_PATH),$(OBJ_NAME))
 INC = $(addprefix -I,$(INC_PATH))
 
 OBJ_NAME = $(SRC_NAME:.c=.o)
-SRC_NAME = bi_cd.c bi_echo.c bi_env.c bi_exit.c bi_setenv.c bi_unsetenv.c \
-	cli.c env.c exec.c init.c lex.c msh.c utils.c
+SRC_NAME = bi/cd.c bi/echo.c bi/env.c bi/exit.c bi/setenv.c bi/unsetenv.c \
+	bi.c cli.c env.c eval.c exe.c lex.c sh.c toks.c
 
 all: $(NAME)
 
@@ -35,7 +35,7 @@ $(NAME): $(OBJ)
 
 
 $(OBJ_PATH)%.o: $(SRC_PATH)%.c
-	@mkdir -p $(OBJ_PATH)
+	@mkdir -p $(OBJ_PATH) $(OBJ_PATH)/bi
 	$(CC) $(CC_FLAGS) $(INC) -o $@ -c $<
 
 clean:

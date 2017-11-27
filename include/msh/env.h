@@ -1,31 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   bi_echo.c                                          :+:      :+:    :+:   */
+/*   msh/env.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/23 18:41:10 by null             ###   ########.fr       */
+/*   Updated: 2017/11/23 17:28:28 by null             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "msh.h"
+#ifndef MSH_ENV_H
+# define MSH_ENV_H
 
-inline t_ret	msh_bi_echo(t_msh *self, t_vstr *av)
-{
-	size_t i;
+# include "sh.h"
 
-	(void)self;
-	if (av->len < 2)
-		return (RET_NOK);
-	i = 0;
-	while (++i < av->len)
-	{
-		ft_puts(1, av->buf[i]);
-		if (i < av->len - 1)
-			ft_putc(1, ' ');
-	}
-	ft_putc(1, '\n');
-	return (RET_OK);
-}
+extern t_ret	msh_initenv(t_msh *self, char **env);
+extern char		**msh_getenv(t_msh *self, char *var);
+extern t_ret	msh_setenv(t_msh *self, char *var, char *val);
+extern t_ret	msh_unsetenv(t_msh *self, char *var);
+
+#endif

@@ -1,23 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   bi_setenv.c                                        :+:      :+:    :+:   */
+/*   bi/unsetenv.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/23 17:31:13 by null             ###   ########.fr       */
+/*   Updated: 2017/11/23 17:31:25 by null             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "msh.h"
+#include "msh/bi.h"
+#include "msh/env.h"
 
-inline t_ret	msh_bi_setenv(t_msh *self, t_vstr *av)
+inline t_ret	msh_bi_unsetenv(t_msh *self, t_vstr *av)
 {
-	if (av->len != 3)
-		return (CMD_NOK("setenv: syntax error\nusage: setenv <key> <value>"));
-	if (!av->buf[1] || ft_strchr(av->buf[1], '=') ||
-		!av->buf[2] || ft_strchr(av->buf[2], '='))
-		return (CMD_NOK("setenv: syntax error\nusage: setenv <key> <value>"));
-	return (msh_setenv(self, av->buf[1], av->buf[2]));
+	t_ret	ret;
+
+	if (av->len != 2)
+		return (CMD_NOK("unsetenv: syntax error\nusage: unsetenv <key>"));
+	if (!av->buf[1] || ft_strchr(av->buf[1], '='))
+		return (CMD_NOK("unsetenv: syntax error\nusage: unsetenv <key>"));
+	if ((ret = msh_unsetenv(self, av->buf[1])) == RET_ERR)
+		return (RET_ERR);
+	if (ret == RET_NOK)
+		return (CMD_NOK("unsetenv: Environ not found"));
+	return (RET_OK);
 }

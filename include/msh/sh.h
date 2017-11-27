@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   msh.h                                              :+:      :+:    :+:   */
+/*   msh/sh.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,16 +10,25 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MSH_H
-# define MSH_H
+#ifndef MSH_SH_H
+# define MSH_SH_H
 
-# include "msh/bi.h"
-# include "msh/env.h"
-# include "msh/eval.h"
-# include "msh/exe.h"
-# include "msh/lex.h"
-# include "msh/sh.h"
-# include "msh/sig.h"
-# include "msh/toks.h"
+# include <libft.h>
+
+# define MSH_EXIT(code, msh) exit(ft_dtor((code),(t_dtor)msh_dtor, msh, NULL))
+
+typedef struct	s_msh
+{
+	t_lexer		lexer;
+	t_dstr		out;
+	t_dstr		err;
+	t_vstr		env;
+}				t_msh;
+
+extern t_ret	msh_init_stream(t_msh *self, char **env, t_istream *stream);
+extern t_ret	msh_init_file(t_msh *self, char **env, char const *filename);
+extern void		msh_dtor(t_msh *self);
+extern t_ret	msh_prompt(t_msh *self, char *prompt);
+extern t_ret	msh(t_msh *self);
 
 #endif

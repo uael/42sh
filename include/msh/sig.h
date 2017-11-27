@@ -1,28 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   bi_unsetenv.c                                      :+:      :+:    :+:   */
+/*   msh/sig.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/23 17:31:25 by null             ###   ########.fr       */
+/*   Updated: 2017/11/23 17:28:28 by null             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "msh.h"
+#ifndef MSH_SIG_H
+# define MSH_SIG_H
 
-inline t_ret	msh_bi_unsetenv(t_msh *self, t_vstr *av)
-{
-	t_ret	ret;
+# include <libft.h>
 
-	if (av->len != 2)
-		return (CMD_NOK("unsetenv: syntax error\nusage: unsetenv <key>"));
-	if (!av->buf[1] || ft_strchr(av->buf[1], '='))
-		return (CMD_NOK("unsetenv: syntax error\nusage: unsetenv <key>"));
-	if ((ret = msh_unsetenv(self, av->buf[1])) == RET_ERR)
-		return (RET_ERR);
-	if (ret == RET_NOK)
-		return (CMD_NOK("unsetenv: Environ not found"));
-	return (RET_OK);
-}
+extern void		msh_sigint_hdl(int sign);
+
+#endif

@@ -17,7 +17,7 @@ inline size_t			ft_lexer_clean(t_lexer *self)
 	size_t n;
 
 	if ((n = ft_deq_clean(&self->toks, NULL)))
-		return (ft_vec_clean(&self->vals, n, (t_dtor) ft_tokv_dtor));
+		return (ft_vec_clean(&self->vals, n, (t_dtor)ft_tokv_dtor));
 	return (n);
 }
 

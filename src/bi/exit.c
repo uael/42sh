@@ -1,25 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   msh.h                                              :+:      :+:    :+:   */
+/*   bi/exit.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/23 17:28:28 by null             ###   ########.fr       */
+/*   Updated: 2017/11/23 17:30:36 by null             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MSH_H
-# define MSH_H
+#include "msh/bi.h"
 
-# include "msh/bi.h"
-# include "msh/env.h"
-# include "msh/eval.h"
-# include "msh/exe.h"
-# include "msh/lex.h"
-# include "msh/sh.h"
-# include "msh/sig.h"
-# include "msh/toks.h"
-
-#endif
+inline t_ret	msh_bi_exit(t_msh *self, t_vstr *av)
+{
+	(void)av;
+	MSH_EXIT(RET_OK, self);
+}

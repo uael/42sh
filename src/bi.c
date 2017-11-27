@@ -1,26 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   bi_env.c                                           :+:      :+:    :+:   */
+/*   bi.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/23 17:31:34 by null             ###   ########.fr       */
+/*   Updated: 2017/11/23 11:58:54 by null             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "msh.h"
+#include "msh/bi.h"
 
-inline t_ret	msh_bi_env(t_msh *self, t_vstr *av)
+inline t_cmd	msh_bi(char *exe)
 {
-	size_t i;
-
-	(void)self;
-	if (av->len != 1)
-		return (RET_NOK);
-	i = 0;
-	while (i < self->env.len)
-		ft_putl(1, self->env.buf[i++]);
-	return (RET_NOK);
+	if (ft_strcmp("cd", exe) == 0)
+		return (msh_bi_cd);
+	if (ft_strcmp("echo", exe) == 0)
+		return (msh_bi_echo);
+	if (ft_strcmp("env", exe) == 0)
+		return (msh_bi_env);
+	if (ft_strcmp("exit", exe) == 0)
+		return (msh_bi_exit);
+	if (ft_strcmp("setenv", exe) == 0)
+		return (msh_bi_setenv);
+	if (ft_strcmp("unsetenv", exe) == 0)
+		return (msh_bi_unsetenv);
+	if (ft_strcmp("unsetenv", exe) == 0)
+		return (msh_bi_env);
+	return (NULL);
 }

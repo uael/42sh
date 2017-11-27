@@ -1,25 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   msh.h                                              :+:      :+:    :+:   */
+/*   bi/echo.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/23 17:28:28 by null             ###   ########.fr       */
+/*   Updated: 2017/11/23 18:41:10 by null             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MSH_H
-# define MSH_H
+#include "msh/bi.h"
 
-# include "msh/bi.h"
-# include "msh/env.h"
-# include "msh/eval.h"
-# include "msh/exe.h"
-# include "msh/lex.h"
-# include "msh/sh.h"
-# include "msh/sig.h"
-# include "msh/toks.h"
+inline t_ret	msh_bi_echo(t_msh *self, t_vstr *av)
+{
+	size_t i;
 
-#endif
+	(void)self;
+	if (av->len < 2)
+		return (RET_NOK);
+	i = 0;
+	while (++i < av->len)
+	{
+		ft_puts(1, av->buf[i]);
+		if (i < av->len - 1)
+			ft_putc(1, ' ');
+	}
+	ft_putc(1, '\n');
+	return (RET_OK);
+}

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   bi_cd.c                                            :+:      :+:    :+:   */
+/*   bi/cd.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,7 +12,8 @@
 
 #include <sys/stat.h>
 
-#include "msh.h"
+#include "msh/bi.h"
+#include "msh/env.h"
 
 static char		*msh_cd_dir(t_msh *self, t_vstr *av)
 {

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   msh.h                                              :+:      :+:    :+:   */
+/*   msh/bi.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,16 +10,17 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MSH_H
-# define MSH_H
+#ifndef MSH_BI_H
+# define MSH_BI_H
 
-# include "msh/bi.h"
-# include "msh/env.h"
-# include "msh/eval.h"
-# include "msh/exe.h"
-# include "msh/lex.h"
-# include "msh/sh.h"
-# include "msh/sig.h"
-# include "msh/toks.h"
+# include "exe.h"
+
+extern t_cmd	msh_bi(char *exe);
+extern t_ret	msh_bi_echo(t_msh *self, t_vstr *av);
+extern t_ret	msh_bi_cd(t_msh *self, t_vstr *av);
+extern t_ret	msh_bi_setenv(t_msh *self, t_vstr *av);
+extern t_ret	msh_bi_unsetenv(t_msh *self, t_vstr *av);
+extern t_ret	msh_bi_env(t_msh *self, t_vstr *av);
+extern t_ret	msh_bi_exit(t_msh *self, t_vstr *av);
 
 #endif
