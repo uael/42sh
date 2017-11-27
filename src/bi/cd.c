@@ -57,7 +57,7 @@ static t_ret	msh_cd_test(char *exe, t_bool p)
 
 inline t_ret	msh_bi_cd(t_msh *self, t_vstr *av)
 {
-	char 	buf[PATH_MAX + 1];
+	char	buf[PATH_MAX + 1];
 	char	*path;
 	char	**pwd;
 	int		chd;

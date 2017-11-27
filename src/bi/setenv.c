@@ -20,9 +20,8 @@ inline t_ret	msh_bi_setenv(t_msh *self, t_vstr *av)
 	if (av->len < 2 || av->len > 3 || !av->buf[1] ||
 		ft_strchr(av->buf[1], '=') ||
 		(av->len == 3 && ft_strchr(av->buf[2], '=')))
-		return (CMD_NOK("setenv: syntax error\nusage: setenv key [value]"));
+		return (CMD_NOK("export: syntax error\nusage: export key [val]"));
 	if (!ft_isalpha(*av->buf[1]))
-		return (CMD_NOK("setenv: not an identifier\n"
-			"usage: setenv key [value]"));
+		return (CMD_NOK("export: not an identifier\nusage: export key [val]"));
 	return (msh_setenv(self, av->buf[1], av->len == 3 ? av->buf[2] : NULL));
 }
