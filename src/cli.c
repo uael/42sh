@@ -25,7 +25,6 @@ int				main(int ac, char **av, char **env)
 {
 	t_msh	sh;
 	int		i;
-	t_ret	r;
 
 	g_sh = &sh;
 	if (ac > (i = 0) + 1)
@@ -44,8 +43,8 @@ int				main(int ac, char **av, char **env)
 	{
 		signal(SIGINT, msh_sigint_hdl);
 		while (msh_prompt(&sh, " \033[32m$\033[0m ") == RET_OK)
-			if ((r = msh(&sh)))
-				MSH_EXIT(r < 0 ? EXIT_FAILURE : sh.st, &sh);
+			if (msh(&sh))
+				MSH_EXIT(sh.st, &sh);
 	}
 	MSH_EXIT(sh.st, &sh);
 }
