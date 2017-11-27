@@ -244,6 +244,7 @@ extern t_bool	ft_dqstr_remove(t_dqstr *s, size_t i, char **out);
 
 extern void		ft_deq_ctor(t_deq *s, size_t isz);
 extern void		ft_deq_dtor(t_deq *s, void(*idtor)(void *i));
+extern size_t	ft_deq_clean(t_deq *s, t_dtor idtor);
 extern size_t	ft_deq_size(t_deq *s);
 extern void		*ft_deq_begin(t_deq *s);
 extern void		*ft_deq_end(t_deq *s);

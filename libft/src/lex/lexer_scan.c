@@ -12,6 +12,15 @@
 
 #include "libft/lex/lexer.h"
 
+inline size_t			ft_lexer_clean(t_lexer *self)
+{
+	size_t n;
+
+	if ((n = ft_deq_clean(&self->toks, NULL)))
+		return (ft_vec_clean(&self->vals, n, (t_dtor) ft_tokv_dtor));
+	return (n);
+}
+
 static inline t_ret		lexer_scan_one(t_lexer *self, char peek, t_src *src)
 {
 	t_ret	r;

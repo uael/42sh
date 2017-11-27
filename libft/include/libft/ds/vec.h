@@ -234,6 +234,7 @@ extern t_bool	ft_vstr_remove(t_vstr *s, size_t i, char **out);
 
 extern void		ft_vec_ctor(t_vec *s, size_t isz);
 extern void		ft_vec_dtor(t_vec *s, void(*idtor)(void *i));
+extern size_t	ft_vec_clean(t_vec *self, size_t n, t_dtor idtor);
 extern size_t	ft_vec_size(t_vec *s);
 extern void		*ft_vec_begin(t_vec *s);
 extern void		*ft_vec_end(t_vec *s);

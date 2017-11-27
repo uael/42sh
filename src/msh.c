@@ -96,4 +96,6 @@ inline t_ret	msh(t_msh *self)
 		}
 		else if (rule(self, tok) == RET_ERR)
 			return (RET_ERR);
+		else
+			ft_lexer_clean(&self->lexer);
 }

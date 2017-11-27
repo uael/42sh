@@ -82,8 +82,8 @@ inline size_t	ft_vu64_shiftn(t_vu64 *self, size_t n, uint64_t *out)
 
 inline size_t	ft_vec_shiftn(t_vec *self, size_t n, void *out)
 {
-	size_t		len;
-	uint64_t	*it;
+	size_t	len;
+	char	*it;
 
 	if (!n || (len = ft_vec_size(self)) == 0)
 		return (0);
@@ -93,7 +93,6 @@ inline size_t	ft_vec_shiftn(t_vec *self, size_t n, void *out)
 	if (out)
 		ft_memcpy(out, it, n * self->isz);
 	if (self->len -= n)
-		ft_memmove(it, (char *)it + (n * self->isz),
-			(self->len + 1) * self->isz);
+		ft_memmove(it, it + (n * self->isz), (self->len + 1) * self->isz);
 	return (n);
 }

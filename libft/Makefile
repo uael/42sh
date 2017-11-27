@@ -96,6 +96,7 @@ SRC_NAME += \
 	ds/ft_vi_unshiftnc.c \
 	ds/ft_vu_at.c \
 	ds/ft_vu_begin.c \
+	ds/ft_vu_clean.c \
 	ds/ft_vu_ctor.c \
 	ds/ft_vu_dtor.c \
 	ds/ft_vu_end.c \
@@ -150,6 +151,7 @@ SRC_NAME += \
 	ds/ft_di_unshiftnc.c \
 	ds/ft_du_at.c \
 	ds/ft_du_begin.c \
+	ds/ft_du_clean.c \
 	ds/ft_du_ctor.c \
 	ds/ft_du_dtor.c \
 	ds/ft_du_end.c \
