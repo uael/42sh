@@ -31,6 +31,7 @@ inline size_t	ft_dstr_removen(t_dstr *self, size_t idx, size_t n, char *out)
 		if (out)
 			ft_memcpy(out, it, n * sizeof(char));
 		ft_memmove(it, it + n, (len - idx - n + 1) * sizeof(char));
+		self->len -= n;
 		return (n);
 	}
 }

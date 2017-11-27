@@ -47,7 +47,7 @@ inline t_ret		msh_exe_lookup(t_msh *self, char *f, int mode, char exe[])
 
 	if (!*f)
 		return (RET_NOK);
-	if (*f == '/' && ft_strcpy(exe, f))
+	if ((*f == '/' || *f == '.') && ft_strcpy(exe, f))
 		return (RET_OK);
 	if (!(path = msh_getenv(self, "PATH")))
 		return (RET_NOK);

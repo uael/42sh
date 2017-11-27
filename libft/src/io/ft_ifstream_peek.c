@@ -75,7 +75,7 @@ inline t_ret			ft_ifstream_peek(t_ifstream *self, char *c, size_t n)
 {
 	ssize_t s;
 
-	if ((s = ft_ifs_bufferize(self, n + 1)) < (ssize_t)n)
+	if ((s = ft_ifs_bufferize(self, n + 1)) < (ssize_t)n + 1)
 		return (s < 0 ? RET_ERR : RET_NOK);
 	if (c)
 		*c = self->buf[self->cur - self->beg + n];

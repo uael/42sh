@@ -21,12 +21,12 @@ static char		*msh_cd_dir(t_msh *self, t_vstr *av)
 
 	if ((av->len == 1 || ft_strcmp(av->buf[1], "~") == 0) &&
 		(env = msh_getenv(self, "HOME")))
-		return (*env + 5);
+		return (ft_strdup(*env + 5));
 	if (av->len == 2 && ft_strcmp(av->buf[1], "-") == 0 &&
 		(env = msh_getenv(self, "OLDPWD")))
-		return (*env + 7);
+		return (ft_strdup(*env + 7));
 	if (av->len == 2)
-		return (av->buf[1]);
+		return (ft_pathresolve(av->buf[1]));
 	return (NULL);
 }
 
@@ -55,5 +55,6 @@ inline t_ret	msh_bi_cd(t_msh *self, t_vstr *av)
 		return (RET_ERR);
 	(chd = chdir(path)) ? RET_OK : msh_setenv(self, "PWD", cp);
 	free(cp);
+	free(path);
 	return (chd ? CMD_NOK("cd: Cannot change dir") : RET_OK);
 }

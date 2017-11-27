@@ -59,21 +59,17 @@ inline ssize_t			ft_lexer_scan(t_lexer *self, size_t n)
 
 	c = 0;
 	while (c < n)
-	{
-		if (ft_deq_size(&self->srcs) == 0)
+		if (ft_deq_size(&self->srcs) == 0 || !(src = ft_deq_at(&self->srcs, 0)))
 			break ;
-		src = ft_deq_at(&self->srcs, 0);
-		if ((r = ft_src_peek(src, &peek, 0)) == RET_ERR)
+		else if ((r = ft_src_peek(src, &peek, 0)) == RET_ERR)
 			return (RET_ERR);
-		else if (r == RET_NOK)
-		{
+		else if (r == RET_NOK && self->srcs.len > 1)
 			ft_deq_shift(&self->srcs, NULL);
-			continue ;
-		}
-		if ((r = lexer_scan_one(self, peek, src)) == RET_ERR)
+		else if (r == RET_NOK)
+			break ;
+		else if ((r = lexer_scan_one(self, peek, src)) == RET_ERR)
 			return (RET_ERR);
-		if (r == RET_OK)
+		else if (r == RET_OK)
 			++c;
-	}
 	return (c);
 }

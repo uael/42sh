@@ -84,8 +84,8 @@ inline t_ret	msh_prompt(t_msh *self, char *prompt)
 			p[1] = '\0';
 		*p = '~';
 	}
-	ft_puts(1, p);
-	ft_puts(1, prompt);
+	ft_puts(0, p);
+	ft_puts(0, prompt);
 	return (RET_OK);
 }
 
@@ -94,7 +94,9 @@ inline t_ret	msh(t_msh *self)
 	t_tok *tok;
 
 	while (1)
-		if (!(tok = msh_next(self, NULL)) || tok->id == '\n')
+		if (!(tok = msh_next(self, NULL)))
+			return (RET_NOK);
+		else if (tok->id == '\n')
 			return (RET_OK);
 		else if (ft_strchr(";\t ", tok->id))
 			continue ;
