@@ -40,26 +40,26 @@ extern ssize_t	ft_cin_read(char *buf, size_t len);
 extern ssize_t	ft_cin_readf(char *fmt, ...);
 extern ssize_t	ft_cin_vreadf(char *fmt, va_list ap);
 extern ssize_t	ft_cin_get(char *buf, size_t n);
-extern t_ret	ft_cin_peek(char *c, size_t n);
+extern int		ft_cin_peek(char *c, size_t n);
 extern void		ft_cin_flush(void);
-extern t_ret	ft_cin_rewind(size_t n);
-extern t_ret	ft_cin_forward(size_t n);
-extern t_ret	ft_cin_seek(size_t off);
+extern int		ft_cin_rewind(size_t n);
+extern int		ft_cin_forward(size_t n);
+extern int		ft_cin_seek(size_t off);
 extern size_t	ft_cin_tell(void);
 
-extern t_ret	ft_istream_open(t_istream *self, char const *filename);
-extern t_ret	ft_istream_mopen(t_istream *self, char const *str);
-extern t_ret	ft_istream_mnopen(t_istream *self, char const *str, size_t n);
-extern t_ret	ft_istream_close(t_istream *self);
+extern int		ft_istream_open(t_istream *self, char const *filename);
+extern void		ft_istream_mopen(t_istream *self, char const *str);
+extern void		ft_istream_mnopen(t_istream *self, char const *str, size_t n);
+extern int		ft_istream_close(t_istream *self);
 extern ssize_t	ft_istream_read(t_istream *self, char *buf, size_t len);
 extern ssize_t	ft_istream_readf(t_istream *self, char *fmt, ...);
 extern ssize_t	ft_istream_vreadf(t_istream *self, char *fmt, va_list ap);
 extern ssize_t	ft_istream_get(t_istream *self, char *buf, size_t n);
-extern t_ret	ft_istream_peek(t_istream *self, char *c, size_t n);
+extern int		ft_istream_peek(t_istream *self, char *c, size_t n);
 extern void		ft_istream_flush(t_istream *self);
-extern t_ret	ft_istream_rewind(t_istream *self, size_t n);
-extern t_ret	ft_istream_forward(t_istream *self, size_t n);
-extern t_ret	ft_istream_seek(t_istream *self, size_t off);
+extern int		ft_istream_rewind(t_istream *self, size_t n);
+extern int		ft_istream_forward(t_istream *self, size_t n);
+extern int		ft_istream_seek(t_istream *self, size_t off);
 extern size_t	ft_istream_tell(t_istream const *self);
 
 #endif

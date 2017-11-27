@@ -26,6 +26,7 @@ int				main(int ac, char **av, char **env)
 	t_msh	sh;
 	int		i;
 
+	ft_putf(1, "yop je suis %s, j'ai %d ans\n", "abel", 25);
 	g_sh = &sh;
 	if (ac > (i = 0) + 1)
 	{

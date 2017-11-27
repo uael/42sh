@@ -21,7 +21,7 @@ inline ssize_t			ft_istream_get(t_istream *self, char *buf, size_t n)
 	return (RET_ERR);
 }
 
-inline t_ret			ft_istream_peek(t_istream *self, char *c, size_t n)
+inline int				ft_istream_peek(t_istream *self, char *c, size_t n)
 {
 	if (self->kind == ISTREAM_FILE)
 		return (ft_ifstream_peek(&self->u.file, c, n));

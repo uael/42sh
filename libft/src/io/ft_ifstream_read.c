@@ -70,7 +70,7 @@ inline ssize_t			ft_ifstream_read(t_ifstream *self, char *b, size_t len)
 	ssize_t	r;
 
 	if (self->fd < 0)
-		return (-1);
+		return (ST_ERR(errno = EINVAL));
 	else
 	{
 		beg = len;
@@ -82,7 +82,7 @@ inline ssize_t			ft_ifstream_read(t_ifstream *self, char *b, size_t len)
 			else if ((r = ifs_buf(self, &b, &len, cur)) >= 0)
 				return (beg - len + r);
 			if (r == -1)
-				return (-1);
+				return (ST_ERRNO);
 			if (r == -2)
 				break ;
 		}

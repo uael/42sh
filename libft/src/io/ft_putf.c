@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_imstream_read.c                                 :+:      :+:    :+:   */
+/*   ft_putc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,40 +10,37 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/math.h"
-#include "libft/io/imstream.h"
+#include "libft/io.h"
 
-inline ssize_t			ft_imstream_read(t_imstream *self, char *b, size_t len)
-{
-	if (!self->buf)
-		return (ST_ERR(errno = EINVAL));
-	if (len > self->len)
-		len = self->len;
-	if (len)
-	{
-		if (b)
-			ft_memcpy(b, self->buf + self->cur, len * sizeof(char));
-		self->cur += len;
-	}
-	return (len);
-}
-
-ssize_t					ft_imstream_readf(t_imstream *self, char *fmt, ...)
+ssize_t			ft_putf(int fd, char const *fmt, ...)
 {
 	va_list	ap;
 	ssize_t	n;
 
 	va_start(ap, fmt);
-	n = ft_imstream_vreadf(self, fmt, ap);
+	n = ft_vputf(fd, fmt, ap);
 	va_end(ap);
 	return (n);
 }
 
-inline ssize_t			ft_imstream_vreadf(t_imstream *self, char *fmt,
-	va_list ap)
+inline ssize_t	ft_vputf(int fd, char const *fmt, va_list ap)
 {
-	(void)self;
-	(void)fmt;
-	(void)ap;
-	return (0);
+	char	*sp;
+	ssize_t	sz;
+
+	sz = 0;
+	while ((sp = ft_strchr(fmt, '%')) && (sz += write(fd, fmt, sp - fmt)))
+		if (*((fmt = ++sp + 1) - 1) == 'd')
+			sz += ft_putn(fd, va_arg(ap, int64_t), 10);
+		else if (*sp == 'u')
+			sz += ft_putu(fd, va_arg(ap, uint64_t), 10);
+		else if (*sp == 's')
+			sz += ft_puts(fd, va_arg(ap, char const *));
+		else if (*sp == 'c')
+			sz += ft_putc(fd, (char)va_arg(ap, int));
+		else if (*sp == 'd')
+			sz += ft_putd(fd, (float)va_arg(ap, double), 10, 10);
+	return (sz + write(fd, fmt, ft_strlen(fmt)));
 }
+
+

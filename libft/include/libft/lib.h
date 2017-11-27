@@ -13,6 +13,7 @@
 #ifndef LIBFT_LIB_H
 # define LIBFT_LIB_H
 
+# include <errno.h>
 # include <stdlib.h>
 
 # include "tys.h"
@@ -27,6 +28,14 @@ typedef enum	e_ret
 	RET_OK = 0,
 	RET_NOK = 1
 }				t_ret;
+
+# define ST_OK (0)
+# define ST_NOK (ELAST + 1)
+# define ST_ERR(ERRNO) (-(ERRNO))
+# define ST_ERRNO ST_ERR(errno)
+# define ST_HDL(ST, OTHERWISE) ((ST) < 0 ? (ST) : (OTHERWISE))
+# define ST_ISERRNO(ST, ERRNO) ((ST) == ST_ERR(ERRNO))
+# define ENIMPL (ST_NOK + 1)
 
 typedef void	(*t_dtor)(void *i, ...);
 

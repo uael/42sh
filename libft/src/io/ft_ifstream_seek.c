@@ -17,21 +17,21 @@ inline void		ft_ifstream_flush(t_ifstream *self)
 	(void)self;
 }
 
-inline t_ret	ft_ifstream_rewind(t_ifstream *self, size_t n)
+inline int		ft_ifstream_rewind(t_ifstream *self, size_t n)
 {
 	(void)self;
 	(void)n;
-	return (RET_ERR);
+	return (ST_ERR(errno = ENIMPL));
 }
 
-inline t_ret	ft_ifstream_forward(t_ifstream *self, size_t n)
+inline int		ft_ifstream_forward(t_ifstream *self, size_t n)
 {
 	(void)self;
 	(void)n;
-	return (RET_ERR);
+	return (ST_ERR(errno = ENIMPL));
 }
 
-inline t_ret	ft_ifstream_seek(t_ifstream *self, size_t off)
+inline int		ft_ifstream_seek(t_ifstream *self, size_t off)
 {
 	if (!self->filename || self->fd < 0)
 		return (RET_NOK);

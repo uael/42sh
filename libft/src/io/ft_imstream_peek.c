@@ -21,14 +21,14 @@ inline ssize_t	ft_imstream_get(t_imstream *self, char *buf, size_t len)
 	return (len);
 }
 
-inline t_ret	ft_imstream_peek(t_imstream *self, char *c, size_t n)
+inline int		ft_imstream_peek(t_imstream *self, char *c, size_t n)
 {
 	size_t cur;
 
 	cur = self->cur + n;
 	if (cur > self->len)
-		return (RET_NOK);
+		return (ST_NOK);
 	if (c)
 		*c = self->buf[cur];
-	return (RET_OK);
+	return (ST_OK);
 }

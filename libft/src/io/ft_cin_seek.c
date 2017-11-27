@@ -17,17 +17,17 @@ inline void		ft_cin_flush(void)
 	return (ft_istream_flush(g_cin));
 }
 
-inline t_ret	ft_cin_rewind(size_t n)
+inline int		ft_cin_rewind(size_t n)
 {
 	return (ft_istream_rewind(g_cin, n));
 }
 
-inline t_ret	ft_cin_forward(size_t n)
+inline int		ft_cin_forward(size_t n)
 {
 	return (ft_istream_forward(g_cin, n));
 }
 
-inline t_ret	ft_cin_seek(size_t off)
+inline int		ft_cin_seek(size_t off)
 {
 	return (ft_istream_seek(g_cin, off));
 }

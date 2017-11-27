@@ -20,7 +20,7 @@ inline void		ft_istream_flush(t_istream *self)
 		return (ft_imstream_flush(&self->u.mem));
 }
 
-inline t_ret	ft_istream_rewind(t_istream *self, size_t n)
+inline int		ft_istream_rewind(t_istream *self, size_t n)
 {
 	if (self->kind == ISTREAM_FILE)
 		return (ft_ifstream_rewind(&self->u.file, n));
@@ -29,7 +29,7 @@ inline t_ret	ft_istream_rewind(t_istream *self, size_t n)
 	return (RET_ERR);
 }
 
-inline t_ret	ft_istream_forward(t_istream *self, size_t n)
+inline int		ft_istream_forward(t_istream *self, size_t n)
 {
 	if (self->kind == ISTREAM_FILE)
 		return (ft_ifstream_forward(&self->u.file, n));
@@ -38,7 +38,7 @@ inline t_ret	ft_istream_forward(t_istream *self, size_t n)
 	return (RET_ERR);
 }
 
-inline t_ret	ft_istream_seek(t_istream *self, size_t off)
+inline int		ft_istream_seek(t_istream *self, size_t off)
 {
 	if (self->kind == ISTREAM_FILE)
 		return (ft_ifstream_seek(&self->u.file, off));

@@ -38,7 +38,7 @@ inline ssize_t	ft_cin_get(char *buf, size_t n)
 	return (ft_istream_get(g_cin, buf, n));
 }
 
-inline t_ret	ft_cin_peek(char *c, size_t n)
+inline int		ft_cin_peek(char *c, size_t n)
 {
 	return (ft_istream_peek(g_cin, c, n));
 }

@@ -55,6 +55,7 @@ SRC_NAME += \
 	ds/ft_dstr_pushnc.c \
 	ds/ft_dstr_put.c \
 	ds/ft_dstr_putc.c \
+	ds/ft_dstr_putf.c \
 	ds/ft_dstr_putn.c \
 	ds/ft_dstr_putnc.c \
 	ds/ft_dstr_realloc.c \
