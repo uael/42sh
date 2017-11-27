@@ -42,5 +42,3 @@ inline ssize_t	ft_vputf(int fd, char const *fmt, va_list ap)
 			sz += ft_putd(fd, (float)va_arg(ap, double), 10, 10);
 	return (sz + write(fd, fmt, ft_strlen(fmt)));
 }
-
-
