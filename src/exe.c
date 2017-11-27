@@ -46,14 +46,16 @@ static t_ret		msh_exe_test(char *exe, int mode)
 	struct stat	s;
 	char		path[PATH_MAX + 1];
 	int			i;
+	ssize_t		l;
 
 	i = -1;
 	while (++i <= 40)
 	{
 		if (!*exe || lstat(exe, &s) < 0 || !(s.st_mode & mode))
 			return (RET_NOK);
-		if (!S_ISLNK(s.st_mode) || !readlink(exe, path, PATH_MAX))
+		if (!S_ISLNK(s.st_mode) || !(l = readlink(exe, path, PATH_MAX)))
 			return (RET_OK);
+		path[l] = '\0';
 		ft_strcpy(exe, path);
 	}
 	ft_putl(2, "msh: Too many symbolic links");
@@ -69,10 +71,9 @@ inline t_ret		msh_exe_lookup(t_msh *self, char *f, int mode, char exe[])
 	t_ret	r;
 
 	if ((r = msh_exe_test(ft_strcpy(exe, f), mode)) <= 0)
-		return (r < 0 ? RET_NOK : RET_OK);
+		return (r);
 	if (!(path = msh_getenv(self, "PATH")))
-		return (msh_exe_test(ft_strcat(ft_strcpy(exe, "/bin/"), f), mode) < 0
-			? RET_NOK : RET_OK);
+		return (msh_exe_test(ft_strcat(ft_strcpy(exe, "/bin/"), f), mode));
 	beg = *path + 5;
 	while ((sep = ft_strchr(beg, ':')) >= 0)
 	{
@@ -80,7 +81,7 @@ inline t_ret		msh_exe_lookup(t_msh *self, char *f, int mode, char exe[])
 		ft_strncpy(exe, beg, len)[len] = '\0';
 		ft_pathcat(exe, f);
 		if ((r = msh_exe_test(exe, mode)) <= 0)
-			return (r < 0 ? RET_NOK : RET_OK);
+			return (r);
 		if (!sep)
 			break ;
 		beg = sep + 1;

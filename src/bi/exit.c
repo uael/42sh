@@ -25,14 +25,14 @@ inline t_ret	msh_bi_exit(t_msh *self, t_vstr *av)
 	a = av->buf[1];
 	if (!(i = ft_strlen(a)) || i > 19)
 	{
-		ft_putl(2, "exit: Invalid argument provided");
+		ft_putl(2, "exit: Numeric argument required");
 		MSH_EXIT(EXIT_FAILURE, self);
 	}
 	j = 0;
 	while (j < i)
 		if (!ft_isdigit(a[j]) && !ft_isspace(a[j]))
 		{
-			ft_putl(2, "exit: Invalid argument provided");
+			ft_putl(2, "exit: Numeric argument required");
 			MSH_EXIT(EXIT_FAILURE, self);
 		}
 		else

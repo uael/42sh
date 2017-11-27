@@ -29,10 +29,10 @@ static inline t_ret	msh_eval_word(t_msh *self, t_tok *tok)
 	ident = ft_tok_ident(tok);
 	if ((ret = msh_exe_lookup(self, ident->buf, S_IFREG | S_IXUSR, exe)) != 0)
 	{
-		if ((ret = (ret != RET_ERR ? msh_exe_av(self, NULL, NULL) : ret)) != -1)
+		if (ret != RET_ERR)
 			(void)(ft_puts(2, "msh: Command not found: '") &
 				ft_puts(2, ident->buf) & ft_putl(2, "'"));
-		return (ret == RET_ERR ? ret : RET_NOK);
+		return (msh_exe_av(self, NULL, NULL) < 0 ? RET_ERR : RET_NOK);
 	}
 	if (msh_exe_av(self, &av, exe) == RET_ERR)
 		return (RET_ERR);

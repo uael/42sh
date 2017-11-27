@@ -36,18 +36,20 @@ static t_ret	msh_cd_test(char *exe, t_bool p)
 	struct stat	s;
 	char		path[PATH_MAX + 1];
 	int			i;
+	ssize_t		l;
 
 	i = -1;
 	while (++i <= 40)
 	{
-		if (!*exe || lstat(exe, &s) < 0 || access(exe, F_OK) != 0)
+		if (!*exe || lstat(exe, &s) < 0 != 0)
 			return (CMD_NOK("cd: No such file or directory"));
 		if (!S_ISDIR(s.st_mode) && !S_ISLNK(s.st_mode))
 			return (CMD_NOK("cd: Is not a directory"));
 		if (access(exe, R_OK) != 0)
 			return (CMD_NOK("cd: Permission denied"));
-		if (p || !S_ISLNK(s.st_mode) || !readlink(exe, path, PATH_MAX))
+		if (p || !S_ISLNK(s.st_mode) || !(l = readlink(exe, path, PATH_MAX)))
 			return (RET_OK);
+		path[l] = '\0';
 		ft_strcpy(exe, path);
 	}
 	return (CMD_NOK("cd: Too many symbolic links"));
