@@ -91,7 +91,7 @@ inline t_ret	msh_prompt(t_msh *self, char *prompt)
 
 inline t_ret	msh(t_msh *self)
 {
-	t_tok *tok;
+	t_tok	*tok;
 
 	while (1)
 		if (!(tok = msh_next(self, NULL)))
@@ -100,7 +100,7 @@ inline t_ret	msh(t_msh *self)
 			return (RET_OK);
 		else if (ft_strchr(";\t ", tok->id))
 			continue ;
-		else if (msh_eval(self, tok) == RET_ERR)
+		else if ((self->st = msh_eval(self, tok)) == RET_ERR)
 			return (RET_ERR);
 		else
 			ft_lexer_clean(&self->lexer);

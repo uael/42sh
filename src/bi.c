@@ -24,7 +24,7 @@ inline t_cmd	msh_bi(char *exe)
 		return (msh_bi_exit);
 	if (ft_strcmp("setenv", exe) == 0 || ft_strcmp("export", exe) == 0)
 		return (msh_bi_setenv);
-	if (ft_strcmp("unsetenv", exe) == 0)
+	if (ft_strcmp("unsetenv", exe) == 0 || ft_strcmp("unset", exe) == 0)
 		return (msh_bi_unsetenv);
 	if (ft_strcmp("unsetenv", exe) == 0)
 		return (msh_bi_env);

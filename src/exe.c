@@ -11,8 +11,11 @@
 /* ************************************************************************** */
 
 #include <sys/stat.h>
+#include <limits.h>
 
 #include "msh.h"
+
+#define EXIST(F, S) (lstat((F), &(S)) == 0 && ((S).st_mode & mode))
 
 inline t_ret		msh_exe_av(t_msh *self, t_vstr *av, char *exe)
 {
@@ -38,26 +41,50 @@ inline t_ret		msh_exe_av(t_msh *self, t_vstr *av, char *exe)
 	return (RET_OK);
 }
 
+static t_ret		msh_exe_test(t_msh *self, char *exe, int mode, int c)
+{
+	struct stat	s;
+	char		path[PATH_MAX + 1];
+
+	if (!exe || !*exe)
+		return (RET_NOK);
+	if (c == INT32_MAX - 1)
+	{
+		ft_putl(2, "msh: Too many symbolic links");
+		return (RET_ERR);
+	}
+	if (lstat(exe, &s) != 0 || !(s.st_mode & mode))
+		return (RET_NOK);
+	if (S_ISLNK(s.st_mode) && readlink(exe, path, PATH_MAX))
+		return (msh_exe_test(self, ft_strcpy(exe, path), mode, c + 1));
+	return (RET_OK);
+}
+
 inline t_ret		msh_exe_lookup(t_msh *self, char *f, int mode, char exe[])
 {
-	char		**path;
-	char		*beg;
-	char		*sep;
-	struct stat	s;
+	char	**path;
+	char	*beg;
+	char	*sep;
+	size_t	len;
+	t_ret	r;
 
-	if (!*f)
-		return (RET_NOK);
-	if ((*f == '/' || *f == '.') && ft_strcpy(exe, f))
-		return (RET_OK);
+	if ((r = msh_exe_test(self, ft_strcpy(exe, f), mode, 0)) <= 0)
+		return (r < 0 ? RET_NOK : RET_OK);
+	ft_strcpy(exe, "/bin/");
+	if ((r = msh_exe_test(self, ft_strcat(exe, f), mode, 0)) <= 0)
+		return (r < 0 ? RET_NOK : RET_OK);
 	if (!(path = msh_getenv(self, "PATH")))
 		return (RET_NOK);
 	beg = *path + 5;
-	while ((sep = ft_strchr(beg, ':')))
+	while ((sep = ft_strchr(beg, ':')) >= 0)
 	{
-		ft_strncpy(exe, beg, sep - beg)[sep - beg] = '\0';
+		len = sep ? sep - beg : ft_strlen(beg);
+		ft_strncpy(exe, beg, len)[len] = '\0';
 		ft_pathcat(exe, f);
-		if (lstat(exe, &s) == 0 && (s.st_mode & mode))
-			return (RET_OK);
+		if ((r = msh_exe_test(self, exe, mode, 0)) <= 0)
+			return (r < 0 ? RET_NOK : RET_OK);
+		if (!sep)
+			break ;
 		beg = sep + 1;
 	}
 	return (RET_NOK);
@@ -75,6 +102,8 @@ inline t_ret		msh_exe_run(t_msh *self, t_vstr *av)
 	pid_t	pid;
 	int		st;
 
+	if (access(av->buf[0], X_OK) != 0)
+		return (CMD_NOK("msh: Permission denied"));
 	if ((pid = fork()) == 0)
 		execve(av->buf[0], av->buf, self->env.buf);
 	else if (pid < 0)

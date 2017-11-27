@@ -32,7 +32,7 @@ static inline t_ret	msh_eval_word(t_msh *self, t_tok *tok)
 		if ((ret = (ret != RET_ERR ? msh_exe_av(self, NULL, NULL) : ret)) != -1)
 			(void)(ft_puts(2, "msh: Command not found: '") &
 				ft_puts(2, ident->buf) & ft_putl(2, "'"));
-		return (ret);
+		return (ret == RET_ERR ? ret : RET_NOK);
 	}
 	if (msh_exe_av(self, &av, exe) == RET_ERR)
 		return (RET_ERR);

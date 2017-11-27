@@ -51,6 +51,8 @@ inline t_ret	msh_bi_cd(t_msh *self, t_vstr *av)
 		return (CMD_NOK("cd: Is not a directory"));
 	else if (access(path, R_OK) != 0)
 		return (CMD_NOK("cd: Permission denied"));
+	if (S_ISLNK(s.st_mode) && readlink(path, buf, 4096))
+		path = buf;
 	if (!(chd = chdir(path)) && msh_setenv(self, "PWD", getcwd(buf, 4096)) < 0)
 		return (RET_ERR);
 	return (chd ? CMD_NOK("cd: Cannot change dir") : RET_OK);

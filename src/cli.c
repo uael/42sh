@@ -25,14 +25,18 @@ int				main(int ac, char **av, char **env)
 {
 	t_msh	sh;
 	int		i;
+	t_ret	r;
 
 	g_sh = &sh;
 	if (ac > (i = 0) + 1)
 	{
 		while (++i < ac)
-			if (msh_init_file(&sh, env, av[i]) == 0 && msh(&sh) != RET_ERR)
+			if (msh_init_file(&sh, env, av[i]) == 0)
+			{
+				if (msh(&sh) == RET_ERR)
+					MSH_EXIT(EXIT_FAILURE, &sh);
 				msh_dtor(&sh);
-		msh_dtor(&sh);
+			}
 	}
 	else if (msh_init_stream(&sh, env, g_cin))
 		MSH_EXIT(EXIT_FAILURE, &sh);
@@ -40,8 +44,8 @@ int				main(int ac, char **av, char **env)
 	{
 		signal(SIGINT, msh_sigint_hdl);
 		while (msh_prompt(&sh, " \033[32m$\033[0m ") == RET_OK)
-			if (msh(&sh))
-				MSH_EXIT(EXIT_FAILURE, &sh);
+			if ((r = msh(&sh)))
+				MSH_EXIT(r < 0 ? EXIT_FAILURE : sh.st, &sh);
 	}
-	MSH_EXIT(EXIT_SUCCESS, &sh);
+	MSH_EXIT(sh.st, &sh);
 }

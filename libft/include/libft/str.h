@@ -34,7 +34,6 @@ extern char		*ft_strmchr(char const *s, char const *c);
 extern int		ft_strcmp(char const *s1, char const *s2);
 extern void		ft_strclr(char *s);
 extern char		*ft_strcpy(char *dest, char const *src);
-extern void		ft_strdel(char **s);
 extern char		*ft_strdup(char const *src);
 extern size_t	ft_strlen(char const *str);
 extern uint8_t	ft_strnbr(char *dst, int64_t n, uint8_t base);

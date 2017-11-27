@@ -39,7 +39,7 @@ inline char		**msh_getenv(t_msh *self, char *var)
 	if (!self->env.len || !(it = ft_vstr_begin(&self->env)))
 		return (NULL);
 	while (it && it != ft_vstr_end(&self->env))
-		if (ft_strbegw(var, *it) && (*it)[ft_strlen(var)] == '=')
+		if (*it && ft_strbegw(var, *it) && (*it)[ft_strlen(var)] == '=')
 			return (it);
 		else
 			++it;
@@ -56,7 +56,7 @@ inline t_ret	msh_unsetenv(t_msh *self, char *var)
 		return (RET_NOK);
 	i = 0;
 	while (i < ft_vstr_size(&self->env))
-		if ((it = ft_vstr_at(&self->env, i)) &&
+		if ((it = ft_vstr_at(&self->env, i)) && *it &&
 			ft_strbegw(var, *it) && (*it)[ft_strlen(var)] == '=')
 		{
 			if ((r = ft_vstr_remove(&self->env, i, it)))

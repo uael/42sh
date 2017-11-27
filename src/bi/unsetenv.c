@@ -16,14 +16,17 @@
 inline t_ret	msh_bi_unsetenv(t_msh *self, t_vstr *av)
 {
 	t_ret	ret;
+	size_t	i;
 
-	if (av->len != 2)
-		return (CMD_NOK("unsetenv: syntax error\nusage: unsetenv <key>"));
-	if (!av->buf[1] || ft_strchr(av->buf[1], '='))
-		return (CMD_NOK("unsetenv: syntax error\nusage: unsetenv <key>"));
-	if ((ret = msh_unsetenv(self, av->buf[1])) == RET_ERR)
-		return (RET_ERR);
-	if (ret == RET_NOK)
-		return (CMD_NOK("unsetenv: Environ not found"));
+	if (av->len < 2)
+		return (CMD_NOK("unset: syntax error\nusage: unset [keys...]"));
+	i = 0;
+	while (++i < av->len)
+		if (ft_strchr(av->buf[i], '='))
+			return (CMD_NOK("unset: syntax error\nusage: unset [keys...]"));
+		else if ((ret = msh_unsetenv(self, av->buf[i])) == RET_ERR)
+			return (RET_ERR);
+		else if (ret == RET_NOK)
+			ft_putl(2, "unset: Environ not found");
 	return (RET_OK);
 }

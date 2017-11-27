@@ -21,6 +21,7 @@ inline t_ret	msh_bi_env(t_msh *self, t_vstr *av)
 		return (RET_NOK);
 	i = 0;
 	while (i < self->env.len)
-		ft_putl(1, self->env.buf[i++]);
+		if (self->env.buf[i++])
+			ft_putl(1, self->env.buf[i - 1]);
 	return (RET_NOK);
 }
