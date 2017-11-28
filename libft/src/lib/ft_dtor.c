@@ -21,11 +21,42 @@ inline void		ft_pfree(void **ptr)
 	*ptr = NULL;
 }
 
-inline t_ret	ft_dtor(int code, t_dtor dtor, void *arg, char const *msg)
+int				ft_dtor(int code, t_dtor dtor, void *arg, char const *msg, ...)
 {
-	if (msg)
-		ft_putl(2, msg);
+	va_list	ap;
+
 	if (dtor && arg)
 		(*dtor)(arg, NULL);
-	return ((t_ret)code);
+	if (!msg)
+		return (code);
+	va_start(ap, msg);
+	ft_vputf(ISE(code) ? 2 : 1, msg, ap);
+	va_end(ap);
+	return (code);
+}
+
+int				ft_exit(int code, t_dtor dtor, void *arg, char const *msg, ...)
+{
+	va_list	ap;
+
+	if (dtor && arg)
+		(*dtor)(arg, NULL);
+	if (!msg)
+		return (code);
+	va_start(ap, msg);
+	ft_vputf(ISE(code) ? 2 : 1, msg, ap);
+	va_end(ap);
+	exit(code);
+}
+
+int				ft_ret(int code, char const *msg, ...)
+{
+	va_list	ap;
+
+	if (!msg)
+		return (code);
+	va_start(ap, msg);
+	ft_vputf(ISE(code) ? 2 : 1, msg, ap);
+	va_end(ap);
+	return (code);
 }

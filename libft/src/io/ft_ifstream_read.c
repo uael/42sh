@@ -13,12 +13,12 @@
 #include "libft/math.h"
 #include "libft/io/ifstream.h"
 
-static inline ssize_t	ifs_cpy(t_ifstream *s, char **b, size_t *l, size_t c)
+static inline t_sz	ifs_cpy(t_ifstream *s, char **b, size_t *l, size_t c)
 {
-	ssize_t	r;
+	t_sz	r;
 
 	r = s->len - c;
-	if (r >= (ssize_t)*l)
+	if (r >= (t_sz)*l)
 	{
 		if (*b)
 			ft_memcpy(*b, s->buf + c, *l * sizeof(char));
@@ -34,9 +34,9 @@ static inline ssize_t	ifs_cpy(t_ifstream *s, char **b, size_t *l, size_t c)
 	return (-3);
 }
 
-static inline ssize_t	ifs_buf(t_ifstream *s, char **b, size_t *l, size_t c)
+static inline t_sz	ifs_buf(t_ifstream *s, char **b, size_t *l, size_t c)
 {
-	ssize_t	r;
+	t_sz	r;
 
 	if (*l >= FT_PAGE_SIZE)
 	{
@@ -63,46 +63,45 @@ static inline ssize_t	ifs_buf(t_ifstream *s, char **b, size_t *l, size_t c)
 	return (-3);
 }
 
-inline ssize_t			ft_ifstream_read(t_ifstream *self, char *b, size_t len)
+inline t_sz			ft_ifstream_read(t_ifstream *self, char *b, size_t len)
 {
 	size_t	beg;
 	size_t	cur;
-	ssize_t	r;
+	t_sz	sz;
 
 	if (self->fd < 0)
-		return (ST_ERR(errno = EINVAL));
+		return (ERR(errno = EINVAL));
 	else
 	{
 		beg = len;
 		while (len)
 		{
 			cur = self->cur - self->beg;
-			if (self->len - cur > 0 && (r = ifs_cpy(self, &b, &len, cur)) >= 0)
-				return (r);
-			else if ((r = ifs_buf(self, &b, &len, cur)) >= 0)
-				return (beg - len + r);
-			if (r == -1)
-				return (ST_ERRNO);
-			if (r == -2)
+			if (self->len - cur > 0 && !ISE(sz = ifs_cpy(self, &b, &len, cur)))
+				return (sz);
+			else if (!ISE(sz = ifs_buf(self, &b, &len, cur)))
+				return (beg - len + sz);
+			if (sz == -1)
+				return (ENO);
+			if (sz == -2)
 				break ;
 		}
 		return (beg - len);
 	}
 }
 
-ssize_t					ft_ifstream_readf(t_ifstream *self, char *fmt, ...)
+t_sz				ft_ifstream_readf(t_ifstream *self, char *fmt, ...)
 {
 	va_list	ap;
-	ssize_t	n;
+	t_sz	sz;
 
 	va_start(ap, fmt);
-	n = ft_ifstream_vreadf(self, fmt, ap);
+	sz = ft_ifstream_vreadf(self, fmt, ap);
 	va_end(ap);
-	return (n);
+	return (sz);
 }
 
-inline ssize_t			ft_ifstream_vreadf(t_ifstream *self, char *fmt,
-	va_list ap)
+inline t_sz			ft_ifstream_vreadf(t_ifstream *self, char *fmt, va_list ap)
 {
 	(void)self;
 	(void)fmt;

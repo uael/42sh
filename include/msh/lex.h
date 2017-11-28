@@ -16,10 +16,9 @@
 # include "sh.h"
 # include "toks.h"
 
-extern t_ret	msh_lex(t_lexer *self);
+extern t_st		msh_lex(t_lexer *self);
 extern t_tok	*msh_peek(t_msh *self);
 extern t_tok	*msh_peekn(t_msh *self, size_t n);
 extern t_tok	*msh_next(t_msh *self, t_tok **next);
-extern t_tok	*msh_consume(t_msh *self, uint8_t id);
 
 #endif

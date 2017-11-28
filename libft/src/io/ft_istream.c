@@ -19,7 +19,7 @@ static t_istream	g_cin_pvt =
 
 t_istream			*g_cin = &g_cin_pvt;
 
-inline int			ft_istream_open(t_istream *self, char const *filename)
+inline t_st			ft_istream_open(t_istream *self, char const *filename)
 {
 	self->kind = ISTREAM_FILE;
 	return (ft_ifstream_open(&self->u.file, filename));
@@ -37,9 +37,9 @@ inline void			ft_istream_mnopen(t_istream *s, char const *str, size_t n)
 	return (ft_imstream_nopen(&s->u.mem, str, n));
 }
 
-inline int			ft_istream_close(t_istream *self)
+inline t_st			ft_istream_close(t_istream *self)
 {
 	if (self->kind == ISTREAM_FILE)
 		return (ft_ifstream_close(&self->u.file));
-	return (ST_OK);
+	return (OK);
 }

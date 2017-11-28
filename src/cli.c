@@ -21,31 +21,46 @@ inline void		msh_sigint_hdl(int sign)
 	msh_prompt(g_sh, " \033[32m$\033[0m ");
 }
 
+inline t_st 	main_av(t_msh *sh, int ac, char **av, char **env)
+{
+	t_st 	st;
+	int		i;
+
+	i = 0;
+	while (++i < ac)
+		if (ST_OK(st = msh_init_file(sh, env, av[i])))
+		{
+			if (ISE(st = msh(sh)))
+				return (ft_exit(ST_TOENO(st), (t_dtor)msh_dtor, sh, "%s: %e",
+					"msh", ST_TOENO(st)));
+			msh_dtor(sh);
+		}
+		else if (ISE(st))
+			ft_putf(2, "%s: %e", "msh", ST_TOENO(st));
+	return (ft_dtor(sh->st, (t_dtor)msh_dtor, &sh, NULL));
+}
+
+inline t_st 	main_stdin(t_msh *sh, int ac, char **av, char **env)
+{
+	t_st 	st;
+
+	if (ISE(st = msh_init_stream(sh, env, g_cin)))
+		return (ft_dtor(ST_TOENO(st), (t_dtor)msh_dtor, &sh, "%s: %e",
+			"msh", ST_TOENO(st)));
+	signal(SIGINT, msh_sigint_hdl);
+	while (ST_OK(msh_prompt(sh, " \033[32m$\033[0m ")))
+		if (ISE(msh(sh)))
+			return (ft_dtor(ST_TOENO(st), (t_dtor) msh_dtor, &sh, "%s: %e",
+				"msh", ST_TOENO(st)));
+	return (ft_dtor(sh->st, (t_dtor)msh_dtor, &sh, NULL));
+}
+
 int				main(int ac, char **av, char **env)
 {
 	t_msh	sh;
-	int		i;
 
-	ft_putf(1, "yop je suis %s, j'ai %d ans\n", "abel", 25);
 	g_sh = &sh;
-	if (ac > (i = 0) + 1)
-	{
-		while (++i < ac)
-			if (msh_init_file(&sh, env, av[i]) == 0)
-			{
-				if (msh(&sh) == RET_ERR)
-					MSH_EXIT(EXIT_FAILURE, &sh);
-				msh_dtor(&sh);
-			}
-	}
-	else if (msh_init_stream(&sh, env, g_cin))
-		MSH_EXIT(EXIT_FAILURE, &sh);
-	else
-	{
-		signal(SIGINT, msh_sigint_hdl);
-		while (msh_prompt(&sh, " \033[32m$\033[0m ") == RET_OK)
-			if (msh(&sh))
-				MSH_EXIT(sh.st, &sh);
-	}
-	MSH_EXIT(sh.st, &sh);
+	if (ac > 1)
+		return (main_av(&sh, ac, av, env));
+	return (main_stdin(&sh, ac, av, env));
 }

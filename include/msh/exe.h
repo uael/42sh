@@ -17,10 +17,10 @@
 
 # define CMD_NOK(msg) ft_dtor(RET_NOK, NULL, NULL, (msg))
 
-typedef t_ret	(*t_cmd)(t_msh *, t_vstr *);
+typedef t_st	(*t_cmd)(t_msh *, t_vstr *);
 
-extern t_ret	msh_exe_av(t_msh *self, t_vstr *av, char *exe);
-extern t_ret	msh_exe_run(t_msh *self, t_vstr *av);
-extern t_ret	msh_exe_lookup(t_msh *self, char *file, int mode, char *exe);
+extern t_st		msh_exe_av(t_msh *self, t_vstr *av, char *exe);
+extern t_st		msh_exe_run(t_msh *self, t_vstr *av);
+extern t_st		msh_exe_lookup(t_msh *self, char *file, int mode, char *exe);
 
 #endif

@@ -12,7 +12,7 @@
 
 #include "msh.h"
 
-inline t_ret	msh_initenv(t_msh *self, char **env)
+inline t_st		msh_initenv(t_msh *self, char **env)
 {
 	char	**it;
 	ssize_t	i;
@@ -22,14 +22,14 @@ inline t_ret	msh_initenv(t_msh *self, char **env)
 		while (env[++i])
 		{
 			if (!(it = ft_vstr_push(&self->env)))
-				return (RET_ERR);
+				return (ENO);
 			else if (!(*it = ft_strdup(env[i])))
-				return (RET_ERR);
+				return (ENO);
 		}
 	if (!ft_vstr_grow(&self->env, 1))
-		return (RET_ERR);
+		return (ENO);
 	FT_INIT(ft_vstr_end(&self->env), char *);
-	return (RET_OK);
+	return (OK);
 }
 
 inline char		**msh_getenv(t_msh *self, char *var)
@@ -46,14 +46,14 @@ inline char		**msh_getenv(t_msh *self, char *var)
 	return (NULL);
 }
 
-inline t_ret	msh_unsetenv(t_msh *self, char *var)
+inline t_st		msh_unsetenv(t_msh *self, char *var)
 {
 	size_t	i;
 	char	**it;
 	t_bool	r;
 
 	if (!self->env.len)
-		return (RET_NOK);
+		return (NOK);
 	i = 0;
 	while (i < ft_vstr_size(&self->env))
 		if ((it = ft_vstr_at(&self->env, i)) && *it &&
@@ -61,49 +61,49 @@ inline t_ret	msh_unsetenv(t_msh *self, char *var)
 		{
 			if ((r = ft_vstr_remove(&self->env, i, it)))
 				free(*it);
-			return (r ? RET_OK : RET_ERR);
+			return (r ? OK : ENO);
 		}
 		else
 			++i;
-	return (RET_NOK);
+	return (NOK);
 }
 
-inline t_ret	msh_setenv(t_msh *self, char *var, char *val)
+inline t_st		msh_setenv(t_msh *self, char *var, char *val)
 {
 	char **it;
 
 	if ((it = msh_getenv(self, var)))
 		free(*it);
 	else if (!(it = ft_vstr_push(&self->env)))
-		return (RET_ERR);
+		return (ENO);
 	if (!(*it = malloc((ft_strlen(var) + (val ? ft_strlen(val) : 0) + 2)
 		* sizeof(char))))
-		return (RET_ERR);
+		return (ENO);
 	ft_strcpy(*it, var);
 	(!ft_strrchr(*it, '=') ? ft_strcat(*it, "=") : NULL);
 	(val ? ft_strcat(*it, val) : NULL);
 	if (!ft_vstr_grow(&self->env, 1))
-		return (RET_ERR);
+		return (ENO);
 	FT_INIT(ft_vstr_end(&self->env), char *);
-	return (RET_OK);
+	return (OK);
 }
 
-inline t_ret	msh_envadd(t_msh *self, char *var, char *val)
+inline t_st		msh_envadd(t_msh *self, char *var, char *val)
 {
 	char **it;
 
 	if (msh_getenv(self, var))
-		return (RET_OK);
+		return (OK);
 	else if (!(it = ft_vstr_push(&self->env)))
-		return (RET_ERR);
+		return (ENO);
 	if (!(*it = malloc((ft_strlen(var) + (val ? ft_strlen(val) : 0) + 2)
 		* sizeof(char))))
-		return (RET_ERR);
+		return (ENO);
 	ft_strcpy(*it, var);
 	(!ft_strrchr(*it, '=') ? ft_strcat(*it, "=") : NULL);
 	(val ? ft_strcat(*it, val) : NULL);
 	if (!ft_vstr_grow(&self->env, 1))
-		return (RET_ERR);
+		return (ENO);
 	FT_INIT(ft_vstr_end(&self->env), char *);
-	return (RET_OK);
+	return (OK);
 }

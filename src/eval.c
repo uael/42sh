@@ -12,49 +12,31 @@
 
 #include "msh/eval.h"
 
-static inline t_ret	msh_eval_word(t_msh *self, t_tok *tok)
+static inline t_st	msh_eval_word(t_msh *self, t_tok *tok)
 {
 	t_vstr		av;
-	t_ret		ret;
+	t_st		st;
 	t_dstr		*ident;
-	char		exe[4096];
 	t_cmd		bi;
 
 	if ((bi = msh_bi(ft_tok_ident(tok)->buf)))
 	{
-		if (msh_exe_av(self, &av, ft_tok_ident(tok)->buf) == RET_ERR)
-			return (RET_ERR);
+		if (ISE(st = msh_exe_av(self, &av, ft_tok_ident(tok)->buf)))
+			return (st);
 		return (ft_dtor(self->st = (*bi)(self, &av),
 			(t_dtor)ft_vstr_dtor, &av, NULL));
 	}
 	ident = ft_tok_ident(tok);
-	if ((ret = msh_exe_lookup(self, ident->buf, S_IFREG | S_IXUSR, exe)) != 0)
-	{
-		if ((self->st = RET_NOK) && ret != RET_ERR)
-			ft_putl(2, "msh: Command not found");
-		return (msh_exe_av(self, NULL, NULL) < 0 ? RET_ERR : (t_ret)self->st);
-	}
-	if (msh_exe_av(self, &av, exe) == RET_ERR)
-		return (RET_ERR);
-	ret = msh_exe_run(self, &av);
+	if (ISE(st = msh_exe_av(self, &av, ident->buf)))
+		return (st);
+	st = msh_exe_run(self, &av);
 	ft_vstr_dtor(&av, NULL);
-	return (ret);
+	return (st);
 }
 
-inline t_ret		msh_eval(t_msh *self, t_tok *tok)
+inline t_st			msh_eval(t_msh *self, t_tok *tok)
 {
-	char	buf[4096];
-
 	if (tok->id == MSH_TOK_WORD)
 		return (msh_eval_word(self, tok));
-	else
-	{
-		ft_puts(2, "unexpected token '");
-		buf[ft_intstr(buf, tok->id, 10)] = 0;
-		ft_puts(2, buf);
-		if (ft_isprint(tok->id) && ft_putl(2, "', '"))
-			ft_putc(2, tok->id);
-		ft_putl(2, "'");
-	}
-	return (RET_NOK);
+	return (ft_ret(NOK, "%s: Unexpected token '%c'", "msh", tok->id));
 }

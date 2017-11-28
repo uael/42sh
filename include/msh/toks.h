@@ -63,7 +63,7 @@ enum		e_msh_tok
 	MSH_TOK_RCURLY = '}',
 };
 
-extern t_ret	msh_tok_word(t_tok *tok, char peek, t_src *src);
-extern t_ret	msh_tok_syntax(t_tok *tok, char peek, t_src *src);
+extern t_st		msh_tok_word(t_tok *tok, char peek, t_src *src);
+extern t_st		msh_tok_syntax(t_tok *tok, char peek, t_src *src);
 
 #endif

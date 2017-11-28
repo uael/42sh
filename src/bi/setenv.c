@@ -13,15 +13,16 @@
 #include "msh/bi.h"
 #include "msh/env.h"
 
-inline t_ret	msh_bi_setenv(t_msh *self, t_vstr *av)
+inline t_st	msh_bi_setenv(t_msh *self, t_vstr *av)
 {
 	if (av->len == 1)
 		return (msh_bi_env(self, av));
 	if (av->len < 2 || av->len > 3 || !av->buf[1] ||
 		ft_strchr(av->buf[1], '=') ||
 		(av->len == 3 && ft_strchr(av->buf[2], '=')))
-		return (CMD_NOK("export: syntax error\nusage: export key [val]"));
+		return (ft_ret(NOK, "%s: %s", "export", "Syntax error"));
 	if (!ft_isalpha(*av->buf[1]))
-		return (CMD_NOK("export: not an identifier\nusage: export key [val]"));
+		return (ft_ret(NOK, "%s: %s '%s'", "export", "Not an identifier",
+			av->buf[1]));
 	return (msh_setenv(self, av->buf[1], av->len == 3 ? av->buf[2] : NULL));
 }

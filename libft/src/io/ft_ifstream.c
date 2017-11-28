@@ -12,22 +12,22 @@
 
 #include "libft/io/ifstream.h"
 
-inline int	ft_ifstream_open(t_ifstream *self, char const *filename)
+inline t_st	ft_ifstream_open(t_ifstream *self, char const *filename)
 {
 	FT_INIT(self, t_ifstream);
 	if ((self->fd = open(filename, O_RDONLY)) < 0)
-		return (ST_ERRNO);
+		return (ENO);
 	self->filename = filename;
-	return (ST_OK);
+	return (OK);
 }
 
-inline int	ft_ifstream_close(t_ifstream *self)
+inline t_st	ft_ifstream_close(t_ifstream *self)
 {
 	if (self->filename && self->fd > 1)
 	{
 		ft_ifstream_flush(self);
 		if (close(self->fd) < 0)
-			return (ST_ERRNO);
+			return (ENO);
 		if (self->buf)
 		{
 			free(self->buf);
@@ -35,5 +35,5 @@ inline int	ft_ifstream_close(t_ifstream *self)
 		}
 		self->filename = NULL;
 	}
-	return (ST_OK);
+	return (OK);
 }

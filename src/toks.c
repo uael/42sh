@@ -17,15 +17,16 @@
 #define TOK(T) MSH_TOK_ ## T
 #define MATCH(tok, src, n, id) ft_lexer_match(tok, src, n, id)
 
-inline t_ret			msh_tok_syntax(t_tok *tok, char peek, t_src *src)
+inline t_st				msh_tok_syntax(t_tok *tok, char peek, t_src *src)
 {
 	char	b[3];
 	char	*c;
 	ssize_t	n;
+	t_st	st;
 
 	n = 0;
-	if ((b[n++] = peek) != '\n')
-		while (n < 3 && ft_src_peek(src, b + n, (size_t)n) == RET_OK)
+	if ((b[n++] = peek) != '\n' && !(st = OK))
+		while (n < 3 && ST_OK(st = ft_src_peek(src, b + n, (size_t)n)))
 			if (b[n++] == '\n')
 				break ;
 	if (n == 3 && b[0] == '>' && b[1] == '>' && b[2] == '-')
@@ -42,7 +43,7 @@ inline t_ret			msh_tok_syntax(t_tok *tok, char peek, t_src *src)
 		return (MATCH(tok, src, 2, b[0] == '<' ? TOK(LAMP) : TOK(LAND)));
 	if (n >= 1 && (c = ft_strchr("=\t\n !&()-;<=>[]{|}", peek)))
 		return (MATCH(tok, src, 1, (uint8_t)*c));
-	return (RET_NOK);
+	return (ISE(st) ? st : OK);
 }
 
 static inline uint8_t	msh_keyword(char const *s, size_t l)

@@ -16,7 +16,7 @@
 #include "msh/bi.h"
 #include "msh/env.h"
 
-static char		*msh_cd_dir(t_msh *self, t_vstr *av, t_bool p)
+static char	*msh_cd_dir(t_msh *self, t_vstr *av, t_bool p)
 {
 	char	**env;
 
@@ -31,7 +31,7 @@ static char		*msh_cd_dir(t_msh *self, t_vstr *av, t_bool p)
 	return (NULL);
 }
 
-static t_ret	msh_cd_test(char *exe, t_bool p)
+static t_st	msh_cd_test(char *path, t_bool p)
 {
 	struct stat	s;
 	char		path[PATH_MAX + 1];
@@ -41,42 +41,41 @@ static t_ret	msh_cd_test(char *exe, t_bool p)
 	i = -1;
 	while (++i <= 40)
 	{
-		if (!*exe || lstat(exe, &s) < 0 != 0)
-			return (CMD_NOK("cd: No such file or directory"));
+		if (!*path || lstat(path, &s) < 0 != 0)
+			return (ft_ret(NOK, "%s: %e", "cd", errno));
 		if (!S_ISDIR(s.st_mode) && !S_ISLNK(s.st_mode))
-			return (CMD_NOK("cd: Is not a directory"));
-		if (!S_ISLNK(s.st_mode) && !S_ISDIR(s.st_mode) )
-			return (CMD_NOK("cd: Not a directory"));
-		if (!S_ISLNK(s.st_mode) && access(exe, R_OK) != 0)
-			return (CMD_NOK("cd: Permission denied"));
-		if (p || !S_ISLNK(s.st_mode) || !(l = readlink(exe, path, PATH_MAX)))
-			return (RET_OK);
+			return (ft_ret(NOK, "%s: %e", "cd", errno));
+		if (!S_ISLNK(s.st_mode) && access("cd", R_OK) != 0)
+			return (ft_ret(NOK, "%s: %e", "cd", errno));
+		if (p || !S_ISLNK(s.st_mode) || !(l = readlink(path, path, PATH_MAX)))
+			return (OK);
 		path[l] = '\0';
-		ft_strcpy(exe, path);
+		ft_strcpy(path, path);
 	}
-	return (CMD_NOK("cd: Too many symbolic links"));
+	return (ft_ret(NOK, "%s: %e", "cd", errno = ELOOP));
 }
 
-inline t_ret	msh_bi_cd(t_msh *self, t_vstr *av)
+inline t_st	msh_bi_cd(t_msh *self, t_vstr *av)
 {
 	char	buf[PATH_MAX + 1];
 	char	*path;
 	char	**pwd;
 	int		chd;
-	t_ret	r;
+	t_st	st;
 
 	if (av->len > 3)
-		return (CMD_NOK("cd: Invalid number of arguments provided"));
+		return (ft_ret(NOK, "%s: %e", "cd", E2BIG));
 	if (av->len == 3 && ft_strcmp("-P", av->buf[1]) != 0)
-		return (CMD_NOK("cd: Unrecognized option"));
+		return (ft_ret(NOK, "%s: %e '%s'", "cd", EINVAL, av->buf[1]));
 	if (!(path = msh_cd_dir(self, av, (t_bool)(av->len == 3))))
-		return (CMD_NOK("cd: Unable to retrieve path"));
-	if ((r = msh_cd_test(ft_strcpy(buf, path), (t_bool)(av->len == 3))) != 0)
-		return (r);
+		return (ft_ret(NOK, "%s: %s", "cd", "Environ is empty"));
+	if ((st = msh_cd_test(ft_strcpy(buf, path), (t_bool)(av->len == 3))) != 0)
+		return (st);
 	if ((pwd = msh_getenv(self, "PWD")) &&
-		msh_setenv(self, "OLDPWD", *pwd + 4) == RET_ERR)
-		return (RET_ERR);
-	if (!(chd = chdir(buf)) && msh_setenv(self, "PWD", getcwd(buf, 4096)) < 0)
-		return (RET_ERR);
-	return (chd ? CMD_NOK("cd: Cannot change dir") : RET_OK);
+		ISE(st = msh_setenv(self, "OLDPWD", *pwd + 4)))
+		return (st);
+	if (!(chd = chdir(buf)) &&
+		ISE(st = msh_setenv(self, "PWD", getcwd(buf, 4096))))
+		return (st);
+	return (chd ? ft_ret(NOK, "%s: %e", "cd", errno) : OK);
 }

@@ -26,10 +26,10 @@ typedef struct	s_msh
 	int			st;
 }				t_msh;
 
-extern t_ret	msh_init_stream(t_msh *self, char **env, t_istream *stream);
-extern t_ret	msh_init_file(t_msh *self, char **env, char const *filename);
+extern t_st		msh_init_stream(t_msh *self, char **env, t_istream *stream);
+extern t_st		msh_init_file(t_msh *self, char **env, char const *filename);
 extern void		msh_dtor(t_msh *self);
-extern t_ret	msh_prompt(t_msh *self, char *prompt);
-extern t_ret	msh(t_msh *self);
+extern t_st		msh_prompt(t_msh *self, char *prompt);
+extern t_st		msh(t_msh *self);
 
 #endif

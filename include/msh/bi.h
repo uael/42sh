@@ -16,11 +16,11 @@
 # include "exe.h"
 
 extern t_cmd	msh_bi(char *exe);
-extern t_ret	msh_bi_echo(t_msh *self, t_vstr *av);
-extern t_ret	msh_bi_cd(t_msh *self, t_vstr *av);
-extern t_ret	msh_bi_setenv(t_msh *self, t_vstr *av);
-extern t_ret	msh_bi_unsetenv(t_msh *self, t_vstr *av);
-extern t_ret	msh_bi_env(t_msh *self, t_vstr *av);
-extern t_ret	msh_bi_exit(t_msh *self, t_vstr *av);
+extern t_st		msh_bi_echo(t_msh *self, t_vstr *av);
+extern t_st		msh_bi_cd(t_msh *self, t_vstr *av);
+extern t_st		msh_bi_setenv(t_msh *self, t_vstr *av);
+extern t_st		msh_bi_unsetenv(t_msh *self, t_vstr *av);
+extern t_st		msh_bi_env(t_msh *self, t_vstr *av);
+extern t_st		msh_bi_exit(t_msh *self, t_vstr *av);
 
 #endif

@@ -18,6 +18,6 @@
 # include "bi.h"
 # include "lex.h"
 
-extern t_ret	msh_eval(t_msh *self, t_tok *tok);
+extern t_st	msh_eval(t_msh *self, t_tok *tok);
 
 #endif

@@ -38,7 +38,9 @@ inline ssize_t	ft_vputf(int fd, char const *fmt, va_list ap)
 			sz += ft_puts(fd, va_arg(ap, char const *));
 		else if (*sp == 'c')
 			sz += ft_putc(fd, (char)va_arg(ap, int));
-		else if (*sp == 'd')
+		else if (*sp == 'f')
 			sz += ft_putd(fd, (float)va_arg(ap, double), 10, 10);
+		else if (*sp == 'e')
+			sz += ft_puts(fd, ft_strerr(va_arg(ap, int)));
 	return (sz + write(fd, fmt, ft_strlen(fmt)));
 }
