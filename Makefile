@@ -30,7 +30,7 @@ SRC_NAME = bi/cd.c bi/echo.c bi/env.c bi/exit.c bi/setenv.c bi/unsetenv.c \
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	make -C $(LFT_PATH)
+	+$(MAKE) -C $(LFT_PATH)
 	$(CC) -o $(NAME) $(OBJ) -L$(LFT_PATH) -lft
 
 

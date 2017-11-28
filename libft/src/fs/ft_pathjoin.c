@@ -72,7 +72,8 @@ inline char		*ft_pathreal(char const *p)
 	size_t	i;
 
 	ft_dstr_ctor(&pth);
-	if (!ft_dstr_append(&pth, p) || !getcwd(c, 4096) || !(i = ft_strlen(c)))
+	if (!ft_dstr_append(&pth, p) || !getcwd(c, 4096) || !(i = ft_strlen(c)) ||
+		!pth.len)
 		return (NULL);
 	if (c[i - 1] == '/')
 		c[i - 1] = '\0';
@@ -86,6 +87,8 @@ inline char		*ft_pathreal(char const *p)
 	while ((s = ft_strstr(pth.buf, "..")))
 		if (!ft_pathprev(&pth, s, c))
 			return (NULL);
+	if (pth.len > 1 && *(ft_dstr_end(&pth) - 1) == '/')
+		ft_dstr_pop(&pth, NULL);
 	return (pth.buf);
 }
 
