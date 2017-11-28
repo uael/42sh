@@ -12,7 +12,7 @@
 
 #include "msh/bi.h"
 
-#define M_NBREQ "Numeric argument required"
+#define M_NREQ "Numeric argument required"
 
 inline t_st	sh_bi_exit(t_sh *self, t_vstr *av)
 {
@@ -26,11 +26,11 @@ inline t_st	sh_bi_exit(t_sh *self, t_vstr *av)
 		SH_EXIT(self->st, self, NULL);
 	a = av->buf[1];
 	if (!(i = ft_strlen(a)) || i > 19)
-		SH_EXIT(NOK, "%s: %s, got '%s' instead\n", "exit", M_NBREQ, a);
+		SH_EXIT(NOK, self, "%s: %s, got '%s' instead\n", "exit", M_NREQ, a);
 	j = 0;
 	while (j < i)
 		if (!ft_isdigit(a[j]) && !ft_isspace(a[j]))
-			SH_EXIT(NOK, "%s: %s, got '%s' instead\n", "exit", M_NBREQ, a);
+			SH_EXIT(NOK, self, "%s: %s, got '%s' instead\n", "exit", M_NREQ, a);
 		else
 			j++;
 	return (SH_EXIT((int)ft_atoi(a), self, NULL));
