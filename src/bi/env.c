@@ -13,6 +13,7 @@
 #include "msh/bi.h"
 
 #define ENV_I (1 << 0)
+#define ENV_V (1 << 1)
 
 static t_st	env_parse_opts(t_vstr *av, uint8_t *opts)
 {

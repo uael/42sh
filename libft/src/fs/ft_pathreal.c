@@ -58,7 +58,7 @@ static inline ssize_t	pth_resolve(char *res, size_t rem, size_t len, char *l)
 	return (len);
 }
 
-inline char				*ft_pathreal(char const *path, char *res)
+inline char				*ft_pathreal(char const *path, char *res, char *cwd)
 {
 	size_t	rem;
 	size_t	len;
@@ -72,7 +72,7 @@ inline char				*ft_pathreal(char const *path, char *res)
 		len = 1;
 		rem = ft_strlcpy(left, path + 1, sizeof(left));
 	}
-	else if (!getcwd(res, PATH_MAX))
+	else if (cwd != res && !ft_strcpy(res, cwd ? cwd : getcwd(res, PATH_MAX)))
 		return (NULL);
 	else
 	{
