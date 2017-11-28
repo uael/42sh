@@ -41,22 +41,11 @@ inline t_st		sh_exe_av(t_sh *self, t_vstr *av, char *exe)
 
 static t_st		sh_exe_test(char *exe, int mode)
 {
-	struct stat	s;
-	char		path[PATH_MAX + 1];
-	int			i;
-	ssize_t		l;
+	struct stat s;
 
-	i = -1;
-	while (++i <= 40)
-	{
-		if (!*exe || lstat(exe, &s) < 0 || !(s.st_mode & mode))
-			return (NOK);
-		if (!S_ISLNK(s.st_mode) || !(l = readlink(exe, path, PATH_MAX)))
-			return (OK);
-		path[l] = '\0';
-		ft_strcpy(exe, path);
-	}
-	return (ERR(errno = ELOOP));
+	if (!*exe || lstat(exe, &s) < 0 || !(s.st_mode & mode))
+		return (NOK);
+	return (OK);
 }
 
 inline t_st		sh_exe_lookup(t_sh *self, char *f, int mode, char exe[])

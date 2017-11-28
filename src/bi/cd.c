@@ -31,28 +31,19 @@ static char	*sh_cd_dir(t_sh *self, t_vstr *av, t_bool p)
 	return (NULL);
 }
 
-static t_st	sh_cd_test(char *path, t_bool p)
+static t_st	sh_cd_test(char *path)
 {
 	struct stat	s;
-	char		lnk[PATH_MAX + 1];
-	int			i;
-	ssize_t		l;
 
-	i = -1;
-	while (++i <= 40)
-	{
-		if (!*path || lstat(path, &s) < 0 != 0)
-			return (ft_ret(NOK, "%s: %e\n", "cd", errno));
-		if (!S_ISDIR(s.st_mode) && !S_ISLNK(s.st_mode))
-			return (ft_ret(NOK, "%s: %e\n", "cd", ENOTDIR));
-		if (!S_ISLNK(s.st_mode) && access(path, R_OK) != 0)
-			return (ft_ret(NOK, "%s: %e\n", "cd", errno));
-		if (p || !S_ISLNK(s.st_mode) || !(l = readlink(path, lnk, PATH_MAX)))
-			return (OK);
-		lnk[l] = '\0';
-		ft_strcpy(path, lnk);
-	}
-	return (ft_ret(NOK, "%s: %e", "cd", errno = ELOOP));
+	if (!*path || lstat(path, &s) < 0 != 0)
+		return (ft_ret(NOK, "%s: %e\n", "cd", errno));
+	if (!S_ISDIR(s.st_mode) && !S_ISLNK(s.st_mode))
+		return (ft_ret(NOK, "%s: %e\n", "cd", ENOTDIR));
+	if (!S_ISLNK(s.st_mode) && access(path, R_OK) != 0)
+		return (ft_ret(NOK, "%s: %e\n", "cd", errno));
+	if (access(path, X_OK) != 0)
+		return (ft_ret(NOK, "%s: %e\n", "cd", errno));
+	return (OK);
 }
 
 inline t_st	sh_bi_cd(t_sh *self, t_vstr *av)
@@ -69,7 +60,7 @@ inline t_st	sh_bi_cd(t_sh *self, t_vstr *av)
 		return (ft_ret(NOK, "%s: %e '%s'\n", "cd", EINVAL, av->buf[1]));
 	if (!(path = sh_cd_dir(self, av, (t_bool)(av->len == 3))))
 		return (ft_ret(NOK, "%s: %s\n", "cd", "Environ is empty"));
-	if ((st = sh_cd_test(ft_strcpy(buf, path), (t_bool)(av->len == 3))) != 0)
+	if ((st = sh_cd_test(ft_strcpy(buf, path))) != 0)
 		return (st);
 	if ((pwd = sh_getenv(self, "PWD")) &&
 		ISE(st = sh_setenv(self, "OLDPWD", *pwd + 4)))
