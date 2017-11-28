@@ -33,11 +33,11 @@ static inline t_st	main_av(t_sh *sh, int ac, char **av, char **env)
 		if (ST_OK(st = sh_init_file(sh, env, av[i])))
 		{
 			if (ISE(st = msh(sh)))
-				SH_EXIT(ST_TOENO(st), sh, "%s: %e\n", "msh", ST_TOENO(st));
+				SH_EXIT(ST_TOENO(st), sh, "%s: %e\n", "21sh", ST_TOENO(st));
 			sh_dtor(sh);
 		}
 		else if (ISE(st))
-			ft_putf(2, "%s: %e\n", "msh", ST_TOENO(st));
+			ft_putf(2, "%s: %e\n", "21sh", ST_TOENO(st));
 	return (ft_dtor(sh->st, (t_dtor)sh_dtor, &sh, NULL));
 }
 
@@ -46,13 +46,13 @@ static inline t_st	main_stdin(t_sh *sh, char **env)
 	t_st	st;
 
 	if (ISE(st = sh_init_stream(sh, env, g_cin)))
-		SH_EXIT(ST_TOENO(st), sh, "%s: %e\n", "msh", ST_TOENO(st));
+		SH_EXIT(ST_TOENO(st), sh, "%s: %e\n", "21sh", ST_TOENO(st));
 	if (ST_NOK(st))
 		return (ft_dtor(sh->st, (t_dtor)sh_dtor, sh, NULL));
 	signal(SIGINT, sh_sigint_hdl);
 	while (ST_OK(sh_prompt(sh, " \033[32m$\033[0m ")))
 		if (ISE(st = msh(sh)))
-			SH_EXIT(ST_TOENO(st), sh, "%s: %e\n", "msh", ST_TOENO(st));
+			SH_EXIT(ST_TOENO(st), sh, "%s: %e\n", "21sh", ST_TOENO(st));
 		else if (ST_NOK(st))
 			break ;
 	return (ft_dtor(sh->st, (t_dtor)sh_dtor, sh, NULL));

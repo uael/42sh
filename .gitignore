@@ -2,6 +2,6 @@
 cmake-build-debug/
 out/
 obj/
-minishell
-minishell.exe
+21sh
+21sh.exe
 *.a

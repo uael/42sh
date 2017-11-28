@@ -30,7 +30,7 @@ inline t_tok	*sh_peek(t_sh *self)
 
 	if (ISE(st = ft_lexer_peek(&self->lexer, 0, &tok)))
 		ft_exit(ST_TOENO(st), (t_dtor)sh_dtor, self, "%s: %e\n",
-			"msh", ST_TOENO(st));
+			"21sh", ST_TOENO(st));
 	return (ST_OK(st) ? tok : NULL);
 }
 
@@ -41,7 +41,7 @@ inline t_tok	*sh_peekn(t_sh *self, size_t n)
 
 	if (ISE(st = ft_lexer_peek(&self->lexer, n, &tok)))
 		ft_exit(ST_TOENO(st), (t_dtor)sh_dtor, self, "%s: %e\n",
-			"msh", ST_TOENO(st));
+			"21sh", ST_TOENO(st));
 	return (ST_OK(st) ? tok : NULL);
 }
 
@@ -52,7 +52,7 @@ inline t_tok	*sh_next(t_sh *self, t_tok **next)
 
 	if (ISE(sz = ft_lexer_next(&self->lexer, 1, &tok)))
 		ft_exit((int)ST_TOENO(sz), (t_dtor)sh_dtor, self, "%s: %e\n",
-			"msh", ST_TOENO(sz));
+			"21sh", ST_TOENO(sz));
 	if (next)
 		*next = sh_peek(self);
 	return (SZ_OK(sz) ? tok : NULL);

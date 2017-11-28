@@ -1,2 +1,2 @@
-# minishell
-minishell @42
+# 21sh
+21sh @42

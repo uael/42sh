@@ -10,7 +10,7 @@
 #                                                                              #
 # **************************************************************************** #
 
-NAME = minishell
+NAME = 21sh
 CC = gcc
 CC_FLAGS = -Wall -Werror -Wextra -I$(LFT_PATH)/include -O3
 
