@@ -15,39 +15,39 @@
 
 #include "msh.h"
 
-inline t_st	msh_init_stream(t_msh *self, char **env, t_istream *stream)
+inline t_st	sh_init_stream(t_sh *self, char **env, t_istream *stream)
 {
 	t_st st;
 
-	FT_INIT(self, t_msh);
+	FT_INIT(self, t_sh);
 	ft_vstr_ctor(&self->env);
-	if (ST_NOK(st = msh_initenv(self, env)))
+	if (ST_NOK(st = sh_initenv(self, env)))
 		return (st);
 	if (ST_NOK(st = ft_lexer_init_stream(&self->lexer, stream)))
 		return (st);
-	return (msh_lex(&self->lexer));
+	return (sh_lex(&self->lexer));
 }
 
-inline t_st	msh_init_file(t_msh *self, char **env, char const *filename)
+inline t_st	sh_init_file(t_sh *self, char **env, char const *filename)
 {
 	t_st st;
 
-	FT_INIT(self, t_msh);
+	FT_INIT(self, t_sh);
 	ft_vstr_ctor(&self->env);
-	if (ST_NOK(st = msh_initenv(self, env)))
+	if (ST_NOK(st = sh_initenv(self, env)))
 		return (st);
 	if (ST_NOK(st = ft_lexer_init_file(&self->lexer, filename)))
 		return (st);
-	return (msh_lex(&self->lexer));
+	return (sh_lex(&self->lexer));
 }
 
-inline void	msh_dtor(t_msh *self)
+inline void	sh_dtor(t_sh *self)
 {
 	ft_vstr_dtor(&self->env, (void (*)(char **))ft_pfree);
 	ft_lexer_dtor(&self->lexer);
 }
 
-inline t_st	msh_prompt(t_msh *self, char *prompt)
+inline t_st	sh_prompt(t_sh *self, char *prompt)
 {
 	size_t	l;
 	char	cwd[4096 + 1];
@@ -57,9 +57,9 @@ inline t_st	msh_prompt(t_msh *self, char *prompt)
 
 	if (!(p = getcwd(cwd, 4096)))
 		return (ENO);
-	if (ISE(st = msh_envadd(self, "PWD", p)))
+	if (ISE(st = sh_envadd(self, "PWD", p)))
 		return (st);
-	if ((home = msh_getenv(self, "HOME")) && ft_strbegw(*home + 5, p))
+	if ((home = sh_getenv(self, "HOME")) && ft_strbegw(*home + 5, p))
 	{
 		if (p[l = ft_strlen(*home + 5)] != '\0')
 			ft_memmove(p + 1, p + l, (ft_strlen(p) - l + 1) * sizeof(char));
@@ -72,19 +72,19 @@ inline t_st	msh_prompt(t_msh *self, char *prompt)
 	return (OK);
 }
 
-inline t_st	msh(t_msh *self)
+inline t_st	msh(t_sh *self)
 {
 	t_tok	*tok;
 	t_st	st;
 
 	while (1)
-		if (!(tok = msh_next(self, NULL)))
+		if (!(tok = sh_next(self, NULL)))
 			return (NOK);
 		else if (tok->id == '\n')
 			return (OK);
 		else if (ft_strchr(";\t ", tok->id))
 			continue ;
-		else if (ISE(st = msh_eval(self, tok)))
+		else if (ISE(st = sh_eval(self, tok)))
 			return (st);
 		else
 			ft_lexer_clean(&self->lexer);

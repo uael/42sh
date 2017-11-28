@@ -12,7 +12,7 @@
 
 #include "msh/bi.h"
 
-inline t_st	msh_bi_echo(t_msh *self, t_vstr *av)
+inline t_st	sh_bi_echo(t_sh *self, t_vstr *av)
 {
 	size_t i;
 

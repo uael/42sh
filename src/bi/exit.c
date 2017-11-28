@@ -14,7 +14,7 @@
 
 #define M_NBREQ "Numeric argument required"
 
-inline t_st	msh_bi_exit(t_msh *self, t_vstr *av)
+inline t_st	sh_bi_exit(t_sh *self, t_vstr *av)
 {
 	size_t	i;
 	size_t	j;

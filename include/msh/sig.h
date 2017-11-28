@@ -15,6 +15,6 @@
 
 # include <libft.h>
 
-extern void		msh_sigint_hdl(int sign);
+extern void		sh_sigint_hdl(int sign);
 
 #endif

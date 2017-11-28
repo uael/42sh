@@ -12,31 +12,31 @@
 
 #include "msh/eval.h"
 
-static inline t_st	msh_eval_word(t_msh *self, t_tok *tok)
+static inline t_st	sh_eval_word(t_sh *self, t_tok *tok)
 {
 	t_vstr		av;
 	t_st		st;
 	t_dstr		*ident;
 	t_cmd		bi;
 
-	if ((bi = msh_bi(ft_tok_ident(tok)->buf)))
+	if ((bi = sh_bi(ft_tok_ident(tok)->buf)))
 	{
-		if (ISE(st = msh_exe_av(self, &av, ft_tok_ident(tok)->buf)))
+		if (ISE(st = sh_exe_av(self, &av, ft_tok_ident(tok)->buf)))
 			return (st);
 		return (ft_dtor(self->st = (*bi)(self, &av),
 			(t_dtor)ft_vstr_dtor, &av, NULL));
 	}
 	ident = ft_tok_ident(tok);
-	if (ISE(st = msh_exe_av(self, &av, ident->buf)))
+	if (ISE(st = sh_exe_av(self, &av, ident->buf)))
 		return (st);
-	st = msh_exe_run(self, &av);
+	st = sh_exe_run(self, &av);
 	ft_vstr_dtor(&av, NULL);
 	return (st);
 }
 
-inline t_st			msh_eval(t_msh *self, t_tok *tok)
+inline t_st			sh_eval(t_sh *self, t_tok *tok)
 {
-	if (tok->id == MSH_TOK_WORD)
-		return (msh_eval_word(self, tok));
+	if (tok->id == SH_TOK_WORD)
+		return (sh_eval_word(self, tok));
 	return (ft_ret(NOK, "%s: Unexpected token '%c'\n", "msh", tok->id));
 }

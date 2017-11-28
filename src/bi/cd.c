@@ -16,22 +16,22 @@
 #include "msh/bi.h"
 #include "msh/env.h"
 
-static char	*msh_cd_dir(t_msh *self, t_vstr *av, t_bool p)
+static char	*sh_cd_dir(t_sh *self, t_vstr *av, t_bool p)
 {
 	char	**env;
 
 	if ((av->len == 1 + p || ft_strcmp(av->buf[1 + p], "~") == 0) &&
-		(env = msh_getenv(self, "HOME")))
+		(env = sh_getenv(self, "HOME")))
 		return (*env + 5);
 	if (av->len == 2 + p && ft_strcmp(av->buf[1 + p], "-") == 0 &&
-		(env = msh_getenv(self, "OLDPWD")))
+		(env = sh_getenv(self, "OLDPWD")))
 		return (*env + 7);
 	if (av->len == 2 + p)
 		return (av->buf[1 + p]);
 	return (NULL);
 }
 
-static t_st	msh_cd_test(char *path, t_bool p)
+static t_st	sh_cd_test(char *path, t_bool p)
 {
 	struct stat	s;
 	char		lnk[PATH_MAX + 1];
@@ -55,7 +55,7 @@ static t_st	msh_cd_test(char *path, t_bool p)
 	return (ft_ret(NOK, "%s: %e", "cd", errno = ELOOP));
 }
 
-inline t_st	msh_bi_cd(t_msh *self, t_vstr *av)
+inline t_st	sh_bi_cd(t_sh *self, t_vstr *av)
 {
 	char	buf[PATH_MAX + 1];
 	char	*path;
@@ -67,15 +67,15 @@ inline t_st	msh_bi_cd(t_msh *self, t_vstr *av)
 		return (ft_ret(NOK, "%s: %e\n", "cd", E2BIG));
 	if (av->len == 3 && ft_strcmp("-P", av->buf[1]) != 0)
 		return (ft_ret(NOK, "%s: %e '%s'\n", "cd", EINVAL, av->buf[1]));
-	if (!(path = msh_cd_dir(self, av, (t_bool)(av->len == 3))))
+	if (!(path = sh_cd_dir(self, av, (t_bool)(av->len == 3))))
 		return (ft_ret(NOK, "%s: %s\n", "cd", "Environ is empty"));
-	if ((st = msh_cd_test(ft_strcpy(buf, path), (t_bool)(av->len == 3))) != 0)
+	if ((st = sh_cd_test(ft_strcpy(buf, path), (t_bool)(av->len == 3))) != 0)
 		return (st);
-	if ((pwd = msh_getenv(self, "PWD")) &&
-		ISE(st = msh_setenv(self, "OLDPWD", *pwd + 4)))
+	if ((pwd = sh_getenv(self, "PWD")) &&
+		ISE(st = sh_setenv(self, "OLDPWD", *pwd + 4)))
 		return (st);
 	if (!(chd = chdir(buf)) &&
-		ISE(st = msh_setenv(self, "PWD", getcwd(buf, 4096))))
+		ISE(st = sh_setenv(self, "PWD", getcwd(buf, 4096))))
 		return (st);
 	return (chd ? ft_ret(NOK, "%s: %e\n", "cd", errno) : OK);
 }

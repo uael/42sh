@@ -12,7 +12,7 @@
 
 #include "msh.h"
 
-inline t_st		msh_initenv(t_msh *self, char **env)
+inline t_st		sh_initenv(t_sh *self, char **env)
 {
 	char	**it;
 	ssize_t	i;
@@ -32,7 +32,7 @@ inline t_st		msh_initenv(t_msh *self, char **env)
 	return (OK);
 }
 
-inline char		**msh_getenv(t_msh *self, char *var)
+inline char		**sh_getenv(t_sh *self, char *var)
 {
 	char **it;
 
@@ -46,7 +46,7 @@ inline char		**msh_getenv(t_msh *self, char *var)
 	return (NULL);
 }
 
-inline t_st		msh_unsetenv(t_msh *self, char *var)
+inline t_st		sh_unsetenv(t_sh *self, char *var)
 {
 	size_t	i;
 	char	**it;
@@ -68,11 +68,11 @@ inline t_st		msh_unsetenv(t_msh *self, char *var)
 	return (NOK);
 }
 
-inline t_st		msh_setenv(t_msh *self, char *var, char *val)
+inline t_st		sh_setenv(t_sh *self, char *var, char *val)
 {
 	char **it;
 
-	if ((it = msh_getenv(self, var)))
+	if ((it = sh_getenv(self, var)))
 		free(*it);
 	else if (!(it = ft_vstr_push(&self->env)))
 		return (ENO);
@@ -88,11 +88,11 @@ inline t_st		msh_setenv(t_msh *self, char *var, char *val)
 	return (OK);
 }
 
-inline t_st		msh_envadd(t_msh *self, char *var, char *val)
+inline t_st		sh_envadd(t_sh *self, char *var, char *val)
 {
 	char **it;
 
-	if (msh_getenv(self, var))
+	if (sh_getenv(self, var))
 		return (OK);
 	else if (!(it = ft_vstr_push(&self->env)))
 		return (ENO);
