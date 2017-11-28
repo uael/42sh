@@ -26,7 +26,7 @@ inline t_st	sh_bi_unsetenv(t_sh *self, t_vstr *av)
 	while (++i < av->len)
 		if (ft_strchr(av->buf[i], '='))
 			return (ft_ret(NOK, "%s: %s\n", "unset", "Syntax error"));
-		else if (ISE(st = sh_unsetenv(self, av->buf[i])))
+		else if (ISE(st = sh_unsetenv(&self->env, av->buf[i], 1)))
 			return (st);
 		else if (ST_NOK(st))
 			ft_ret((fst = NOK), "%s: %s '%s'\n",

@@ -22,7 +22,7 @@ inline t_st	sh_init_stream(t_sh *self, char **env, t_istream *stream)
 
 	FT_INIT(self, t_sh);
 	ft_vstr_ctor(&self->env);
-	if (ST_NOK(st = sh_initenv(self, env)))
+	if (ST_NOK(st = sh_initenv(&self->env, env)))
 		return (st);
 	if (ST_NOK(st = ft_lexer_init_stream(&self->lexer, stream)))
 		return (st);
@@ -35,7 +35,7 @@ inline t_st	sh_init_file(t_sh *self, char **env, char const *filename)
 
 	FT_INIT(self, t_sh);
 	ft_vstr_ctor(&self->env);
-	if (ST_NOK(st = sh_initenv(self, env)))
+	if (ST_NOK(st = sh_initenv(&self->env, env)))
 		return (st);
 	if (ST_NOK(st = ft_lexer_init_file(&self->lexer, filename)))
 		return (st);
@@ -58,9 +58,9 @@ inline t_st	sh_prompt(t_sh *self, char *prompt)
 
 	if (!(p = getcwd(cwd, PATH_MAX)))
 		return (ENO);
-	if (ISE(st = sh_envadd(self, "PWD", p)))
+	if (ISE(st = sh_envadd(&self->env, "PWD", p)))
 		return (st);
-	if ((home = sh_getenv(self, "HOME")) && ft_strbegw(*home + 5, p))
+	if ((home = sh_getenv(&self->env, "HOME")) && ft_strbegw(*home + 5, p))
 	{
 		if (p[l = ft_strlen(*home + 5)] != '\0')
 			ft_memmove(p + 1, p + l, (ft_strlen(p) - l + 1) * sizeof(char));

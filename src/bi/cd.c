@@ -21,10 +21,10 @@ static char	*cd_path(t_sh *self, t_vstr *av, t_bool p)
 	char	**env;
 
 	if ((av->len == 1 + p || ft_strcmp(av->buf[1 + p], "~") == 0) &&
-		(env = sh_getenv(self, "HOME")))
+		(env = sh_getenv(&self->env, "HOME")))
 		return (*env + 5);
 	if (av->len == 2 + p && ft_strcmp(av->buf[1 + p], "-") == 0 &&
-		(env = sh_getenv(self, "OLDPWD")))
+		(env = sh_getenv(&self->env, "OLDPWD")))
 		return (*env + 7);
 	if (av->len == 2 + p)
 		return (av->buf[1 + p]);
@@ -68,16 +68,16 @@ inline t_st	sh_bi_cd(t_sh *self, t_vstr *av)
 		return (ft_ret(NOK, "%s: %e\n", "cd", E2BIG));
 	if (av->len == 3 && ft_strcmp("-P", av->buf[1]) != 0)
 		return (ft_ret(NOK, "%s: %e '%s'\n", "cd", EINVAL, av->buf[1]));
-	if (!(path = cd_path(self, av, (t_bool) (av->len == 3))))
+	if (!(path = cd_path(self, av, (t_bool)(av->len == 3))))
 		return (ft_ret(NOK, "%s: %s\n", "cd", "Environ is empty"));
 	if ((st = cd_test(path)) != 0)
 		return (st);
-	if ((pwd = sh_getenv(self, "PWD")) &&
-		ISE(st = sh_setenv(self, "OLDPWD", *pwd + 4)))
+	if ((pwd = sh_getenv(&self->env, "PWD")) &&
+		ISE(st = sh_setenv(&self->env, "OLDPWD", *pwd + 4)))
 		return (st);
 	path = cd_pathreal(path, buf);
 	if (!(chd = chdir(path)) &&
-		ISE(st = sh_setenv(self, "PWD", path)))
+		ISE(st = sh_setenv(&self->env, "PWD", path)))
 		return (st);
 	return (chd ? ft_ret(NOK, "%s: %e\n", "cd", errno) : OK);
 }

@@ -20,7 +20,7 @@ extern t_st		sh_bi_echo(t_sh *self, t_vstr *av);
 extern t_st		sh_bi_cd(t_sh *self, t_vstr *av);
 extern t_st		sh_bi_setenv(t_sh *self, t_vstr *av);
 extern t_st		sh_bi_unsetenv(t_sh *self, t_vstr *av);
-extern t_st		sh_bi_env(t_sh *self, t_vstr *av);
+extern t_st		sh_bi_env(t_sh *s, t_vstr *av);
 extern t_st		sh_bi_exit(t_sh *self, t_vstr *av);
 
 #endif

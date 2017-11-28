@@ -26,7 +26,5 @@ inline t_cmd	sh_bi(char *exe)
 		return (sh_bi_setenv);
 	if (ft_strcmp("unsetenv", exe) == 0 || ft_strcmp("unset", exe) == 0)
 		return (sh_bi_unsetenv);
-	if (ft_strcmp("unsetenv", exe) == 0)
-		return (sh_bi_env);
 	return (NULL);
 }

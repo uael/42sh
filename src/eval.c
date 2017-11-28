@@ -29,7 +29,7 @@ static inline t_st	sh_eval_word(t_sh *self, t_tok *tok)
 	ident = ft_tok_ident(tok);
 	if (ISE(st = sh_exe_av(self, &av, ident->buf)))
 		return (st);
-	st = sh_exe_run(self, &av);
+	st = sh_exe_run(self, "PATH", &av, &self->env);
 	ft_vstr_dtor(&av, NULL);
 	return (st);
 }

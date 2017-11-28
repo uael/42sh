@@ -15,10 +15,10 @@
 
 # include "sh.h"
 
-extern t_st	sh_initenv(t_sh *self, char **env);
-extern char	**sh_getenv(t_sh *self, char *var);
-extern t_st	sh_setenv(t_sh *self, char *var, char *val);
-extern t_st	sh_envadd(t_sh *self, char *var, char *val);
-extern t_st	sh_unsetenv(t_sh *self, char *var);
+extern t_st	sh_initenv(t_vstr *self, char **env);
+extern char	**sh_getenv(t_vstr *self, char *var);
+extern t_st	sh_setenv(t_vstr *self, char *var, char *val);
+extern t_st	sh_envadd(t_vstr *self, char *var, char *val);
+extern t_st sh_unsetenv(t_vstr *self, char *var, t_bool m);
 
 #endif

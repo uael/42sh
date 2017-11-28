@@ -26,5 +26,5 @@ inline t_st	sh_bi_setenv(t_sh *self, t_vstr *av)
 		return (ft_ret(NOK, "%s: %s\n", "export", M_SYNER));
 	if (!ft_isalpha(*av->buf[1]))
 		return (ft_ret(NOK, "%s: %s '%s'\n", "export", M_ENOID, av->buf[1]));
-	return (sh_setenv(self, av->buf[1], av->len == 3 ? av->buf[2] : NULL));
+	return (sh_setenv(&self->env, av->buf[1], av->len == 3 ? av->buf[2] : 0));
 }

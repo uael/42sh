@@ -39,16 +39,16 @@ inline t_st		sh_exe_av(t_sh *self, t_vstr *av, char *exe)
 	return (OK);
 }
 
-static t_st		sh_exe_test(char *exe, int mode)
+static t_st		exe_test(char *exe)
 {
 	struct stat s;
 
-	if (!*exe || lstat(exe, &s) < 0 || !(s.st_mode & mode))
+	if (!*exe || lstat(exe, &s) < 0 || !(s.st_mode & (S_IFREG | S_IXUSR)))
 		return (NOK);
 	return (OK);
 }
 
-inline t_st		sh_exe_lookup(t_sh *self, char *f, int mode, char exe[])
+static t_st		exe_lookup(t_vstr *env, char *f, char *p, char *exe)
 {
 	char	**path;
 	char	*beg;
@@ -56,17 +56,17 @@ inline t_st		sh_exe_lookup(t_sh *self, char *f, int mode, char exe[])
 	size_t	len;
 	t_st	st;
 
-	if (ST_OK(st = sh_exe_test(ft_strcpy(exe, f), mode)) || ISE(st))
+	if (ST_OK(st = exe_test(ft_strcpy(exe, f))) || ISE(st))
 		return (st);
-	if (!(path = sh_getenv(self, "PATH")))
-		return (sh_exe_test(ft_strcat(ft_strcpy(exe, "/bin/"), f), mode));
+	if (!(path = sh_getenv(env, p)))
+		return (exe_test(ft_strcat(ft_strcpy(exe, "/bin/"), f)));
 	beg = *path + 5;
 	while ((sep = ft_strchr(beg, ':')) >= 0)
 	{
 		len = sep ? sep - beg : ft_strlen(beg);
 		ft_strncpy(exe, beg, len)[len] = '\0';
 		ft_pathcat(exe, f);
-		if (ST_OK(st = sh_exe_test(exe, mode)) || ISE(st))
+		if (ST_OK(st = exe_test(exe)) || ISE(st))
 			return (st);
 		if (!sep)
 			break ;
@@ -75,20 +75,20 @@ inline t_st		sh_exe_lookup(t_sh *self, char *f, int mode, char exe[])
 	return (NOK);
 }
 
-static void		sh_exe_hdl(int signo)
+static void		exe_hdl(int signo)
 {
 	(void)signo;
 	ft_putc(1, '\n');
 	ft_putc(0, '\n');
 }
 
-inline t_st		sh_exe_run(t_sh *self, t_vstr *av)
+inline t_st		sh_exe_run(t_sh *self, char *p, t_vstr *av, t_vstr *env)
 {
 	pid_t	pid;
 	int		st;
 	char	exe[PATH_MAX + 1];
 
-	if (ISE(st = sh_exe_lookup(self, av->buf[0], S_IFREG | S_IXUSR, exe)))
+	if (ISE(st = exe_lookup(env, av->buf[0], p, exe)))
 		return (ft_ret(NOK, "%s: %e\n", av->buf[0], self->st = ST_TOENO(st)));
 	if (ST_NOK(st))
 		return (ft_ret(self->st = NOK, "%s: Command not found\n", av->buf[0]));
@@ -97,10 +97,10 @@ inline t_st		sh_exe_run(t_sh *self, t_vstr *av)
 	if (access(exe, X_OK) != 0)
 		return (ft_ret(NOK, "%s: %e\n", av->buf[0], self->st = errno));
 	if ((pid = fork()) == 0)
-		execve(exe, av->buf, self->env.buf);
+		execve(exe, av->buf, env->buf);
 	else if (pid < 0)
 		return (ft_ret(NOK, "%s: %e\n", av->buf[0], self->st = errno));
-	signal(SIGINT, sh_exe_hdl);
+	signal(SIGINT, exe_hdl);
 	if (waitpid(pid, &st, 0) < 0)
 		SH_EXIT(EXIT_FAILURE, self, NULL);
 	if (WIFEXITED(st))

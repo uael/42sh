@@ -18,7 +18,6 @@
 typedef t_st	(*t_cmd)(t_sh *, t_vstr *);
 
 extern t_st		sh_exe_av(t_sh *self, t_vstr *av, char *exe);
-extern t_st		sh_exe_run(t_sh *self, t_vstr *av);
-extern t_st		sh_exe_lookup(t_sh *self, char *file, int mode, char *exe);
+extern t_st		sh_exe_run(t_sh *self, char *p, t_vstr *av, t_vstr *env);
 
 #endif
