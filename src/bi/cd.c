@@ -46,6 +46,20 @@ static t_st	sh_cd_test(char *path)
 	return (OK);
 }
 
+static char	*sh_cd_pathreal(char *o, char *buf, char **pwd, int p)
+{
+	struct stat	s;
+	char		*cwd;
+
+	if (!p && pwd && stat(*pwd + 4, &s) == 0 && S_ISLNK(s.st_mode))
+		cwd = *pwd + 4;
+	else if (!(cwd = getcwd(buf, PATH_MAX)))
+		return (NULL);
+	if (!(o = ft_pathreal(o, buf, cwd)))
+		return (NULL);
+	return (o);
+}
+
 inline t_st	sh_bi_cd(t_sh *self, t_vstr *av)
 {
 	char	buf[PATH_MAX + 1];
@@ -65,7 +79,7 @@ inline t_st	sh_bi_cd(t_sh *self, t_vstr *av)
 	if ((pwd = sh_getenv(self, "PWD")) &&
 		ISE(st = sh_setenv(self, "OLDPWD", *pwd + 4)))
 		return (st);
-	if (!(pth = ft_pathreal(pth, buf, pwd ? *pwd + 4 : getcwd(buf, PATH_MAX))))
+	if (!(pth = sh_cd_pathreal(pth, buf, pwd, av->len >= 3)))
 		return (ENO);
 	if (!(chd = chdir(pth)) &&
 		ISE(st = sh_setenv(self, "PWD", pth)))
