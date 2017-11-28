@@ -30,7 +30,7 @@ int				ft_dtor(int code, t_dtor dtor, void *arg, char const *msg, ...)
 	if (!msg)
 		return (code);
 	va_start(ap, msg);
-	ft_vputf(ISE(code) ? 2 : 1, msg, ap);
+	ft_vputf(code ? 2 : 1, msg, ap);
 	va_end(ap);
 	return (code);
 }
@@ -44,7 +44,7 @@ int				ft_exit(int code, t_dtor dtor, void *arg, char const *msg, ...)
 	if (!msg)
 		return (code);
 	va_start(ap, msg);
-	ft_vputf(ISE(code) ? 2 : 1, msg, ap);
+	ft_vputf(code ? 2 : 1, msg, ap);
 	va_end(ap);
 	exit(code);
 }
@@ -56,7 +56,7 @@ int				ft_ret(int code, char const *msg, ...)
 	if (!msg)
 		return (code);
 	va_start(ap, msg);
-	ft_vputf(ISE(code) ? 2 : 1, msg, ap);
+	ft_vputf(code ? 2 : 1, msg, ap);
 	va_end(ap);
 	return (code);
 }

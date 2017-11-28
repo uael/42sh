@@ -44,7 +44,7 @@ static t_st	msh_cd_test(char *path, t_bool p)
 		if (!*path || lstat(path, &s) < 0 != 0)
 			return (ft_ret(NOK, "%s: %e\n", "cd", errno));
 		if (!S_ISDIR(s.st_mode) && !S_ISLNK(s.st_mode))
-			return (ft_ret(NOK, "%s: %e\n", "cd", errno));
+			return (ft_ret(NOK, "%s: %e\n", "cd", ENOTDIR));
 		if (!S_ISLNK(s.st_mode) && access(path, R_OK) != 0)
 			return (ft_ret(NOK, "%s: %e\n", "cd", errno));
 		if (p || !S_ISLNK(s.st_mode) || !(l = readlink(path, lnk, PATH_MAX)))
