@@ -17,6 +17,7 @@
 #include "libft/fs.h"
 
 #define PM PATH_MAX
+#define S_ISDOL(M) (S_ISDIR(M) || S_ISLNK(M))
 
 static inline void		pth_prev(char *res, size_t *len, char **t)
 {
@@ -45,7 +46,7 @@ static inline ssize_t	pth_resolve(char *res, size_t rem, size_t len, char *l)
 		(t[1] != NULL) ? ft_memmove(l, t[0] + 1, rem + 1) : 0;
 		if (res[len - 1])
 			ft_strcpy(res + len++, "/");
-		if (!*next && (lstat(res, &sb) != 0 || !S_ISDIR(sb.st_mode)))
+		if (!*next && (lstat(res, &sb) != 0 || !S_ISDOL(sb.st_mode)))
 			return (-1);
 		else if (!*next || ft_strcmp(next, ".") == 0)
 			continue ;
