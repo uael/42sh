@@ -86,7 +86,7 @@ inline t_st		sh_exe_run(t_sh *self, t_vstr *av)
 {
 	pid_t	pid;
 	int		st;
-	char	exe[4096];
+	char	exe[PATH_MAX + 1];
 
 	if (ISE(st = sh_exe_lookup(self, av->buf[0], S_IFREG | S_IXUSR, exe)))
 		return (ft_ret(NOK, "%s: %e\n", av->buf[0], self->st = ST_TOENO(st)));

@@ -12,6 +12,7 @@
 
 #include <stdio.h>
 #include <errno.h>
+#include <limits.h>
 
 #include "msh.h"
 
@@ -50,12 +51,12 @@ inline void	sh_dtor(t_sh *self)
 inline t_st	sh_prompt(t_sh *self, char *prompt)
 {
 	size_t	l;
-	char	cwd[4096 + 1];
+	char	cwd[PATH_MAX + 1];
 	char	*p;
 	char	**home;
 	t_st	st;
 
-	if (!(p = getcwd(cwd, 4096)))
+	if (!(p = getcwd(cwd, PATH_MAX)))
 		return (ENO);
 	if (ISE(st = sh_envadd(self, "PWD", p)))
 		return (st);
