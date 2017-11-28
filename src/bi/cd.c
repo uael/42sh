@@ -60,16 +60,14 @@ inline t_st	sh_bi_cd(t_sh *self, t_vstr *av)
 		return (ft_ret(NOK, "%s: %e '%s'\n", "cd", EINVAL, av->buf[1]));
 	if (!(path = sh_cd_dir(self, av, (t_bool)(av->len == 3))))
 		return (ft_ret(NOK, "%s: %s\n", "cd", "Environ is empty"));
-	if ((st = sh_cd_test(ft_strcpy(buf, path))) != 0)
+	if ((st = sh_cd_test(path)) != 0)
 		return (st);
 	if ((pwd = sh_getenv(self, "PWD")) &&
 		ISE(st = sh_setenv(self, "OLDPWD", *pwd + 4)))
 		return (st);
-	if (!(path = ft_pathreal(buf)))
+	if (!(path = ft_pathreal(path, buf)))
 		return (ENO);
-	if (!(chd = chdir(buf)) &&
-		ISE(st = sh_setenv(self, "PWD", path)))
+	if (!(chd = chdir(path)) && ISE(st = sh_setenv(self, "PWD", path)))
 		return (st);
-	free(path);
 	return (chd ? ft_ret(NOK, "%s: %e\n", "cd", errno) : OK);
 }

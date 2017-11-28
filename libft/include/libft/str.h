@@ -36,6 +36,8 @@ extern void		ft_strclr(char *s);
 extern char		*ft_strcpy(char *dest, char const *src);
 extern char		*ft_strdup(char const *src);
 extern size_t	ft_strlen(char const *str);
+extern size_t	ft_strlcpy(char *dst, char const *src, size_t size);
+extern size_t	ft_strlcat(char *dest, char const *src, size_t size);
 extern uint8_t	ft_strnbr(char *dst, int64_t n, uint8_t base);
 extern char		*ft_strncat(char *dest, char const *src, size_t nb);
 extern int		ft_strncmp(char const *s1, char const *s2, size_t n);

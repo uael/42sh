@@ -12,11 +12,23 @@
 
 #include "msh/bi.h"
 
+#define ENV_I (1 << 0)
+
+static t_st env_parse_opts(t_vstr *av, uint8_t *opts)
+{
+	(void)av;
+	(void)opts;
+	return (OK);
+}
+
 inline t_st	sh_bi_env(t_sh *self, t_vstr *av)
 {
-	size_t i;
+	size_t	i;
+	uint8_t	opts;
 
 	(void)self;
+	opts = 0;
+	env_parse_opts(av, &opts);
 	if (av->len != 1)
 		return (ft_ret(NOK, "%s: %e\n", "env", E2BIG));
 	i = 0;

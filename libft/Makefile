@@ -180,6 +180,7 @@ SRC_NAME += \
 	fs/ft_basename.c \
 	fs/ft_isdots.c \
 	fs/ft_pathjoin.c \
+	fs/ft_pathreal.c \
 	int/ft_intlen.c \
 	int/ft_intstr.c \
 	io/ft_cin_read.c \
