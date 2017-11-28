@@ -42,7 +42,7 @@ int				ft_exit(int code, t_dtor dtor, void *arg, char const *msg, ...)
 	if (dtor && arg)
 		(*dtor)(arg, NULL);
 	if (!msg)
-		return (code);
+		exit(code);
 	va_start(ap, msg);
 	ft_vputf(code ? 2 : 1, msg, ap);
 	va_end(ap);
