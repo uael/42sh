@@ -46,12 +46,12 @@ static t_st	cd_test(char *path)
 	return (OK);
 }
 
-static char	*cd_pathreal(char *path, char *buf)
+static char	*cd_pathreal(char *path, char *buf, char **pwd, t_bool p)
 {
 	char	prev[PATH_MAX + 1];
 
 	ft_strcpy(prev, path);
-	if (!(path = ft_pathreal(path, buf)))
+	if (!(path = ft_pathabs(path, buf, !p && pwd ? *pwd + 4 : NULL)))
 		ft_strcpy(path, prev);
 	return (path);
 }
@@ -75,7 +75,7 @@ inline t_st	sh_bi_cd(t_sh *self, t_vstr *av)
 	if ((pwd = sh_getenv(&self->env, "PWD")) &&
 		ISE(st = sh_setenv(&self->env, "OLDPWD", *pwd + 4)))
 		return (st);
-	path = cd_pathreal(path, buf);
+	path = cd_pathreal(path, buf, pwd, (t_bool)(av->len == 3));
 	if (!(chd = chdir(path)) &&
 		ISE(st = sh_setenv(&self->env, "PWD", path)))
 		return (st);
