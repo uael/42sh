@@ -46,24 +46,10 @@ static t_st	sh_cd_test(char *path)
 	return (OK);
 }
 
-static char	*sh_cd_pathreal(char *o, char *buf, char **pwd, int p)
-{
-	struct stat	s;
-	char		*cwd;
-
-	if (!p && pwd && stat(*pwd + 4, &s) == 0 && S_ISLNK(s.st_mode))
-		cwd = *pwd + 4;
-	else if (!(cwd = getcwd(buf, PATH_MAX)))
-		return (NULL);
-	if (!(o = ft_pathreal(o, buf, cwd)))
-		return (NULL);
-	return (o);
-}
-
 inline t_st	sh_bi_cd(t_sh *self, t_vstr *av)
 {
 	char	buf[PATH_MAX + 1];
-	char	*pth;
+	char	*path;
 	char	**pwd;
 	int		chd;
 	t_st	st;
@@ -72,17 +58,17 @@ inline t_st	sh_bi_cd(t_sh *self, t_vstr *av)
 		return (ft_ret(NOK, "%s: %e\n", "cd", E2BIG));
 	if (av->len == 3 && ft_strcmp("-P", av->buf[1]) != 0)
 		return (ft_ret(NOK, "%s: %e '%s'\n", "cd", EINVAL, av->buf[1]));
-	if (!(pth = sh_cd_dir(self, av, (t_bool)(av->len == 3))))
+	if (!(path = sh_cd_dir(self, av, (t_bool)(av->len == 3))))
 		return (ft_ret(NOK, "%s: %s\n", "cd", "Environ is empty"));
-	if ((st = sh_cd_test(pth)) != 0)
+	if ((st = sh_cd_test(path)) != 0)
 		return (st);
 	if ((pwd = sh_getenv(self, "PWD")) &&
 		ISE(st = sh_setenv(self, "OLDPWD", *pwd + 4)))
 		return (st);
-	if (!(pth = sh_cd_pathreal(pth, buf, pwd, av->len >= 3)))
+	if (!(path = ft_pathreal(path, buf)))
 		return (ENO);
-	if (!(chd = chdir(pth)) &&
-		ISE(st = sh_setenv(self, "PWD", pth)))
+	if (!(chd = chdir(path)) &&
+		ISE(st = sh_setenv(self, "PWD", path)))
 		return (st);
 	return (chd ? ft_ret(NOK, "%s: %e\n", "cd", errno) : OK);
 }

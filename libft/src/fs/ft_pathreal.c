@@ -43,7 +43,7 @@ static inline ssize_t	pth_resolve(char *res, size_t rem, size_t len, char *l)
 		((char *)ft_memcpy(next, l, t[0] - l))[t[0] - l] = '\0';
 		rem -= t[0] - l;
 		(t[1] != NULL) ? ft_memmove(l, t[0] + 1, rem + 1) : 0;
-		if (res[len - 1])
+		if (res[len - 1] != '/')
 			ft_strcpy(res + len++, "/");
 		if (!*next && (lstat(res, &sb) != 0 || !S_ISDIR(sb.st_mode)))
 			return (-1);
@@ -57,7 +57,7 @@ static inline ssize_t	pth_resolve(char *res, size_t rem, size_t len, char *l)
 	return (len);
 }
 
-inline char				*ft_pathreal(char const *path, char *res, char *cwd)
+inline char				*ft_pathreal(char const *path, char *res)
 {
 	size_t	rem;
 	size_t	len;
@@ -71,7 +71,7 @@ inline char				*ft_pathreal(char const *path, char *res, char *cwd)
 		len = 1;
 		rem = ft_strlcpy(left, path + 1, sizeof(left));
 	}
-	else if (cwd != res && !ft_strcpy(res, cwd ? cwd : getcwd(res, PATH_MAX)))
+	else if (!getcwd(res, PATH_MAX))
 		return (NULL);
 	else
 	{
