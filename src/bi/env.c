@@ -14,7 +14,7 @@
 
 #define ENV_I (1 << 0)
 
-static t_st env_parse_opts(t_vstr *av, uint8_t *opts)
+static t_st	env_parse_opts(t_vstr *av, uint8_t *opts)
 {
 	(void)av;
 	(void)opts;

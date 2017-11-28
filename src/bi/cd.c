@@ -67,7 +67,8 @@ inline t_st	sh_bi_cd(t_sh *self, t_vstr *av)
 		return (st);
 	if (!(path = ft_pathreal(path, buf)))
 		return (ENO);
-	if (!(chd = chdir(path)) && ISE(st = sh_setenv(self, "PWD", path)))
+	if (!(chd = chdir(path)) &&
+		ISE(st = sh_setenv(self, "PWD", path)))
 		return (st);
 	return (chd ? ft_ret(NOK, "%s: %e\n", "cd", errno) : OK);
 }
