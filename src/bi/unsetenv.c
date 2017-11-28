@@ -17,7 +17,7 @@ inline t_st	msh_bi_unsetenv(t_msh *self, t_vstr *av)
 {
 	t_st	st;
 	size_t	i;
-	t_st 	fst;
+	t_st	fst;
 
 	if (av->len < 2)
 		return (ft_ret(NOK, "%s: %e\n", "unset", EINVAL));

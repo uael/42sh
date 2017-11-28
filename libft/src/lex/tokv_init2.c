@@ -25,5 +25,5 @@ inline t_st	ft_tokv_init_ident(t_tokv *self, char *id)
 	FT_INIT(self, t_tokv);
 	self->kind = TOKV_IDENT;
 	ft_dstr_ctor(&self->val.ident);
-	return (ft_dstr_append(&self->val.ident, id)  ? OK : ENO);
+	return (ft_dstr_append(&self->val.ident, id) ? OK : ENO);
 }

@@ -86,14 +86,14 @@ inline t_st		msh_exe_lookup(t_msh *self, char *f, int mode, char exe[])
 	return (NOK);
 }
 
-static void			msh_exe_hdl(int signo)
+static void		msh_exe_hdl(int signo)
 {
 	(void)signo;
 	ft_putc(1, '\n');
 	ft_putc(0, '\n');
 }
 
-inline t_st			msh_exe_run(t_msh *self, t_vstr *av)
+inline t_st		msh_exe_run(t_msh *self, t_vstr *av)
 {
 	pid_t	pid;
 	int		st;
@@ -102,8 +102,7 @@ inline t_st			msh_exe_run(t_msh *self, t_vstr *av)
 	if (ISE(st = msh_exe_lookup(self, av->buf[0], S_IFREG | S_IXUSR, exe)))
 		return (ft_ret(NOK, "%s: %e\n", av->buf[0], self->st = ST_TOENO(st)));
 	if (ST_NOK(st))
-		return (ft_ret(self->st = NOK, "%s: %s\n",
-			av->buf[0], "Command not found"));
+		return (ft_ret(self->st = NOK, "%s: Command not found\n", av->buf[0]));
 	if (access(exe, R_OK) != 0)
 		return (ft_ret(NOK, "%s: %e\n", av->buf[0], self->st = errno));
 	if (access(exe, X_OK) != 0)
@@ -114,7 +113,7 @@ inline t_st			msh_exe_run(t_msh *self, t_vstr *av)
 		return (ft_ret(NOK, "%s: %e\n", av->buf[0], self->st = errno));
 	signal(SIGINT, msh_exe_hdl);
 	if (waitpid(pid, &st, 0) < 0)
-		MSH_EXIT(EXIT_FAILURE, self);
+		SH_EXIT(EXIT_FAILURE, self, NULL);
 	if (WIFEXITED(st))
 		self->st = WEXITSTATUS(st);
 	signal(SIGINT, msh_sigint_hdl);

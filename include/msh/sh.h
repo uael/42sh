@@ -15,7 +15,7 @@
 
 # include <libft.h>
 
-# define MSH_EXIT(code, msh) (exit(ft_dtor((code),(t_dtor)msh_dtor, msh, NULL)))
+# define SH_EXIT(c, sh, ...) (ft_exit(c, (t_dtor)msh_dtor, sh, __VA_ARGS__))
 
 typedef struct	s_msh
 {

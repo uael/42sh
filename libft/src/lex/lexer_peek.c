@@ -24,7 +24,7 @@ inline t_st		ft_lexer_peek(t_lexer *self, size_t n, t_tok **peek)
 	return (OK);
 }
 
-inline t_sz	ft_lexer_next(t_lexer *self, size_t n, t_tok **peek)
+inline t_sz		ft_lexer_next(t_lexer *self, size_t n, t_tok **peek)
 {
 	t_sz sz;
 
