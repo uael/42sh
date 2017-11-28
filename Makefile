@@ -12,11 +12,11 @@
 
 NAME = minishell
 CC = gcc
-CC_FLAGS = -Wall -Werror -Wextra -I$(LFT_PATH)include -O3
+CC_FLAGS = -Wall -Werror -Wextra -I$(LFT_PATH)/include -O3
 
-LFT_PATH = ./libft/
+LFT_PATH = ./libft
 SRC_PATH = ./src/
-INC_PATH = ./include/ $(LFT_PATH)include
+INC_PATH = ./include $(LFT_PATH)/include
 OBJ_PATH = ./obj/
 
 SRC = $(addprefix $(SRC_PATH),$(SRC_NAME))
