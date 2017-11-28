@@ -52,6 +52,7 @@ extern char		*ft_utoa(uint64_t n, uint8_t base);
 extern int		ft_dtor(int code, t_dtor dtor, void *arg, char const *msg, ...);
 extern int		ft_exit(int code, t_dtor dtor, void *arg, char const *msg, ...);
 extern int		ft_ret(int code, char const *msg, ...);
+extern int		ft_szret(int code, char const *msg, ...);
 extern void		ft_pfree(void **pptr);
 extern char		*ft_strerr(int errn);
 

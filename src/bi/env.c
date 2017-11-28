@@ -39,11 +39,11 @@ static ssize_t	env_parse_opts(t_vstr *av, uint8_t *flag, char **opt, t_vstr *e)
 				if (*a == 'i' && !(*flag & ENV_I))
 					*flag |= ENV_I;
 				else if (*a == 'i')
-					return (ft_ret(EINVAL, "%s: "M_DUP" '%c'", "env", *a));
+					return (ft_szret(0, "%s: "M_DUP" '%c'", "env", *a));
 				else if (ft_strchr("Pu", *a))
 					env_get_opt(*a, *(a + 1) ? a + 1 : av->buf[++i], opt);
 				else
-					return (ft_ret(EINVAL, "%s: %e '%c'", "env", EINVAL, *a));
+					return (ft_szret(0, "%s: %e '%c'", "env", EINVAL, *a));
 		}
 		else if (ft_strchr(a, '='))
 		{
@@ -71,17 +71,17 @@ inline t_st		sh_bi_env(t_sh *s, t_vstr *av)
 
 	ft_vstr_ctor(&e);
 	ft_memset(opt, flag = 0, 2 * sizeof(char *));
-	if (ISE(sz = env_parse_opts(av, &flag, opt, &e)))
+	if ((sz = env_parse_opts(av, &flag, opt, &e)) <= 0)
 		return (SZ_TOST(sz));
-	if (sz == (i = 0) + 1 || !(flag & ENV_I))
+	if ((sz == (i = 0) + 1 && (size_t)sz == av->len) || !(flag & ENV_I))
 		while (i < s->env.len)
 		{
-			if (s->env.buf[i++] && sz == 1)
+			if (s->env.buf[i++] && sz == 1 && (size_t)sz == av->len)
 				ft_putl(1, s->env.buf[i - 1]);
 			else if (s->env.buf[i - 1] && !ft_vstr_pushc(&e, s->env.buf[i - 1]))
 				return (ENO);
 		}
-	if (sz == 1 || (size_t)sz == av->len)
+	if (sz == 1 && (size_t)sz == av->len)
 		return (OK);
 	if (opt[ENV_U] && ISE(sz = sh_unsetenv(&e, opt[ENV_U], 0)))
 		return ((t_st)sz);
