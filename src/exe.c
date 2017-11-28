@@ -15,33 +15,31 @@
 
 #include "msh.h"
 
-#define EXIST(F, S) (lstat((F), &(S)) == 0 && ((S).st_mode & mode))
-
-inline t_ret		msh_exe_av(t_msh *self, t_vstr *av, char *exe)
+inline t_st		sh_exe_av(t_sh *self, t_vstr *av, char *exe)
 {
 	t_tok *end;
 
 	if (av)
 		ft_vstr_ctor(av);
 	if (av && !ft_vstr_pushc(av, exe))
-		return (RET_ERR);
-	while ((end = msh_peek(self)) && end->id)
+		return (ENO);
+	while ((end = sh_peek(self)) && end->id)
 	{
-		if (end->id == MSH_TOK_WORD && av &&
+		if (end->id == SH_TOK_WORD && av &&
 			!ft_vstr_pushc(av, ft_tok_ident(end)->buf))
-			return (RET_ERR);
-		else if (end->id != MSH_TOK_WORD && !ft_strchr(" \t", end->id))
+			return (ENO);
+		else if (end->id != SH_TOK_WORD && !ft_strchr(" \t", end->id))
 			break ;
-		msh_next(self, NULL);
+		sh_next(self, NULL);
 	}
 	if (av && !ft_vstr_grow(av, 1))
-		return (RET_ERR);
+		return (ENO);
 	if (av)
 		FT_INIT(ft_vstr_end(av), char *);
-	return (RET_OK);
+	return (OK);
 }
 
-static t_ret		msh_exe_test(char *exe, int mode)
+static t_st		sh_exe_test(char *exe, int mode)
 {
 	struct stat	s;
 	char		path[PATH_MAX + 1];
@@ -52,66 +50,72 @@ static t_ret		msh_exe_test(char *exe, int mode)
 	while (++i <= 40)
 	{
 		if (!*exe || lstat(exe, &s) < 0 || !(s.st_mode & mode))
-			return (RET_NOK);
+			return (NOK);
 		if (!S_ISLNK(s.st_mode) || !(l = readlink(exe, path, PATH_MAX)))
-			return (RET_OK);
+			return (OK);
 		path[l] = '\0';
 		ft_strcpy(exe, path);
 	}
-	ft_putl(2, "msh: Too many symbolic links");
-	return (RET_ERR);
+	return (ERR(errno = ELOOP));
 }
 
-inline t_ret		msh_exe_lookup(t_msh *self, char *f, int mode, char exe[])
+inline t_st		sh_exe_lookup(t_sh *self, char *f, int mode, char exe[])
 {
 	char	**path;
 	char	*beg;
 	char	*sep;
 	size_t	len;
-	t_ret	r;
+	t_st	st;
 
-	if ((r = msh_exe_test(ft_strcpy(exe, f), mode)) <= 0)
-		return (r);
-	if (!(path = msh_getenv(self, "PATH")))
-		return (msh_exe_test(ft_strcat(ft_strcpy(exe, "/bin/"), f), mode));
+	if (ST_OK(st = sh_exe_test(ft_strcpy(exe, f), mode)) || ISE(st))
+		return (st);
+	if (!(path = sh_getenv(self, "PATH")))
+		return (sh_exe_test(ft_strcat(ft_strcpy(exe, "/bin/"), f), mode));
 	beg = *path + 5;
 	while ((sep = ft_strchr(beg, ':')) >= 0)
 	{
 		len = sep ? sep - beg : ft_strlen(beg);
 		ft_strncpy(exe, beg, len)[len] = '\0';
 		ft_pathcat(exe, f);
-		if ((r = msh_exe_test(exe, mode)) <= 0)
-			return (r);
+		if (ST_OK(st = sh_exe_test(exe, mode)) || ISE(st))
+			return (st);
 		if (!sep)
 			break ;
 		beg = sep + 1;
 	}
-	return (RET_NOK);
+	return (NOK);
 }
 
-static void			msh_exe_hdl(int signo)
+static void		sh_exe_hdl(int signo)
 {
 	(void)signo;
 	ft_putc(1, '\n');
 	ft_putc(0, '\n');
 }
 
-inline t_ret		msh_exe_run(t_msh *self, t_vstr *av)
+inline t_st		sh_exe_run(t_sh *self, t_vstr *av)
 {
 	pid_t	pid;
 	int		st;
+	char	exe[4096];
 
-	if (access(av->buf[0], X_OK) != 0)
-		return ((t_ret)(self->st = CMD_NOK("msh: Permission denied")));
+	if (ISE(st = sh_exe_lookup(self, av->buf[0], S_IFREG | S_IXUSR, exe)))
+		return (ft_ret(NOK, "%s: %e\n", av->buf[0], self->st = ST_TOENO(st)));
+	if (ST_NOK(st))
+		return (ft_ret(self->st = NOK, "%s: Command not found\n", av->buf[0]));
+	if (access(exe, R_OK) != 0)
+		return (ft_ret(NOK, "%s: %e\n", av->buf[0], self->st = errno));
+	if (access(exe, X_OK) != 0)
+		return (ft_ret(NOK, "%s: %e\n", av->buf[0], self->st = errno));
 	if ((pid = fork()) == 0)
-		execve(av->buf[0], av->buf, self->env.buf);
+		execve(exe, av->buf, self->env.buf);
 	else if (pid < 0)
-		return (RET_ERR);
-	signal(SIGINT, msh_exe_hdl);
+		return (ft_ret(NOK, "%s: %e\n", av->buf[0], self->st = errno));
+	signal(SIGINT, sh_exe_hdl);
 	if (waitpid(pid, &st, 0) < 0)
-		MSH_EXIT(EXIT_FAILURE, self);
+		SH_EXIT(EXIT_FAILURE, self, NULL);
 	if (WIFEXITED(st))
 		self->st = WEXITSTATUS(st);
-	signal(SIGINT, msh_sigint_hdl);
-	return (RET_OK);
+	signal(SIGINT, sh_sigint_hdl);
+	return (OK);
 }

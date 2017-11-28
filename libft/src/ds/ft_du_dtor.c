@@ -94,5 +94,5 @@ inline void	ft_deq_dtor(t_deq *self, void (*idtor)(void *i))
 		}
 		free(self->buf);
 	}
-	FT_INIT(self, t_du64);
+	FT_INIT(self, t_deq);
 }

@@ -198,6 +198,7 @@ SRC_NAME += \
 	io/ft_istream_seek.c \
 	io/ft_padn.c \
 	io/ft_putc.c \
+	io/ft_putf.c \
 	io/ft_putl.c \
 	io/ft_putn.c \
 	io/ft_puts.c \
@@ -214,6 +215,7 @@ SRC_NAME += \
 	lib/ft_atoi.c \
 	lib/ft_dtor.c \
 	lib/ft_itoa.c \
+	lib/ft_strerr.c \
 	math/ft_imax.c \
 	math/ft_imin.c \
 	math/ft_pow.c \

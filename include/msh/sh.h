@@ -15,21 +15,19 @@
 
 # include <libft.h>
 
-# define MSH_EXIT(code, msh) (exit(ft_dtor((code),(t_dtor)msh_dtor, msh, NULL)))
+# define SH_EXIT(c, sh, ...) (ft_exit(c, (t_dtor)sh_dtor, sh, __VA_ARGS__))
 
-typedef struct	s_msh
+typedef struct	s_sh
 {
 	t_lexer		lexer;
-	t_dstr		out;
-	t_dstr		err;
 	t_vstr		env;
 	int			st;
-}				t_msh;
+}				t_sh;
 
-extern t_ret	msh_init_stream(t_msh *self, char **env, t_istream *stream);
-extern t_ret	msh_init_file(t_msh *self, char **env, char const *filename);
-extern void		msh_dtor(t_msh *self);
-extern t_ret	msh_prompt(t_msh *self, char *prompt);
-extern t_ret	msh(t_msh *self);
+extern t_st		sh_init_stream(t_sh *self, char **env, t_istream *stream);
+extern t_st		sh_init_file(t_sh *self, char **env, char const *filename);
+extern void		sh_dtor(t_sh *self);
+extern t_st		sh_prompt(t_sh *self, char *prompt);
+extern t_st		msh(t_sh *self);
 
 #endif

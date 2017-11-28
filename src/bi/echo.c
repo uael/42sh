@@ -12,13 +12,13 @@
 
 #include "msh/bi.h"
 
-inline t_ret	msh_bi_echo(t_msh *self, t_vstr *av)
+inline t_st	sh_bi_echo(t_sh *self, t_vstr *av)
 {
 	size_t i;
 
 	(void)self;
 	if (av->len < 2)
-		return (RET_NOK);
+		return (ft_ret(OK, "\n"));
 	i = 0;
 	while (++i < av->len)
 	{
@@ -26,6 +26,5 @@ inline t_ret	msh_bi_echo(t_msh *self, t_vstr *av)
 		if (i < av->len - 1)
 			ft_putc(1, ' ');
 	}
-	ft_putc(1, '\n');
-	return (RET_OK);
+	return (ft_ret(OK, "\n"));
 }

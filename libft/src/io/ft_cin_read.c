@@ -12,33 +12,33 @@
 
 #include "libft/io/istream.h"
 
-inline ssize_t	ft_cin_read(char *buf, size_t len)
+inline t_sz	ft_cin_read(char *buf, size_t len)
 {
 	return (ft_istream_read(g_cin, buf, len));
 }
 
-ssize_t			ft_cin_readf(char *fmt, ...)
+t_sz		ft_cin_readf(char *fmt, ...)
 {
 	va_list	ap;
-	ssize_t	n;
+	t_sz	sz;
 
 	va_start(ap, fmt);
-	n = ft_cin_vreadf(fmt, ap);
+	sz = ft_cin_vreadf(fmt, ap);
 	va_end(ap);
-	return (n);
+	return (sz);
 }
 
-inline ssize_t	ft_cin_vreadf(char *fmt, va_list ap)
+inline t_sz	ft_cin_vreadf(char *fmt, va_list ap)
 {
 	return (ft_istream_vreadf(g_cin, fmt, ap));
 }
 
-inline ssize_t	ft_cin_get(char *buf, size_t n)
+inline t_sz	ft_cin_get(char *buf, size_t n)
 {
 	return (ft_istream_get(g_cin, buf, n));
 }
 
-inline t_ret	ft_cin_peek(char *c, size_t n)
+inline int	ft_cin_peek(char *c, size_t n)
 {
 	return (ft_istream_peek(g_cin, c, n));
 }

@@ -12,16 +12,15 @@
 
 #include "libft/lex/src.h"
 
-extern t_ret	ft_src_init_stream(t_src *self, t_istream *stream)
+extern void		ft_src_init_stream(t_src *self, t_istream *stream)
 {
 	FT_INIT(self, t_src);
 	self->cur.col = 1;
 	self->cur.line = 1;
 	self->in = stream;
-	return (RET_OK);
 }
 
-inline t_ret	ft_src_init_file(t_src *self, char const *filename)
+inline t_st		ft_src_init_file(t_src *self, char const *filename)
 {
 	FT_INIT(self, t_src);
 	self->cur.col = 1;
@@ -29,20 +28,20 @@ inline t_ret	ft_src_init_file(t_src *self, char const *filename)
 	return (ft_istream_open(&self->in_own, filename));
 }
 
-inline t_ret	ft_src_init_str(t_src *self, char const *str)
+inline void		ft_src_init_str(t_src *self, char const *str)
 {
 	FT_INIT(self, t_src);
 	self->cur.col = 1;
 	self->cur.line = 1;
-	return (ft_istream_mopen(&self->in_own, str));
+	ft_istream_mopen(&self->in_own, str);
 }
 
-inline t_ret	ft_src_init_nstr(t_src *self, char const *str, size_t n)
+inline void		ft_src_init_nstr(t_src *self, char const *str, size_t n)
 {
 	FT_INIT(self, t_src);
 	self->cur.col = 1;
 	self->cur.line = 1;
-	return (ft_istream_mnopen(&self->in_own, str, n));
+	ft_istream_mnopen(&self->in_own, str, n);
 }
 
 inline void		ft_src_dtor(t_src *self)

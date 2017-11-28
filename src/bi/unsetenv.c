@@ -13,20 +13,23 @@
 #include "msh/bi.h"
 #include "msh/env.h"
 
-inline t_ret	msh_bi_unsetenv(t_msh *self, t_vstr *av)
+inline t_st	sh_bi_unsetenv(t_sh *self, t_vstr *av)
 {
-	t_ret	ret;
+	t_st	st;
 	size_t	i;
+	t_st	fst;
 
 	if (av->len < 2)
-		return (CMD_NOK("unset: syntax error\nusage: unset [keys...]"));
+		return (ft_ret(NOK, "%s: %e\n", "unset", EINVAL));
 	i = 0;
+	fst = OK;
 	while (++i < av->len)
 		if (ft_strchr(av->buf[i], '='))
-			return (CMD_NOK("unset: syntax error\nusage: unset [keys...]"));
-		else if ((ret = msh_unsetenv(self, av->buf[i])) == RET_ERR)
-			return (RET_ERR);
-		else if (ret == RET_NOK)
-			ft_putl(2, "unset: Environ not found");
-	return (RET_OK);
+			return (ft_ret(NOK, "%s: %s\n", "unset", "Syntax error"));
+		else if (ISE(st = sh_unsetenv(self, av->buf[i])))
+			return (st);
+		else if (ST_NOK(st))
+			ft_ret((fst = NOK), "%s: %s '%s'\n",
+				"unset", "Environ not fount", av->buf[i]);
+	return (fst);
 }

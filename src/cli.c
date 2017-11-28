@@ -12,39 +12,56 @@
 
 #include "msh.h"
 
-static t_msh	*g_sh;
+static t_sh	*g_sh;
 
-inline void		msh_sigint_hdl(int sign)
+inline void			sh_sigint_hdl(int sign)
 {
 	(void)sign;
 	ft_putc(0, '\n');
-	msh_prompt(g_sh, " \033[32m$\033[0m ");
+	sh_prompt(g_sh, " \033[32m$\033[0m ");
 }
 
-int				main(int ac, char **av, char **env)
+static inline t_st	main_av(t_sh *sh, int ac, char **av, char **env)
 {
-	t_msh	sh;
+	t_st	st;
 	int		i;
 
+	i = 0;
+	while (++i < ac)
+		if (ST_OK(st = sh_init_file(sh, env, av[i])))
+		{
+			if (ISE(st = msh(sh)))
+				SH_EXIT(ST_TOENO(st), "%s: %e\n", "msh", ST_TOENO(st));
+			sh_dtor(sh);
+		}
+		else if (ISE(st))
+			ft_putf(2, "%s: %e\n", "msh", ST_TOENO(st));
+	return (ft_dtor(sh->st, (t_dtor)sh_dtor, &sh, NULL));
+}
+
+static inline t_st	main_stdin(t_sh *sh, char **env)
+{
+	t_st	st;
+
+	if (ISE(st = sh_init_stream(sh, env, g_cin)))
+		SH_EXIT(ST_TOENO(st), "%s: %e\n", "msh", ST_TOENO(st));
+	if (ST_NOK(st))
+		return (ft_dtor(sh->st, (t_dtor)sh_dtor, sh, NULL));
+	signal(SIGINT, sh_sigint_hdl);
+	while (ST_OK(sh_prompt(sh, " \033[32m$\033[0m ")))
+		if (ISE(st = msh(sh)))
+			SH_EXIT(ST_TOENO(st), "%s: %e\n", "msh", ST_TOENO(st));
+		else if (ST_NOK(st))
+			break ;
+	return (ft_dtor(sh->st, (t_dtor)sh_dtor, sh, NULL));
+}
+
+int					main(int ac, char **av, char **env)
+{
+	t_sh	sh;
+
 	g_sh = &sh;
-	if (ac > (i = 0) + 1)
-	{
-		while (++i < ac)
-			if (msh_init_file(&sh, env, av[i]) == 0)
-			{
-				if (msh(&sh) == RET_ERR)
-					MSH_EXIT(EXIT_FAILURE, &sh);
-				msh_dtor(&sh);
-			}
-	}
-	else if (msh_init_stream(&sh, env, g_cin))
-		MSH_EXIT(EXIT_FAILURE, &sh);
-	else
-	{
-		signal(SIGINT, msh_sigint_hdl);
-		while (msh_prompt(&sh, " \033[32m$\033[0m ") == RET_OK)
-			if (msh(&sh))
-				MSH_EXIT(sh.st, &sh);
-	}
-	MSH_EXIT(sh.st, &sh);
+	if (ac > 1)
+		return (main_av(&sh, ac, av, env));
+	return (main_stdin(&sh, env));
 }

@@ -13,8 +13,10 @@
 #include "libft/math.h"
 #include "libft/io/imstream.h"
 
-inline ssize_t			ft_imstream_read(t_imstream *self, char *b, size_t len)
+inline t_sz	ft_imstream_read(t_imstream *self, char *b, size_t len)
 {
+	if (!self->buf)
+		return (ERR(errno = EINVAL));
 	if (len > self->len)
 		len = self->len;
 	if (len)
@@ -26,10 +28,10 @@ inline ssize_t			ft_imstream_read(t_imstream *self, char *b, size_t len)
 	return (len);
 }
 
-ssize_t					ft_imstream_readf(t_imstream *self, char *fmt, ...)
+t_sz		ft_imstream_readf(t_imstream *self, char *fmt, ...)
 {
 	va_list	ap;
-	ssize_t	n;
+	t_sz	n;
 
 	va_start(ap, fmt);
 	n = ft_imstream_vreadf(self, fmt, ap);
@@ -37,11 +39,10 @@ ssize_t					ft_imstream_readf(t_imstream *self, char *fmt, ...)
 	return (n);
 }
 
-inline ssize_t			ft_imstream_vreadf(t_imstream *self, char *fmt,
-	va_list ap)
+inline t_sz	ft_imstream_vreadf(t_imstream *self, char *fmt, va_list ap)
 {
 	(void)self;
 	(void)fmt;
 	(void)ap;
-	return (0);
+	return (ERR(errno = ENIMPL));
 }

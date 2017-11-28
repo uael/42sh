@@ -12,16 +12,16 @@
 
 #include "msh/bi.h"
 
-inline t_ret	msh_bi_env(t_msh *self, t_vstr *av)
+inline t_st	sh_bi_env(t_sh *self, t_vstr *av)
 {
 	size_t i;
 
 	(void)self;
 	if (av->len != 1)
-		return (RET_NOK);
+		return (ft_ret(NOK, "%s: %e\n", "env", E2BIG));
 	i = 0;
 	while (i < self->env.len)
 		if (self->env.buf[i++])
 			ft_putl(1, self->env.buf[i - 1]);
-	return (RET_NOK);
+	return (OK);
 }

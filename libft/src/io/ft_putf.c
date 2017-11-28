@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_istream_read.c                                  :+:      :+:    :+:   */
+/*   ft_putc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,34 +10,37 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/math.h"
-#include "libft/io/istream.h"
+#include "libft/io.h"
 
-inline t_sz	ft_istream_read(t_istream *self, char *b, size_t len)
-{
-	if (self->kind == ISTREAM_FILE)
-		return (ft_ifstream_read(&self->u.file, b, len));
-	if (self->kind == ISTREAM_MEM)
-		return (ft_imstream_read(&self->u.mem, b, len));
-	return (ERR(EBOUND));
-}
-
-t_sz		ft_istream_readf(t_istream *self, char *fmt, ...)
+ssize_t			ft_putf(int fd, char const *fmt, ...)
 {
 	va_list	ap;
 	ssize_t	n;
 
 	va_start(ap, fmt);
-	n = ft_istream_vreadf(self, fmt, ap);
+	n = ft_vputf(fd, fmt, ap);
 	va_end(ap);
 	return (n);
 }
 
-inline t_sz	ft_istream_vreadf(t_istream *self, char *fmt, va_list ap)
+inline ssize_t	ft_vputf(int fd, char const *fmt, va_list ap)
 {
-	if (self->kind == ISTREAM_FILE)
-		return (ft_ifstream_vreadf(&self->u.file, fmt, ap));
-	if (self->kind == ISTREAM_MEM)
-		return (ft_imstream_vreadf(&self->u.mem, fmt, ap));
-	return (ERR(EBOUND));
+	char	*sp;
+	ssize_t	sz;
+
+	sz = 0;
+	while ((sp = ft_strchr(fmt, '%')) && (sz += write(fd, fmt, sp - fmt)) >= 0)
+		if (*((fmt = ++sp + 1) - 1) == 'd')
+			sz += ft_putn(fd, va_arg(ap, int64_t), 10);
+		else if (*sp == 'u')
+			sz += ft_putu(fd, va_arg(ap, uint64_t), 10);
+		else if (*sp == 's')
+			sz += ft_puts(fd, va_arg(ap, char const *));
+		else if (*sp == 'c')
+			sz += ft_putc(fd, (char)va_arg(ap, int));
+		else if (*sp == 'f')
+			sz += ft_putd(fd, (float)va_arg(ap, double), 10, 10);
+		else if (*sp == 'e')
+			sz += ft_puts(fd, ft_strerr(va_arg(ap, int)));
+	return (sz + write(fd, fmt, ft_strlen(fmt)));
 }
