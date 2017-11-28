@@ -18,6 +18,7 @@
 extern char	const	*ft_basename(char const *path);
 extern t_bool		ft_isdots(char const *path);
 extern char			*ft_pathjoin(char const *p1, char const *p2);
+extern char			*ft_pathreal(char const *p);
 extern char			*ft_pathcat(char *dst, char const *src);
 
 #endif
