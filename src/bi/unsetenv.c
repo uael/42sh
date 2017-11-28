@@ -20,16 +20,16 @@ inline t_st	msh_bi_unsetenv(t_msh *self, t_vstr *av)
 	t_st 	fst;
 
 	if (av->len < 2)
-		return (ft_ret(NOK, "%s: %e", "unset", E2BIG));
+		return (ft_ret(NOK, "%s: %e\n", "unset", EINVAL));
 	i = 0;
 	fst = OK;
 	while (++i < av->len)
 		if (ft_strchr(av->buf[i], '='))
-			return (ft_ret(NOK, "%s: %s", "unset", "Syntax error"));
+			return (ft_ret(NOK, "%s: %s\n", "unset", "Syntax error"));
 		else if (ISE(st = msh_unsetenv(self, av->buf[i])))
 			return (st);
 		else if (ST_NOK(st))
-			ft_ret((fst = NOK), "%s: %s '%s'",
+			ft_ret((fst = NOK), "%s: %s '%s'\n",
 				"unset", "Environ not fount", av->buf[i]);
 	return (fst);
 }

@@ -19,17 +19,17 @@ inline t_st	msh_bi_exit(t_msh *self, t_vstr *av)
 	char	*a;
 
 	if (av->len > 2)
-		return (ft_ret(NOK, "%s: %e", "exit", E2BIG));
+		return (ft_ret(NOK, "%s: %e\n", "exit", E2BIG));
 	if (av->len < 2)
 		MSH_EXIT(self->st, self);
 	a = av->buf[1];
 	if (!(i = ft_strlen(a)) || i > 19)
-		ft_exit(NOK, (t_dtor)msh_dtor, self, "%s: %s, got '%s' instead",
+		ft_exit(NOK, (t_dtor)msh_dtor, self, "%s: %s, got '%s' instead\n",
 			"exit", "Numeric argument required", a);
 	j = 0;
 	while (j < i)
 		if (!ft_isdigit(a[j]) && !ft_isspace(a[j]))
-			ft_exit(NOK, (t_dtor)msh_dtor, self, "%s: %s, got '%s' instead",
+			ft_exit(NOK, (t_dtor)msh_dtor, self, "%s: %s, got '%s' instead\n",
 				"exit", "Numeric argument required", a);
 		else
 			j++;

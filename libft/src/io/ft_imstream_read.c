@@ -39,7 +39,7 @@ t_sz		ft_imstream_readf(t_imstream *self, char *fmt, ...)
 	return (n);
 }
 
-inline t_sz	t_imstream_vreadf(t_imstream *self, char *fmt, va_list ap)
+inline t_sz	ft_imstream_vreadf(t_imstream *self, char *fmt, va_list ap)
 {
 	(void)self;
 	(void)fmt;

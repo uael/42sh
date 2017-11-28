@@ -29,7 +29,7 @@ inline ssize_t	ft_vputf(int fd, char const *fmt, va_list ap)
 	ssize_t	sz;
 
 	sz = 0;
-	while ((sp = ft_strchr(fmt, '%')) && (sz += write(fd, fmt, sp - fmt)))
+	while ((sp = ft_strchr(fmt, '%')) && (sz += write(fd, fmt, sp - fmt)) >= 0)
 		if (*((fmt = ++sp + 1) - 1) == 'd')
 			sz += ft_putn(fd, va_arg(ap, int64_t), 10);
 		else if (*sp == 'u')

@@ -67,7 +67,7 @@ inline t_st		msh_exe_lookup(t_msh *self, char *f, int mode, char exe[])
 	size_t	len;
 	t_st	st;
 
-	if (ST_NOK(st = msh_exe_test(ft_strcpy(exe, f), mode)))
+	if (ST_OK(st = msh_exe_test(ft_strcpy(exe, f), mode)) || ISE(st))
 		return (st);
 	if (!(path = msh_getenv(self, "PATH")))
 		return (msh_exe_test(ft_strcat(ft_strcpy(exe, "/bin/"), f), mode));
@@ -77,7 +77,7 @@ inline t_st		msh_exe_lookup(t_msh *self, char *f, int mode, char exe[])
 		len = sep ? sep - beg : ft_strlen(beg);
 		ft_strncpy(exe, beg, len)[len] = '\0';
 		ft_pathcat(exe, f);
-		if (ST_NOK(st = msh_exe_test(exe, mode)))
+		if (ST_OK(st = msh_exe_test(exe, mode)) || ISE(st))
 			return (st);
 		if (!sep)
 			break ;
@@ -100,17 +100,18 @@ inline t_st			msh_exe_run(t_msh *self, t_vstr *av)
 	char	exe[4096];
 
 	if (ISE(st = msh_exe_lookup(self, av->buf[0], S_IFREG | S_IXUSR, exe)))
-		return (ft_ret(NOK, "%s: %e", "msh", self->st = ST_TOENO(st)));
+		return (ft_ret(NOK, "%s: %e\n", av->buf[0], self->st = ST_TOENO(st)));
 	if (ST_NOK(st))
-		return (ft_ret(self->st = NOK, "%s: %s", "msh", "Command not found"));
-	if (access(av->buf[0], X_OK) != 0)
-		return (ft_ret(NOK, "%s: %e", "msh", self->st = errno));
-	if (access(av->buf[0], R_OK) != 0)
-		return (ft_ret(NOK, "%s: %e", "msh", self->st = errno));
+		return (ft_ret(self->st = NOK, "%s: %s\n",
+			av->buf[0], "Command not found"));
+	if (access(exe, R_OK) != 0)
+		return (ft_ret(NOK, "%s: %e\n", av->buf[0], self->st = errno));
+	if (access(exe, X_OK) != 0)
+		return (ft_ret(NOK, "%s: %e\n", av->buf[0], self->st = errno));
 	if ((pid = fork()) == 0)
-		execve(av->buf[0], av->buf, self->env.buf);
+		execve(exe, av->buf, self->env.buf);
 	else if (pid < 0)
-		return (ft_ret(NOK, "%s: %e", "msh", self->st = errno));
+		return (ft_ret(NOK, "%s: %e\n", av->buf[0], self->st = errno));
 	signal(SIGINT, msh_exe_hdl);
 	if (waitpid(pid, &st, 0) < 0)
 		MSH_EXIT(EXIT_FAILURE, self);

@@ -18,7 +18,7 @@ inline t_st	msh_bi_env(t_msh *self, t_vstr *av)
 
 	(void)self;
 	if (av->len != 1)
-		return (ft_ret(NOK, "%s: %e", "env", E2BIG));
+		return (ft_ret(NOK, "%s: %e\n", "env", E2BIG));
 	i = 0;
 	while (i < self->env.len)
 		if (self->env.buf[i++])

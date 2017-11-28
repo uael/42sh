@@ -38,5 +38,5 @@ inline t_st			msh_eval(t_msh *self, t_tok *tok)
 {
 	if (tok->id == MSH_TOK_WORD)
 		return (msh_eval_word(self, tok));
-	return (ft_ret(NOK, "%s: Unexpected token '%c'", "msh", tok->id));
+	return (ft_ret(NOK, "%s: Unexpected token '%c'\n", "msh", tok->id));
 }

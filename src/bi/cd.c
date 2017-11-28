@@ -34,7 +34,7 @@ static char	*msh_cd_dir(t_msh *self, t_vstr *av, t_bool p)
 static t_st	msh_cd_test(char *path, t_bool p)
 {
 	struct stat	s;
-	char		path[PATH_MAX + 1];
+	char		lnk[PATH_MAX + 1];
 	int			i;
 	ssize_t		l;
 
@@ -42,15 +42,15 @@ static t_st	msh_cd_test(char *path, t_bool p)
 	while (++i <= 40)
 	{
 		if (!*path || lstat(path, &s) < 0 != 0)
-			return (ft_ret(NOK, "%s: %e", "cd", errno));
+			return (ft_ret(NOK, "%s: %e\n", "cd", errno));
 		if (!S_ISDIR(s.st_mode) && !S_ISLNK(s.st_mode))
-			return (ft_ret(NOK, "%s: %e", "cd", errno));
-		if (!S_ISLNK(s.st_mode) && access("cd", R_OK) != 0)
-			return (ft_ret(NOK, "%s: %e", "cd", errno));
-		if (p || !S_ISLNK(s.st_mode) || !(l = readlink(path, path, PATH_MAX)))
+			return (ft_ret(NOK, "%s: %e\n", "cd", errno));
+		if (!S_ISLNK(s.st_mode) && access(path, R_OK) != 0)
+			return (ft_ret(NOK, "%s: %e\n", "cd", errno));
+		if (p || !S_ISLNK(s.st_mode) || !(l = readlink(path, lnk, PATH_MAX)))
 			return (OK);
-		path[l] = '\0';
-		ft_strcpy(path, path);
+		lnk[l] = '\0';
+		ft_strcpy(path, lnk);
 	}
 	return (ft_ret(NOK, "%s: %e", "cd", errno = ELOOP));
 }
@@ -64,11 +64,11 @@ inline t_st	msh_bi_cd(t_msh *self, t_vstr *av)
 	t_st	st;
 
 	if (av->len > 3)
-		return (ft_ret(NOK, "%s: %e", "cd", E2BIG));
+		return (ft_ret(NOK, "%s: %e\n", "cd", E2BIG));
 	if (av->len == 3 && ft_strcmp("-P", av->buf[1]) != 0)
-		return (ft_ret(NOK, "%s: %e '%s'", "cd", EINVAL, av->buf[1]));
+		return (ft_ret(NOK, "%s: %e '%s'\n", "cd", EINVAL, av->buf[1]));
 	if (!(path = msh_cd_dir(self, av, (t_bool)(av->len == 3))))
-		return (ft_ret(NOK, "%s: %s", "cd", "Environ is empty"));
+		return (ft_ret(NOK, "%s: %s\n", "cd", "Environ is empty"));
 	if ((st = msh_cd_test(ft_strcpy(buf, path), (t_bool)(av->len == 3))) != 0)
 		return (st);
 	if ((pwd = msh_getenv(self, "PWD")) &&
@@ -77,5 +77,5 @@ inline t_st	msh_bi_cd(t_msh *self, t_vstr *av)
 	if (!(chd = chdir(buf)) &&
 		ISE(st = msh_setenv(self, "PWD", getcwd(buf, 4096))))
 		return (st);
-	return (chd ? ft_ret(NOK, "%s: %e", "cd", errno) : OK);
+	return (chd ? ft_ret(NOK, "%s: %e\n", "cd", errno) : OK);
 }

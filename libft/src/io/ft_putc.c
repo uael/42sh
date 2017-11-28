@@ -14,9 +14,7 @@
 
 inline ssize_t	ft_putc(int fd, char c)
 {
-	if (ft_isprint(c))
-		return (write(fd, (uint8_t *)(&c), sizeof(char)));
-	return (ft_putn(fd, c, 10));
+	return (write(fd, (uint8_t *)(&c), sizeof(char)));
 }
 
 inline ssize_t	ft_putr(int fd, char c, size_t n)

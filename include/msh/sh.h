@@ -20,8 +20,6 @@
 typedef struct	s_msh
 {
 	t_lexer		lexer;
-	t_dstr		out;
-	t_dstr		err;
 	t_vstr		env;
 	int			st;
 }				t_msh;

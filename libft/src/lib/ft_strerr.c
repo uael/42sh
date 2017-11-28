@@ -120,7 +120,6 @@ static char	*g_strerr[] =
 	[ENOTRECOVERABLE] = "State not recoverable",
 	[EOWNERDEAD] = "Previous owner died",
 	[EQFULL] = "Interface output queue is full",
-	[ELAST] = "Must be equal largest errno",
 	[ENIMPL] = "Function not implemented",
 	[EBOUND] = "Enum out of bounds"
 };

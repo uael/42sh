@@ -21,8 +21,6 @@ inline t_st	msh_init_stream(t_msh *self, char **env, t_istream *stream)
 
 	FT_INIT(self, t_msh);
 	ft_vstr_ctor(&self->env);
-	ft_dstr_ctor(&self->out);
-	ft_dstr_ctor(&self->err);
 	if (ST_NOK(st = msh_initenv(self, env)))
 		return (st);
 	if (ST_NOK(st = ft_lexer_init_stream(&self->lexer, stream)))
@@ -36,8 +34,6 @@ inline t_st	msh_init_file(t_msh *self, char **env, char const *filename)
 
 	FT_INIT(self, t_msh);
 	ft_vstr_ctor(&self->env);
-	ft_dstr_ctor(&self->out);
-	ft_dstr_ctor(&self->err);
 	if (ST_NOK(st = msh_initenv(self, env)))
 		return (st);
 	if (ST_NOK(st = ft_lexer_init_file(&self->lexer, filename)))
@@ -47,8 +43,6 @@ inline t_st	msh_init_file(t_msh *self, char **env, char const *filename)
 
 inline void	msh_dtor(t_msh *self)
 {
-	ft_dstr_dtor(&self->out, NULL);
-	ft_dstr_dtor(&self->err, NULL);
 	ft_vstr_dtor(&self->env, (void (*)(char **))ft_pfree);
 	ft_lexer_dtor(&self->lexer);
 }

@@ -20,9 +20,9 @@ inline t_st	msh_bi_setenv(t_msh *self, t_vstr *av)
 	if (av->len < 2 || av->len > 3 || !av->buf[1] ||
 		ft_strchr(av->buf[1], '=') ||
 		(av->len == 3 && ft_strchr(av->buf[2], '=')))
-		return (ft_ret(NOK, "%s: %s", "export", "Syntax error"));
+		return (ft_ret(NOK, "%s: %s\n", "export", "Syntax error"));
 	if (!ft_isalpha(*av->buf[1]))
-		return (ft_ret(NOK, "%s: %s '%s'", "export", "Not an identifier",
+		return (ft_ret(NOK, "%s: %s '%s'\n", "export", "Not an identifier",
 			av->buf[1]));
 	return (msh_setenv(self, av->buf[1], av->len == 3 ? av->buf[2] : NULL));
 }
