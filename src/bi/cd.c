@@ -16,7 +16,7 @@
 #include "msh/bi.h"
 #include "msh/env.h"
 
-static char	*sh_cd_dir(t_sh *self, t_vstr *av, t_bool p)
+static char	*cd_path(t_sh *self, t_vstr *av, t_bool p)
 {
 	char	**env;
 
@@ -31,7 +31,7 @@ static char	*sh_cd_dir(t_sh *self, t_vstr *av, t_bool p)
 	return (NULL);
 }
 
-static t_st	sh_cd_test(char *path)
+static t_st	cd_test(char *path)
 {
 	struct stat	s;
 
@@ -46,6 +46,16 @@ static t_st	sh_cd_test(char *path)
 	return (OK);
 }
 
+static char	*cd_pathreal(char *path, char *buf)
+{
+	char	prev[PATH_MAX + 1];
+
+	ft_strcpy(prev, path);
+	if (!(path = ft_pathreal(path, buf)))
+		ft_strcpy(path, prev);
+	return (path);
+}
+
 inline t_st	sh_bi_cd(t_sh *self, t_vstr *av)
 {
 	char	buf[PATH_MAX + 1];
@@ -58,15 +68,14 @@ inline t_st	sh_bi_cd(t_sh *self, t_vstr *av)
 		return (ft_ret(NOK, "%s: %e\n", "cd", E2BIG));
 	if (av->len == 3 && ft_strcmp("-P", av->buf[1]) != 0)
 		return (ft_ret(NOK, "%s: %e '%s'\n", "cd", EINVAL, av->buf[1]));
-	if (!(path = sh_cd_dir(self, av, (t_bool)(av->len == 3))))
+	if (!(path = cd_path(self, av, (t_bool) (av->len == 3))))
 		return (ft_ret(NOK, "%s: %s\n", "cd", "Environ is empty"));
-	if ((st = sh_cd_test(path)) != 0)
+	if ((st = cd_test(path)) != 0)
 		return (st);
 	if ((pwd = sh_getenv(self, "PWD")) &&
 		ISE(st = sh_setenv(self, "OLDPWD", *pwd + 4)))
 		return (st);
-	if (!(path = ft_pathreal(path, buf)))
-		return (ENO);
+	path = cd_pathreal(path, buf);
 	if (!(chd = chdir(path)) &&
 		ISE(st = sh_setenv(self, "PWD", path)))
 		return (st);
