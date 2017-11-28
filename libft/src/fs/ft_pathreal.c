@@ -23,7 +23,8 @@ static inline void		pth_prev(char *res, size_t *len, char **t)
 	if (*len <= 1)
 		return ;
 	res[*len - 1] = '\0';
-	*(t[2] = ft_strrchr(res, '/') + 1) = '\0';
+	t[2] = ft_strrchr(res, '/') + 1;
+	*t[2] = '\0';
 	*len = t[2] - res;
 }
 
@@ -35,13 +36,13 @@ static inline ssize_t	pth_resolve(char *res, size_t rem, size_t len, char *l)
 
 	while (rem != 0)
 	{
-		t[0] = (t[1] = strchr(l, '/')) ? t[1] : l + rem;
+		t[1] = ft_strchr(l, '/');
+		t[0] = t[1] ? t[1] : l + rem;
 		if (t[0] - l >= (ssize_t)sizeof(next))
 			return (-1);
 		((char *)ft_memcpy(next, l, t[0] - l))[t[0] - l] = '\0';
 		rem -= t[0] - l;
-		if (t[1] != NULL)
-			ft_memmove(l, t[0] + 1, rem + 1);
+		(t[1] != NULL) ? ft_memmove(l, t[0] + 1, rem + 1) : 0;
 		if (res[len - 1])
 			ft_strcpy(res + len++, "/");
 		if (!*next && (lstat(res, &sb) != 0 || !S_ISDIR(sb.st_mode)))
@@ -56,7 +57,7 @@ static inline ssize_t	pth_resolve(char *res, size_t rem, size_t len, char *l)
 	return (len);
 }
 
-inline char		*ft_pathreal(char const *path, char *res)
+inline char				*ft_pathreal(char const *path, char *res)
 {
 	size_t	rem;
 	size_t	len;
