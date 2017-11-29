@@ -37,3 +37,5 @@ else ()
         PRIVATE -Wno-missing-field-initializers -Wno-missing-braces
         PRIVATE -O$<$<CONFIG:Debug>:0 -g3>$<$<CONFIG:Release>:3>)
 endif ()
+
+add_executable(pipe pipe.c)
