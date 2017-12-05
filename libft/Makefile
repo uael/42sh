@@ -6,7 +6,7 @@
 #    By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/07 09:52:36 by alucas-           #+#    #+#              #
-#    Updated: 2017/12/05 13:16:30 by alucas-          ###   ########.fr        #
+#    Updated: 2017/12/05 13:33:23 by alucas-          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -297,7 +297,7 @@ endif
 	@echo  "$(NAME): \033[32m[✔]\033[0m"
 
 $(OBJ_PATH)%.o: $(SRC_PATH)%.c
-	@mkdir -p $(SOB)
+	@mkdir -p $(shell dirname $@)
 	@echo "$(NAME): \033[34m[$<]\033[0m"
 	@$(CC) $(CFLAGS) $(INC) -o $@ -c $<
 	@echo "\033[A\033[K\033[A"
@@ -307,24 +307,21 @@ ifneq ($(3TH_PATH),)
 	@$(MAKE) -C $(3TH_PATH) clean
 endif
 	@rm -rf $(OBJ_PATH)
-	@echo  "$(NAME): $@ \033[32m[✔]\033[0m"
+	@echo "$(NAME): $@ \033[32m[✔]\033[0m"
 
 fclean: clean
 ifneq ($(3TH_PATH),)
 	@$(MAKE) -C $(3TH_PATH) fclean
 endif
 	@rm -f $(NAME)
-	@echo  "$(NAME): $@ \033[32m[✔]\033[0m"
+	@echo "$(NAME): $@ \033[32m[✔]\033[0m"
 
 3th:
 ifneq ($(3TH_PATH),)
-	@$(MAKE) -C $(3TH_PATH)
+	@$(MAKE) -C $(3TH_PATH) -j4
 endif
 
 norm:
-ifneq ($(3TH_PATH),)
-	@$(MAKE) -C $(3TH_PATH) norm
-endif
 	@./norm.sh $(shell find $(SRC_PATH) $(INC_PATH) -name '*.h' -o -name '*.c')
 
 re: fclean all
