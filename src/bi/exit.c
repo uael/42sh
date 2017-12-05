@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/23 17:30:36 by null             ###   ########.fr       */
+/*   Updated: 2017/12/05 16:21:12 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,24 +14,25 @@
 
 #define M_NREQ "Numeric argument required"
 
-inline t_st	sh_bi_exit(t_sh *self, t_vstr *av)
+inline t_st	sh_bi_exit(t_sh *sh, int ac, char **av, char **env)
 {
 	size_t	i;
 	size_t	j;
 	char	*a;
 
-	if (av->len > 2)
+	(void)env;
+	if (ac > 2)
 		return (ft_retf(NOK, "%s: %e\n", "exit", E2BIG));
-	if (av->len < 2)
-		SH_EXIT(self->st, self, NULL);
-	a = av->buf[1];
+	if (ac < 2)
+		exit(sh->st); //todo
+	a = av[1];
 	if (!(i = ft_strlen(a)) || i > 19)
-		SH_EXIT(NOK, self, "%s: %s, got '%s' instead\n", "exit", M_NREQ, a);
+		ft_fatal(NOK, NULL, NULL, "exit: %s, got '%s' instead\n", M_NREQ, a);
 	j = 0;
 	while (j < i)
 		if (!ft_isdigit(a[j]) && !ft_isspace(a[j]))
-			SH_EXIT(NOK, self, "%s: %s, got '%s' instead\n", "exit", M_NREQ, a);
+			ft_fatal(NOK, NULL, NULL, "exit: %s, got '%s' instead\n", M_NREQ, a);
 		else
 			j++;
-	return (SH_EXIT((int)ft_atoi(a), self, NULL));
+	exit((int)ft_atoi(a));
 }

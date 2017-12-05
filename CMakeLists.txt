@@ -37,19 +37,3 @@ else ()
         PRIVATE -Wno-missing-field-initializers -Wno-missing-braces
         PRIVATE -O$<$<CONFIG:Debug>:0 -g3>$<$<CONFIG:Release>:3>)
 endif ()
-
-add_executable(pipe pipe.c)
-target_link_libraries(pipe ft)
-target_compile_definitions(pipe
-        PRIVATE $<$<CONFIG:Debug>:DEBUG>$<$<CONFIG:Release>:NDEBUG>)
-if (MSVC)
-    target_compile_options(pipe
-            PRIVATE /MT$<$<CONFIG:Debug>:d> /Oy /W3
-            PRIVATE /D_CRT_SECURE_NO_WARNINGS /Dinline=__inline
-            PRIVATE /O$<$<CONFIG:Debug>:d>$<$<CONFIG:Release>:x>)
-else ()
-    target_compile_options(pipe
-            PRIVATE -Wall -Werror -Wextra -fomit-frame-pointer -ansi
-            PRIVATE -Wno-missing-field-initializers -Wno-missing-braces
-            PRIVATE -O$<$<CONFIG:Debug>:0 -g3>$<$<CONFIG:Release>:3>)
-endif ()

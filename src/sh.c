@@ -22,6 +22,7 @@ inline t_st	sh_init_stream(t_sh *self, char **env, t_istream *stream)
 
 	FT_INIT(self, t_sh);
 	ft_vstr_ctor(&self->env);
+	ft_worker_ctor(&self->worker);
 	if (ST_NOK(st = sh_initenv(&self->env, env)))
 		return (st);
 	if (ST_NOK(st = ft_lexer_init_stream(&self->lexer, stream)))
@@ -35,6 +36,7 @@ inline t_st	sh_init_file(t_sh *self, char **env, char const *filename)
 
 	FT_INIT(self, t_sh);
 	ft_vstr_ctor(&self->env);
+	ft_worker_ctor(&self->worker);
 	if (ST_NOK(st = sh_initenv(&self->env, env)))
 		return (st);
 	if (ST_NOK(st = ft_lexer_init_file(&self->lexer, filename)))
@@ -46,6 +48,7 @@ inline void	sh_dtor(t_sh *self)
 {
 	ft_vstr_dtor(&self->env, (void (*)(char **))ft_pfree);
 	ft_lexer_dtor(&self->lexer);
+	ft_worker_dtor(&self->worker);
 }
 
 inline t_st	sh_prompt(t_sh *self, char *prompt)

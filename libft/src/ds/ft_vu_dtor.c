@@ -80,7 +80,7 @@ inline void	ft_vu64_dtor(t_vu64 *self, void (*idtor)(uint64_t *i))
 	FT_INIT(self, t_vu64);
 }
 
-inline void	ft_vec_dtor(t_vec *self, void (*idtor)(void *i))
+inline void	ft_vec_dtor(t_vec *self, t_dtor idtor)
 {
 	char	*item;
 

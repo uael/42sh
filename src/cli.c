@@ -50,7 +50,7 @@ static inline t_st	main_stdin(t_sh *sh, char **env)
 	if (ST_NOK(st))
 		return (ft_dtor(sh->st, (t_dtor)sh_dtor, sh, NULL));
 	signal(SIGINT, sh_sigint_hdl);
-	while (ST_OK(sh_prompt(sh, " \033[32m$\033[0m ")))
+	while (ST_OK(sh_prompt(sh, " \033[32m❯\033[0m ")))
 		if (ISE(st = msh(sh)))
 			SH_EXIT(ST_TOENO(st), sh, "%s: %e\n", "21sh", ST_TOENO(st));
 		else if (ST_NOK(st))

@@ -22,6 +22,7 @@ typedef struct	s_sh
 	t_lexer		lexer;
 	t_vstr		env;
 	int			st;
+	t_worker	worker;
 }				t_sh;
 
 extern t_st		sh_init_stream(t_sh *self, char **env, t_istream *stream);

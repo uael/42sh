@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/23 17:31:13 by null             ###   ########.fr       */
+/*   Updated: 2017/12/05 16:23:22 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,15 +16,15 @@
 #define M_SYNER "Syntax error"
 #define M_ENOID "not an identifier"
 
-inline t_st	sh_bi_setenv(t_sh *self, t_vstr *av)
+inline t_st	sh_bi_setenv(t_sh *sh, int ac, char **av, char **env)
 {
-	if (av->len == 1)
-		return (sh_bi_env(self, av));
-	if (av->len < 2 || av->len > 3 || !av->buf[1] ||
-		ft_strchr(av->buf[1], '=') ||
-		(av->len == 3 && ft_strchr(av->buf[2], '=')))
+	if (ac == 1)
+		return (sh_bi_env(sh, ac, av, env));
+	if (ac < 2 || ac > 3 || !av[1] ||
+		ft_strchr(av[1], '=') ||
+		(ac == 3 && ft_strchr(av[2], '=')))
 		return (ft_retf(NOK, "%s: %s\n", "export", M_SYNER));
-	if (!ft_isalpha(*av->buf[1]))
-		return (ft_retf(NOK, "%s: %s '%s'\n", "export", M_ENOID, av->buf[1]));
-	return (sh_setenv(&self->env, av->buf[1], av->len == 3 ? av->buf[2] : 0));
+	if (!ft_isalpha(*av[1]))
+		return (ft_retf(NOK, "%s: %s '%s'\n", "export", M_ENOID, av[1]));
+	return (sh_setenv(&sh->env, av[1], ac == 3 ? av[2] : 0));
 }

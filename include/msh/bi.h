@@ -15,12 +15,12 @@
 
 # include "exe.h"
 
-extern t_cmd	sh_bi(char *exe);
-extern t_st		sh_bi_echo(t_sh *self, t_vstr *av);
-extern t_st		sh_bi_cd(t_sh *self, t_vstr *av);
-extern t_st		sh_bi_setenv(t_sh *self, t_vstr *av);
-extern t_st		sh_bi_unsetenv(t_sh *self, t_vstr *av);
-extern t_st		sh_bi_env(t_sh *s, t_vstr *av);
-extern t_st		sh_bi_exit(t_sh *self, t_vstr *av);
+extern t_job_fn	sh_bi(char *exe);
+extern t_st		sh_bi_echo(t_sh *sh, int ac, char **av, char **env);
+extern t_st		sh_bi_cd(t_sh *sh, int ac, char **av, char **env);
+extern t_st		sh_bi_setenv(t_sh *sh, int ac, char **av, char **env);
+extern t_st		sh_bi_unsetenv(t_sh *sh, int ac, char **av, char **env);
+extern t_st		sh_bi_env(t_sh *sh, int ac, char **av, char **env);
+extern t_st		sh_bi_exit(t_sh *sh, int ac, char **av, char **env);
 
 #endif

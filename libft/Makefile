@@ -6,7 +6,7 @@
 #    By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/07 09:52:36 by alucas-           #+#    #+#              #
-#    Updated: 2017/12/05 13:46:31 by alucas-          ###   ########.fr        #
+#    Updated: 2017/12/05 15:07:01 by alucas-          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -178,6 +178,10 @@ SRC_NAME = \
 	ds/ft_node_add.c \
 	ds/ft_node_next.c \
 	ds/ft_node_prev.c \
+	exe/ft_job.c \
+	exe/ft_job_exe.c \
+	exe/ft_job_run.c \
+	exe/ft_worker.c \
 	fs/ft_basename.c \
 	fs/ft_isdots.c \
 	fs/ft_pathjoin.c \
@@ -231,7 +235,9 @@ SRC_NAME = \
 	lib/ft_atoi.c \
 	lib/ft_clean.c \
 	lib/ft_dtor.c \
+	lib/ft_getenv.c \
 	lib/ft_itoa.c \
+	lib/ft_join.c \
 	lib/ft_strerr.c \
 	math/ft_imax.c \
 	math/ft_imin.c \

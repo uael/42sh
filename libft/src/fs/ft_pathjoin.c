@@ -34,28 +34,6 @@ inline char		*ft_pathjoin(char const *p1, char const *p2)
 	return (r);
 }
 
-inline char		*ft_join(char const *p1, char const *p2, char c)
-{
-	size_t	l1;
-	size_t	l2;
-	t_bool	ds;
-	char	*r;
-
-	l1 = ft_strlen(p1);
-	if (!(l2 = ft_strlen(p2)) && !l1)
-		return (NULL);
-	ds = (t_bool)((!l1 || p1[l1 - 1] != c) && (!l2 || p2[0] != c));
-	if (!(r = malloc((l1 + l2 + ds + 1) * sizeof(char))))
-		return (NULL);
-	if (l1)
-		ft_strcpy(r, p1);
-	if (ds)
-		ft_strcpy(r + l1, &c);
-	if (l2)
-		ft_strcpy(r + l1 + ds, p2);
-	return (r);
-}
-
 inline char		*ft_pathcat(char *dst, char const *src)
 {
 	size_t	l1;

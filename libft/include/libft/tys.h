@@ -13,6 +13,7 @@
 #ifndef LIBFT_TYS_H
 # define LIBFT_TYS_H
 
+# include <limits.h>
 # include <stdint.h>
 # include <stddef.h>
 # include <sys/types.h>

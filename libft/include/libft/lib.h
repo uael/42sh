@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/23 14:38:40 by null             ###   ########.fr       */
+/*   Updated: 2017/12/05 15:48:26 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,10 @@ extern int		ft_szret(int no, char const *msg, ...);
 
 extern void		ft_pfree(void **pptr);
 extern void		ft_clean(void *ptr);
+
+extern char		*ft_join(char const *s1, char const *s2, char n);
+extern char		*ft_getenv(char **env, char *var);
+extern t_st		ft_setenv(char **env, char *var, char *val);
 
 # define GC(T) __attribute__((__cleanup__(ft_clean))) T
 
