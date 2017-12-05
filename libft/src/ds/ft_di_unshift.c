@@ -27,6 +27,11 @@ inline int32_t	*ft_di32_unshift(t_di32 *self)
 	return (ft_di32_unshiftn(self, 1));
 }
 
+inline int64_t	*ft_di64_unshift(t_di64 *self)
+{
+	return (ft_di64_unshiftn(self, 1));
+}
+
 inline char		**ft_dqstr_unshift(t_dqstr *self)
 {
 	return (ft_dqstr_unshiftn(self, 1));

@@ -6,7 +6,7 @@
 #    By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/07 09:52:36 by alucas-           #+#    #+#              #
-#    Updated: 2017/12/05 13:33:23 by alucas-          ###   ########.fr        #
+#    Updated: 2017/12/05 13:46:31 by alucas-          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -284,17 +284,13 @@ LIB = $(NAME)
 all: $(EXE) $(LIB)
 
 $(LIB): 3th $(OBJ)
-ifneq ($(filter %.o,$?),)
-	@$(CC) $(CFLAGS) $(LNK) $(3TH) $(INC) $(filter %.o,$?) -o $(NAME)
+	@ar -rc $(NAME) $(OBJ)
 	@ranlib $(NAME)
-endif
-	@echo  "$(NAME): \033[32m[✔]\033[0m"
+	@echo  "$(NAME): lib \033[32m[✔]\033[0m"
 
 $(EXE): 3th $(OBJ)
-ifneq ($(filter %.o,$?),)
-	@$(CC) $(CFLAGS) $(LNK) $(3TH) $(INC) $(filter %.o,$?) -o $(NAME)
-endif
-	@echo  "$(NAME): \033[32m[✔]\033[0m"
+	@$(CC) $(CFLAGS) $(LNK) $(3TH) $(INC) $(OBJ) -o $(NAME)
+	@echo  "$(NAME): exe \033[32m[✔]\033[0m"
 
 $(OBJ_PATH)%.o: $(SRC_PATH)%.c
 	@mkdir -p $(shell dirname $@)

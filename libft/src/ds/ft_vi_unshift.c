@@ -27,6 +27,11 @@ inline int32_t	*ft_vi32_unshift(t_vi32 *self)
 	return (ft_vi32_unshiftn(self, 1));
 }
 
+inline int64_t	*ft_vi64_unshift(t_vi64 *self)
+{
+	return (ft_vi64_unshiftn(self, 1));
+}
+
 inline char		**ft_vstr_unshift(t_vstr *self)
 {
 	return (ft_vstr_unshiftn(self, 1));
