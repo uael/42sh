@@ -18,7 +18,7 @@ inline t_st	sh_bi_echo(t_sh *self, t_vstr *av)
 
 	(void)self;
 	if (av->len < 2)
-		return (ft_ret(OK, "\n"));
+		return (ft_retf(OK, "\n"));
 	i = 0;
 	while (++i < av->len)
 	{
@@ -26,5 +26,5 @@ inline t_st	sh_bi_echo(t_sh *self, t_vstr *av)
 		if (i < av->len - 1)
 			ft_putc(1, ' ');
 	}
-	return (ft_ret(OK, "\n"));
+	return (ft_retf(OK, "\n"));
 }

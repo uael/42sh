@@ -45,20 +45,11 @@ function norm_file {
   fi
 }
 
-if [ -z "$1" ];then
-  PROJECT_PATH='.'
-else
-  PROJECT_PATH=$1
-fi
-
+PROJECT_PATH='.'
 
 function donorm {
   local pids=""
-  for file in ${PROJECT_PATH}/include/*.h; do
-    norm_file ${file} &
-    pids="$pids $!"
-  done
-  for file in ${PROJECT_PATH}/src/*.c; do
+  for file in $*; do
     norm_file ${file} &
     pids="$pids $!"
   done
@@ -71,23 +62,8 @@ function donorm {
   exit 0
 }
 
-function dotest {
-  local test=$1
-  local test_out="./out/$(basename "${test%.*}").out"
-  local test_expected="./test/$(basename "${test%.*}").ex"
-  if [ ! -f ${test_expected} ]; then
-    test_expected="./out/$(basename "${test%.*}").ex"
-    rm -f ${test_expected}
-    /bin/ls $(cat ${test}) > ${test_expected} 2>&1
-  fi
-  rm -f ${test_out}
-  ./${PROJECT_PATH}/ft_ls $(cat ${test}) > ${test_out} 2>&1
-  diff ${test_out} ${test_expected}
-}
-
 mkdir -p out
-job "Norm" "all" "donorm"
+job "Norm" "all" "donorm $*"
 
-rm ${OUT}cd /dev
-
+rm ${OUT}
 rm ${NORM_OUT}

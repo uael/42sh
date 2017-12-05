@@ -49,7 +49,7 @@ int			ft_fatal(int code, t_dtor dtor, void *arg, char const *msg, ...)
 	exit(code);
 }
 
-int			ft_passf(int code, char const *msg, ...)
+int			ft_retf(int code, char const *msg, ...)
 {
 	va_list	ap;
 

@@ -89,17 +89,17 @@ inline t_st		sh_exe_run(t_sh *self, char *p, t_vstr *av, t_vstr *env)
 	char	exe[PATH_MAX + 1];
 
 	if (ISE(st = exe_lookup(env, av->buf[0], p, exe)))
-		return (ft_ret(NOK, "%s: %e\n", av->buf[0], self->st = ST_TOENO(st)));
+		return (ft_retf(NOK, "%s: %e\n", av->buf[0], self->st = ST_TOENO(st)));
 	if (ST_NOK(st))
-		return (ft_ret(self->st = NOK, "%s: Command not found\n", av->buf[0]));
+		return (ft_retf(self->st = NOK, "%s: Command not found\n", av->buf[0]));
 	if (access(exe, R_OK) != 0)
-		return (ft_ret(NOK, "%s: %e\n", av->buf[0], self->st = errno));
+		return (ft_retf(NOK, "%s: %e\n", av->buf[0], self->st = errno));
 	if (access(exe, X_OK) != 0)
-		return (ft_ret(NOK, "%s: %e\n", av->buf[0], self->st = errno));
+		return (ft_retf(NOK, "%s: %e\n", av->buf[0], self->st = errno));
 	if ((pid = fork()) == 0)
 		execve(exe, av->buf, env->buf);
 	else if (pid < 0)
-		return (ft_ret(NOK, "%s: %e\n", av->buf[0], self->st = errno));
+		return (ft_retf(NOK, "%s: %e\n", av->buf[0], self->st = errno));
 	signal(SIGINT, exe_hdl);
 	if (waitpid(pid, &st, 0) < 0)
 		SH_EXIT(EXIT_FAILURE, self, NULL);

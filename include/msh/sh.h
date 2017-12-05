@@ -15,7 +15,7 @@
 
 # include <libft.h>
 
-# define SH_EXIT(c, sh, ...) (ft_exit(c, (t_dtor)sh_dtor, sh, __VA_ARGS__))
+# define SH_EXIT(c, sh, ...) (ft_fatal(c, (t_dtor)sh_dtor, sh, __VA_ARGS__))
 
 typedef struct	s_sh
 {

@@ -6,48 +6,80 @@
 #    By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/07 09:52:36 by alucas-           #+#    #+#              #
-#    Updated: 2017/11/18 19:59:34 by null             ###   ########.fr        #
+#    Updated: 2017/12/05 13:16:30 by alucas-          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = 21sh
 CC = gcc
-CC_FLAGS = -Wall -Werror -Wextra -I$(LFT_PATH)/include -O3
+CFLAGS = -Werror -Wextra -Wall -O3
 
-LFT_PATH = ./libft
 SRC_PATH = ./src/
-INC_PATH = ./include $(LFT_PATH)/include
 OBJ_PATH = ./obj/
-
-SRC = $(addprefix $(SRC_PATH),$(SRC_NAME))
-OBJ = $(addprefix $(OBJ_PATH),$(OBJ_NAME))
-INC = $(addprefix -I,$(INC_PATH))
+SOB_PATH = bi/
+3TH_PATH = ./libft/
+INC_PATH = ./include/
+LNK_PATH = ./ $(3TH_PATH)
 
 OBJ_NAME = $(SRC_NAME:.c=.o)
+3TH_NAME = ft ncurses
 SRC_NAME = bi/cd.c bi/echo.c bi/env.c bi/exit.c bi/setenv.c bi/unsetenv.c \
 	bi.c cli.c env.c eval.c exe.c lex.c sh.c toks.c
 
-all: $(NAME)
+SRC = $(addprefix $(SRC_PATH), $(SRC_NAME))
+OBJ = $(addprefix $(OBJ_PATH), $(OBJ_NAME))
+SOB = $(addprefix $(OBJ_PATH), $(SOB_PATH))
+INC = $(addprefix -I, $(INC_PATH) $(addprefix $(3TH_PATH), include/))
+LNK = $(addprefix -L, $(LNK_PATH))
+3TH = $(addprefix -l, $(3TH_NAME))
+EXE = $(NAME)
+LIB =
 
-$(NAME): $(OBJ)
-	+$(MAKE) -C $(LFT_PATH)
-	$(CC) -o $(NAME) $(OBJ) -L$(LFT_PATH) -lft
+all: $(EXE) $(LIB)
 
+$(LIB): 3th $(OBJ)
+ifneq ($(filter %.o,$?),)
+	@$(CC) $(CFLAGS) $(LNK) $(3TH) $(INC) $(filter %.o,$?) -o $(NAME)
+	@ranlib $(NAME)
+endif
+	@echo  "$(NAME): \033[32m[✔]\033[0m"
+
+$(EXE): 3th $(OBJ)
+ifneq ($(filter %.o,$?),)
+	@$(CC) $(CFLAGS) $(LNK) $(3TH) $(INC) $(filter %.o,$?) -o $(NAME)
+endif
+	@echo  "$(NAME): \033[32m[✔]\033[0m"
 
 $(OBJ_PATH)%.o: $(SRC_PATH)%.c
-	@mkdir -p $(OBJ_PATH) $(OBJ_PATH)/bi
-	$(CC) $(CC_FLAGS) $(INC) -o $@ -c $<
+	@mkdir -p $(SOB)
+	@echo "$(NAME): \033[34m[$<]\033[0m"
+	@$(CC) $(CFLAGS) $(INC) -o $@ -c $<
+	@echo "\033[A\033[K\033[A"
 
 clean:
-	make -C $(LFT_PATH) clean
-	rm -rf $(OBJ_PATH)
+ifneq ($(3TH_PATH),)
+	@$(MAKE) -C $(3TH_PATH) clean
+endif
+	@rm -rf $(OBJ_PATH)
+	@echo  "$(NAME): $@ \033[32m[✔]\033[0m"
 
 fclean: clean
-	make -C $(LFT_PATH) fclean
-	rm -f $(NAME)
+ifneq ($(3TH_PATH),)
+	@$(MAKE) -C $(3TH_PATH) fclean
+endif
+	@rm -f $(NAME)
+	@echo  "$(NAME): $@ \033[32m[✔]\033[0m"
 
-check:
-	@./test.sh
+3th:
+ifneq ($(3TH_PATH),)
+	@$(MAKE) -C $(3TH_PATH)
+endif
+
+norm:
+ifneq ($(3TH_PATH),)
+	@$(MAKE) -C $(3TH_PATH) norm
+endif
+	@./norm.sh $(shell find $(SRC_PATH) $(INC_PATH) -name '*.h' -o -name '*.c')
 
 re: fclean all
 

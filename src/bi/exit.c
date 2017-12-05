@@ -21,7 +21,7 @@ inline t_st	sh_bi_exit(t_sh *self, t_vstr *av)
 	char	*a;
 
 	if (av->len > 2)
-		return (ft_ret(NOK, "%s: %e\n", "exit", E2BIG));
+		return (ft_retf(NOK, "%s: %e\n", "exit", E2BIG));
 	if (av->len < 2)
 		SH_EXIT(self->st, self, NULL);
 	a = av->buf[1];

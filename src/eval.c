@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/23 17:39:49 by null             ###   ########.fr       */
+/*   Updated: 2017/12/05 12:08:06 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,5 +38,5 @@ inline t_st			sh_eval(t_sh *self, t_tok *tok)
 {
 	if (tok->id == SH_TOK_WORD)
 		return (sh_eval_word(self, tok));
-	return (ft_ret(NOK, "%s: Unexpected token '%c'\n", "21sh", tok->id));
+	return (ft_retf(NOK, "%s: Unexpected token '%c'\n", "21sh", tok->id));
 }
