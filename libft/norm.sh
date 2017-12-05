@@ -62,7 +62,6 @@ function donorm {
   exit 0
 }
 
-mkdir -p out
 job "Norm" "all" "donorm $*"
 
 rm ${OUT}
