@@ -24,7 +24,7 @@ inline t_st	sh_bi_exit(t_sh *sh, int ac, char **av, char **env)
 	if (ac > 2)
 		return (ft_retf(NOK, "%s: %e\n", "exit", E2BIG));
 	if (ac < 2)
-		exit(sh->st); //todo
+		exit(sh->st);
 	a = av[1];
 	if (!(i = ft_strlen(a)) || i > 19)
 		ft_fatal(NOK, NULL, NULL, "exit: %s, got '%s' instead\n", M_NREQ, a);

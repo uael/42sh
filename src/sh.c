@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/23 15:10:56 by null             ###   ########.fr       */
+/*   Updated: 2017/12/05 18:32:43 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,18 +78,54 @@ inline t_st	sh_prompt(t_sh *self, char *prompt)
 
 inline t_st	msh(t_sh *self)
 {
-	t_tok	*tok;
-	t_st	st;
+	t_tok		*tok;
+	t_st		st;
+	t_job		*prev;
+	t_job		job;
 
+	prev = NULL;
+	ft_lexer_clean(&self->lexer);
 	while (1)
+	{
 		if (!(tok = sh_next(self, NULL)))
 			return (NOK);
 		else if (tok->id == '\n')
+		{
+			if (ft_vec_size(&self->worker) &&
+				ISE(st = ft_worker_run(&self->worker, self, &self->st)))
+				ft_putf(2, "21sh: %e", ST_TOENO(st));
 			return (OK);
-		else if (ft_strchr(";\t ", tok->id))
-			continue ;
-		else if (ISE(st = sh_eval(self, tok)))
-			return (st);
-		else
+		}
+		else if (ft_strchr(";", tok->id))
+		{
+			if (ISE(st = ft_worker_run(&self->worker, self, &self->st)))
+				ft_putf(2, "21sh: %e", ST_TOENO(st));
 			ft_lexer_clean(&self->lexer);
+			continue ;
+		}
+		else if (ft_strchr("\t ", tok->id))
+			continue ;
+		else if (tok->id == SH_TOK_PIPE)
+		{
+			if (!prev)
+				return (ft_retf(NOK, "21sh: Unexpected token '%c'\n", tok->id));
+			prev->op = JOB_OP_PIPE;
+		}
+		else if (ISE(st = sh_eval_job(self, &job, tok)))
+			return (st);
+		else if (ST_OK(st) && !(prev = ft_worker_push(&self->worker, &job)))
+			return (st);
+		else if (ST_OK(st))
+		{
+			if (prev->fn == (t_job_fn)sh_bi_exit)
+			{
+				if (ISE(st = ft_worker_run(&self->worker, self, &self->st)))
+					ft_putf(2, "21sh: %e", ST_TOENO(st));
+				exit(self->st);
+			}
+			continue ;
+		}
+		else
+			return (ft_retf(NOK, "21sh: Unexpected token '%c'\n", tok->id));
+	}
 }

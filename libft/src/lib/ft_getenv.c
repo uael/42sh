@@ -17,7 +17,7 @@ inline char	*ft_getenv(char **env, char *var)
 {
 	char *val;
 
-	while (*env && !ft_strbegw(*env, var))
+	while (*env && !ft_strbegw(var, *env))
 		++env;
 	if (!*env || !(val = ft_strchr(*env, '=')))
 		return (NULL);
@@ -26,7 +26,7 @@ inline char	*ft_getenv(char **env, char *var)
 
 inline t_st	ft_setenv(char **env, char *var, char *val)
 {
-	while (*env && !ft_strbegw(*env, var))
+	while (*env && !ft_strbegw(var, *env))
 		++env;
 	if (!*env)
 		return (NOK);

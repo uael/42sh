@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/05 16:30:17 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/05 18:18:00 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,19 +38,14 @@ typedef enum	e_job_op
 
 typedef int		(*t_job_fn)(void *g, int ac, char **av, char **env);
 
-union			u_job
-{
-	pid_t		pid;
-	t_job_fn	fn;
-};
-
 typedef struct	s_job
 {
 	t_job_kind	kind;
 	t_job_op	op;
 	char		**av;
 	char		**env;
-	union u_job	u;
+	pid_t		pid;
+	t_job_fn	fn;
 	int			st;
 }				t_job;
 
@@ -62,8 +57,8 @@ extern void		ft_job_dtor(t_job *self);
 extern t_st		ft_job_run(t_job *self, void *g, int *write, int *read);
 
 extern void		ft_worker_ctor(t_worker *jobs);
-extern void		ft_worker_dtor(t_worker *jobs);
-extern t_job	*ft_worker_push(t_worker *jobs, t_job *job, t_job_op next);
-extern t_st		ft_worker_run(t_worker *jobs, void *g);
+extern void		ft_worker_dtor(t_worker *self);
+extern t_job	*ft_worker_push(t_worker *self, t_job *job);
+extern t_st		ft_worker_run(t_worker *self, void *g, int *status);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:33 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/05 15:12:17 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/05 18:28:14 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,21 +14,20 @@
 
 inline void		ft_worker_ctor(t_worker *jobs)
 {
-	ft_vec_ctor(jobs, sizeof(t_vec));
+	ft_vec_ctor(jobs, sizeof(t_job));
 }
 
-inline void		ft_worker_dtor(t_worker *jobs)
+inline void		ft_worker_dtor(t_worker *self)
 {
-	ft_vec_dtor(jobs, (t_dtor)ft_job_dtor);
+	ft_vec_dtor(self, (t_dtor)ft_job_dtor);
 }
 
-inline t_job	*ft_worker_push(t_worker *jobs, t_job *job, t_job_op next)
+inline t_job	*ft_worker_push(t_worker *self, t_job *job)
 {
-	job->op = next;
-	return ((t_job *)ft_vec_pushc(jobs, job));
+	return ((t_job *)ft_vec_pushc(self, job));
 }
 
-t_st			ft_worker_run(t_worker *jobs, void *g)
+t_st			ft_worker_run(t_worker *self, void *g, int *status)
 {
 	t_job	*it;
 	int 	c[2];
@@ -37,8 +36,9 @@ t_st			ft_worker_run(t_worker *jobs, void *g)
 	t_st	st;
 
 	p = NULL;
-	it = (t_job *)ft_vec_begin(jobs) - 1;
-	while (++it != (t_job *)ft_vec_end(jobs))
+	*status = 0;
+	it = (t_job *)ft_vec_begin(self) - 1;
+	while (++it != (t_job *)ft_vec_end(self))
 	{
 		if (it->op == JOB_OP_PIPE)
 		{
@@ -55,10 +55,14 @@ t_st			ft_worker_run(t_worker *jobs, void *g)
 				return (st);
 			p ? (void)(close(p[0]) & close(p[1])) : 0;
 		}
-		if (it->kind == JOB_EXE && waitpid(it->u.pid, &st, 0) < 0)
+		if (waitpid(it->pid, &st, 0) < 0)
 			return (ENO);
-		if (it->kind == JOB_EXE && WIFEXITED(st))
+		if (WIFEXITED(st))
 			it->st = WEXITSTATUS(st);
 	}
+	if (it > (t_job *)ft_vec_begin(self))
+		--it;
+	self->len = 0;
+	*status = it->st;
 	return (0);
 }

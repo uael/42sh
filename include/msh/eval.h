@@ -18,6 +18,6 @@
 # include "bi.h"
 # include "lex.h"
 
-extern t_st	sh_eval(t_sh *self, t_tok *tok);
+extern t_st	sh_eval_job(t_sh *self, t_job *job, t_tok *tok);
 
 #endif

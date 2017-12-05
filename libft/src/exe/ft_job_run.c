@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:33 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/05 15:09:41 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/05 18:08:53 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,12 +43,12 @@ t_st ft_job_run(t_job *self, void *g, int *write, int *read)
 			dup2(read[0], STDIN_FILENO);
 		}
 		if (self->kind == JOB_FN)
-			self->st = self->u.fn(g, av_count(self->av), self->av, self->env);
+			exit(self->fn(g, av_count(self->av), self->av, self->env));
 		else
 		{
 			execve(self->av[0], self->av, self->env);
 			return (ENO);
 		}
 	}
-	return (self->kind == JOB_FN ? (self->u.pid = pid) & 0 : 0);
+	return ((self->pid = pid) & 0);
 }

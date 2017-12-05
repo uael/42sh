@@ -87,5 +87,5 @@ inline void		ft_lexer_dtor(t_lexer *self)
 	ft_vec_dtor(&self->rules, NULL);
 	ft_deq_dtor(&self->srcs, (void (*)(void *))ft_src_dtor);
 	ft_deq_dtor(&self->toks, (void (*)(void *))ft_tokv_dtor);
-	ft_vec_dtor(&self->vals, (void (*)(void *))ft_tokv_dtor);
+	ft_vec_dtor(&self->vals, (t_dtor)ft_tokv_dtor);
 }
