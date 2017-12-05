@@ -35,7 +35,7 @@ int			ft_dtor(int code, t_dtor dtor, void *arg, char const *msg, ...)
 	return (code);
 }
 
-int			ft_exit(int code, t_dtor dtor, void *arg, char const *msg, ...)
+int			ft_fatal(int code, t_dtor dtor, void *arg, char const *msg, ...)
 {
 	va_list	ap;
 
@@ -49,7 +49,7 @@ int			ft_exit(int code, t_dtor dtor, void *arg, char const *msg, ...)
 	exit(code);
 }
 
-int			ft_ret(int code, char const *msg, ...)
+int			ft_passf(int code, char const *msg, ...)
 {
 	va_list	ap;
 

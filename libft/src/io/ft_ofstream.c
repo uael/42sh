@@ -1,38 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_cin_seek.c                                      :+:      :+:    :+:   */
+/*   ft_ofstream.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:33 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/23 07:09:14 by null             ###   ########.fr       */
+/*   Updated: 2017/11/17 09:51:01 by null             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/io/istream.h"
+#include "libft/io/ofstream.h"
 
-inline void		ft_cin_flush(void)
+inline t_st	ft_ofstream_open(t_ofstream *self, char const *filename)
 {
-	return (ft_istream_flush(g_cin));
+	FT_INIT(self, t_ofstream);
+	if ((self->fd = open(filename, O_APPEND | O_CREAT | O_RDWR)) < 0)
+		return (ENO);
+	self->filename = filename;
+	return (OK);
 }
 
-inline t_st		ft_cin_rewind(size_t n)
+inline t_st	ft_ofstream_close(t_ofstream *self)
 {
-	return (ft_istream_rewind(g_cin, n));
-}
-
-inline t_st		ft_cin_forward(size_t n)
-{
-	return (ft_istream_forward(g_cin, n));
-}
-
-inline t_st		ft_cin_seek(size_t off)
-{
-	return (ft_istream_seek(g_cin, off));
-}
-
-inline size_t	ft_cin_tell(void)
-{
-	return (ft_istream_tell(g_cin));
+	if (self->filename && self->fd > 1)
+	{
+		ft_ofstream_flush(self);
+		if (close(self->fd) < 0)
+			return (ENO);
+		if (self->buf)
+		{
+			free(self->buf);
+			self->buf = NULL;
+		}
+		self->filename = NULL;
+	}
+	return (OK);
 }

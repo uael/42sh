@@ -31,6 +31,7 @@ inline size_t	ft_vi8_removen(t_vi8 *self, size_t idx, size_t n, int8_t *out)
 		if (out)
 			ft_memcpy(out, it, n * sizeof(int8_t));
 		ft_memmove(it, it + n, (len - idx - n + 1) * sizeof(int8_t));
+		self->len -= n;
 		return (n);
 	}
 }
@@ -54,6 +55,7 @@ inline size_t	ft_vi16_removen(t_vi16 *self, size_t i, size_t n, int16_t *out)
 		if (out)
 			ft_memcpy(out, it, n * sizeof(int16_t));
 		ft_memmove(it, it + n, (len - i - n + 1) * sizeof(int16_t));
+		self->len -= n;
 		return (n);
 	}
 }
@@ -77,6 +79,7 @@ inline size_t	ft_vi32_removen(t_vi32 *self, size_t i, size_t n, int32_t *out)
 		if (out)
 			ft_memcpy(out, it, n * sizeof(int32_t));
 		ft_memmove(it, it + n, (len - i - n + 1) * sizeof(int32_t));
+		self->len -= n;
 		return (n);
 	}
 }
@@ -100,6 +103,7 @@ inline size_t	ft_vi64_removen(t_vi64 *self, size_t i, size_t n, int64_t *out)
 		if (out)
 			ft_memcpy(out, it, n * sizeof(int64_t));
 		ft_memmove(it, it + n, (len - i - n + 1) * sizeof(int64_t));
+		self->len -= n;
 		return (n);
 	}
 }
@@ -123,6 +127,7 @@ inline size_t	ft_vstr_removen(t_vstr *self, size_t i, size_t n, char **out)
 		if (out)
 			ft_memcpy(out, it, n * sizeof(char *));
 		ft_memmove(it, it + n, (len - i - n + 1) * sizeof(char *));
+		self->len -= n;
 		return (n);
 	}
 }

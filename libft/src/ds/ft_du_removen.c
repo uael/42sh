@@ -31,6 +31,7 @@ inline size_t	ft_du8_removen(t_du8 *self, size_t idx, size_t n, uint8_t *out)
 		if (out)
 			ft_memcpy(out, it, n * sizeof(uint8_t));
 		ft_memmove(it, it + n, (len - idx - n + 1) * sizeof(uint8_t));
+		self->len -= n;
 		return (n);
 	}
 }
@@ -54,6 +55,7 @@ inline size_t	ft_du16_removen(t_du16 *self, size_t i, size_t n, uint16_t *out)
 		if (out)
 			ft_memcpy(out, it, n * sizeof(uint16_t));
 		ft_memmove(it, it + n, (len - i - n + 1) * sizeof(uint16_t));
+		self->len -= n;
 		return (n);
 	}
 }
@@ -77,6 +79,7 @@ inline size_t	ft_du32_removen(t_du32 *self, size_t i, size_t n, uint32_t *out)
 		if (out)
 			ft_memcpy(out, it, n * sizeof(uint32_t));
 		ft_memmove(it, it + n, (len - i - n + 1) * sizeof(uint32_t));
+		self->len -= n;
 		return (n);
 	}
 }
@@ -100,6 +103,7 @@ inline size_t	ft_du64_removen(t_du64 *self, size_t i, size_t n, uint64_t *out)
 		if (out)
 			ft_memcpy(out, it, n * sizeof(uint64_t));
 		ft_memmove(it, it + n, (len - i - n + 1) * sizeof(uint64_t));
+		self->len -= n;
 		return (n);
 	}
 }
@@ -124,6 +128,7 @@ inline size_t	ft_deq_removen(t_deq *s, size_t i, size_t n, void *out)
 			ft_memcpy(out, it, n * s->isz);
 		len = len - i - n + 1;
 		ft_memmove(it, it + (n * s->isz), len * s->isz);
+		s->len -= n;
 		return (n);
 	}
 }

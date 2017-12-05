@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_cin_seek.c                                      :+:      :+:    :+:   */
+/*   ft_cout_seek.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,29 +10,29 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/io/istream.h"
+#include "libft/io/ostream.h"
 
-inline void		ft_cin_flush(void)
+inline void		ft_cout_flush(void)
 {
-	return (ft_istream_flush(g_cin));
+	return (ft_ostream_flush(g_cout));
 }
 
-inline t_st		ft_cin_rewind(size_t n)
+inline t_st		ft_cout_rewind(size_t n)
 {
-	return (ft_istream_rewind(g_cin, n));
+	return (ft_ostream_rewind(g_cout, n));
 }
 
-inline t_st		ft_cin_forward(size_t n)
+inline t_st		ft_cout_forward(size_t n)
 {
-	return (ft_istream_forward(g_cin, n));
+	return (ft_ostream_forward(g_cout, n));
 }
 
-inline t_st		ft_cin_seek(size_t off)
+inline t_st		ft_cout_seek(size_t off)
 {
-	return (ft_istream_seek(g_cin, off));
+	return (ft_ostream_seek(g_cout, off));
 }
 
-inline size_t	ft_cin_tell(void)
+inline size_t	ft_cout_tell(void)
 {
-	return (ft_istream_tell(g_cin));
+	return (ft_ostream_tell(g_cout));
 }

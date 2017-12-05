@@ -10,23 +10,19 @@
 #                                                                              #
 # **************************************************************************** #
 
-PROJECT = libft
-NAME = $(PROJECT).a
+NAME = libft.a
 CC = gcc
-CFLAGS += -Wall -Werror -Wextra -O3
+CFLAGS = -Werror -Wextra -Wall -O3
 
 SRC_PATH = ./src/
-INC_PATH = ./include/
 OBJ_PATH = ./obj/
-OBJ_PATHS = cty ds fs int io lex lib math mem str
+LIB_PATH =
+INC_PATH = ./include/ $(addprefix $(LIB_PATH), include/)
+LNK_PATH = ./ $(LIB_PATH)
 
-OBJ_SUB_PATHS = $(addprefix $(OBJ_PATH),$(OBJ_PATHS))
-OBJ_NAME = $(SRC_NAME:.c=.o)
-SRC = $(addprefix $(SRC_PATH),$(SRC_NAME))
-OBJ = $(addprefix $(OBJ_PATH),$(OBJ_NAME))
-INC = $(addprefix -I,$(INC_PATH))
-
-SRC_NAME += \
+OBJ_NAME = $(notdir $(SRC_NAME:.c=.o))
+LIB_NAME =
+SRC_NAME =  \
 	cty/ft_isalnum.c \
 	cty/ft_isalpha.c \
 	cty/ft_isascii.c \
@@ -177,6 +173,10 @@ SRC_NAME += \
 	ds/ft_du_unshiftc.c \
 	ds/ft_du_unshiftn.c \
 	ds/ft_du_unshiftnc.c \
+	ds/ft_node.c \
+	ds/ft_node_add.c \
+	ds/ft_node_next.c \
+	ds/ft_node_prev.c \
 	fs/ft_basename.c \
 	fs/ft_isdots.c \
 	fs/ft_pathjoin.c \
@@ -185,6 +185,8 @@ SRC_NAME += \
 	int/ft_intstr.c \
 	io/ft_cin_read.c \
 	io/ft_cin_seek.c \
+	io/ft_cout_write.c \
+	io/ft_cout_seek.c \
 	io/ft_ifstream.c \
 	io/ft_ifstream_peek.c \
 	io/ft_ifstream_read.c \
@@ -197,6 +199,18 @@ SRC_NAME += \
 	io/ft_istream_peek.c \
 	io/ft_istream_read.c \
 	io/ft_istream_seek.c \
+	io/ft_ofstream.c \
+	io/ft_ofstream_put.c \
+	io/ft_ofstream_write.c \
+	io/ft_ofstream_seek.c \
+	io/ft_omstream.c \
+	io/ft_omstream_put.c \
+	io/ft_omstream_write.c \
+	io/ft_omstream_seek.c \
+	io/ft_ostream.c \
+	io/ft_ostream_put.c \
+	io/ft_ostream_write.c \
+	io/ft_ostream_seek.c \
 	io/ft_padn.c \
 	io/ft_putc.c \
 	io/ft_putf.c \
@@ -214,6 +228,7 @@ SRC_NAME += \
 	lex/tokv_init1.c \
 	lex/tokv_init2.c \
 	lib/ft_atoi.c \
+	lib/ft_clean.c \
 	lib/ft_dtor.c \
 	lib/ft_itoa.c \
 	lib/ft_strerr.c \
@@ -250,24 +265,39 @@ SRC_NAME += \
 	str/ft_strnlen.c \
 	str/ft_strnstr.c \
 	str/ft_strrchr.c \
-	str/ft_strstr.c
+	str/ft_strstr.c \
+	trm/ft_caps.c \
+	trm/ft_trm.c \
+	trm/ft_trm_on.c \
+	trm/ft_trm_keys.c
+
+SRC = $(addprefix $(SRC_PATH), $(SRC_NAME))
+OBJ = $(addprefix $(OBJ_PATH), $(OBJ_NAME))
+INC = $(addprefix -I, $(INC_PATH))
+LNK = $(addprefix -L, $(LNK_PATH))
+LIB = $(addprefix -l, $(LIB_NAME))
 
 all: $(NAME)
 
-$(OBJ_PATH)%.o: $(SRC_PATH)/%.c
-	@mkdir -p $(OBJ_SUB_PATHS)
-	$(CC) $(CFLAGS) $(INC) -o $@ -c $<
-
 $(NAME): $(OBJ)
-	ar -rc $(NAME) $?
-	ranlib $(NAME)
+	@ar -rc $(NAME) $?
+	@ranlib $(NAME)
+	@echo  "$(NAME): \033[32m[✔]\033[0m"
+
+$(OBJ_PATH)%.o: $(SRC_PATH)**/%.c
+	@mkdir -p $(OBJ_PATH)
+	@echo "$(NAME): \033[34m[$<]\033[0m"
+	@$(CC) $(CFLAGS) $(INC) -o $@ -c $<
+	@echo "\033[A\033[K\033[A"
 
 clean:
-	/bin/rm -rf $(OBJ_PATH)
+	@rm -f $(OBJ)
+	@rmdir $(OBJ_PATH) 2> /dev/null || echo "" > /dev/null
 
 fclean: clean
-	/bin/rm -rf $(NAME)
+	@rm -f $(NAME)
+
+check:
+	@./test.sh
 
 re: fclean all
-
-.PHONY: clean fclean re

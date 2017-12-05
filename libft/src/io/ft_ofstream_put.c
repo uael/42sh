@@ -1,23 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memrcpy.c                                       :+:      :+:    :+:   */
+/*   ft_ofstream_put.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/07 09:44:17 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/09 12:20:15 by alucas-          ###   ########.fr       */
+/*   Created: 2017/11/07 09:52:33 by alucas-           #+#    #+#             */
+/*   Updated: 2017/11/23 07:50:09 by null             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/str.h"
+#include "libft/io/ofstream.h"
 
-inline void	*ft_memrcpy(void *dst, void const *src, size_t n)
+inline t_sz	ft_ofstream_putc(t_ofstream *self, char c)
 {
-	while (n)
-	{
-		--n;
-		*((uint8_t *)dst + n) = *((uint8_t const *)src + n);
-	}
-	return (dst);
+	return (ft_ofstream_write(self, &c, 1));
+}
+
+inline t_sz	ft_ofstream_puts(t_ofstream *self, char const *s)
+{
+	return (ft_ofstream_write(self, s, ft_strlen(s)));
 }

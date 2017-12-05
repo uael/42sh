@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_cin_seek.c                                      :+:      :+:    :+:   */
+/*   ft_cout_write.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,29 +10,35 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/io/istream.h"
+#include "libft/io/ostream.h"
 
-inline void		ft_cin_flush(void)
+inline t_sz	ft_cout_write(char const *buf, size_t len)
 {
-	return (ft_istream_flush(g_cin));
+	return (ft_ostream_write(g_cout, buf, len));
 }
 
-inline t_st		ft_cin_rewind(size_t n)
+t_sz		ft_cout_writef(char const *fmt, ...)
 {
-	return (ft_istream_rewind(g_cin, n));
+	va_list	ap;
+	t_sz	sz;
+
+	va_start(ap, fmt);
+	sz = ft_cout_vwritef(fmt, ap);
+	va_end(ap);
+	return (sz);
 }
 
-inline t_st		ft_cin_forward(size_t n)
+inline t_sz	ft_cout_vwritef(char const *fmt, va_list ap)
 {
-	return (ft_istream_forward(g_cin, n));
+	return (ft_ostream_vwritef(g_cout, fmt, ap));
 }
 
-inline t_st		ft_cin_seek(size_t off)
+inline t_sz	ft_cout_putc(char c)
 {
-	return (ft_istream_seek(g_cin, off));
+	return (ft_ostream_putc(g_cout, c));
 }
 
-inline size_t	ft_cin_tell(void)
+inline t_sz	ft_cout_puts(char const *s)
 {
-	return (ft_istream_tell(g_cin));
+	return (ft_ostream_puts(g_cout, s));
 }

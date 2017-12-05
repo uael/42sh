@@ -1,23 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memrcpy.c                                       :+:      :+:    :+:   */
+/*   ft_caps.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/07 09:44:17 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/09 12:20:15 by alucas-          ###   ########.fr       */
+/*   Created: 2017/11/07 09:44:11 by alucas-           #+#    #+#             */
+/*   Updated: 2017/11/08 14:37:11 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/str.h"
+#include "libft/trm.h"
 
-inline void	*ft_memrcpy(void *dst, void const *src, size_t n)
+inline char	*ft_caps_underline(void)
 {
-	while (n)
-	{
-		--n;
-		*((uint8_t *)dst + n) = *((uint8_t const *)src + n);
-	}
-	return (dst);
+	return (tgetstr("us", NULL));
+}
+
+inline char	*ft_caps_rvideo(void)
+{
+	return (tgetstr("mr", NULL));
+}
+
+inline char	*ft_caps_reset(void)
+{
+	return (tgetstr("me", NULL));
 }

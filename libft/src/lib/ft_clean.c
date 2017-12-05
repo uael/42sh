@@ -1,23 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memrcpy.c                                       :+:      :+:    :+:   */
+/*   ft_clean.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/07 09:44:17 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/09 12:20:15 by alucas-          ###   ########.fr       */
+/*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
+/*   Updated: 2017/11/23 14:39:14 by null             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/str.h"
+#include "libft/lib.h"
 
-inline void	*ft_memrcpy(void *dst, void const *src, size_t n)
+inline void	ft_clean(void *ptr)
 {
-	while (n)
-	{
-		--n;
-		*((uint8_t *)dst + n) = *((uint8_t const *)src + n);
-	}
-	return (dst);
+	ft_pfree((void **)ptr);
 }

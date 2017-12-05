@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libft/io/ifstream.h                                :+:      :+:    :+:   */
+/*   libft/io/ofstream.h                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFT_IO_IFSTREAM_H
-# define LIBFT_IO_IFSTREAM_H
+#ifndef LIBFT_IO_OFSTREAM_H
+# define LIBFT_IO_OFSTREAM_H
 
 # include <unistd.h>
 # include <fcntl.h>
@@ -30,7 +30,7 @@
 #  endif
 # endif
 
-typedef struct	s_ifstream
+typedef struct	s_ofstream
 {
 	char const	*filename;
 	int			fd;
@@ -38,21 +38,20 @@ typedef struct	s_ifstream
 	size_t		beg;
 	size_t		cur;
 	size_t		end;
-	size_t		cap;
 	size_t		len;
-}				t_ifstream;
+}				t_ofstream;
 
-extern t_st		ft_ifstream_open(t_ifstream *self, char const *filename);
-extern t_st		ft_ifstream_close(t_ifstream *self);
-extern t_sz		ft_ifstream_read(t_ifstream *self, char *buf, size_t len);
-extern t_sz		ft_ifstream_readf(t_ifstream *self, char *fmt, ...);
-extern t_sz		ft_ifstream_vreadf(t_ifstream *self, char *fmt, va_list ap);
-extern t_sz		ft_ifstream_get(t_ifstream *self, char *buf, size_t n);
-extern t_st		ft_ifstream_peek(t_ifstream *self, char *c, size_t n);
-extern void		ft_ifstream_flush(t_ifstream *self);
-extern t_st		ft_ifstream_rewind(t_ifstream *self, size_t n);
-extern t_st		ft_ifstream_forward(t_ifstream *self, size_t n);
-extern t_st		ft_ifstream_seek(t_ifstream *self, size_t off);
-extern size_t	ft_ifstream_tell(t_ifstream const *self);
+extern t_st		ft_ofstream_open(t_ofstream *self, char const *filename);
+extern t_st		ft_ofstream_close(t_ofstream *self);
+extern t_sz		ft_ofstream_write(t_ofstream *s, char const *sr, size_t l);
+extern t_sz		ft_ofstream_writef(t_ofstream *self, char const *fmt, ...);
+extern t_sz		ft_ofstream_vwritef(t_ofstream *self, char const *f, va_list a);
+extern t_sz		ft_ofstream_puts(t_ofstream *self, char const *str);
+extern t_sz		ft_ofstream_putc(t_ofstream *self, char c);
+extern void		ft_ofstream_flush(t_ofstream *self);
+extern t_st		ft_ofstream_rewind(t_ofstream *self, size_t n);
+extern t_st		ft_ofstream_forward(t_ofstream *self, size_t n);
+extern t_st		ft_ofstream_seek(t_ofstream *self, size_t off);
+extern size_t	ft_ofstream_tell(t_ofstream const *self);
 
 #endif

@@ -23,6 +23,7 @@
 # include "libft/math.h"
 # include "libft/mem.h"
 # include "libft/str.h"
+# include "libft/trm.h"
 # include "libft/tys.h"
 
 #endif

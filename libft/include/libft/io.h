@@ -20,8 +20,11 @@
 # include "str.h"
 
 # include "io/ifstream.h"
-# include "io/istream.h"
 # include "io/imstream.h"
+# include "io/istream.h"
+# include "io/ofstream.h"
+# include "io/omstream.h"
+# include "io/ostream.h"
 
 extern ssize_t	ft_putc(int fd, char c);
 extern ssize_t	ft_putl(int fd, char const *s);

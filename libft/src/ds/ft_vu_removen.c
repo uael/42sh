@@ -31,6 +31,7 @@ inline size_t	ft_vu8_removen(t_vu8 *self, size_t idx, size_t n, uint8_t *out)
 		if (out)
 			ft_memcpy(out, it, n * sizeof(uint8_t));
 		ft_memmove(it, it + n, (len - idx - n + 1) * sizeof(uint8_t));
+		self->len -= n;
 		return (n);
 	}
 }
@@ -54,6 +55,7 @@ inline size_t	ft_vu16_removen(t_vu16 *self, size_t i, size_t n, uint16_t *out)
 		if (out)
 			ft_memcpy(out, it, n * sizeof(uint16_t));
 		ft_memmove(it, it + n, (len - i - n + 1) * sizeof(uint16_t));
+		self->len -= n;
 		return (n);
 	}
 }
@@ -77,6 +79,7 @@ inline size_t	ft_vu32_removen(t_vu32 *self, size_t i, size_t n, uint32_t *out)
 		if (out)
 			ft_memcpy(out, it, n * sizeof(uint32_t));
 		ft_memmove(it, it + n, (len - i - n + 1) * sizeof(uint32_t));
+		self->len -= n;
 		return (n);
 	}
 }
@@ -100,6 +103,7 @@ inline size_t	ft_vu64_removen(t_vu64 *self, size_t i, size_t n, uint64_t *out)
 		if (out)
 			ft_memcpy(out, it, n * sizeof(uint64_t));
 		ft_memmove(it, it + n, (len - i - n + 1) * sizeof(uint64_t));
+		self->len -= n;
 		return (n);
 	}
 }
@@ -124,6 +128,7 @@ inline size_t	ft_vec_removen(t_vec *s, size_t i, size_t n, void *out)
 			ft_memcpy(out, it, n * s->isz);
 		len = len - i - n + 1;
 		ft_memmove(it, it + (n * s->isz), len * s->isz);
+		s->len -= n;
 		return (n);
 	}
 }
