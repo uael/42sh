@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/06 18:31:24 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/06 19:09:40 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ inline t_st	sh_eval(t_sh *self)
 				return (ft_retf((self->st = 1) & 0,
 					N_SH"Unexpected token '%c'\n", tok->id));
 			}
-			ft_job_operate(prev, JOB_OP_PIPE);
+			ft_job_pipe(prev);
 		}
 		else if (tok->id == SH_TOK_RIN)
 		{
@@ -165,7 +165,7 @@ inline t_st	sh_eval(t_sh *self)
 			ft_job_output(&job, s.buf);
 			ft_job_cb(&job, ft_job_free_data);
 			if (prev)
-				ft_job_operate(prev, JOB_OP_PIPE);
+				ft_job_pipe(prev);
 			if (!(prev = ft_worker_push(&self->worker, &job)))
 				return (ENO);
 			continue ;

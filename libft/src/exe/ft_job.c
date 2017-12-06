@@ -22,7 +22,7 @@ inline void		ft_job_data(t_job *self, void *data)
 	self->data = data;
 }
 
-inline void		ft_job_operate(t_job *self, t_job_op op)
+inline void		ft_job_pipe(t_job *self)
 {
-	self->op = op;
+	self->pipe = 1;
 }

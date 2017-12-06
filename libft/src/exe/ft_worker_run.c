@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:33 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/06 19:37:37 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/06 19:39:27 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ t_st			ft_worker_run(t_worker *self)
 	it = (t_job *)ft_vec_begin(self) - 1;
 	while (++it != (t_job *)ft_vec_end(self))
 	{
-		if (it->op == JOB_OP_PIPE)
+		if (it->pipe)
 		{
 			if (pipe(c))
 				return (ENO);
