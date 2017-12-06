@@ -74,6 +74,34 @@ inline t_sz			ft_lexer_scan(t_lexer *self, size_t n)
 	return (c);
 }
 
+inline t_sz			ft_lexer_scan_until(t_lexer *self, uint8_t id)
+{
+	size_t	c;
+	t_src	*src;
+	char	peek;
+	int		st;
+
+	c = 0;
+	while (1)
+		if (ft_deq_size(&self->srcs) == 0 || !(src = ft_deq_at(&self->srcs, 0)))
+			break ;
+		else if (ISE(st = ft_src_peek(src, &peek, 0)))
+			return (st);
+		else if (ST_NOK(st) && self->srcs.len > 1)
+			ft_deq_shift(&self->srcs, NULL);
+		else if (ST_NOK(st))
+			break ;
+		else if (ISE(st = lexer_scan_one(self, peek, src)))
+			return (ST_TOSZ(st));
+		else if (ST_OK(st))
+		{
+			++c;
+			if (peek == id)
+				break ;
+		}
+	return (c);
+}
+
 inline t_st			ft_lexer_getc(t_lexer *self, char *c)
 {
 	t_src	*src;

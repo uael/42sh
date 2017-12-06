@@ -32,6 +32,7 @@ extern t_st		ft_lexer_init_str(t_lexer *self, char const *s);
 extern t_st		ft_lexer_init_nstr(t_lexer *self, char const *s, size_t n);
 extern size_t	ft_lexer_clean(t_lexer *self);
 extern t_sz		ft_lexer_scan(t_lexer *self, size_t n);
+extern t_sz		ft_lexer_scan_until(t_lexer *self, uint8_t id);
 extern t_st		ft_lexer_getc(t_lexer *self, char *c);
 extern t_st		ft_lexer_peek(t_lexer *self, size_t n, t_tok **peek);
 extern t_sz		ft_lexer_next(t_lexer *self, size_t n, t_tok **peek);

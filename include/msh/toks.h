@@ -46,6 +46,7 @@ enum		e_sh_tok
 	SH_TOK_UNTIL,
 	SH_TOK_WHILE,
 	SH_TOK_WORD,
+	SH_TOK_HEREDOC,
 	SH_TOK_SPACE = ' ',
 	SH_TOK_NOT = '!',
 	SH_TOK_AMP = '&',
