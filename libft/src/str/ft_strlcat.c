@@ -12,7 +12,7 @@
 
 #include "libft/str.h"
 
-size_t	ft_strlcat(char *dest, char const *src, size_t size)
+inline size_t	ft_strlcat(char *dest, char const *src, size_t size)
 {
 	size_t	slen;
 	size_t	dlen;

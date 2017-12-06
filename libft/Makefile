@@ -6,7 +6,7 @@
 #    By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/07 09:52:36 by alucas-           #+#    #+#              #
-#    Updated: 2017/12/06 14:48:09 by alucas-          ###   ########.fr        #
+#    Updated: 2017/12/06 18:58:02 by alucas-          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -273,6 +273,7 @@ SRC_NAME = \
 	str/ft_strcpy.c \
 	str/ft_strdup.c \
 	str/ft_strlcat.c \
+	str/ft_strlcpy.c \
 	str/ft_strlen.c \
 	str/ft_strnbr.c \
 	str/ft_strncat.c \
