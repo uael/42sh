@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:33 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/06 19:08:32 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/06 19:37:37 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int				ft_worker_join(t_worker *self)
 		if (it->cb)
 			it->cb(it);
 	}
-	return (ft_vec_begin(self) ? ((t_job *)ft_vec_begin(self))->st : 0);
+	return (ft_vec_size(self) ? ((t_job *)ft_vec_back(self))->st : 0);
 }
 
 t_st			ft_worker_run(t_worker *self)

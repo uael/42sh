@@ -6,7 +6,7 @@
 #    By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/07 09:52:36 by alucas-           #+#    #+#              #
-#    Updated: 2017/12/06 18:58:02 by alucas-          ###   ########.fr        #
+#    Updated: 2017/12/06 19:16:44 by alucas-          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -94,6 +94,7 @@ SRC_NAME = \
 	ds/ft_vi_unshiftn.c \
 	ds/ft_vi_unshiftnc.c \
 	ds/ft_vu_at.c \
+	ds/ft_vu_back.c \
 	ds/ft_vu_begin.c \
 	ds/ft_vu_clean.c \
 	ds/ft_vu_clear.c \
