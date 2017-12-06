@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:33 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/06 17:34:22 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/06 18:30:53 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static int	job_output(void *s, int ac, char **av, char **env)
 	(void)ac;
 	(void)av;
 	(void)env;
-	ft_puts(0, (char *)s);
+	ft_puts(1, (char *)s);
 	return (0);
 }
 
