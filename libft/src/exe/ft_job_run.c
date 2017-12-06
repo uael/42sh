@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_job.c                                           :+:      :+:    :+:   */
+/*   ft_job_run.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:33 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/06 12:15:29 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/06 18:11:05 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,18 @@ static int	av_count(char **av)
 	return ((int)(av - beg));
 }
 
-t_st 		ft_job_run(t_job *self, void *g, int *write, int *read)
+t_st 		ft_job_run(t_job *self, int *write, int *read)
 {
-	pid_t pid;
+	pid_t	pid;
+	int		out;
+	int		in;
 
+	out = -1;
+	in = -1;
+	if (self->out)
+		out = open(self->out, O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
+	if (self->in)
+		in = open(self->in, O_RDWR, S_IRUSR | S_IWUSR);
 	if ((pid = fork()) < 0)
 		return (ENO);
 	if (pid == 0)
@@ -43,12 +51,21 @@ t_st 		ft_job_run(t_job *self, void *g, int *write, int *read)
 			dup2(read[0], STDIN_FILENO);
 		}
 		if (self->kind == JOB_FN)
-			exit(self->fn(g, av_count(self->av), self->av, self->env));
+			exit(self->fn(self->data, self->av ? av_count(self->av) : 0,
+				self->av, self->env));
 		else
 		{
+			if (in >= 0)
+				dup2(in, STDIN_FILENO);
+			if (out >= 0)
+				dup2(out, STDOUT_FILENO);
 			execve(self->av[0], self->av, self->env);
 			exit(self->st = errno);
 		}
 	}
+	if (in >= 0)
+		close(in);
+	if (out >= 0)
+		close(out);
 	return ((self->pid = pid) & 0);
 }

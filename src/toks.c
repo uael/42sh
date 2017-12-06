@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/23 08:03:29 by null             ###   ########.fr       */
+/*   Updated: 2017/12/06 13:36:11 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,13 +31,13 @@ inline t_st				sh_tok_syntax(t_tok *tok, char peek, t_src *src)
 	if (n == 3 && b[0] == '>' && b[1] == '>' && b[2] == '-')
 		return (MATCH(tok, src, 3, SH_TOK_RARROW));
 	if (n >= 2 && b[1] == '>' && (b[0] == '>' || b[0] == '&'))
-		return (MATCH(tok, src, 2, b[0] == '>' ? TOK(RSHIFT) : TOK(AMPR)));
+		return (MATCH(tok, src, 2, b[0] == '>' ? TOK(RAOUT) : TOK(AMPR)));
 	if (n >= 2 && b[0] == '>' && b[1] == '&')
 		return (MATCH(tok, src, 2, SH_TOK_RAMP));
 	if (n >= 2 && b[1] == '|' && (b[0] == '>' || b[0] == '|'))
 		return (MATCH(tok, src, 2, b[0] == '>' ? TOK(RPIPE) : TOK(LOR)));
 	if (n >= 2 && b[0] == '<' && (b[1] == '>' || b[1] == '<'))
-		return (MATCH(tok, src, 2, b[1] == '>' ? TOK(CMP) : TOK(LSHIFT)));
+		return (MATCH(tok, src, 2, b[1] == '>' ? TOK(CMP) : TOK(RAIN)));
 	if (n >= 2 && b[1] == '&' && (b[0] == '<' || b[0] == '&'))
 		return (MATCH(tok, src, 2, b[0] == '<' ? TOK(LAMP) : TOK(LAND)));
 	if (n >= 1 && (c = ft_strchr("=\t\n !&()-;<=>[]{|}", peek)))
@@ -119,4 +119,31 @@ inline t_st				sh_tok_word(t_tok *tok, char peek, t_src *src)
 	else
 		ft_dstr_dtor(dstr, (void *)(tok->val = NULL));
 	return (OK);
+}
+
+inline char 			*sh_tok_str(t_tok *tok)
+{
+	if (tok->id == SH_TOK_WORD)
+		return (ft_tok_ident(tok)->buf);
+	if (tok->id == SH_TOK_RARROW)
+		return (">>-");
+	if (tok->id == SH_TOK_RAOUT)
+		return (">>");
+	if (tok->id == SH_TOK_AMPR)
+		return (">&");
+	if (tok->id == SH_TOK_RAMP)
+		return ("&>");
+	if (tok->id == SH_TOK_RPIPE)
+		return (">|");
+	if (tok->id == SH_TOK_LOR)
+		return ("||");
+	if (tok->id == SH_TOK_CMP)
+		return ("<>");
+	if (tok->id == SH_TOK_RAIN)
+		return ("<<");
+	if (tok->id == SH_TOK_LAMP)
+		return ("<&");
+	if (tok->id == SH_TOK_LAND)
+		return ("&&");
+	return (NULL);
 }

@@ -6,11 +6,17 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:33 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/17 09:51:01 by null             ###   ########.fr       */
+/*   Updated: 2017/12/06 17:07:52 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft/io/ifstream.h"
+
+inline void	ft_ofstream_cin(t_ifstream *self)
+{
+	FT_INIT(self, t_ifstream);
+	self->fd = STDIN_FILENO;
+}
 
 inline t_st	ft_ifstream_open(t_ifstream *self, char const *filename)
 {

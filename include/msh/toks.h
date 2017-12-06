@@ -18,8 +18,8 @@
 enum		e_sh_tok
 {
 	SH_TOK_END = '\0',
-	SH_TOK_LSHIFT = SH_TOK_END + 1,
-	SH_TOK_RSHIFT,
+	SH_TOK_RAIN = SH_TOK_END + 1,
+	SH_TOK_RAOUT,
 	SH_TOK_LAMP,
 	SH_TOK_RAMP,
 	SH_TOK_CMP,
@@ -53,9 +53,9 @@ enum		e_sh_tok
 	SH_TOK_RPAR = ')',
 	SH_TOK_HYPEN = '-',
 	SH_TOK_SEMICOLON = ';',
-	SH_TOK_LTH = '<',
+	SH_TOK_RIN = '<',
 	SH_TOK_ASSIGN = '=',
-	SH_TOK_GTH = '>',
+	SH_TOK_ROUT = '>',
 	SH_TOK_LBRACKET = '[',
 	SH_TOK_RBRACKET = ']',
 	SH_TOK_LCURLY = '{',
@@ -65,5 +65,6 @@ enum		e_sh_tok
 
 extern t_st		sh_tok_word(t_tok *tok, char peek, t_src *src);
 extern t_st		sh_tok_syntax(t_tok *tok, char peek, t_src *src);
+extern char 	*sh_tok_str(t_tok *tok);
 
 #endif

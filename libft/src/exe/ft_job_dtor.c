@@ -1,33 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   bi/echo.c                                          :+:      :+:    :+:   */
+/*   ft_job_dtor.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/05 16:21:12 by alucas-          ###   ########.fr       */
+/*   Created: 2017/11/07 09:52:33 by alucas-           #+#    #+#             */
+/*   Updated: 2017/12/06 14:08:15 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "msh/bi.h"
+#include "libft/exe.h"
 
-inline int	sh_bi_echo(t_sh *sh, int ac, char **av, t_job *out)
+inline void	ft_job_free_data(t_job *self)
 {
-	int i;
+	free(self->data);
+}
 
-	(void)sh;
-	(void)out;
-	if (ac < 2)
-		return (sh_bi_retf(sh, OK, "\n"));
-	i = 0;
-	while (++i < ac)
-	{
-		ft_omstream_puts(&sh->bi_out, av[i]);
-		if (i < ac - 1)
-			ft_omstream_putc(&sh->bi_out, ' ');
-	}
-	ft_omstream_putc(&sh->bi_out, '\n');
-	ft_omstream_putc(&sh->bi_out, '\0');
-	return (OK);
+inline void ft_job_dtor(t_job *self)
+{
+	if (!self->av)
+		return ;
+	if (self->kind == JOB_EXE)
+		free(self->av[0]);
+	free(self->av);
 }

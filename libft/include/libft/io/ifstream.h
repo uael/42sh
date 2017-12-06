@@ -42,6 +42,7 @@ typedef struct	s_ifstream
 	size_t		len;
 }				t_ifstream;
 
+extern t_st		ft_ifstream_cin(t_ifstream *self);
 extern t_st		ft_ifstream_open(t_ifstream *self, char const *filename);
 extern t_st		ft_ifstream_close(t_ifstream *self);
 extern t_sz		ft_ifstream_read(t_ifstream *self, char *buf, size_t len);

@@ -1,28 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_job.c                                           :+:      :+:    :+:   */
+/*   ft_job_ctor.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:33 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/06 17:50:28 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/06 17:34:22 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft/exe.h"
 
-inline void		ft_job_cb(t_job *self, t_job_cb cb)
+inline void ft_job_fn(t_job *self, t_job_fn fn, char **av, char **env)
 {
-	self->cb = cb;
+	FT_INIT(self, t_job);
+	self->kind = JOB_FN;
+	self->av = av;
+	self->env = env;
+	self->fn = fn;
 }
 
-inline void		ft_job_data(t_job *self, void *data)
+static int	job_output(void *s, int ac, char **av, char **env)
 {
-	self->data = data;
+	(void)ac;
+	(void)av;
+	(void)env;
+	ft_puts(0, (char *)s);
+	return (0);
 }
 
-inline void		ft_job_operate(t_job *self, t_job_op op)
+inline void ft_job_output(t_job *self, char *str)
 {
-	self->op = op;
+	FT_INIT(self, t_job);
+	self->kind = JOB_FN;
+	self->fn = job_output;
+	self->data = str;
 }

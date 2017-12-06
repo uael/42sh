@@ -73,3 +73,15 @@ inline t_sz			ft_lexer_scan(t_lexer *self, size_t n)
 			++c;
 	return (c);
 }
+
+inline t_st			ft_lexer_getc(t_lexer *self, char *c)
+{
+	t_src	*src;
+	t_sz	sz;
+
+	if (ft_deq_size(&self->srcs) == 0 || !(src = ft_deq_at(&self->srcs, 0)))
+		return (NOK);
+	if (ISE(sz = ft_src_next(src, c, 1)))
+		return (SZ_TOST(sz));
+	return (sz == 1 ? OK : NOK);
+}

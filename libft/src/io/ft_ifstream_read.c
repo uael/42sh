@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:33 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/23 07:21:44 by null             ###   ########.fr       */
+/*   Updated: 2017/12/06 15:50:42 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ static inline t_sz	ifs_cpy(t_ifstream *s, char **b, size_t *l, size_t c)
 	return (-3);
 }
 
-static inline t_sz	ifs_buf(t_ifstream *s, char **b, size_t *l, size_t c)
+static inline t_sz	ifs_buf(t_ifstream *s, char **b, size_t *l)
 {
 	t_sz	r;
 
@@ -44,8 +44,7 @@ static inline t_sz	ifs_buf(t_ifstream *s, char **b, size_t *l, size_t c)
 			return (r == 0 ? -2 : -1);
 		if (r < FT_PAGE_SIZE)
 			return (r);
-		*l -= r;
-		*b ? *b += r : *b;
+		(void)((*l -= r) && (*b ? *b += r : *b));
 	}
 	else
 	{
@@ -58,7 +57,8 @@ static inline t_sz	ifs_buf(t_ifstream *s, char **b, size_t *l, size_t c)
 		}
 		if ((r = read(s->fd, s->buf, FT_PAGE_SIZE)) < 0)
 			return (-1);
-		return ((s->len = (size_t)r) == 0 ? -2 : ifs_cpy(s, b, l, c));
+		return ((s->len = (size_t)r) == 0 ? -2 :
+			ifs_cpy(s, b, l, s->beg - s->cur));
 	}
 	return (-3);
 }
@@ -79,7 +79,7 @@ inline t_sz			ft_ifstream_read(t_ifstream *self, char *b, size_t len)
 			cur = self->cur - self->beg;
 			if (self->len - cur > 0 && !ISE(sz = ifs_cpy(self, &b, &len, cur)))
 				return (sz);
-			else if (!ISE(sz = ifs_buf(self, &b, &len, cur)))
+			else if (!ISE(sz = ifs_buf(self, &b, &len)))
 				return (beg - len + sz);
 			if (sz == -1)
 				return (ENO);

@@ -6,7 +6,7 @@
 #    By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/07 09:52:36 by alucas-           #+#    #+#              #
-#    Updated: 2017/12/05 15:07:01 by alucas-          ###   ########.fr        #
+#    Updated: 2017/12/06 14:48:09 by alucas-          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -185,7 +185,9 @@ SRC_NAME = \
 	ds/ft_node_next.c \
 	ds/ft_node_prev.c \
 	exe/ft_job.c \
-	exe/ft_job_exe.c \
+	exe/ft_job_ctor.c \
+	exe/ft_job_ctor_exe.c \
+	exe/ft_job_dtor.c \
 	exe/ft_job_run.c \
 	exe/ft_worker.c \
 	exe/ft_worker_run.c \
@@ -299,15 +301,15 @@ all: $(EXE) $(LIB)
 $(LIB): 3th $(OBJ)
 	@ar -rc $(NAME) $(OBJ)
 	@ranlib $(NAME)
-	@echo  "$(NAME): lib \033[32m[✔]\033[0m"
+	@printf  "%-25s\033[32m[✔]\033[0m\n" "$(NAME): lib"
 
 $(EXE): 3th $(OBJ)
 	@$(CC) $(CFLAGS) $(LNK) $(3TH) $(INC) $(OBJ) -o $(NAME)
-	@echo  "$(NAME): exe \033[32m[✔]\033[0m"
+	@printf  "%-25s\033[32m[✔]\033[0m\n" "$(NAME): exe"
 
 $(OBJ_PATH)%.o: $(SRC_PATH)%.c
 	@mkdir -p $(shell dirname $@)
-	@echo "$(NAME): \033[34m[$<]\033[0m"
+	@printf  "%-25s\033[34m[$<]\033[0m\n" "$(NAME):"
 	@$(CC) $(CFLAGS) $(INC) -o $@ -c $<
 	@echo "\033[A\033[K\033[A"
 
@@ -316,14 +318,14 @@ ifneq ($(3TH_PATH),)
 	@$(MAKE) -C $(3TH_PATH) clean
 endif
 	@rm -rf $(OBJ_PATH)
-	@echo "$(NAME): $@ \033[32m[✔]\033[0m"
+	@printf  "%-25s\033[32m[✔]\033[0m\n" "$(NAME): $@"
 
 fclean: clean
 ifneq ($(3TH_PATH),)
 	@$(MAKE) -C $(3TH_PATH) fclean
 endif
 	@rm -f $(NAME)
-	@echo "$(NAME): $@ \033[32m[✔]\033[0m"
+	@printf  "%-25s\033[32m[✔]\033[0m\n" "$(NAME): $@"
 
 3th:
 ifneq ($(3TH_PATH),)
