@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/23 08:03:29 by null             ###   ########.fr       */
+/*   Updated: 2017/12/05 19:06:49 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,4 +56,13 @@ inline t_tok	*sh_next(t_sh *self, t_tok **next)
 	if (next)
 		*next = sh_peek(self);
 	return (SZ_OK(sz) ? tok : NULL);
+}
+
+inline void		sh_consume_line(t_sh *self)
+{
+	t_tok	*tok;
+
+	while ((tok = sh_peek(self)) && tok->id)
+		if ((tok = sh_next(self, NULL)) && tok->id == '\n')
+			break ;
 }

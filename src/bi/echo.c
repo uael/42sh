@@ -12,20 +12,20 @@
 
 #include "msh/bi.h"
 
-inline int	sh_bi_echo(t_sh *sh, int ac, char **av, char **env)
+inline int	sh_bi_echo(t_sh *sh, int ac, char **av, t_job *out)
 {
 	int i;
 
 	(void)sh;
-	(void)env;
+	(void)out;
 	if (ac < 2)
-		return (ft_retf(OK, "\n"));
+		return (sh_bi_retf(sh, OK, "\n"));
 	i = 0;
 	while (++i < ac)
 	{
-		ft_puts(1, av[i]);
+		ft_omstream_puts(&sh->bi_out, av[i]);
 		if (i < ac - 1)
-			ft_putc(1, ' ');
+			ft_omstream_putc(&sh->bi_out, ' ');
 	}
-	return (ft_retf(OK, "\n"));
+	return (sh_bi_retf(sh, OK, "\n"));
 }

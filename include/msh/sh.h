@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/23 17:28:28 by null             ###   ########.fr       */
+/*   Updated: 2017/12/06 08:46:24 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,9 @@ typedef struct	s_sh
 	t_vstr		env;
 	int			st;
 	t_worker	worker;
+	t_omstream	bi_out;
+	t_omstream	bi_err;
+	t_bool		bi_merge_out;
 }				t_sh;
 
 extern t_st		sh_init_stream(t_sh *self, char **env, t_istream *stream);

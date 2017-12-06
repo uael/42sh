@@ -68,6 +68,8 @@ SRC_NAME = \
 	ds/ft_vi_begin.c \
 	ds/ft_vi_ctor.c \
 	ds/ft_vi_dtor.c \
+	ds/ft_vi_clear.c \
+	ds/ft_vi_clean.c \
 	ds/ft_vi_end.c \
 	ds/ft_vi_ensure.c \
 	ds/ft_vi_grow.c \
@@ -94,6 +96,7 @@ SRC_NAME = \
 	ds/ft_vu_at.c \
 	ds/ft_vu_begin.c \
 	ds/ft_vu_clean.c \
+	ds/ft_vu_clear.c \
 	ds/ft_vu_ctor.c \
 	ds/ft_vu_dtor.c \
 	ds/ft_vu_end.c \
@@ -123,6 +126,8 @@ SRC_NAME = \
 	ds/ft_di_begin.c \
 	ds/ft_di_ctor.c \
 	ds/ft_di_dtor.c \
+	ds/ft_di_clear.c \
+	ds/ft_di_clean.c \
 	ds/ft_di_end.c \
 	ds/ft_di_ensure.c \
 	ds/ft_di_grow.c \
@@ -149,6 +154,7 @@ SRC_NAME = \
 	ds/ft_du_at.c \
 	ds/ft_du_begin.c \
 	ds/ft_du_clean.c \
+	ds/ft_du_clear.c \
 	ds/ft_du_ctor.c \
 	ds/ft_du_dtor.c \
 	ds/ft_du_end.c \

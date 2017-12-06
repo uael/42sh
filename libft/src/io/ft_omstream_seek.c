@@ -6,15 +6,23 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:33 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/17 09:51:01 by null             ###   ########.fr       */
+/*   Updated: 2017/12/06 10:02:14 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft/io/omstream.h"
 
-inline void		ft_omstream_flush(t_omstream *self)
+inline void		ft_omstream_flush(t_omstream *self, int fd)
 {
-	(void)self;
+	size_t l;
+
+	if (self->cur)
+	{
+		l = self->cur;
+		self->len = 0;
+		self->cur = 0;
+		write(fd, self->buf, l);
+	}
 }
 
 inline t_st		ft_omstream_rewind(t_omstream *self, size_t n)

@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/23 17:28:28 by null             ###   ########.fr       */
+/*   Updated: 2017/12/05 20:20:02 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include "bi.h"
 # include "lex.h"
 
+extern t_st	sh_eval_bi(t_sh *self, t_job *job, t_tok *tok);
 extern t_st	sh_eval_job(t_sh *self, t_job *job, t_tok *tok);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/05 18:32:43 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/06 10:10:15 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@ inline t_st	sh_init_stream(t_sh *self, char **env, t_istream *stream)
 	FT_INIT(self, t_sh);
 	ft_vstr_ctor(&self->env);
 	ft_worker_ctor(&self->worker);
+	ft_omstream_open(&self->bi_out);
+	ft_omstream_open(&self->bi_err);
 	if (ST_NOK(st = sh_initenv(&self->env, env)))
 		return (st);
 	if (ST_NOK(st = ft_lexer_init_stream(&self->lexer, stream)))
@@ -37,6 +39,8 @@ inline t_st	sh_init_file(t_sh *self, char **env, char const *filename)
 	FT_INIT(self, t_sh);
 	ft_vstr_ctor(&self->env);
 	ft_worker_ctor(&self->worker);
+	ft_omstream_open(&self->bi_out);
+	ft_omstream_open(&self->bi_err);
 	if (ST_NOK(st = sh_initenv(&self->env, env)))
 		return (st);
 	if (ST_NOK(st = ft_lexer_init_file(&self->lexer, filename)))
@@ -46,7 +50,9 @@ inline t_st	sh_init_file(t_sh *self, char **env, char const *filename)
 
 inline void	sh_dtor(t_sh *self)
 {
-	ft_vstr_dtor(&self->env, (void (*)(char **))ft_pfree);
+	ft_omstream_close(&self->bi_err);
+	ft_omstream_close(&self->bi_out);
+	ft_vstr_dtor(&self->env, (t_dtor)ft_pfree);
 	ft_lexer_dtor(&self->lexer);
 	ft_worker_dtor(&self->worker);
 }
@@ -91,15 +97,26 @@ inline t_st	msh(t_sh *self)
 			return (NOK);
 		else if (tok->id == '\n')
 		{
-			if (ft_vec_size(&self->worker) &&
-				ISE(st = ft_worker_run(&self->worker, self, &self->st)))
-				ft_putf(2, "21sh: %e", ST_TOENO(st));
+			if (ft_vec_size(&self->worker))
+			{
+				if (ISE(st = ft_worker_run(&self->worker, self, &self->st)))
+					ft_putf(2, "21sh: %e", ST_TOENO(st));
+				self->bi_err.len = 0;
+				self->bi_err.cur = 0;
+				self->bi_out.len = 0;
+				self->bi_out.cur = 0;
+				ft_lexer_clean(&self->lexer);
+			}
 			return (OK);
 		}
 		else if (ft_strchr(";", tok->id))
 		{
 			if (ISE(st = ft_worker_run(&self->worker, self, &self->st)))
 				ft_putf(2, "21sh: %e", ST_TOENO(st));
+			self->bi_err.len = 0;
+			self->bi_err.cur = 0;
+			self->bi_out.len = 0;
+			self->bi_out.cur = 0;
 			ft_lexer_clean(&self->lexer);
 			continue ;
 		}
@@ -108,24 +125,35 @@ inline t_st	msh(t_sh *self)
 		else if (tok->id == SH_TOK_PIPE)
 		{
 			if (!prev)
-				return (ft_retf(NOK, "21sh: Unexpected token '%c'\n", tok->id));
+			{
+				sh_consume_line(self);
+				return (ft_retf((self->st = 1) & 0,
+					"21sh: Unexpected token '%c'\n", tok->id));
+			}
 			prev->op = JOB_OP_PIPE;
 		}
-		else if (ISE(st = sh_eval_job(self, &job, tok)))
-			return (st);
-		else if (ST_OK(st) && !(prev = ft_worker_push(&self->worker, &job)))
+		else if (ISE(st = sh_eval_bi(self, &job, tok)))
 			return (st);
 		else if (ST_OK(st))
 		{
-			if (prev->fn == (t_job_fn)sh_bi_exit)
-			{
-				if (ISE(st = ft_worker_run(&self->worker, self, &self->st)))
-					ft_putf(2, "21sh: %e", ST_TOENO(st));
-				exit(self->st);
-			}
+			if (!(prev = ft_worker_push(&self->worker, &job)))
+				return (ENO);
+			continue ;
+		}
+		else if (ISE(st = sh_eval_job(self, &job, tok)))
+			return (st);
+		else if (ST_OK(st))
+		{
+			if (!(prev = ft_worker_push(&self->worker, &job)))
+				return (ENO);
 			continue ;
 		}
 		else
-			return (ft_retf(NOK, "21sh: Unexpected token '%c'\n", tok->id));
+		{
+			self->worker.len = 0;
+			sh_consume_line(self);
+			return (ft_retf((self->st = 1) & 0,
+				"21sh: Unexpected token '%c'\n", tok->id));
+		}
 	}
 }

@@ -16,7 +16,6 @@ inline void		ft_ostream_flush(t_ostream *self)
 {
 	if (self->kind == OSTREAM_FILE)
 		return (ft_ofstream_flush(&self->u.file));
-	return (ft_omstream_flush(&self->u.mem));
 }
 
 inline t_st		ft_ostream_rewind(t_ostream *self, size_t n)

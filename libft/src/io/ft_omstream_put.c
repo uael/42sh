@@ -21,3 +21,9 @@ inline t_sz	ft_omstream_puts(t_omstream *self, char const *s)
 {
 	return (ft_omstream_write(self, s, ft_strlen(s)));
 }
+
+inline t_sz	ft_omstream_putl(t_omstream *self, char const *s)
+{
+	return (ft_omstream_write(self, s, ft_strlen(s)) +
+		ft_omstream_putc(self, '\n'));
+}

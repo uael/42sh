@@ -15,6 +15,12 @@
 
 # include "io.h"
 
+# define COLOR_RESET "\033[0m"
+# define COLOR_RED "\033[31m"
+# define COLOR_YELLOW "\033[33m"
+# define COLOR_CYAN "\033[36m"
+# define COLOR_BOLD "\033[1m"
+
 extern char	const	*ft_basename(char const *path);
 extern t_bool		ft_isdots(char const *path);
 extern char			*ft_pathjoin(char const *p1, char const *p2);
