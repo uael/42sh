@@ -12,7 +12,7 @@
 
 #include "libft/ds/vec.h"
 
-inline void	ft_vi8_dtor(t_vi8 *self, void (*idtor)(int8_t *i))
+inline void	ft_vi8_dtor(t_vi8 *self, t_dtor idtor)
 {
 	int8_t	*item;
 
@@ -29,7 +29,7 @@ inline void	ft_vi8_dtor(t_vi8 *self, void (*idtor)(int8_t *i))
 	FT_INIT(self, t_vi8);
 }
 
-inline void	ft_vi16_dtor(t_vi16 *self, void (*idtor)(int16_t *i))
+inline void	ft_vi16_dtor(t_vi16 *self, t_dtor idtor)
 {
 	int16_t	*item;
 
@@ -46,7 +46,7 @@ inline void	ft_vi16_dtor(t_vi16 *self, void (*idtor)(int16_t *i))
 	FT_INIT(self, t_vi16);
 }
 
-inline void	ft_vi32_dtor(t_vi32 *self, void (*idtor)(int32_t *i))
+inline void	ft_vi32_dtor(t_vi32 *self, t_dtor idtor)
 {
 	int32_t	*item;
 
@@ -63,7 +63,7 @@ inline void	ft_vi32_dtor(t_vi32 *self, void (*idtor)(int32_t *i))
 	FT_INIT(self, t_vi16);
 }
 
-inline void	ft_vi64_dtor(t_vi64 *self, void (*idtor)(int64_t *i))
+inline void	ft_vi64_dtor(t_vi64 *self, t_dtor idtor)
 {
 	int64_t	*item;
 
@@ -80,7 +80,7 @@ inline void	ft_vi64_dtor(t_vi64 *self, void (*idtor)(int64_t *i))
 	FT_INIT(self, t_vi64);
 }
 
-inline void	ft_vstr_dtor(t_vstr *self, void (*idtor)(char **i))
+inline void	ft_vstr_dtor(t_vstr *self, t_dtor idtor)
 {
 	char	**item;
 

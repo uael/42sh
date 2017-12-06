@@ -93,7 +93,9 @@ typedef struct	s_vec
 typedef size_t	t_vsz;
 
 extern void		ft_vi8_ctor(t_vi8 *s);
-extern void		ft_vi8_dtor(t_vi8 *s, void(*idtor)(int8_t *i));
+extern void		ft_vi8_dtor(t_vi8 *s, t_dtor idtor);
+extern void		ft_vi8_clear(t_vi8 *s, t_dtor idtor);
+extern size_t	ft_vi8_clean(t_vi8 *s, size_t n, t_dtor idtor);
 extern size_t	ft_vi8_size(t_vi8 *s);
 extern int8_t	*ft_vi8_begin(t_vi8 *s);
 extern int8_t	*ft_vi8_end(t_vi8 *s);
@@ -121,7 +123,9 @@ extern size_t	ft_vi8_removen(t_vi8 *s, size_t i, size_t n, int8_t *out);
 extern t_bool	ft_vi8_remove(t_vi8 *s, size_t i, int8_t *out);
 
 extern void		ft_vi16_ctor(t_vi16 *s);
-extern void		ft_vi16_dtor(t_vi16 *s, void(*idtor)(int16_t *i));
+extern void		ft_vi16_dtor(t_vi16 *s, t_dtor idtor);
+extern void		ft_vi16_clear(t_vi16 *s, t_dtor idtor);
+extern size_t	ft_vi16_clean(t_vi16 *s, size_t n, t_dtor idtor);
 extern size_t	ft_vi16_size(t_vi16 *s);
 extern int16_t	*ft_vi16_begin(t_vi16 *s);
 extern int16_t	*ft_vi16_end(t_vi16 *s);
@@ -149,7 +153,9 @@ extern size_t	ft_vi16_removen(t_vi16 *s, size_t i, size_t n, int16_t *out);
 extern t_bool	ft_vi16_remove(t_vi16 *s, size_t i, int16_t *out);
 
 extern void		ft_vi32_ctor(t_vi32 *s);
-extern void		ft_vi32_dtor(t_vi32 *s, void(*idtor)(int32_t *i));
+extern void		ft_vi32_dtor(t_vi32 *s, t_dtor idtor);
+extern void		ft_vi32_clear(t_vi32 *s, t_dtor idtor);
+extern size_t	ft_vi32_clean(t_vi32 *s, size_t n, t_dtor idtor);
 extern size_t	ft_vi32_size(t_vi32 *s);
 extern int32_t	*ft_vi32_begin(t_vi32 *s);
 extern int32_t	*ft_vi32_end(t_vi32 *s);
@@ -177,7 +183,9 @@ extern size_t	ft_vi32_removen(t_vi32 *s, size_t i, size_t n, int32_t *out);
 extern t_bool	ft_vi32_remove(t_vi32 *s, size_t i, int32_t *out);
 
 extern void		ft_vi64_ctor(t_vi64 *s);
-extern void		ft_vi64_dtor(t_vi64 *s, void(*idtor)(int64_t *i));
+extern void		ft_vi64_dtor(t_vi64 *s, t_dtor idtor);
+extern void		ft_vi64_clear(t_vi64 *s, t_dtor idtor);
+extern size_t	ft_vi64_clean(t_vi64 *s, size_t n, t_dtor idtor);
 extern size_t	ft_vi64_size(t_vi64 *s);
 extern int64_t	*ft_vi64_begin(t_vi64 *s);
 extern int64_t	*ft_vi64_end(t_vi64 *s);
@@ -205,7 +213,9 @@ extern size_t	ft_vi64_removen(t_vi64 *s, size_t i, size_t n, int64_t *out);
 extern t_bool	ft_vi64_remove(t_vi64 *s, size_t i, int64_t *out);
 
 extern void		ft_vstr_ctor(t_vstr *s);
-extern void		ft_vstr_dtor(t_vstr *s, void(*idtor)(char **i));
+extern void		ft_vstr_dtor(t_vstr *s, t_dtor idtor);
+extern void		ft_vstr_clear(t_vstr *s, t_dtor idtor);
+extern size_t	ft_vstr_clean(t_vstr *s, size_t n, t_dtor idtor);
 extern size_t	ft_vstr_size(t_vstr *s);
 extern char		**ft_vstr_begin(t_vstr *s);
 extern char		**ft_vstr_end(t_vstr *s);
@@ -234,6 +244,7 @@ extern t_bool	ft_vstr_remove(t_vstr *s, size_t i, char **out);
 
 extern void		ft_vec_ctor(t_vec *s, size_t isz);
 extern void		ft_vec_dtor(t_vec *s, t_dtor i);
+extern void		ft_vec_clear(t_vec *s, t_dtor i);
 extern size_t	ft_vec_clean(t_vec *self, size_t n, t_dtor idtor);
 extern size_t	ft_vec_size(t_vec *s);
 extern void		*ft_vec_begin(t_vec *s);
@@ -262,7 +273,9 @@ extern size_t	ft_vec_removen(t_vec *s, size_t i, size_t n, void *out);
 extern t_bool	ft_vec_remove(t_vec *s, size_t i, void *out);
 
 extern void		ft_vu8_ctor(t_vu8 *s);
-extern void		ft_vu8_dtor(t_vu8 *s, void(*idtor)(uint8_t *));
+extern void		ft_vu8_dtor(t_vu8 *s, t_dtor idtor);
+extern void		ft_vu8_clear(t_vu8 *s, t_dtor idtor);
+extern size_t	ft_vu8_clean(t_vu8 *s, size_t n, t_dtor idtor);
 extern size_t	ft_vu8_size(t_vu8 *s);
 extern uint8_t	*ft_vu8_begin(t_vu8 *s);
 extern uint8_t	*ft_vu8_end(t_vu8 *s);
@@ -290,7 +303,9 @@ extern size_t	ft_vu8_removen(t_vu8 *s, size_t i, size_t n, uint8_t *out);
 extern t_bool	ft_vu8_remove(t_vu8 *s, size_t i, uint8_t *out);
 
 extern void		ft_vu16_ctor(t_vu16 *s);
-extern void		ft_vu16_dtor(t_vu16 *s, void(*idtor)(uint16_t *));
+extern void		ft_vu16_dtor(t_vu16 *s, t_dtor idtor);
+extern void		ft_vu16_clear(t_vu16 *s, t_dtor idtor);
+extern size_t	ft_vu16_clean(t_vu16 *s, size_t n, t_dtor idtor);
 extern size_t	ft_vu16_size(t_vu16 *s);
 extern uint16_t	*ft_vu16_begin(t_vu16 *s);
 extern uint16_t	*ft_vu16_end(t_vu16 *s);
@@ -318,7 +333,9 @@ extern size_t	ft_vu16_removen(t_vu16 *s, size_t i, size_t n, uint16_t *out);
 extern t_bool	ft_vu16_remove(t_vu16 *s, size_t i, uint16_t *out);
 
 extern void		ft_vu32_ctor(t_vu32 *s);
-extern void		ft_vu32_dtor(t_vu32 *s, void(*idtor)(uint32_t *));
+extern void		ft_vu32_dtor(t_vu32 *s, t_dtor idtor);
+extern void		ft_vu32_clear(t_vu32 *s, t_dtor idtor);
+extern size_t	ft_vu32_clean(t_vu32 *s, size_t n, t_dtor idtor);
 extern size_t	ft_vu32_size(t_vu32 *s);
 extern uint32_t	*ft_vu32_begin(t_vu32 *s);
 extern uint32_t	*ft_vu32_end(t_vu32 *s);
@@ -346,7 +363,9 @@ extern size_t	ft_vu32_removen(t_vu32 *s, size_t i, size_t n, uint32_t *out);
 extern t_bool	ft_vu32_remove(t_vu32 *s, size_t i, uint32_t *out);
 
 extern void		ft_vu64_ctor(t_vu64 *s);
-extern void		ft_vu64_dtor(t_vu64 *s, void(*idtor)(uint64_t *));
+extern void		ft_vu64_dtor(t_vu64 *s, t_dtor idtor);
+extern void		ft_vu64_clear(t_vu64 *s, t_dtor idtor);
+extern size_t	ft_vu64_clean(t_vu64 *s, size_t n, t_dtor idtor);
 extern size_t	ft_vu64_size(t_vu64 *s);
 extern uint64_t	*ft_vu64_begin(t_vu64 *s);
 extern uint64_t	*ft_vu64_end(t_vu64 *s);

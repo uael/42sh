@@ -12,7 +12,7 @@
 
 #include "libft/ds/deq.h"
 
-inline void	ft_di8_dtor(t_di8 *self, void (*idtor)(int8_t *i))
+inline void	ft_di8_dtor(t_di8 *self, t_dtor idtor)
 {
 	int8_t	*item;
 
@@ -29,7 +29,7 @@ inline void	ft_di8_dtor(t_di8 *self, void (*idtor)(int8_t *i))
 	FT_INIT(self, t_di8);
 }
 
-inline void	ft_di16_dtor(t_di16 *self, void (*idtor)(int16_t *i))
+inline void	ft_di16_dtor(t_di16 *self, t_dtor idtor)
 {
 	int16_t	*item;
 
@@ -46,7 +46,7 @@ inline void	ft_di16_dtor(t_di16 *self, void (*idtor)(int16_t *i))
 	FT_INIT(self, t_di16);
 }
 
-inline void	ft_di32_dtor(t_di32 *self, void (*idtor)(int32_t *i))
+inline void	ft_di32_dtor(t_di32 *self, t_dtor idtor)
 {
 	int32_t	*item;
 
@@ -63,7 +63,7 @@ inline void	ft_di32_dtor(t_di32 *self, void (*idtor)(int32_t *i))
 	FT_INIT(self, t_di16);
 }
 
-inline void	ft_di64_dtor(t_di64 *self, void (*idtor)(int64_t *i))
+inline void	ft_di64_dtor(t_di64 *self, t_dtor idtor)
 {
 	int64_t	*item;
 
@@ -80,7 +80,7 @@ inline void	ft_di64_dtor(t_di64 *self, void (*idtor)(int64_t *i))
 	FT_INIT(self, t_di64);
 }
 
-inline void	ft_dqstr_dtor(t_dqstr *self, void (*idtor)(char **i))
+inline void	ft_dqstr_dtor(t_dqstr *self, t_dtor idtor)
 {
 	char	**item;
 

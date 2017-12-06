@@ -26,7 +26,7 @@ typedef struct	s_dstr
 }				t_dstr;
 
 extern void		ft_dstr_ctor(t_dstr *s);
-extern void		ft_dstr_dtor(t_dstr *s, void(*idtor)(char *i));
+extern void		ft_dstr_dtor(t_dstr *s, t_dtor idtor);
 extern size_t	ft_dstr_size(t_dstr *s);
 extern char		*ft_dstr_begin(t_dstr *s);
 extern char		*ft_dstr_end(t_dstr *s);

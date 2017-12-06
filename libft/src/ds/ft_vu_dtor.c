@@ -12,7 +12,7 @@
 
 #include "libft/ds/vec.h"
 
-inline void	ft_vu8_dtor(t_vu8 *self, void (*idtor)(uint8_t *i))
+inline void	ft_vu8_dtor(t_vu8 *self, t_dtor idtor)
 {
 	uint8_t	*item;
 
@@ -29,7 +29,7 @@ inline void	ft_vu8_dtor(t_vu8 *self, void (*idtor)(uint8_t *i))
 	FT_INIT(self, t_vu8);
 }
 
-inline void	ft_vu16_dtor(t_vu16 *self, void (*idtor)(uint16_t *i))
+inline void	ft_vu16_dtor(t_vu16 *self, t_dtor idtor)
 {
 	uint16_t	*item;
 
@@ -46,7 +46,7 @@ inline void	ft_vu16_dtor(t_vu16 *self, void (*idtor)(uint16_t *i))
 	FT_INIT(self, t_vu16);
 }
 
-inline void	ft_vu32_dtor(t_vu32 *self, void (*idtor)(uint32_t *i))
+inline void	ft_vu32_dtor(t_vu32 *self, t_dtor idtor)
 {
 	uint32_t	*item;
 
@@ -63,7 +63,7 @@ inline void	ft_vu32_dtor(t_vu32 *self, void (*idtor)(uint32_t *i))
 	FT_INIT(self, t_vu16);
 }
 
-inline void	ft_vu64_dtor(t_vu64 *self, void (*idtor)(uint64_t *i))
+inline void	ft_vu64_dtor(t_vu64 *self, t_dtor idtor)
 {
 	uint64_t	*item;
 

@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:33 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/05 18:28:14 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/05 19:52:30 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ t_st			ft_worker_run(t_worker *self, void *g, int *status)
 	t_st	st;
 
 	p = NULL;
-	*status = 0;
 	it = (t_job *)ft_vec_begin(self) - 1;
 	while (++it != (t_job *)ft_vec_end(self))
 	{
@@ -63,6 +62,6 @@ t_st			ft_worker_run(t_worker *self, void *g, int *status)
 	if (it > (t_job *)ft_vec_begin(self))
 		--it;
 	self->len = 0;
-	*status = it->st;
+	it ? *status = it->st : 0;
 	return (0);
 }

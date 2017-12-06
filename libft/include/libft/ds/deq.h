@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/23 09:17:42 by null             ###   ########.fr       */
+/*   Updated: 2017/12/06 08:13:57 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,9 @@ typedef struct	s_deq
 typedef size_t	t_dsz;
 
 extern void		ft_di8_ctor(t_di8 *s);
-extern void		ft_di8_dtor(t_di8 *s, void(*idtor)(int8_t *i));
+extern void		ft_di8_dtor(t_di8 *s, t_dtor idtor);
+extern void		ft_di8_clear(t_di8 *s, t_dtor idtor);
+extern size_t	ft_di8_clean(t_di8 *s, t_dtor idtor);
 extern size_t	ft_di8_size(t_di8 *s);
 extern int8_t	*ft_di8_begin(t_di8 *s);
 extern int8_t	*ft_di8_end(t_di8 *s);
@@ -131,7 +133,9 @@ extern size_t	ft_di8_removen(t_di8 *s, size_t i, size_t n, int8_t *out);
 extern t_bool	ft_di8_remove(t_di8 *s, size_t i, int8_t *out);
 
 extern void		ft_di16_ctor(t_di16 *s);
-extern void		ft_di16_dtor(t_di16 *s, void(*idtor)(int16_t *i));
+extern void		ft_di16_dtor(t_di16 *s, t_dtor idtor);
+extern void		ft_di16_clear(t_di16 *s, t_dtor idtor);
+extern size_t	ft_di16_clean(t_di16 *s, t_dtor idtor);
 extern size_t	ft_di16_size(t_di16 *s);
 extern int16_t	*ft_di16_begin(t_di16 *s);
 extern int16_t	*ft_di16_end(t_di16 *s);
@@ -159,7 +163,9 @@ extern size_t	ft_di16_removen(t_di16 *s, size_t i, size_t n, int16_t *out);
 extern t_bool	ft_di16_remove(t_di16 *s, size_t i, int16_t *out);
 
 extern void		ft_di32_ctor(t_di32 *s);
-extern void		ft_di32_dtor(t_di32 *s, void(*idtor)(int32_t *i));
+extern void		ft_di32_dtor(t_di32 *s, t_dtor idtor);
+extern void		ft_di32_clear(t_di32 *s, t_dtor idtor);
+extern size_t	ft_di32_clean(t_di32 *s, t_dtor idtor);
 extern size_t	ft_di32_size(t_di32 *s);
 extern int32_t	*ft_di32_begin(t_di32 *s);
 extern int32_t	*ft_di32_end(t_di32 *s);
@@ -187,7 +193,9 @@ extern size_t	ft_di32_removen(t_di32 *s, size_t i, size_t n, int32_t *out);
 extern t_bool	ft_di32_remove(t_di32 *s, size_t i, int32_t *out);
 
 extern void		ft_di64_ctor(t_di64 *s);
-extern void		ft_di64_dtor(t_di64 *s, void(*idtor)(int64_t *i));
+extern void		ft_di64_dtor(t_di64 *s, t_dtor idtor);
+extern void		ft_di64_clear(t_di64 *s, t_dtor idtor);
+extern size_t	ft_di64_clean(t_di64 *s, t_dtor idtor);
 extern size_t	ft_di64_size(t_di64 *s);
 extern int64_t	*ft_di64_begin(t_di64 *s);
 extern int64_t	*ft_di64_end(t_di64 *s);
@@ -215,7 +223,9 @@ extern size_t	ft_di64_removen(t_di64 *s, size_t i, size_t n, int64_t *out);
 extern t_bool	ft_di64_remove(t_di64 *s, size_t i, int64_t *out);
 
 extern void		ft_dqstr_ctor(t_dqstr *s);
-extern void		ft_dqstr_dtor(t_dqstr *s, void(*idtor)(char **i));
+extern void		ft_dqstr_dtor(t_dqstr *s, t_dtor idtor);
+extern void		ft_dqstr_clear(t_dqstr *s, t_dtor idtor);
+extern size_t	ft_dqstr_clean(t_dqstr *s, t_dtor idtor);
 extern size_t	ft_dqstr_size(t_dqstr *s);
 extern char		**ft_dqstr_begin(t_dqstr *s);
 extern char		**ft_dqstr_end(t_dqstr *s);
@@ -243,7 +253,8 @@ extern size_t	ft_dqstr_removen(t_dqstr *s, size_t i, size_t n, char **out);
 extern t_bool	ft_dqstr_remove(t_dqstr *s, size_t i, char **out);
 
 extern void		ft_deq_ctor(t_deq *s, size_t isz);
-extern void		ft_deq_dtor(t_deq *s, void(*idtor)(void *i));
+extern void		ft_deq_dtor(t_deq *s, t_dtor idtor);
+extern void		ft_deq_clear(t_deq *s, t_dtor idtor);
 extern size_t	ft_deq_clean(t_deq *s, t_dtor idtor);
 extern size_t	ft_deq_size(t_deq *s);
 extern void		*ft_deq_begin(t_deq *s);
@@ -272,7 +283,9 @@ extern size_t	ft_deq_removen(t_deq *s, size_t i, size_t n, void *out);
 extern t_bool	ft_deq_remove(t_deq *s, size_t i, void *out);
 
 extern void		ft_du8_ctor(t_du8 *s);
-extern void		ft_du8_dtor(t_du8 *s, void(*idtor)(uint8_t *));
+extern void		ft_du8_dtor(t_du8 *s, t_dtor idtor);
+extern void		ft_du8_clear(t_du8 *s, t_dtor idtor);
+extern size_t	ft_du8_clean(t_du8 *s, t_dtor idtor);
 extern size_t	ft_du8_size(t_du8 *s);
 extern uint8_t	*ft_du8_begin(t_du8 *s);
 extern uint8_t	*ft_du8_end(t_du8 *s);
@@ -300,7 +313,9 @@ extern size_t	ft_du8_removen(t_du8 *s, size_t i, size_t n, uint8_t *out);
 extern t_bool	ft_du8_remove(t_du8 *s, size_t i, uint8_t *out);
 
 extern void		ft_du16_ctor(t_du16 *s);
-extern void		ft_du16_dtor(t_du16 *s, void(*idtor)(uint16_t *));
+extern void		ft_du16_dtor(t_du16 *s, t_dtor idtor);
+extern void		ft_du16_clear(t_du16 *s, t_dtor idtor);
+extern size_t	ft_du16_clean(t_du16 *s, t_dtor idtor);
 extern size_t	ft_du16_size(t_du16 *s);
 extern uint16_t	*ft_du16_begin(t_du16 *s);
 extern uint16_t	*ft_du16_end(t_du16 *s);
@@ -328,7 +343,9 @@ extern size_t	ft_du16_removen(t_du16 *s, size_t i, size_t n, uint16_t *out);
 extern t_bool	ft_du16_remove(t_du16 *s, size_t i, uint16_t *out);
 
 extern void		ft_du32_ctor(t_du32 *s);
-extern void		ft_du32_dtor(t_du32 *s, void(*idtor)(uint32_t *));
+extern void		ft_du32_dtor(t_du32 *s, t_dtor idtor);
+extern void		ft_du32_clear(t_du32 *s, t_dtor idtor);
+extern size_t	ft_du32_clean(t_du32 *s, t_dtor idtor);
 extern size_t	ft_du32_size(t_du32 *s);
 extern uint32_t	*ft_du32_begin(t_du32 *s);
 extern uint32_t	*ft_du32_end(t_du32 *s);
@@ -356,7 +373,9 @@ extern size_t	ft_du32_removen(t_du32 *s, size_t i, size_t n, uint32_t *out);
 extern t_bool	ft_du32_remove(t_du32 *s, size_t i, uint32_t *out);
 
 extern void		ft_du64_ctor(t_du64 *s);
-extern void		ft_du64_dtor(t_du64 *s, void(*idtor)(uint64_t *));
+extern void		ft_du64_dtor(t_du64 *s, t_dtor idtor);
+extern void		ft_du64_clear(t_du64 *s, t_dtor idtor);
+extern size_t	ft_du64_clean(t_du64 *s, t_dtor idtor);
 extern size_t	ft_du64_size(t_du64 *s);
 extern uint64_t	*ft_du64_begin(t_du64 *s);
 extern uint64_t	*ft_du64_end(t_du64 *s);

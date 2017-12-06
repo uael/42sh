@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:33 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/05 18:08:53 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/05 19:58:51 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 #include "libft/exe.h"
 
-int		av_count(char **av)
+static int	av_count(char **av)
 {
 	char **beg;
 
@@ -24,7 +24,7 @@ int		av_count(char **av)
 	return ((int)(av - beg));
 }
 
-t_st ft_job_run(t_job *self, void *g, int *write, int *read)
+t_st 		ft_job_run(t_job *self, void *g, int *write, int *read)
 {
 	pid_t pid;
 

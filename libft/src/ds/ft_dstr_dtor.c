@@ -12,7 +12,7 @@
 
 #include "libft/ds/dstr.h"
 
-inline void	ft_dstr_dtor(t_dstr *self, void (*idtor)(char *i))
+inline void	ft_dstr_dtor(t_dstr *self, t_dtor idtor)
 {
 	char	*item;
 

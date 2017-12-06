@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_vu_clean.c                                      :+:      :+:    :+:   */
+/*   ft_vi_clean.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,18 +12,18 @@
 
 #include "libft/ds/vec.h"
 
-inline size_t	ft_vu8_clean(t_vu8 *self, size_t n, t_dtor idtor)
+inline size_t	ft_vi8_clean(t_vi8 *self, size_t n, t_dtor idtor)
 {
-	uint8_t	*item;
-	uint8_t	*it;
-	uint8_t	*end;
+	int8_t	*item;
+	int8_t	*it;
+	int8_t	*end;
 
 	if (!n || self->len == 0)
 		return (0);
 	if (n > self->len)
 		n = self->len;
-	it = ft_vu8_begin(self);
-	end = ft_vu8_at(self, n);
+	it = ft_vi8_begin(self);
+	end = ft_vi8_at(self, n);
 	if (idtor)
 	{
 		item = it - 1;
@@ -31,22 +31,22 @@ inline size_t	ft_vu8_clean(t_vu8 *self, size_t n, t_dtor idtor)
 			idtor(item);
 	}
 	if (self->len -= n)
-		ft_memmove(it, it + n, (self->len + 1) * sizeof(uint8_t));
+		ft_memmove(it, it + n, (self->len + 1) * sizeof(int8_t));
 	return (n);
 }
 
-inline size_t	ft_vu16_clean(t_vu16 *self, size_t n, t_dtor idtor)
+inline size_t	ft_vi16_clean(t_vi16 *self, size_t n, t_dtor idtor)
 {
-	uint16_t	*item;
-	uint16_t	*it;
-	uint16_t	*end;
+	int16_t	*item;
+	int16_t	*it;
+	int16_t	*end;
 
 	if (!n || self->len == 0)
 		return (0);
 	if (n > self->len)
 		n = self->len;
-	it = ft_vu16_begin(self);
-	end = ft_vu16_at(self, n);
+	it = ft_vi16_begin(self);
+	end = ft_vi16_at(self, n);
 	if (idtor)
 	{
 		item = it - 1;
@@ -54,22 +54,22 @@ inline size_t	ft_vu16_clean(t_vu16 *self, size_t n, t_dtor idtor)
 			idtor(item);
 	}
 	if (self->len -= n)
-		ft_memmove(it, it + n, (self->len + 1) * sizeof(uint16_t));
+		ft_memmove(it, it + n, (self->len + 1) * sizeof(int16_t));
 	return (n);
 }
 
-inline size_t	ft_vu32_clean(t_vu32 *self, size_t n, t_dtor idtor)
+inline size_t	ft_vi32_clean(t_vi32 *self, size_t n, t_dtor idtor)
 {
-	uint32_t	*item;
-	uint32_t	*it;
-	uint32_t	*end;
+	int32_t	*item;
+	int32_t	*it;
+	int32_t	*end;
 
 	if (!n || self->len == 0)
 		return (0);
 	if (n > self->len)
 		n = self->len;
-	it = ft_vu32_begin(self);
-	end = ft_vu32_at(self, n);
+	it = ft_vi32_begin(self);
+	end = ft_vi32_at(self, n);
 	if (idtor)
 	{
 		item = it - 1;
@@ -77,22 +77,22 @@ inline size_t	ft_vu32_clean(t_vu32 *self, size_t n, t_dtor idtor)
 			idtor(item);
 	}
 	if (self->len -= n)
-		ft_memmove(it, it + n, (self->len + 1) * sizeof(uint32_t));
+		ft_memmove(it, it + n, (self->len + 1) * sizeof(int32_t));
 	return (n);
 }
 
-inline size_t	ft_vu64_clean(t_vu64 *self, size_t n, t_dtor idtor)
+inline size_t	ft_vi64_clean(t_vi64 *self, size_t n, t_dtor idtor)
 {
-	uint64_t	*item;
-	uint64_t	*it;
-	uint64_t	*end;
+	int64_t	*item;
+	int64_t	*it;
+	int64_t	*end;
 
 	if (!n || self->len == 0)
 		return (0);
 	if (n > self->len)
 		n = self->len;
-	it = ft_vu64_begin(self);
-	end = ft_vu64_at(self, n);
+	it = ft_vi64_begin(self);
+	end = ft_vi64_at(self, n);
 	if (idtor)
 	{
 		item = it - 1;
@@ -100,29 +100,29 @@ inline size_t	ft_vu64_clean(t_vu64 *self, size_t n, t_dtor idtor)
 			idtor(item);
 	}
 	if (self->len -= n)
-		ft_memmove(it, it + n, (self->len + 1) * sizeof(uint64_t));
+		ft_memmove(it, it + n, (self->len + 1) * sizeof(int64_t));
 	return (n);
 }
 
-inline size_t	ft_vec_clean(t_vec *self, size_t n, t_dtor idtor)
+inline size_t	ft_vstr_clean(t_vstr *self, size_t n, t_dtor idtor)
 {
-	char	*item;
-	char	*it;
-	char	*end;
+	char	**item;
+	char	**it;
+	char	**end;
 
 	if (!n || self->len == 0)
 		return (0);
 	if (n > self->len)
 		n = self->len;
-	it = ft_vec_begin(self);
-	end = ft_vec_at(self, n);
+	it = ft_vstr_begin(self);
+	end = ft_vstr_at(self, n);
 	if (idtor)
 	{
-		item = it - self->isz;
-		while ((item += self->isz) != end)
+		item = it - 1;
+		while (++item != end)
 			idtor(item);
 	}
 	if (self->len -= n)
-		ft_memmove(it, it + (n * self->isz), (self->len + 1) * self->isz);
+		ft_memmove(it, it + n, (self->len + 1) * sizeof(char *));
 	return (n);
 }
