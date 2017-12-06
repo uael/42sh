@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/06 18:30:14 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/06 18:31:24 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,16 +72,18 @@ inline t_st	sh_eval(t_sh *self)
 		{
 			if (ft_vec_size(&self->worker))
 			{
-				if (ISE(st = ft_worker_run(&self->worker, &self->st)))
+				if (ISE(st = ft_worker_run(&self->worker)))
 					ft_putf(2, N_SH"%e", ST_TOENO(st));
+				self->st = ft_worker_join(&self->worker);
 				sh_clean(self);
 			}
 			return (OK);
 		}
 		else if (ft_strchr(";", tok->id))
 		{
-			if (ISE(st = ft_worker_run(&self->worker, &self->st)))
+			if (ISE(st = ft_worker_run(&self->worker)))
 				ft_putf(2, N_SH"%e", ST_TOENO(st));
+			self->st = ft_worker_join(&self->worker);
 			sh_clean(self);
 		}
 		else if (ft_strchr("\t ", tok->id))

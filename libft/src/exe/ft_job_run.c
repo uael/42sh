@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:33 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/06 18:11:05 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/06 18:51:33 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static int	av_count(char **av)
 	return ((int)(av - beg));
 }
 
-t_st 		ft_job_run(t_job *self, int *write, int *read)
+t_st 		ft_job_run(t_job *self, int *wr, int *rd)
 {
 	pid_t	pid;
 	int		out;
@@ -40,15 +40,17 @@ t_st 		ft_job_run(t_job *self, int *write, int *read)
 		return (ENO);
 	if (pid == 0)
 	{
-		if (write)
+		if (wr)
 		{
-			close(write[0]);
-			dup2(write[1], STDOUT_FILENO);
+			dup2(wr[1], STDOUT_FILENO);
+			close(wr[0]);
+			close(wr[1]);
 		}
-		if (read)
+		if (rd)
 		{
-			close(read[1]);
-			dup2(read[0], STDIN_FILENO);
+			dup2(rd[0], STDIN_FILENO);
+			close(rd[0]);
+			close(rd[1]);
 		}
 		if (self->kind == JOB_FN)
 			exit(self->fn(self->data, self->av ? av_count(self->av) : 0,

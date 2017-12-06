@@ -6,13 +6,33 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:33 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/06 17:41:55 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/06 19:08:32 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft/exe.h"
 
-t_st			ft_worker_run(t_worker *self, int *status)
+int				ft_worker_join(t_worker *self)
+{
+	t_job	*it;
+	t_st	st;
+
+	it = (t_job *)ft_vec_end(self);
+	while (--it >= (t_job *)ft_vec_begin(self))
+	{
+		if (it->pid <= 0)
+			continue ;
+		if (waitpid(it->pid, &st, 0) < 0)
+			return (ENO);
+		if (WIFEXITED(st))
+			it->st = WEXITSTATUS(st);
+		if (it->cb)
+			it->cb(it);
+	}
+	return (ft_vec_begin(self) ? ((t_job *)ft_vec_begin(self))->st : 0);
+}
+
+t_st			ft_worker_run(t_worker *self)
 {
 	t_job	*it;
 	int 	c[2];
@@ -39,15 +59,6 @@ t_st			ft_worker_run(t_worker *self, int *status)
 				return (st);
 			p ? (void)(close(p[0]) & close(p[1])) : 0;
 		}
-		if (waitpid(it->pid, &st, 0) < 0)
-			return (ENO);
-		if (WIFEXITED(st))
-			it->st = WEXITSTATUS(st);
-		if (it->cb)
-			it->cb(it);
 	}
-	if (it > (t_job *)ft_vec_begin(self))
-		--it;
-	it ? *status = it->st : 0;
 	return (0);
 }

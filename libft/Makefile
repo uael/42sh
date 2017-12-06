@@ -304,7 +304,7 @@ $(LIB): 3th $(OBJ)
 	@printf  "%-25s\033[32m[✔]\033[0m\n" "$(NAME): lib"
 
 $(EXE): 3th $(OBJ)
-	@$(CC) $(CFLAGS) $(LNK) $(3TH) $(INC) $(OBJ) -o $(NAME)
+	@$(CC) $(CFLAGS) $(LNK) $(INC) $(OBJ) -o $(NAME) $(3TH)
 	@printf  "%-25s\033[32m[✔]\033[0m\n" "$(NAME): exe"
 
 $(OBJ_PATH)%.o: $(SRC_PATH)%.c

@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/06 18:30:14 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/06 19:06:55 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,12 +66,13 @@ extern void		ft_job_data(t_job *self, void *data);
 extern void		ft_job_operate(t_job *self, t_job_op op);
 extern void		ft_job_free_data(t_job *self);
 extern void		ft_job_dtor(t_job *self);
-extern t_st		ft_job_run(t_job *self, int *write, int *read);
+extern t_st		ft_job_run(t_job *self, int *wr, int *rd);
 
 extern void		ft_worker_ctor(t_worker *jobs);
 extern void		ft_worker_dtor(t_worker *self);
 extern t_job	*ft_worker_push(t_worker *self, t_job *job);
-extern t_st		ft_worker_run(t_worker *self, int *status);
+extern	t_st	ft_worker_join(t_worker *self);
+extern t_st		ft_worker_run(t_worker *self);
 extern void		ft_worker_clear(t_worker *self);
 
 #endif
