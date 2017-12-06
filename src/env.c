@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/23 12:34:46 by null             ###   ########.fr       */
+/*   Updated: 2017/12/06 11:46:29 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,10 @@ inline t_st		sh_initenv(t_vstr *self, char **env)
 	FT_INIT(ft_vstr_end(self), char *);
 	return (OK);
 }
+
+/*
+** todo: Remove, use ft_getenv
+*/
 
 inline char		**sh_getenv(t_vstr *self, char *var)
 {

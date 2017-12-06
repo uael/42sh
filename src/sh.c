@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/06 10:10:15 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/06 11:24:33 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,78 +82,10 @@ inline t_st	sh_prompt(t_sh *self, char *prompt)
 	return (OK);
 }
 
-inline t_st	msh(t_sh *self)
+extern void		sh_clean(t_sh *self)
 {
-	t_tok		*tok;
-	t_st		st;
-	t_job		*prev;
-	t_job		job;
-
-	prev = NULL;
+	ft_omstream_clear(&self->bi_out);
+	ft_omstream_clear(&self->bi_err);
+	ft_worker_clear(&self->worker);
 	ft_lexer_clean(&self->lexer);
-	while (1)
-	{
-		if (!(tok = sh_next(self, NULL)))
-			return (NOK);
-		else if (tok->id == '\n')
-		{
-			if (ft_vec_size(&self->worker))
-			{
-				if (ISE(st = ft_worker_run(&self->worker, self, &self->st)))
-					ft_putf(2, "21sh: %e", ST_TOENO(st));
-				self->bi_err.len = 0;
-				self->bi_err.cur = 0;
-				self->bi_out.len = 0;
-				self->bi_out.cur = 0;
-				ft_lexer_clean(&self->lexer);
-			}
-			return (OK);
-		}
-		else if (ft_strchr(";", tok->id))
-		{
-			if (ISE(st = ft_worker_run(&self->worker, self, &self->st)))
-				ft_putf(2, "21sh: %e", ST_TOENO(st));
-			self->bi_err.len = 0;
-			self->bi_err.cur = 0;
-			self->bi_out.len = 0;
-			self->bi_out.cur = 0;
-			ft_lexer_clean(&self->lexer);
-			continue ;
-		}
-		else if (ft_strchr("\t ", tok->id))
-			continue ;
-		else if (tok->id == SH_TOK_PIPE)
-		{
-			if (!prev)
-			{
-				sh_consume_line(self);
-				return (ft_retf((self->st = 1) & 0,
-					"21sh: Unexpected token '%c'\n", tok->id));
-			}
-			prev->op = JOB_OP_PIPE;
-		}
-		else if (ISE(st = sh_eval_bi(self, &job, tok)))
-			return (st);
-		else if (ST_OK(st))
-		{
-			if (!(prev = ft_worker_push(&self->worker, &job)))
-				return (ENO);
-			continue ;
-		}
-		else if (ISE(st = sh_eval_job(self, &job, tok)))
-			return (st);
-		else if (ST_OK(st))
-		{
-			if (!(prev = ft_worker_push(&self->worker, &job)))
-				return (ENO);
-			continue ;
-		}
-		else
-		{
-			self->worker.len = 0;
-			sh_consume_line(self);
-			return (ft_retf((self->st = 1) & 0,
-				"21sh: Unexpected token '%c'\n", tok->id));
-		}
-	}
 }

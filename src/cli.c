@@ -6,26 +6,21 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/05 18:39:29 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/06 11:24:33 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "msh.h"
 
-static t_sh	*g_sh;
+#define SH_PROMPT(SH) ((SH)->st==0?" \033[32m❯\033[0m ":" \033[31m❯\033[0m ")
 
-inline char			*prompt_in(t_sh *self)
-{
-	if (self->st == 0)
-		return (" \033[32m❯\033[0m ");
-	return (" \033[31m❯\033[0m ");
-}
+static t_sh	*g_sh;
 
 inline void			sh_sigint_hdl(int sign)
 {
 	(void)sign;
 	ft_putc(0, '\n');
-	sh_prompt(g_sh, prompt_in(g_sh));
+	sh_prompt(g_sh, SH_PROMPT(g_sh));
 }
 
 static inline t_st	main_av(t_sh *sh, int ac, char **av, char **env)
@@ -38,12 +33,12 @@ static inline t_st	main_av(t_sh *sh, int ac, char **av, char **env)
 	while (++i < ac)
 		if (ST_OK(st = sh_init_file(sh, env, av[i])))
 		{
-			if (ISE(st = msh(sh)))
-				SH_EXIT(ST_TOENO(st), sh, "%s: %e\n", "21sh", ST_TOENO(st));
+			if (ISE(st = sh_eval(sh)))
+				SH_EXIT(ST_TOENO(st), sh, N_SH"%e\n", ST_TOENO(st));
 			sh_dtor(sh);
 		}
 		else if (ISE(st))
-			ft_putf(2, "%s: %e '%s'\n", "21sh", ST_TOENO(st), av[i]);
+			ft_putf(2, N_SH"%e '%s'\n", ST_TOENO(st), av[i]);
 	return (ft_dtor(sh->st, (t_dtor)sh_dtor, sh, NULL));
 }
 
@@ -53,13 +48,13 @@ static inline t_st	main_stdin(t_sh *sh, char **env)
 
 	FT_INIT(sh, t_sh);
 	if (ISE(st = sh_init_stream(sh, env, g_cin)))
-		SH_EXIT(ST_TOENO(st), sh, "%s: %e\n", "21sh", ST_TOENO(st));
+		SH_EXIT(ST_TOENO(st), sh, N_SH"%e\n", ST_TOENO(st));
 	if (ST_NOK(st))
 		return (ft_dtor(sh->st, (t_dtor)sh_dtor, sh, NULL));
 	signal(SIGINT, sh_sigint_hdl);
-	while (ST_OK(sh_prompt(sh, prompt_in(sh))))
-		if (ISE(st = msh(sh)))
-			SH_EXIT(ST_TOENO(st), sh, "%s: %e\n", "21sh", ST_TOENO(st));
+	while (ST_OK(sh_prompt(sh, SH_PROMPT(sh))))
+		if (ISE(st = sh_eval(sh)))
+			SH_EXIT(ST_TOENO(st), sh, N_SH"%e\n", ST_TOENO(st));
 		else if (ST_NOK(st))
 			break ;
 	return (ft_dtor(sh->st, (t_dtor)sh_dtor, sh, NULL));

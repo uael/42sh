@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:33 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/05 19:58:51 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/06 12:15:29 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ t_st 		ft_job_run(t_job *self, void *g, int *write, int *read)
 		else
 		{
 			execve(self->av[0], self->av, self->env);
-			return (ENO);
+			exit(self->st = errno);
 		}
 	}
 	return ((self->pid = pid) & 0);

@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/06 10:43:23 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/06 12:07:28 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,11 @@ static int		env_parse_opts(t_sh *sh, char **av, void **o, t_vstr *e)
 	return (i);
 }
 
+static void		env_job_cp(t_job *job)
+{
+	free(job->env);
+}
+
 static t_st		env_finalize(t_sh *sh, char *path, char ***vars, t_job *out)
 {
 	int		s;
@@ -67,18 +72,19 @@ static t_st		env_finalize(t_sh *sh, char *path, char ***vars, t_job *out)
 	while (*vars[0])
 		if (!ft_vstr_pushc(&av, *vars[0]++))
 			return (ENO);
-	av.buf[0] = ft_strdup(av.buf[0]);
+	if (!ft_vstr_pushc(&av, NULL))
+		return (ENO);
 	if (ST_NOK(s = ft_job_exe(out, path, av.buf, vars[1])))
 	{
 		if (ISE(s))
 			sh_bi_retf(sh, NOK, N_ENV"%s: %e\n", av.buf[0], ST_TOENO(s));
 		else
 			sh_bi_retf(sh, NOK, N_ENV"%s: Command not found\n", av.buf[0]);
-		free(av.buf[0]);
 		free(vars[1]);
 		ft_vstr_dtor(&av, NULL);
 		return (NOK);
 	}
+	ft_job_cb(out, env_job_cp);
 	return (OK);
 }
 

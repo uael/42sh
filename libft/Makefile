@@ -188,6 +188,7 @@ SRC_NAME = \
 	exe/ft_job_exe.c \
 	exe/ft_job_run.c \
 	exe/ft_worker.c \
+	exe/ft_worker_run.c \
 	fs/ft_basename.c \
 	fs/ft_isdots.c \
 	fs/ft_pathjoin.c \

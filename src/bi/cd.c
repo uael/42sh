@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/06 10:05:50 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/06 11:46:29 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,12 +24,12 @@ static char	*cd_path(int ac, char **av, char **env, t_bool p)
 
 	if ((ac == 1 + p || ft_strcmp(av[1 + p], "~") == 0) &&
 		(envv = ft_getenv(env, "HOME")))
-		return (envv);
+		return (ft_strdup(envv));
 	if (ac == 2 + p && ft_strcmp(av[1 + p], "-") == 0 &&
 		(envv = ft_getenv(env, "OLDPWD")))
-		return (envv);
+		return (ft_strdup(envv));
 	if (ac == 2 + p)
-		return (av[1 + p]);
+		return (ft_strdup(av[1 + p]));
 	return (NULL);
 }
 
@@ -48,14 +48,19 @@ static t_st	cd_test(t_sh *sh, char *path)
 	return (OK);
 }
 
-static char	*cd_pathreal(char *path, char *buf, char *pwd, t_bool p)
+static int	cd_chdir(t_sh *sh, char *path)
 {
-	char	prev[PATH_MAX + 1];
+	t_st	st;
 
-	ft_strcpy(prev, path);
-	if (!(path = ft_pathabs(path, buf, !p && pwd ? pwd : NULL)))
-		ft_strcpy(path, prev);
-	return (path);
+	if (chdir(path))
+	{
+		st = sh_bi_retf(sh, NOK, N_CD"%s: %e\n", path, errno);
+		free(path);
+		return (st);
+	}
+	st = sh_setenv(&sh->env, "PWD", path);
+	free(path);
+	return (ISE(st) ? st : OK);
 }
 
 inline int	sh_bi_cd(t_sh *sh, int ac, char **av, t_job *out)
@@ -63,7 +68,6 @@ inline int	sh_bi_cd(t_sh *sh, int ac, char **av, t_job *out)
 	char	buf[PATH_MAX + 1];
 	char	*path;
 	char	*pwd;
-	int		chd;
 	t_st	st;
 
 	(void)out;
@@ -78,9 +82,10 @@ inline int	sh_bi_cd(t_sh *sh, int ac, char **av, t_job *out)
 	if ((pwd = ft_getenv(sh->env.buf, "PWD")) &&
 		ISE(st = sh_setenv(&sh->env, "OLDPWD", pwd)))
 		return (st);
-	path = cd_pathreal(path, buf, pwd, (t_bool)(ac == 3));
-	if (!(chd = chdir(path)) &&
-		ISE(st = sh_setenv(&sh->env, "PWD", path)))
-		return (st);
-	return (chd ? sh_bi_retf(sh, NOK, N_CD"%s: %e\n", path, errno) : OK);
+	if (ft_pathabs(path, buf, ac != 3 && pwd ? pwd : NULL))
+	{
+		free(path);
+		path = ft_strdup(buf);
+	}
+	return (cd_chdir(sh, path));
 }
