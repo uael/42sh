@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/07 12:03:01 by null             ###   ########.fr       */
+/*   Updated: 2017/12/07 12:06:33 by null             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,11 +72,9 @@ inline t_st	sh_eval(t_sh *self)
 					ft_putf(2, N_SH"%e", ST_TOENO(st));
 				self->st = ft_worker_join(&self->worker);
 			}
+			sh_clean(self);
 			if (tok->id == '\n')
-			{
-				sh_clean(self);
 				return (OK);
-			}
 			prev = NULL;
 		}
 		else if (ft_strchr("\t ", tok->id))

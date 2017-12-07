@@ -12,6 +12,12 @@
 
 #include "libft/lex/tok.h"
 
+inline void		ft_tok_dtor(t_tok *self)
+{
+	if (self->val)
+		ft_tokv_dtor(self->val);
+}
+
 inline t_dstr	*ft_tok_str(t_tok *self)
 {
 	return (ft_tokv_str(self->val));

@@ -24,6 +24,7 @@ typedef struct	s_tok
 	t_tokv		*val;
 }				t_tok;
 
+extern void		ft_tok_dtor(t_tok *self);
 extern t_dstr	*ft_tok_str(t_tok *self);
 extern t_dstr	*ft_tok_ident(t_tok *self);
 

@@ -52,15 +52,15 @@ t_st 		ft_job_run(t_job *self, int *wr, int *rd)
 			close(rd[0]);
 			close(rd[1]);
 		}
+		if (in >= 0)
+			dup2(in, STDIN_FILENO);
+		if (out >= 0)
+			dup2(out, STDOUT_FILENO);
 		if (self->kind == JOB_FN)
 			exit(self->fn(self->data, self->av ? av_count(self->av) : 0,
 				self->av, self->env));
 		else
 		{
-			if (in >= 0)
-				dup2(in, STDIN_FILENO);
-			if (out >= 0)
-				dup2(out, STDOUT_FILENO);
 			execve(self->av[0], self->av, self->env);
 			exit(self->st = errno);
 		}

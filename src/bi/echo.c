@@ -28,6 +28,5 @@ inline int	sh_bi_echo(t_sh *sh, int ac, char **av, t_job *out)
 			ft_omstream_putc(&sh->bi_out, ' ');
 	}
 	ft_omstream_putc(&sh->bi_out, '\n');
-	ft_omstream_putc(&sh->bi_out, '\0');
 	return (OK);
 }
