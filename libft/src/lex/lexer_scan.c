@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/07 12:29:01 by null             ###   ########.fr       */
+/*   Updated: 2017/12/07 15:42:16 by null             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,7 @@
 
 inline size_t		ft_lexer_clean(t_lexer *self)
 {
-	size_t	n;
-	size_t	v;
-
-	n = 0;
-	v = 0;
-	while (n < self->toks.cur)
-		if (((t_tok *)self->toks.buf)[n++].val)
-			++v;
-	ft_deq_clean(&self->toks, NULL);
-	ft_vec_clean(&self->vals, v, (t_dtor)ft_tokv_dtor);
-	return (n);
+	return (ft_deq_clean(&self->toks, (t_dtor)ft_tok_dtor));
 }
 
 static inline t_st	lexer_scan_one(t_lexer *self, char peek, t_src *src)

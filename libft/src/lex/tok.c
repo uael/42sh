@@ -15,7 +15,10 @@
 inline void		ft_tok_dtor(t_tok *self)
 {
 	if (self->val)
+	{
 		ft_tokv_dtor(self->val);
+		self->val = NULL;
+	}
 }
 
 inline t_dstr	*ft_tok_str(t_tok *self)

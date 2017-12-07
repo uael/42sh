@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/07 12:06:33 by null             ###   ########.fr       */
+/*   Updated: 2017/12/07 15:11:57 by null             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,15 +51,70 @@ inline t_st	sh_eval_job(t_sh *self, t_job *job, t_tok *tok)
 	return (OK);
 }
 
+inline t_st	sh_reduce(t_sh *self)
+{
+	t_sz	sz;
+	t_tok	*tok;
+	t_tok	*next;
+	t_dstr	*s;
+	char	*beg;
+	char	c;
+	size_t	l;
+	t_src	*src;
+
+	if (SZ_NOK(sz = ft_lexer_until(&self->lexer, '\n')))
+		return (SZ_TOST(sz));
+	tok = (t_tok *)ft_deq_begin(&self->lexer.toks) - 1;
+	while (++tok != ft_deq_end(&self->lexer.toks))
+	{
+		if (tok->id == SH_TOK_HEREDOC && !tok->val)
+		{
+			if ((next = tok + 1) == ft_deq_end(&self->lexer.toks) ||
+				next->id != SH_TOK_WORD)
+				return (ft_retf((self->st = 1) & 0,
+					N_SH"Unexpected token '%c'\n", tok->id));
+			if (ft_deq_size(&self->lexer.srcs) == 0 ||
+				!(src = ft_deq_at(&self->lexer.srcs, 0)))
+				return (ft_retf((self->st = 1) & 0,
+					N_SH"Unexpected token '%c'\n", tok->id));
+			s = ft_tokv_ident(next->val);
+			beg = ft_strdup(s->buf);
+			l = ft_strlen(beg);
+			s->len = 0;
+			s->buf[0] = '\0';
+			while (ST_OK(ft_src_peek(src, &c, 0)))
+			{
+				ft_dstr_pushc(s, c);
+				if (c == '\n' && s->len >= l + 2 && s->buf[s->len - (l + 2)] == '\n')
+				{
+					if (ft_strncmp(s->buf + s->len - (l + 1), beg, l) != 0)
+						continue ;
+					ft_src_next(src, NULL, 1);
+					ft_dstr_popn(s, l + 1, NULL);
+					break ;
+				}
+				ft_src_next(src, NULL, 1);
+			}
+			free(beg);
+			tok->val = next->val;
+			next->val = NULL;
+			next->id = SH_TOK_SPACE;
+		}
+	}
+	return (OK);
+}
+
 inline t_st	sh_eval(t_sh *self)
 {
 	t_tok		*tok;
 	t_st		st;
 	t_job		*prev;
 	t_job		job;
+	t_job		hdoc;
 
+	if (ST_NOK(st = sh_reduce(self)))
+		return (st);
 	prev = NULL;
-	ft_lexer_until(&self->lexer, '\n');
 	while (1)
 	{
 		if (!(tok = sh_next(self, NULL)))
@@ -131,8 +186,6 @@ inline t_st	sh_eval(t_sh *self)
 		else if (tok->id == SH_TOK_HEREDOC)
 		{
 			ft_job_output(&job, ft_tok_ident(tok)->buf);
-			if (prev)
-				ft_job_pipe(prev);
 			if (!(prev = ft_worker_push(&self->worker, &job)))
 				return (ENO);
 			continue ;
@@ -150,6 +203,15 @@ inline t_st	sh_eval(t_sh *self)
 			return (st);
 		else if (ST_OK(st))
 		{
+			sh_skip(self, "\t ");
+			if ((tok = sh_peek(self)) && tok->id == SH_TOK_HEREDOC)
+			{
+				sh_next(self, NULL);
+				ft_job_output(&hdoc, ft_tok_ident(tok)->buf);
+				if (!(prev = ft_worker_push(&self->worker, &hdoc)))
+					return (ENO);
+				ft_job_pipe(prev);
+			}
 			if (!(prev = ft_worker_push(&self->worker, &job)))
 				return (ENO);
 			ft_job_data(prev, self);
