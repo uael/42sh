@@ -6,7 +6,7 @@
 #    By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/07 09:52:36 by alucas-           #+#    #+#              #
-#    Updated: 2017/12/06 19:16:44 by alucas-          ###   ########.fr        #
+#    Updated: 2017/12/07 11:37:23 by null             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -311,9 +311,8 @@ $(EXE): 3th $(OBJ)
 
 $(OBJ_PATH)%.o: $(SRC_PATH)%.c
 	@mkdir -p $(shell dirname $@)
-	@printf  "%-25s\033[34m[$<]\033[0m\n" "$(NAME):"
+	@printf  "\r%-25s\033[34m[$<]\033[0m\n" "$(NAME):"
 	@$(CC) $(CFLAGS) $(INC) -o $@ -c $<
-	@echo "\033[A\033[K\033[A"
 
 clean:
 ifneq ($(3TH_PATH),)

@@ -6,13 +6,28 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:33 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/23 07:21:44 by null             ###   ########.fr       */
+/*   Updated: 2017/12/07 11:25:47 by null             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft/io/ofstream.h"
 
-inline t_sz	ft_ofstream_write(t_ofstream *s, char const *sr, size_t len)
+static inline t_sz	ofs_inst_wr(t_ofstream *s, char const **sr, size_t *len)
+{
+	ssize_t		sz;
+
+	if (!s->len)
+		while (*len >= FT_PAGE_SIZE)
+		{
+			if (SZ_NOK(sz = write(s->fd, *sr, FT_PAGE_SIZE)))
+				return (sz);
+			*len -= sz;
+			*sr += sz;
+		}
+	return (1);
+}
+
+inline t_sz			ft_ofstream_write(t_ofstream *s, char const *sr, size_t len)
 {
 	char const	*beg;
 	size_t		b;
@@ -22,25 +37,26 @@ inline t_sz	ft_ofstream_write(t_ofstream *s, char const *sr, size_t len)
 	beg = sr;
 	while (len)
 	{
-		if (!s->len)
-			while (len >= FT_PAGE_SIZE)
-			{
-				if (SZ_NOK(sz = write(s->fd, sr, FT_PAGE_SIZE)))
-					return (sz);
-				((len -= sz) && (sr += sz));
-			}
+		if (SZ_NOK(sz = ofs_inst_wr(s, &sr, &len)))
+			return (sz);
 		b = FT_PAGE_SIZE - s->len > len ? len : FT_PAGE_SIZE - s->len;
 		if (!s->buf && !(s->buf = malloc(FT_PAGE_SIZE * sizeof(char))))
 			return (ENO);
 		ft_memcpy(s->buf + (c = s->cur - s->beg), sr, (size_t)b * sizeof(char));
-		((s->cur += b) && (c += b) > s->len && (s->len = c) && (s->end += b));
-		((len -= b) && (sr += b));
+		s->cur += b;
+		if ((c += b) > s->len)
+		{
+			s->len = c;
+			s->end += b;
+		}
+		len -= b;
+		sr += b;
 		(s->len == FT_PAGE_SIZE ? ft_ofstream_flush(s) : (void)0);
 	}
 	return (sr - beg);
 }
 
-t_sz		ft_ofstream_writef(t_ofstream *self, char const *fmt, ...)
+t_sz				ft_ofstream_writef(t_ofstream *self, char const *fmt, ...)
 {
 	va_list	ap;
 	t_sz	sz;
@@ -51,7 +67,8 @@ t_sz		ft_ofstream_writef(t_ofstream *self, char const *fmt, ...)
 	return (sz);
 }
 
-inline t_sz	ft_ofstream_vwritef(t_ofstream *self, char const *fmt, va_list ap)
+inline t_sz			ft_ofstream_vwritef(t_ofstream *self, char const *fmt,
+	va_list ap)
 {
 	char	*sp;
 	ssize_t	sz;

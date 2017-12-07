@@ -37,7 +37,7 @@ static t_st	cd_test(t_sh *sh, char *path)
 {
 	struct stat	s;
 
-	if (!*path || lstat(path, &s) < 0 != 0)
+	if (!*path || lstat(path, &s) != 0)
 		return (sh_bi_retf(sh, NOK, N_CD"%s: %e\n", path, errno));
 	if (!S_ISDIR(s.st_mode) && !S_ISLNK(s.st_mode))
 		return (sh_bi_retf(sh, NOK, N_CD"%s: %e\n", path, ENOTDIR));

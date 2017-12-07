@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:33 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/06 12:43:02 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/07 11:12:10 by null             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,10 @@ static t_st	exe_lookup(char **env, char *exe, char *path, char *buf)
 		return (st);
 	if (!(beg = ft_getenv(env, path)))
 		return (exe_test(ft_strcat(ft_strcpy(buf, "/bin/"), exe)));
-	while ((sep = ft_strchr(beg, ':')) >= 0)
+	while (1)
 	{
-		len = sep ? sep - beg : ft_strlen(beg);
+		sep = ft_strchr(beg, ':');
+		len = sep ? (size_t)(sep - beg) : ft_strlen(beg);
 		ft_strncpy(buf, beg, len)[len] = '\0';
 		if (ST_OK(st = exe_test(ft_pathcat(buf, exe))) || ISE(st))
 			return (st);

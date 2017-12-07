@@ -41,7 +41,7 @@ typedef ssize_t	t_sz;
 # define ST_TOSZ(ST) (ISE(ST) ? (t_sz)(ST) : (OK))
 
 # ifndef ELAST
-#  define ELAST 140
+#  define ELAST 200
 # endif
 
 # define ENIMPL (ELAST + 1)

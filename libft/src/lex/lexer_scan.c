@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/17 10:03:31 by null             ###   ########.fr       */
+/*   Updated: 2017/12/07 11:47:57 by null             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ inline t_sz			ft_lexer_scan(t_lexer *self, size_t n)
 	return (c);
 }
 
-inline t_sz			ft_lexer_scan_until(t_lexer *self, uint8_t id)
+inline t_sz			ft_lexer_until(t_lexer *self, uint8_t id)
 {
 	size_t	c;
 	t_src	*src;
@@ -96,7 +96,7 @@ inline t_sz			ft_lexer_scan_until(t_lexer *self, uint8_t id)
 		else if (ST_OK(st))
 		{
 			++c;
-			if (peek == id)
+			if (!peek || peek == id)
 				break ;
 		}
 	return (c);

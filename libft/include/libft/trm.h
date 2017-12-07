@@ -6,14 +6,19 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/23 14:38:40 by null             ###   ########.fr       */
+/*   Updated: 2017/12/07 11:32:44 by null             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LIBFT_TRM_H
 # define LIBFT_TRM_H
 
-# include <term.h>
+# ifdef __CYGWIN__
+#  include <termcap.h>
+#  include <termios.h>
+# else
+#  include <term.h>
+# endif
 
 # include "io.h"
 # include "lib.h"
@@ -32,6 +37,10 @@
 extern char		*ft_caps_underline(void);
 extern char		*ft_caps_rvideo(void);
 extern char		*ft_caps_reset(void);
+
+# ifndef TTY
+#  define TTY struct termios
+# endif
 
 typedef TTY		t_trmios;
 
