@@ -1,26 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   msh.h                                              :+:      :+:    :+:   */
+/*   eval/heredoc.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/23 17:28:28 by null             ###   ########.fr       */
+/*   Updated: 2017/12/08 15:05:52 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MSH_H
-# define MSH_H
+#include "msh/eval.h"
 
-# include "msh/bi.h"
-# include "msh/env.h"
-# include "msh/eval.h"
-# include "msh/exe.h"
-# include "msh/lex.h"
-# include "msh/reduce.h"
-# include "msh/sh.h"
-# include "msh/sig.h"
-# include "msh/toks.h"
+inline t_st	sh_eval_heredoc(t_sh *self, t_job **pjob, t_tok *tok)
+{
+	t_job	job;
 
-#endif
+	if (tok->id != SH_TOK_HEREDOC)
+		return (SH_NEXT);
+	ft_job_output(&job, ft_tok_ident(tok)->buf);
+	return ((*pjob = ft_worker_push(&self->worker, &job)) ? SH_OK : ENO);
+}

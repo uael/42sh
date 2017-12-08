@@ -313,6 +313,7 @@ $(OBJ_PATH)%.o: $(SRC_PATH)%.c
 	@mkdir -p $(shell dirname $@)
 	@printf  "\r%-25s\033[34m[$<]\033[0m\n" "$(NAME):"
 	@$(CC) $(CFLAGS) $(INC) -o $@ -c $<
+	@printf "\033[A\033[2K"
 
 clean:
 ifneq ($(3TH_PATH),)

@@ -6,7 +6,7 @@
 #    By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/07 09:52:36 by alucas-           #+#    #+#              #
-#    Updated: 2017/12/07 11:36:37 by null             ###   ########.fr        #
+#    Updated: 2017/12/08 09:48:05 by alucas-          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,8 +22,12 @@ LNK_PATH = ./ $(3TH_PATH)
 
 OBJ_NAME = $(SRC_NAME:.c=.o)
 3TH_NAME = ft ncurses
-SRC_NAME = bi/cd.c bi/echo.c bi/env.c bi/exit.c bi/setenv.c bi/unsetenv.c \
-	bi.c cli.c env.c eval.c exe.c lex.c sh.c toks.c
+SRC_NAME = \
+	bi.c bi/cd.c bi/echo.c bi/env.c bi/exit.c bi/setenv.c bi/unsetenv.c \
+	eval.c eval/bi.c eval/exe.c eval/heredoc.c eval/pipe.c eval/rin.c \
+	eval/rout.c eval/sep.c \
+	reduce.c reduce/heredoc.c \
+	cli.c env.c exe.c lex.c sh.c toks.c
 
 SRC = $(addprefix $(SRC_PATH), $(SRC_NAME))
 OBJ = $(addprefix $(OBJ_PATH), $(OBJ_NAME))
@@ -48,6 +52,7 @@ $(OBJ_PATH)%.o: $(SRC_PATH)%.c
 	@mkdir -p $(shell dirname $@)
 	@printf  "\r%-25s\033[34m[$<]\033[0m\n" "$(NAME):"
 	@$(CC) $(CFLAGS) $(INC) -o $@ -c $<
+	@printf "\033[A\033[2K"
 
 clean:
 ifneq ($(3TH_PATH),)

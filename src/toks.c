@@ -147,5 +147,7 @@ inline char 			*sh_tok_str(t_tok *tok)
 		return ("<&");
 	if (tok->id == SH_TOK_LAND)
 		return ("&&");
+	if (tok->id == '\n')
+		return ("\\n");
 	return (NULL);
 }
