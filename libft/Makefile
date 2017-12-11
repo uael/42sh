@@ -6,7 +6,7 @@
 #    By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/07 09:52:36 by alucas-           #+#    #+#              #
-#    Updated: 2017/12/07 11:37:23 by null             ###   ########.fr        #
+#    Updated: 2017/12/10 21:02:00 by alucas-          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,7 +22,7 @@ INC_PATH = ./include/ $(addprefix $(3TH_PATH), include/)
 LNK_PATH = ./ $(3TH_PATH)
 
 OBJ_NAME = $(SRC_NAME:.c=.o)
-3TH_NAME = ncurses
+3TH_NAME = m ncurses
 SRC_NAME = \
 	cty/ft_isalnum.c \
 	cty/ft_isalpha.c \
@@ -251,13 +251,23 @@ SRC_NAME = \
 	lib/ft_strerr.c \
 	math/ft_imax.c \
 	math/ft_imin.c \
+	math/ft_m4.c \
+	math/ft_m4_mul.c \
+	math/ft_m4_rot.c \
+	math/ft_m4_trans.c \
 	math/ft_pow.c \
 	math/ft_pow2_next.c \
 	math/ft_umax.c \
 	math/ft_umin.c \
+	math/ft_v3.c \
+	math/ft_v3_nor.c \
 	mem/ft_calloc.c \
 	mem/ft_malloc.c \
 	mem/ft_realloc.c \
+	mlx/ft_img.c \
+	mlx/ft_img_wli.c \
+	mlx/ft_mlx.c \
+	mlx/ft_win.c \
 	str/ft_bzero.c \
 	str/ft_memccpy.c \
 	str/ft_memchr.c \
@@ -283,7 +293,9 @@ SRC_NAME = \
 	str/ft_strnlen.c \
 	str/ft_strnstr.c \
 	str/ft_strrchr.c \
+	str/ft_strsplit.c \
 	str/ft_strstr.c \
+	str/ft_strword.c \
 	trm/ft_caps.c \
 	trm/ft_trm.c \
 	trm/ft_trm_on.c \

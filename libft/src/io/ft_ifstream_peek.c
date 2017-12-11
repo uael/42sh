@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:33 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/23 07:50:09 by null             ###   ########.fr       */
+/*   Updated: 2017/12/10 19:25:16 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static inline t_st	ifs_alloc(t_ifstream *self)
 	size_t	cap;
 	void	*buf;
 
-	cap = self->cap + FT_PAGE_SIZE;
+	cap = self->cap + FT_PAGE_SIZE + 1;
 	if (!(buf = ft_realloc(self->buf, self->len * sizeof(char),
 		cap * sizeof(char))))
 		return (ENO);

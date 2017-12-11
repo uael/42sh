@@ -62,6 +62,10 @@ inline void	ft_trm_refresh(t_trm *self)
 	self->h = w.ws_row;
 }
 
+/*
+** todo: check for tgetstr("*", NULL), TERM=i100 for ex
+*/
+
 inline void	ft_trm_clear(t_trm *self)
 {
 	ft_ostream_puts(&self->out, tgoto(tgetstr("cm", NULL), 0, 0));

@@ -12,7 +12,7 @@
 
 #include "libft/exe.h"
 
-inline void ft_job_fn(t_job *self, t_job_fn fn, char **av, char **env)
+inline void		ft_job_fn(t_job *self, t_job_fn fn, char **av, char **env)
 {
 	FT_INIT(self, t_job);
 	self->kind = JOB_FN;
@@ -21,7 +21,7 @@ inline void ft_job_fn(t_job *self, t_job_fn fn, char **av, char **env)
 	self->fn = fn;
 }
 
-static int	job_output(void *s, int ac, char **av, char **env)
+static int		job_output(void *s, int ac, char **av, char **env)
 {
 	(void)ac;
 	(void)av;
@@ -30,7 +30,7 @@ static int	job_output(void *s, int ac, char **av, char **env)
 	return (0);
 }
 
-inline void ft_job_output(t_job *self, char *str)
+inline void		ft_job_output(t_job *self, char *str)
 {
 	FT_INIT(self, t_job);
 	self->kind = JOB_FN;

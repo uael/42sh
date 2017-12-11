@@ -39,9 +39,9 @@ int				ft_worker_join(t_worker *self)
 t_st			ft_worker_run(t_worker *self)
 {
 	t_job	*it;
-	int 	c[2];
-	int 	d[2];
-	int 	*p;
+	int		c[2];
+	int		d[2];
+	int		*p;
 	t_st	st;
 
 	p = NULL;
@@ -57,12 +57,10 @@ t_st			ft_worker_run(t_worker *self)
 			p ? (void)(close(p[0]) & close(p[1])) : 0;
 			p = memcpy(d, c, 2 * sizeof(int));
 		}
-		else
-		{
-			if (ST_NOK(st = ft_job_run(it, NULL, p)))
-				return (st);
+		else if (ST_NOK(st = ft_job_run(it, NULL, p)))
+			return (st);
+		else if (ST_OK(st))
 			p ? (void)(close(p[0]) & close(p[1])) : 0;
-		}
 	}
 	return (0);
 }

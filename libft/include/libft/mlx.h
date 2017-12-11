@@ -1,27 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_job_dtor.c                                      :+:      :+:    :+:   */
+/*   libft/mlx.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/07 09:52:33 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/06 14:08:15 by alucas-          ###   ########.fr       */
+/*   Created: 2017/12/09 06:38:53 by alucas-           #+#    #+#             */
+/*   Updated: 2017/12/09 08:13:35 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/exe.h"
+#ifndef LIBFT_MLX_H
+# define LIBFT_MLX_H
 
-inline void		ft_job_free_data(t_job *self)
-{
-	free(self->data);
-}
+# include "mlx/hook.h"
+# include "mlx/img.h"
+# include "mlx/mlx.h"
+# include "mlx/win.h"
 
-inline void		ft_job_dtor(t_job *self)
-{
-	if (!self->av)
-		return ;
-	if (self->kind == JOB_EXE)
-		free(self->av[0]);
-	free(self->av);
-}
+#endif

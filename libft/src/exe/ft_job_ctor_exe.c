@@ -14,7 +14,7 @@
 
 #include "libft/exe.h"
 
-static t_st	exe_test(char *exe)
+static t_st		exe_test(char *exe)
 {
 	struct stat s;
 
@@ -23,7 +23,7 @@ static t_st	exe_test(char *exe)
 	return (OK);
 }
 
-static t_st	exe_lookup(char **env, char *exe, char *path, char *buf)
+static t_st		exe_lookup(char **env, char *exe, char *path, char *buf)
 {
 	char	*beg;
 	char	*sep;
@@ -48,7 +48,7 @@ static t_st	exe_lookup(char **env, char *exe, char *path, char *buf)
 	return (NOK);
 }
 
-inline t_st ft_job_exe(t_job *self, char *path, char **av, char **env)
+inline t_st		ft_job_exe(t_job *self, char *path, char **av, char **env)
 {
 	t_st	st;
 	char	buf[PATH_MAX + 1];

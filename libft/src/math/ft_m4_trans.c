@@ -1,30 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   msh.h                                              :+:      :+:    :+:   */
+/*   ft_m4_trans.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/23 17:28:28 by null             ###   ########.fr       */
+/*   Updated: 2017/12/10 15:02:33 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MSH_H
-# define MSH_H
+#include "libft/math/m4.h"
 
-/*
-** todo: cleaner error handing
-*/
+inline t_m4		ft_m4_transx(float s)
+{
+	return (ft_m4(
+		ft_m1(1, 0, 0, s),
+		ft_m1(0, 1, 0, 0),
+		ft_m1(0, 0, 1, 0),
+		ft_m1(0, 0, 0, 1)));
+}
 
-# include "msh/bi.h"
-# include "msh/env.h"
-# include "msh/eval.h"
-# include "msh/exe.h"
-# include "msh/lex.h"
-# include "msh/reduce.h"
-# include "msh/sh.h"
-# include "msh/sig.h"
-# include "msh/toks.h"
+inline t_m4		ft_m4_transy(float s)
+{
+	return (ft_m4(
+		ft_m1(1, 0, 0, 0),
+		ft_m1(0, 1, 0, s),
+		ft_m1(0, 0, 1, 0),
+		ft_m1(0, 0, 0, 1)));
+}
 
-#endif
+inline t_m4		ft_m4_transz(float s)
+{
+	return (ft_m4(
+		ft_m1(1, 0, 0, 0),
+		ft_m1(0, 1, 0, 0),
+		ft_m1(0, 0, 1, s),
+		ft_m1(0, 0, 0, 1)));
+}

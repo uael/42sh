@@ -1,27 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_job_dtor.c                                      :+:      :+:    :+:   */
+/*   libft/mlx/win.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/07 09:52:33 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/06 14:08:15 by alucas-          ###   ########.fr       */
+/*   Created: 2017/12/09 06:40:19 by alucas-           #+#    #+#             */
+/*   Updated: 2017/12/09 08:23:01 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/exe.h"
+#ifndef LIBFT_MLX_WIN_H
+# define LIBFT_MLX_WIN_H
 
-inline void		ft_job_free_data(t_job *self)
-{
-	free(self->data);
-}
+# include "img.h"
 
-inline void		ft_job_dtor(t_job *self)
+struct			s_xwin
 {
-	if (!self->av)
-		return ;
-	if (self->kind == JOB_EXE)
-		free(self->av[0]);
-	free(self->av);
-}
+	t_mlx		*mlx;
+	void		*ptr;
+};
+
+extern t_xwin	*ft_xwin(t_mlx *mlx, int w, int h, char *n);
+extern void		ft_xwin_dtor(t_xwin *self);
+extern void		ft_xwin_clear(t_xwin *self);
+
+#endif

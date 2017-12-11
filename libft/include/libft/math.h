@@ -14,6 +14,12 @@
 # define LIBFT_MATH_H
 
 # include "tys.h"
+# include "math/m4.h"
+# include "math/v3.h"
+
+# ifndef ABS
+#  define ABS(a) ((a) < 0 ? -(a) : (a))
+# endif
 
 # ifndef MIN
 #  define MIN(a, b) (((a)<(b))?(a):(b))

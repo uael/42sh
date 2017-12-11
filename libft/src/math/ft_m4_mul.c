@@ -1,27 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_job_dtor.c                                      :+:      :+:    :+:   */
+/*   ft_m4_mul.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/07 09:52:33 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/06 14:08:15 by alucas-          ###   ########.fr       */
+/*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
+/*   Updated: 2017/12/10 11:55:17 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/exe.h"
+#include "libft/math/m4.h"
+#include "libft/lib.h"
+#include "libft/str.h"
 
-inline void		ft_job_free_data(t_job *self)
+inline t_m4		ft_m4_mul(t_m4 a, t_m4 b)
 {
-	free(self->data);
-}
+	t_m4	m;
+	int		i;
+	int		j;
+	int		k;
+	float	sum;
 
-inline void		ft_job_dtor(t_job *self)
-{
-	if (!self->av)
-		return ;
-	if (self->kind == JOB_EXE)
-		free(self->av[0]);
-	free(self->av);
+	FT_INIT(&m, t_m4);
+	i = -1;
+	while (++i < 4 && (j = -1))
+		while (++j < 4 && (k = -1))
+		{
+			sum = 0;
+			while (++k < 4)
+				sum += a.m[k][j] * b.m[i][k];
+			m.m[i][j] = sum;
+		}
+	return (m);
 }

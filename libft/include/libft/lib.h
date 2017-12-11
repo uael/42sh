@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/05 15:48:26 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/09 07:04:45 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ typedef ssize_t	t_sz;
 # define EBOUND (ENIMPL + 1)
 
 typedef void	(*t_dtor)(void *i, ...);
+typedef int		(*t_err_hdl)(void *self, int code);
 
 extern int64_t	ft_atoi(char const *str);
 extern double	ft_atod(char const *str);

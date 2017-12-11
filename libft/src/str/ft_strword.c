@@ -1,27 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_job_dtor.c                                      :+:      :+:    :+:   */
+/*   ft_strword.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/07 09:52:33 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/06 14:08:15 by alucas-          ###   ########.fr       */
+/*   Created: 2017/12/09 17:40:58 by alucas-           #+#    #+#             */
+/*   Updated: 2017/12/10 19:29:17 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/exe.h"
+#include "libft/str.h"
 
-inline void		ft_job_free_data(t_job *self)
+inline size_t	ft_strword(char const *s, char c, char e)
 {
-	free(self->data);
-}
+	size_t n;
 
-inline void		ft_job_dtor(t_job *self)
-{
-	if (!self->av)
-		return ;
-	if (self->kind == JOB_EXE)
-		free(self->av[0]);
-	free(self->av);
+	n = 0;
+	while (*s && *s != e)
+		if (*s == c)
+			++s;
+		else if (++n && *++s)
+			while (*s && *s != c && *s != e)
+				++s;
+	return (n);
 }

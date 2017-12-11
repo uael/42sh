@@ -18,13 +18,13 @@
 # include "io.h"
 # include "fs.h"
 
-typedef enum 	e_job_kind
+typedef enum	e_job_kind
 {
 	JOB_EXE = 0,
 	JOB_FN
 }				t_job_kind;
 
-struct			s_job;
+struct s_job;
 
 typedef int		(*t_job_fn)(void *data, int ac, char **av, char **env);
 typedef void	(*t_job_cb)(struct s_job *job);

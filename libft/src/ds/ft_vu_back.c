@@ -14,7 +14,6 @@
 
 inline uint8_t	*ft_vu8_back(t_vu8 *self)
 {
-
 	return (self->buf + (self->len ? self->len - 1 : 0));
 }
 
