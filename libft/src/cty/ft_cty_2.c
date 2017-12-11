@@ -1,24 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strdup.c                                        :+:      :+:    :+:   */
+/*   ft_cty_2.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/07 09:53:02 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/07 09:53:34 by alucas-          ###   ########.fr       */
+/*   Created: 2017/11/07 09:52:33 by alucas-           #+#    #+#             */
+/*   Updated: 2017/12/11 11:11:30 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/str.h"
+#include "libft/cty.h"
 
-inline char	*ft_strdup(char const *src)
+inline int	ft_islower(int c)
 {
-	char	*dup;
-	size_t	sz;
+	return (c >= 'a' && c <= 'z');
+}
 
-	sz = ft_strlen(src);
-	if (!(dup = malloc((sz + 1) * sizeof(char))))
-		return (NULL);
-	return (ft_strcpy(dup, src));
+inline int	ft_isspace(int c)
+{
+	return (c == ' ' || (c >= '\t' && c <= '\r'));
+}
+
+inline int	ft_isupper(int c)
+{
+	return (c >= 'A' && c <= 'Z');
+}
+
+inline int	ft_tolower(int c)
+{
+	return (ft_isupper(c) ? c ^ 0x20 : c);
+}
+
+inline int	ft_toupper(int c)
+{
+	return (ft_islower(c) ? c ^ 0x20 : c);
 }

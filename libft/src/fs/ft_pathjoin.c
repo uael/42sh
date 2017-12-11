@@ -23,8 +23,7 @@ inline char		*ft_pathjoin(char const *p1, char const *p2)
 	if (!(l2 = ft_strlen(p2)) && !l1)
 		return (NULL);
 	ds = (t_bool)((!l1 || p1[l1 - 1] != '/') && (!l2 || p2[0] != '/'));
-	if (!(r = malloc((l1 + l2 + ds + 1) * sizeof(char))))
-		return (NULL);
+	r = ft_malloc((l1 + l2 + ds + 1) * sizeof(char));
 	if (l1)
 		ft_strcpy(r, p1);
 	if (ds)

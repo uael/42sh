@@ -19,6 +19,7 @@
 
 # include "../int.h"
 # include "../str.h"
+# include "../ex.h"
 
 # ifndef FT_PAGE_SIZE
 #  if defined PAGE_SIZE && PAGE_SIZE <= 4096

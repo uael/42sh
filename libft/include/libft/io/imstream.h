@@ -24,15 +24,15 @@ typedef struct	s_imstream
 
 extern void		ft_imstream_open(t_imstream *self, char const *str);
 extern void		ft_imstream_nopen(t_imstream *self, char const *str, size_t n);
-extern t_sz		ft_imstream_read(t_imstream *self, char *buf, size_t len);
-extern t_sz		ft_imstream_readf(t_imstream *self, char *fmt, ...);
-extern t_sz		ft_imstream_vreadf(t_imstream *self, char *fmt, va_list ap);
-extern t_sz		ft_imstream_get(t_imstream *self, char *buf, size_t len);
-extern t_st		ft_imstream_peek(t_imstream *self, char *c, size_t n);
+extern size_t	ft_imstream_read(t_imstream *self, char *buf, size_t len);
+extern size_t	ft_imstream_readf(t_imstream *self, char *fmt, ...);
+extern size_t	ft_imstream_vreadf(t_imstream *self, char *fmt, va_list ap);
+extern size_t	ft_imstream_get(t_imstream *self, char *buf, size_t len);
+extern t_bool	ft_imstream_peek(t_imstream *self, char *c, size_t n);
 extern void		ft_imstream_flush(t_imstream *self);
-extern t_st		ft_imstream_rewind(t_imstream *self, size_t n);
-extern t_st		ft_imstream_forward(t_imstream *self, size_t n);
-extern t_st		ft_imstream_seek(t_imstream *self, size_t off);
+extern t_bool	ft_imstream_rewind(t_imstream *self, size_t n);
+extern t_bool	ft_imstream_forward(t_imstream *self, size_t n);
+extern t_bool	ft_imstream_seek(t_imstream *self, size_t off);
 extern size_t	ft_imstream_tell(t_imstream const *self);
 
 #endif

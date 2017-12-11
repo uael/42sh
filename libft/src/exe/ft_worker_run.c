@@ -27,7 +27,7 @@ int				ft_worker_join(t_worker *self)
 		if (it->pid <= 0)
 			continue ;
 		if (waitpid(it->pid, &st, 0) < 0)
-			return (ENO);
+			return (ft_ex_throw(WUT));
 		if (WIFEXITED(st))
 			it->st = WEXITSTATUS(st);
 		if (it->cb)
@@ -36,31 +36,29 @@ int				ft_worker_join(t_worker *self)
 	return (ft_vec_size(self) ? ((t_job *)ft_vec_back(self))->st : 0);
 }
 
-t_st			ft_worker_run(t_worker *self)
+int				ft_worker_run(t_worker *self)
 {
 	t_job	*it;
 	int		c[2];
 	int		d[2];
 	int		*p;
-	t_st	st;
 
 	p = NULL;
 	it = (t_job *)ft_vec_begin(self) - 1;
 	while (++it != (t_job *)ft_vec_end(self))
-	{
 		if (it->pipe)
 		{
 			if (pipe(c))
-				return (ENO);
-			if (ST_NOK(st = ft_job_run(it, c, p)))
-				return (st);
-			p ? (void)(close(p[0]) & close(p[1])) : 0;
-			p = memcpy(d, c, 2 * sizeof(int));
+				return (ft_ex_throw(WUT));
+			if (ft_job_run(it, c, p))
+				return (WUT);
+			if (p && (close(p[0]) || close(p[1])))
+				return (ft_ex_throw(WUT));
+			p = ft_memcpy(d, c, 2 * sizeof(int));
 		}
-		else if (ST_NOK(st = ft_job_run(it, NULL, p)))
-			return (st);
-		else if (ST_OK(st))
-			p ? (void)(close(p[0]) & close(p[1])) : 0;
-	}
+		else if (ft_job_run(it, NULL, p))
+			return (WUT);
+		else if (p && (close(p[0]) || close(p[1])))
+			return (ft_ex_throw(WUT));
 	return (0);
 }

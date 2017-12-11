@@ -6,55 +6,28 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/06 11:46:29 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/11 13:18:24 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "msh.h"
 
-inline t_st		sh_initenv(t_vstr *self, char **env)
+inline void		sh_initenv(t_vstr *self, char **env)
 {
-	char	**it;
 	ssize_t	i;
 
 	i = -1;
 	if (env)
 		while (env[++i])
-		{
-			if (!(it = ft_vstr_push(self)))
-				return (ENO);
-			else if (!(*it = ft_strdup(env[i])))
-				return (ENO);
-		}
-	if (!ft_vstr_grow(self, 1))
-		return (ENO);
+			*ft_vstr_push(self) = ft_strdup(env[i]);
+	ft_vstr_grow(self, 1);
 	FT_INIT(ft_vstr_end(self), char *);
-	return (OK);
 }
 
-/*
-** todo: Remove, use ft_getenv
-*/
-
-inline char		**sh_getenv(t_vstr *self, char *var)
-{
-	char **it;
-
-	if (!self->len || !(it = ft_vstr_begin(self)))
-		return (NULL);
-	while (it && it != ft_vstr_end(self))
-		if (*it && ft_strbegw(var, *it) && (*it)[ft_strlen(var)] == '=')
-			return (it);
-		else
-			++it;
-	return (NULL);
-}
-
-inline t_st		sh_unsetenv(t_vstr *self, char *var, t_bool m)
+inline t_bool	sh_unsetenv(t_vstr *self, char *var, t_bool m)
 {
 	size_t	i;
 	char	**it;
-	t_bool	r;
 
 	if (!self->len)
 		return (NOK);
@@ -63,51 +36,57 @@ inline t_st		sh_unsetenv(t_vstr *self, char *var, t_bool m)
 		if ((it = ft_vstr_at(self, i)) && *it &&
 			ft_strbegw(var, *it) && (*it)[ft_strlen(var)] == '=')
 		{
-			if ((r = ft_vstr_remove(self, i, it)) && m)
+			if (ft_vstr_remove(self, i, it) && m)
 				free(*it);
-			return (r ? OK : ENO);
+			return (OK);
 		}
 		else
 			++i;
 	return (NOK);
 }
 
-inline t_st		sh_setenv(t_vstr *self, char *var, char *val)
+inline void		sh_setenv(t_vstr *self, char *var, char *val)
 {
 	char **it;
 
-	if ((it = sh_getenv(self, var)))
-		free(*it);
-	else if (!(it = ft_vstr_push(self)))
-		return (ENO);
-	if (!(*it = malloc((ft_strlen(var) + (val ? ft_strlen(val) : 0) + 2)
-		* sizeof(char))))
-		return (ENO);
+	if (!self->len || !(it = ft_vstr_begin(self)))
+		return ;
+	while (it && it != ft_vstr_end(self))
+		if (!*it || !ft_strbegw(var, *it) || (*it)[ft_strlen(var)] != '=')
+			++it;
+		else
+		{
+			free(*it);
+			break ;
+		}
+	it = ft_vstr_push(self);
+	*it = ft_malloc((ft_strlen(var) + (val ? ft_strlen(val) : 0) + 2) *
+		sizeof(char));
 	ft_strcpy(*it, var);
 	(!ft_strrchr(*it, '=') ? ft_strcat(*it, "=") : NULL);
 	(val ? ft_strcat(*it, val) : NULL);
-	if (!ft_vstr_grow(self, 1))
-		return (ENO);
+	ft_vstr_grow(self, 1);
 	FT_INIT(ft_vstr_end(self), char *);
-	return (OK);
 }
 
-inline t_st		sh_envadd(t_vstr *self, char *var, char *val)
+inline t_bool	sh_envadd(t_vstr *self, char *var, char *val)
 {
 	char **it;
 
-	if (sh_getenv(self, var))
-		return (OK);
-	else if (!(it = ft_vstr_push(self)))
-		return (ENO);
-	if (!(*it = malloc((ft_strlen(var) + (val ? ft_strlen(val) : 0) + 2)
-		* sizeof(char))))
-		return (ENO);
+	if (!self->len || !(it = ft_vstr_begin(self)))
+		return (NULL);
+	while (it && it != ft_vstr_end(self))
+		if (!*it || !ft_strbegw(var, *it) || (*it)[ft_strlen(var)] != '=')
+			++it;
+		else
+			return (NOK);
+	it = ft_vstr_push(self);
+	*it = ft_malloc((ft_strlen(var) + (val ? ft_strlen(val) : 0) + 2) *
+					sizeof(char));
 	ft_strcpy(*it, var);
 	(!ft_strrchr(*it, '=') ? ft_strcat(*it, "=") : NULL);
 	(val ? ft_strcat(*it, val) : NULL);
-	if (!ft_vstr_grow(self, 1))
-		return (ENO);
+	ft_vstr_grow(self, 1);
 	FT_INIT(ft_vstr_end(self), char *);
 	return (OK);
 }

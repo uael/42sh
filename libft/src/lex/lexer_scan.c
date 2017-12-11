@@ -26,23 +26,23 @@ static inline t_st	lexer_scan_one(t_lexer *self, char peek, t_src *src)
 
 	FT_INIT(&t, t_tok);
 	t.loc = src->cur;
-	if (!ft_vec_grow(&self->vals, 1))
-		return (ENO);
+	ft_vec_grow(&self->vals, 1);
 	val = ft_vec_end(&self->vals);
 	FT_INIT(val, t_tokv);
 	t.val = val;
 	rule = (t_lrule *)ft_vec_begin(&self->rules) - 1;
 	while (++rule < (t_lrule *)ft_vec_end(&self->rules))
-		if (ISE(st = (*rule)(&t, peek, src)))
+		if ((st = (*rule)(&t, peek, src)) < 0)
 			return (st);
-		else if (ST_OK(st))
+		else if (st && (st = ft_src_peek(src, &peek, 0)))
+			return (st);
+		else
 		{
 			if ((t.loc.len = (uint16_t)(src->cur.cur - t.loc.cur)) && t.val)
 				++self->vals.len;
-			return (ft_deq_pushc(&self->toks, &t) ? OK : ENO);
+			ft_deq_pushc(&self->toks, &t);
+			return (OK);
 		}
-		else if (ST_NOK(st = ft_src_peek(src, &peek, 0)))
-			return (st);
 	return (NOK);
 }
 

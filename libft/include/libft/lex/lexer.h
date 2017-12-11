@@ -26,10 +26,10 @@ typedef struct	s_lexer
 }				t_lexer;
 
 extern void		ft_lexer_dtor(t_lexer *self);
-extern t_st		ft_lexer_init_stream(t_lexer *self, t_istream *stream);
+extern void		ft_lexer_init_stream(t_lexer *self, t_istream *stream);
 extern t_st		ft_lexer_init_file(t_lexer *self, char const *filename);
-extern t_st		ft_lexer_init_str(t_lexer *self, char const *s);
-extern t_st		ft_lexer_init_nstr(t_lexer *self, char const *s, size_t n);
+extern void		ft_lexer_init_str(t_lexer *self, char const *s);
+extern void		ft_lexer_init_nstr(t_lexer *self, char const *s, size_t n);
 extern size_t	ft_lexer_clean(t_lexer *self);
 extern t_sz		ft_lexer_scan(t_lexer *self, size_t n);
 extern t_sz		ft_lexer_until(t_lexer *self, uint8_t id);

@@ -40,7 +40,7 @@ inline t_sz			ft_ofstream_write(t_ofstream *s, char const *sr, size_t len)
 		if (SZ_NOK(sz = ofs_inst_wr(s, &sr, &len)))
 			return (sz);
 		b = FT_PAGE_SIZE - s->len > len ? len : FT_PAGE_SIZE - s->len;
-		if (!s->buf && !(s->buf = malloc(FT_PAGE_SIZE * sizeof(char))))
+		if (!s->buf && !(s->buf = ft_malloc(FT_PAGE_SIZE * sizeof(char))))
 			return (ENO);
 		ft_memcpy(s->buf + (c = s->cur - s->beg), sr, (size_t)b * sizeof(char));
 		s->cur += b;
