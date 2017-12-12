@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:44:11 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/08 14:37:11 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/12 12:22:11 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ inline int		ft_trm_getch(t_trm *t)
 		if (!ft_du8_size(&t->in) &&
 			((r = (int)read(t->out.u.file.fd, &c, 2)) < 0 ||
 			(r > 0 && !ft_du8_pushnc(&t->in, c, (size_t)r))))
-			return (ENO);
+			return (THROW(WUT));
 		else if (ft_du8_popn(&t->in, 2, c) <= 0)
 			break ;
 		else if ((n += r) == 1 && TRK_ONEK(c[0]))
@@ -42,7 +42,7 @@ inline int		ft_trm_getch(t_trm *t)
 	return (0);
 }
 
-inline t_sz		ft_trm_puts(t_trm *self, char const *s)
+inline ssize_t	ft_trm_puts(t_trm *self, char const *s)
 {
 	return (ft_ostream_puts(&self->out, s));
 }

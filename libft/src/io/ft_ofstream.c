@@ -12,23 +12,23 @@
 
 #include "libft/io/ofstream.h"
 
-inline t_st	ft_ofstream_open(t_ofstream *self, char const *filename)
+inline int	ft_ofstream_open(t_ofstream *self, char const *filename)
 {
 	FT_INIT(self, t_ofstream);
 	if ((self->fd = open(filename, O_APPEND | O_CREAT | O_RDWR,
 		S_IRUSR | S_IWUSR)) < 0)
-		return (ENO);
+		return (THROW(WUT));
 	self->filename = filename;
-	return (OK);
+	return (YEP);
 }
 
-inline t_st	ft_ofstream_close(t_ofstream *self)
+inline int	ft_ofstream_close(t_ofstream *self)
 {
 	if (self->filename && self->fd > 1)
 	{
 		ft_ofstream_flush(self);
 		if (close(self->fd) < 0)
-			return (ENO);
+			return (THROW(WUT));
 		if (self->buf)
 		{
 			free(self->buf);
@@ -36,5 +36,5 @@ inline t_st	ft_ofstream_close(t_ofstream *self)
 		}
 		self->filename = NULL;
 	}
-	return (OK);
+	return (YEP);
 }

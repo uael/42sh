@@ -13,6 +13,7 @@
 #ifndef LIBFT_DS_DEQ_H
 # define LIBFT_DS_DEQ_H
 
+# include "../ex.h"
 # include "../mem.h"
 # include "../str.h"
 # include "../math.h"

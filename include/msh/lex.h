@@ -16,7 +16,7 @@
 # include "sh.h"
 # include "toks.h"
 
-extern t_st		sh_lex(t_lexer *self);
+extern void		sh_lex(t_lexer *self);
 extern t_tok	*sh_peek(t_sh *self);
 extern t_tok	*sh_next(t_sh *self, t_tok **next);
 extern void		sh_consume_line(t_sh *self);

@@ -15,6 +15,7 @@
 
 # include "libft/cty.h"
 # include "libft/ds.h"
+# include "libft/ex.h"
 # include "libft/exe.h"
 # include "libft/fs.h"
 # include "libft/int.h"

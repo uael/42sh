@@ -1,24 +1,47 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strdup.c                                        :+:      :+:    :+:   */
+/*   ft_alloc.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/07 09:53:02 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/07 09:53:34 by alucas-          ###   ########.fr       */
+/*   Created: 2017/11/07 09:44:14 by alucas-           #+#    #+#             */
+/*   Updated: 2017/12/12 11:32:19 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "libft/mem.h"
+
+#include "libft/ex.h"
 #include "libft/str.h"
 
-inline char	*ft_strdup(char const *src)
+inline void	*ft_malloc(size_t sz)
 {
-	char	*dup;
-	size_t	sz;
+	void *p;
 
-	sz = ft_strlen(src);
-	if (!(dup = malloc((sz + 1) * sizeof(char))))
+	if (!(p = malloc(sz)))
+		THROW(WUT);
+	return (p);
+}
+
+inline void	*ft_calloc(size_t sz)
+{
+	void *ptr;
+
+	if ((ptr = ft_malloc(sz)))
+		ft_memset(ptr, 0, sz);
+	return (ptr);
+}
+
+inline void	*ft_realloc(void *ptr, size_t psz, size_t sz)
+{
+	void *p;
+
+	if (!(p = ft_malloc(sz)))
 		return (NULL);
-	return (ft_strcpy(dup, src));
+	if (!ptr)
+		return (p);
+	ft_memcpy(p, ptr, psz);
+	free(ptr);
+	return (p);
 }

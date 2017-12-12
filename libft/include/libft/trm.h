@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/07 11:32:44 by null             ###   ########.fr       */
+/*   Updated: 2017/12/12 12:16:05 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,12 +55,12 @@ typedef struct	s_trm
 	t_bool		on;
 }				t_trm;
 
-extern t_st		ft_trm_ctor(t_trm *self);
+extern int		ft_trm_ctor(t_trm *self);
 extern void		ft_trm_dtor(t_trm *self);
 extern void		ft_trm_refresh(t_trm *self);
 extern void		ft_trm_clear(t_trm *self);
 extern int		ft_trm_getch(t_trm *self);
-extern t_sz		ft_trm_puts(t_trm *self, char const *s);
+extern ssize_t	ft_trm_puts(t_trm *self, char const *s);
 extern ssize_t	ft_trm_putr(t_trm *self, char c, size_t n);
 extern void		ft_trm_on(t_trm *self);
 extern void		ft_trm_off(t_trm *self);

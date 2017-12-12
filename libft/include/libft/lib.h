@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/09 07:04:45 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/11 15:54:12 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,23 +22,11 @@
 
 # define FT_INIT(S, TY) ft_memset(S, 0, sizeof(TY))
 
-typedef int		t_st;
-typedef ssize_t	t_sz;
-
-# define OK (0)
-# define NOK (1)
-# define ERR(ERRNO) (-(ERRNO))
-# define ENO ERR(errno)
-# define ST_HDL(ST, OTHERWISE) ((ST) < 0 ? (ST) : (OTHERWISE))
-# define ST_TOENO(ST) ERR(ST)
-# define ISENO(ST, ERRNO) (ST_TOENO(ST) == (ERRNO))
-# define ISE(S) ((S) < OK)
-# define SZ_NOK(SZ) ((SZ) <= OK)
-# define SZ_OK(SZ) ((SZ) > OK)
-# define ST_NOK(ST) ((ST) != OK)
-# define ST_OK(ST) ((ST) == OK)
-# define SZ_TOST(SZ) (ISE(SZ) ? (t_st)(SZ) : (NOK))
-# define ST_TOSZ(ST) (ISE(ST) ? (t_sz)(ST) : (OK))
+# define YEP (0)
+# define NOP (1)
+# define WUT (-1)
+# define TRUE (1)
+# define FALSE (0)
 
 # ifndef ELAST
 #  define ELAST 200
@@ -46,6 +34,7 @@ typedef ssize_t	t_sz;
 
 # define ENIMPL (ELAST + 1)
 # define EBOUND (ENIMPL + 1)
+# define FT_ELAST (EBOUND)
 
 typedef void	(*t_dtor)(void *i, ...);
 typedef int		(*t_err_hdl)(void *self, int code);
@@ -66,7 +55,6 @@ extern void		ft_clean(void *ptr);
 
 extern char		*ft_join(char const *s1, char const *s2, char n);
 extern char		*ft_getenv(char **env, char *var);
-extern t_st		ft_setenv(char **env, char *var, char *val);
 
 # define GC(T) __attribute__((__cleanup__(ft_clean))) T
 

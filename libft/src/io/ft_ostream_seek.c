@@ -18,25 +18,25 @@ inline void		ft_ostream_flush(t_ostream *self)
 		return (ft_ofstream_flush(&self->u.file));
 }
 
-inline t_st		ft_ostream_rewind(t_ostream *self, size_t n)
+inline int		ft_ostream_rewind(t_ostream *self, size_t n)
 {
 	if (self->kind == OSTREAM_FILE)
 		return (ft_ofstream_rewind(&self->u.file, n));
-	return (ft_omstream_rewind(&self->u.mem, n));
+	return (ft_omstream_rewind(&self->u.mem, n) ? YEP : NOP);
 }
 
-inline t_st		ft_ostream_forward(t_ostream *self, size_t n)
+inline int		ft_ostream_forward(t_ostream *self, size_t n)
 {
 	if (self->kind == OSTREAM_FILE)
 		return (ft_ofstream_forward(&self->u.file, n));
-	return (ft_omstream_forward(&self->u.mem, n));
+	return (ft_omstream_forward(&self->u.mem, n) ? YEP : NOP);
 }
 
-inline t_st		ft_ostream_seek(t_ostream *self, size_t off)
+inline int		ft_ostream_seek(t_ostream *self, size_t off)
 {
 	if (self->kind == OSTREAM_FILE)
 		return (ft_ofstream_seek(&self->u.file, off));
-	return (ft_omstream_seek(&self->u.mem, off));
+	return (ft_omstream_seek(&self->u.mem, off) ? YEP : NOP);
 }
 
 inline size_t	ft_ostream_tell(t_ostream const *self)

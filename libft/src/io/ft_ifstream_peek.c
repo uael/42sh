@@ -11,26 +11,24 @@
 /* ************************************************************************** */
 
 #include "libft/io/ifstream.h"
+#include "libft/ex.h"
 
-static inline t_st	ifs_alloc(t_ifstream *self)
+static inline void		ifs_alloc(t_ifstream *self)
 {
 	size_t	cap;
 	void	*buf;
 
 	cap = self->cap + FT_PAGE_SIZE + 1;
-	if (!(buf = ft_realloc(self->buf, self->len * sizeof(char),
-		cap * sizeof(char))))
-		return (ENO);
+	buf = ft_realloc(self->buf, self->len * sizeof(char), cap * sizeof(char));
 	self->buf = buf;
 	self->cap = cap;
-	return (OK);
 }
 
-static inline t_sz	ifs_bufferize(t_ifstream *self, size_t len)
+static inline ssize_t	ifs_bufferize(t_ifstream *self, size_t len)
 {
 	size_t	cur;
 	size_t	cnt;
-	t_sz	sz;
+	ssize_t	sz;
 
 	cur = self->cur - self->beg;
 	if (self->len - cur >= len)
@@ -40,13 +38,12 @@ static inline t_sz	ifs_bufferize(t_ifstream *self, size_t len)
 		cnt = 0;
 		while (self->len - cur < len)
 		{
-			if (self->cap - self->len < FT_PAGE_SIZE &&
-				ST_NOK(sz = ifs_alloc(self)))
-				return (ST_TOSZ(sz));
+			if (self->cap - self->len < FT_PAGE_SIZE)
+				ifs_alloc(self);
 			if ((sz = read(self->fd, self->buf + self->len, FT_PAGE_SIZE)) == 0)
 				break ;
 			if (sz < 0)
-				return (ENO);
+				return (THROW(WUT));
 			cnt += sz;
 			self->len += sz;
 			self->end += sz;
@@ -55,32 +52,32 @@ static inline t_sz	ifs_bufferize(t_ifstream *self, size_t len)
 	}
 }
 
-inline char			ft_ifstream_getc(t_ifstream *self)
+inline char				ft_ifstream_getc(t_ifstream *self)
 {
 	char	c;
-	t_sz	sz;
+	ssize_t	sz;
 
 	if ((sz = ft_ifstream_read(self, &c, 1)) == 1)
 		return (c);
-	return ((char)SZ_TOST(sz));
+	return (sz < 0 ? (char)sz : (char)0);
 }
 
-inline t_sz			ft_ifstream_get(t_ifstream *self, char *buf, size_t n)
+inline ssize_t			ft_ifstream_get(t_ifstream *self, char *buf, size_t n)
 {
-	t_sz sz;
+	ssize_t sz;
 
-	if (SZ_OK(sz = ifs_bufferize(self, n)))
+	if ((sz = ifs_bufferize(self, n)) > 0)
 		ft_memcpy(buf, self->buf + self->cur - self->beg, n);
 	return (sz);
 }
 
-inline t_st			ft_ifstream_peek(t_ifstream *self, char *c, size_t n)
+inline int				ft_ifstream_peek(t_ifstream *self, char *c, size_t n)
 {
-	t_sz sz;
+	ssize_t sz;
 
-	if ((sz = ifs_bufferize(self, n + 1)) < (t_sz)n + 1)
-		return (SZ_TOST(sz));
+	if ((sz = ifs_bufferize(self, n + 1)) < (ssize_t)n + 1)
+		return (sz < 0 ? (int)sz : 0);
 	if (c)
 		*c = self->buf[self->cur - self->beg + n];
-	return (OK);
+	return (YEP);
 }

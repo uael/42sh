@@ -1,0 +1,40 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ex/ft_ex_throw.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/12/11 12:27:49 by alucas-           #+#    #+#             */
+/*   Updated: 2017/12/12 12:38:54 by alucas-          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "libft/ex.h"
+
+#include "libft/io.h"
+#include "libft/fs.h"
+
+int		ft_ex_throw(int rcode, char const *fn, int line)
+{
+	t_ex_hdl *hdl;
+
+	if (fn)
+		ft_putf(2, "In function: "COLOR_BOLD"'%s:%d':\n"COLOR_RESET, fn, line);
+	if ((hdl = ft_ex_get(errno)))
+		return (hdl->cb(rcode, hdl->arg));
+	if (errno == ENOMEM)
+		exit(rcode);
+	if (errno == ENIMPL)
+	{
+		ft_putf(2, COLOR_RED COLOR_BOLD"error: "COLOR_RESET"%e\n", errno);
+		exit(rcode);
+	}
+	return (rcode);
+}
+
+int		ft_eno_throw(int rcode, int eno, char const *msg, int line)
+{
+	errno = eno;
+	return (ft_ex_throw(rcode, msg, line));
+}

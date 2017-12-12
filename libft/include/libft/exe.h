@@ -46,7 +46,7 @@ typedef struct	s_job
 
 typedef t_vec	t_worker;
 
-extern t_st		ft_job_exe(t_job *self, char *path, char **av, char **env);
+extern int		ft_job_exe(t_job *self, char *path, char **av, char **env);
 extern void		ft_job_fn(t_job *self, t_job_fn fn, char **av, char **env);
 extern void		ft_job_output(t_job *self, char *str);
 extern void		ft_job_cb(t_job *self, t_job_cb cb);
@@ -54,13 +54,13 @@ extern void		ft_job_data(t_job *self, void *data);
 extern void		ft_job_pipe(t_job *self);
 extern void		ft_job_free_data(t_job *self);
 extern void		ft_job_dtor(t_job *self);
-extern t_st		ft_job_run(t_job *self, int *wr, int *rd);
+extern int		ft_job_run(t_job *self, int *wr, int *rd);
 
 extern void		ft_worker_ctor(t_worker *jobs);
 extern void		ft_worker_dtor(t_worker *self);
 extern t_job	*ft_worker_push(t_worker *self, t_job *job);
-extern	t_st	ft_worker_join(t_worker *self);
-extern t_st		ft_worker_run(t_worker *self);
+extern int		ft_worker_join(t_worker *self);
+extern int		ft_worker_run(t_worker *self);
 extern void		ft_worker_clear(t_worker *self);
 
 #endif

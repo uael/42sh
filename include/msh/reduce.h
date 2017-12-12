@@ -18,7 +18,7 @@
 # include "bi.h"
 # include "lex.h"
 
-extern t_st	sh_reduce(t_sh *self);
-extern t_st	sh_reduce_heredoc(t_sh *self, t_tok *tok);
+extern int	sh_reduce(t_sh *self);
+extern int	sh_reduce_heredoc(t_sh *self, t_tok *tok);
 
 #endif

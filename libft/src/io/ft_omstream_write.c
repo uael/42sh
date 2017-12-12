@@ -6,29 +6,28 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:33 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/23 07:21:44 by null             ###   ########.fr       */
+/*   Updated: 2017/12/12 11:21:55 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft/io/omstream.h"
 
-inline t_sz	ft_omstream_write(t_omstream *self, char const *sr, size_t len)
+inline size_t	ft_omstream_write(t_omstream *self, char const *sr, size_t len)
 {
-	if (!ft_du8_grow(self, len))
-		return (ENO);
+	ft_du8_grow(self, len);
 	ft_memcpy(self->buf + self->cur, sr, len);
 	if ((self->cur += len) > self->len)
 	{
 		self->len = self->cur;
 		self->buf[self->len] = '\0';
 	}
-	return (OK);
+	return (len);
 }
 
-t_sz		ft_omstream_writef(t_omstream *self, char const *fmt, ...)
+size_t			ft_omstream_writef(t_omstream *self, char const *fmt, ...)
 {
 	va_list	ap;
-	t_sz	sz;
+	size_t	sz;
 
 	va_start(ap, fmt);
 	sz = ft_omstream_vwritef(self, fmt, ap);
@@ -36,16 +35,16 @@ t_sz		ft_omstream_writef(t_omstream *self, char const *fmt, ...)
 	return (sz);
 }
 
-inline t_sz	ft_omstream_vwritef(t_omstream *self, char const *fmt, va_list ap)
+inline size_t	ft_omstream_vwritef(t_omstream *self, char const *f, va_list ap)
 {
 	char	*sp;
-	ssize_t	sz;
+	size_t	sz;
 	char	buf[20];
 
 	sz = 0;
-	while ((sp = ft_strchr(fmt, '%')) &&
-		(sz += ft_omstream_write(self, fmt, sp - fmt)) >= 0)
-		if (*((fmt = ++sp + 1) - 1) == 'd')
+	while ((sp = ft_strchr(f, '%')) &&
+		(sz += ft_omstream_write(self, f, sp - f)))
+		if (*((f = ++sp + 1) - 1) == 'd')
 			sz += ft_omstream_write(self, buf,
 				ft_intstr(buf, va_arg(ap, int64_t), 10));
 		else if (*sp == 'u')
@@ -60,5 +59,5 @@ inline t_sz	ft_omstream_vwritef(t_omstream *self, char const *fmt, va_list ap)
 				ft_floatstr(buf, (float)va_arg(ap, double), 10, 10));
 		else if (*sp == 'e')
 			sz += ft_omstream_puts(self, ft_strerr(va_arg(ap, int)));
-	return (sz + ft_omstream_write(self, fmt, ft_strlen(fmt)));
+	return (sz + ft_omstream_write(self, f, ft_strlen(f)));
 }

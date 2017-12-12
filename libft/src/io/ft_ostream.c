@@ -21,7 +21,7 @@ static t_ostream	g_cout_pvt =
 
 t_ostream			*g_cout = &g_cout_pvt;
 
-inline t_st			ft_ostream_open(t_ostream *self, char const *filename)
+inline int			ft_ostream_open(t_ostream *self, char const *filename)
 {
 	self->kind = OSTREAM_FILE;
 	return (ft_ofstream_open(&self->u.file, filename));
@@ -33,10 +33,10 @@ inline void			ft_ostream_mopen(t_ostream *self)
 	return (ft_omstream_open(&self->u.mem));
 }
 
-inline t_st			ft_ostream_close(t_ostream *self)
+inline int			ft_ostream_close(t_ostream *self)
 {
 	if (self->kind == OSTREAM_FILE)
 		return (ft_ofstream_close(&self->u.file));
 	ft_omstream_close(&self->u.mem);
-	return (OK);
+	return (YEP);
 }

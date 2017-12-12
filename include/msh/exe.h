@@ -15,7 +15,6 @@
 
 # include "sh.h"
 
-extern t_st		sh_exe_av(t_sh *self, t_vstr *av, char *exe);
-extern t_st		sh_job(t_job *self, char *p, t_vstr *av, t_vstr *env);
+extern void		sh_exe_av(t_sh *self, t_vstr *av, char *exe);
 
 #endif

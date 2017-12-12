@@ -6,13 +6,13 @@
 #    By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/07 09:52:36 by alucas-           #+#    #+#              #
-#    Updated: 2017/12/10 21:02:00 by alucas-          ###   ########.fr        #
+#    Updated: 2017/12/11 12:29:40 by alucas-          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = libft.a
 CC = gcc
-CFLAGS = -Werror -Wextra -Wall -g3
+CFLAGS = -Werror -Wextra -Wall -g3 -DDEBUG
 
 SRC_PATH = ./src/
 OBJ_PATH = ./obj/
@@ -24,16 +24,8 @@ LNK_PATH = ./ $(3TH_PATH)
 OBJ_NAME = $(SRC_NAME:.c=.o)
 3TH_NAME = m ncurses
 SRC_NAME = \
-	cty/ft_isalnum.c \
-	cty/ft_isalpha.c \
-	cty/ft_isascii.c \
-	cty/ft_isdigit.c \
-	cty/ft_islower.c \
-	cty/ft_isprint.c \
-	cty/ft_isspace.c \
-	cty/ft_isupper.c \
-	cty/ft_tolower.c \
-	cty/ft_toupper.c \
+	cty/ft_cty.c \
+	cty/ft_cty_2.c \
 	ds/ft_dstr_append.c \
 	ds/ft_dstr_at.c \
 	ds/ft_dstr_begin.c \
@@ -185,6 +177,8 @@ SRC_NAME = \
 	ds/ft_node_add.c \
 	ds/ft_node_next.c \
 	ds/ft_node_prev.c \
+	ex/ft_ex.c \
+	ex/ft_ex_throw.c \
 	exe/ft_job.c \
 	exe/ft_job_ctor.c \
 	exe/ft_job_ctor_exe.c \
@@ -261,41 +255,17 @@ SRC_NAME = \
 	math/ft_umin.c \
 	math/ft_v3.c \
 	math/ft_v3_nor.c \
-	mem/ft_calloc.c \
-	mem/ft_malloc.c \
-	mem/ft_realloc.c \
+	mem/ft_alloc.c \
 	mlx/ft_img.c \
 	mlx/ft_img_wli.c \
 	mlx/ft_mlx.c \
 	mlx/ft_win.c \
-	str/ft_bzero.c \
-	str/ft_memccpy.c \
-	str/ft_memchr.c \
-	str/ft_memcmp.c \
-	str/ft_memcpy.c \
-	str/ft_memmove.c \
-	str/ft_memrcpy.c \
-	str/ft_memset.c \
-	str/ft_strbegw.c \
-	str/ft_strcat.c \
-	str/ft_strchr.c \
-	str/ft_strclr.c \
-	str/ft_strcmp.c \
-	str/ft_strcpy.c \
-	str/ft_strdup.c \
-	str/ft_strlcat.c \
-	str/ft_strlcpy.c \
-	str/ft_strlen.c \
-	str/ft_strnbr.c \
-	str/ft_strncat.c \
-	str/ft_strncmp.c \
-	str/ft_strncpy.c \
-	str/ft_strnlen.c \
-	str/ft_strnstr.c \
-	str/ft_strrchr.c \
-	str/ft_strsplit.c \
-	str/ft_strstr.c \
-	str/ft_strword.c \
+	str/ft_mem.c \
+	str/ft_mem_2.c \
+	str/ft_str.c \
+	str/ft_str_2.c \
+	str/ft_str_3.c \
+	str/ft_str_4.c \
 	trm/ft_caps.c \
 	trm/ft_trm.c \
 	trm/ft_trm_on.c \

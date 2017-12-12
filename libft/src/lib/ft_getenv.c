@@ -13,7 +13,7 @@
 #include "libft/lib.h"
 #include "libft/str.h"
 
-inline char	*ft_getenv(char **env, char *var)
+inline char		*ft_getenv(char **env, char *var)
 {
 	char *val;
 
@@ -22,16 +22,4 @@ inline char	*ft_getenv(char **env, char *var)
 	if (!*env || !(val = ft_strchr(*env, '=')))
 		return (NULL);
 	return (val + 1);
-}
-
-inline t_st	ft_setenv(char **env, char *var, char *val)
-{
-	while (*env && !ft_strbegw(var, *env))
-		++env;
-	if (!*env)
-		return (NOK);
-	free(*env);
-	if (!(*env = ft_join(var, val, '=')))
-		return (ENO);
-	return (0);
 }

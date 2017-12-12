@@ -15,26 +15,26 @@
 
 #include "msh.h"
 
-inline t_st		sh_exe_av(t_sh *self, t_vstr *av, char *exe)
+inline void		sh_exe_av(t_sh *self, t_vstr *av, char *exe)
 {
 	t_tok *end;
 
 	if (av)
+	{
 		ft_vstr_ctor(av);
-	if (av && !ft_vstr_pushc(av, exe))
-		return (ENO);
+		ft_vstr_pushc(av, exe);
+	}
 	while ((end = sh_peek(self)) && end->id)
 	{
-		if (end->id == SH_TOK_WORD && av &&
-			!ft_vstr_pushc(av, ft_tok_ident(end)->buf))
-			return (ENO);
+		if (end->id == SH_TOK_WORD && av)
+			ft_vstr_pushc(av, ft_tok_ident(end)->buf);
 		else if (end->id != SH_TOK_WORD && !ft_strchr(" \t", end->id))
 			break ;
 		sh_next(self, NULL);
 	}
-	if (av && !ft_vstr_grow(av, 1))
-		return (ENO);
 	if (av)
+	{
+		ft_vstr_grow(av, 1);
 		FT_INIT(ft_vstr_end(av), char *);
-	return (OK);
+	}
 }

@@ -21,19 +21,19 @@
 
 typedef enum	e_shs
 {
-	SH_OK = OK,
-	SH_NOK = NOK,
-	SH_NEXT = NOK + 1,
-	SH_BREAK = NOK + 2,
-	SH_BREAK_NOK = NOK + 3
+	SH_OK = YEP,
+	SH_NOK = NOP,
+	SH_NEXT = NOP + 1,
+	SH_BREAK,
+	SH_BREAK_NOK
 }				t_shs;
 
-extern t_st		sh_eval_sep(t_sh *self, t_job **pjob, t_tok *tok);
-extern t_st		sh_eval_bi(t_sh *self, t_job **pjob, t_tok *tok);
-extern t_st		sh_eval_exe(t_sh *self, t_job **pjob, t_tok *tok);
-extern t_st		sh_eval_pipe(t_sh *self, t_job **job, t_tok *tok);
-extern t_st		sh_eval_rin(t_sh *self, t_job **job, t_tok *tok);
-extern t_st		sh_eval_rout(t_sh *self, t_job **pjob, t_tok *tok);
-extern t_st		sh_eval_heredoc(t_sh *self, t_job **pjob, t_tok *tok);
+extern int		sh_eval_sep(t_sh *self, t_job **pjob, t_tok *tok);
+extern int		sh_eval_bi(t_sh *self, t_job **pjob, t_tok *tok);
+extern int		sh_eval_exe(t_sh *self, t_job **pjob, t_tok *tok);
+extern int		sh_eval_pipe(t_sh *self, t_job **job, t_tok *tok);
+extern int		sh_eval_rin(t_sh *self, t_job **job, t_tok *tok);
+extern int		sh_eval_rout(t_sh *self, t_job **pjob, t_tok *tok);
+extern int		sh_eval_heredoc(t_sh *self, t_job **pjob, t_tok *tok);
 
 #endif

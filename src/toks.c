@@ -17,10 +17,9 @@
 #define TOK(T) SH_TOK_ ## T
 #define MATCH(tok, src, n, id) ft_lexer_match(tok, src, n, id)
 
-static inline t_st		sh_pp(char *peek, t_src *src, char *t)
+static inline int		sh_pp(char *peek, t_src *src, char *t)
 {
-	t_st	st;
-	t_sz	sz;
+	int		st;
 
 	if ((*peek == '\'' || *peek == '\"') && (!*t || *t == *peek))
 	{
@@ -30,19 +29,19 @@ static inline t_st		sh_pp(char *peek, t_src *src, char *t)
 		return (sh_pp(peek, src, t));
 	}
 	if (!*t && *peek != '\\' && ft_strchr("|&;<>()$`\\\"' \n\t", *peek))
-		return (NOK);
+		return (NOP);
 	else if (*peek != '\\')
-		return (OK);
+		return (YEP);
 	if ((st = ft_src_peek(src, peek, 1)) != 0)
 		return (st);
 	if (*t && !ft_strchr(*t == '\"' ? "$`\"\\\n" : "'", *peek))
-		return (NOK);
+		return (NOP);
 	if (!*t && !ft_strchr("|&;<>()$`\\\"' \n\t", *peek))
-		return (NOK);
-	return ((sz = ft_src_next(src, NULL, 1)) != 1 ? SZ_TOST(sz) : OK);
+		return (NOP);
+	return (ft_src_next(src, NULL, 1) < 0 ? WUT : YEP);
 }
 
-inline t_st				sh_tok_syntax(t_tok *tok, char peek, t_src *src)
+inline int				sh_tok_syntax(t_tok *tok, char peek, t_src *src)
 {
 	char	b[3];
 	char	*c;
@@ -50,7 +49,7 @@ inline t_st				sh_tok_syntax(t_tok *tok, char peek, t_src *src)
 
 	n = 0;
 	if ((b[n++] = peek) != '\n')
-		while (n < 3 && ST_OK(ft_src_peek(src, b + n, (size_t)n)))
+		while (n < 3 && ft_src_peek(src, b + n, (size_t)n) == YEP)
 			if (b[n++] == '\n')
 				break ;
 	if (n == 3 && b[0] == '>' && b[1] == '>' && b[2] == '-')
@@ -67,7 +66,7 @@ inline t_st				sh_tok_syntax(t_tok *tok, char peek, t_src *src)
 		return (MATCH(tok, src, 2, b[0] == '<' ? TOK(LAMP) : TOK(LAND)));
 	if (n >= 1 && (c = ft_strchr("=\t\n !&()-;<=>[]{|}", peek)))
 		return (MATCH(tok, src, 1, (uint8_t)*c));
-	return (NOK);
+	return (NOP);
 }
 
 static inline uint8_t	sh_keyword(char const *s, size_t l)
@@ -99,28 +98,29 @@ static inline uint8_t	sh_keyword(char const *s, size_t l)
 	return ((uint8_t)((l == 2 && M(0, 'f') && M(1, 'i')) ? SH_TOK_FI : W));
 }
 
-inline t_st				sh_tok_word(t_tok *tok, char peek, t_src *src)
+inline int				sh_tok_word(t_tok *tok, char peek, t_src *src)
 {
-	t_dstr		*dstr;
-	t_st		st;
-	char		t;
+	t_dstr	*dstr;
+	int		st;
+	char	t;
 
 	t = '\0';
 	dstr = &tok->val->val.ident;
 	if (!dstr->buf)
 		ft_dstr_ctor(dstr);
 	while (peek && (st = sh_pp(&peek, src, &t)) == 0)
-		if (!ft_dstr_pushc(dstr, peek))
-			return (ft_dtor(ENO, (t_dtor)ft_dstr_dtor, dstr, NULL));
-		else if (ST_NOK(st = ft_src_getc(src, NULL, &peek)))
+	{
+		ft_dstr_pushc(dstr, peek);
+		if ((st = ft_src_getc(src, NULL, &peek)))
 			return (st);
-	if (ISE(st) || dstr->len == 0)
-		return (ft_dtor(ISE(st) ? st : NOK, (t_dtor)ft_dstr_dtor, dstr, NULL));
+	}
+	if (st < 0 || dstr->len == 0)
+		return (ft_dtor(st < 0 ? st : NOP, (t_dtor)ft_dstr_dtor, dstr, NULL));
 	if ((tok->id = sh_keyword(dstr->buf, dstr->len)) == W)
 		tok->val->kind = TOKV_IDENT;
 	else
 		ft_dstr_dtor(dstr, (void *)(tok->val = NULL));
-	return (OK);
+	return (YEP);
 }
 
 inline char 			*sh_tok_str(t_tok *tok)

@@ -46,7 +46,6 @@ extern char		*ft_strncpy(char *dest, char const *src, size_t n);
 extern size_t	ft_strnlen(char const *str, size_t size);
 extern char		*ft_strnstr(char const *str, char const *f, size_t l);
 extern char		*ft_strrchr(char const *s, int c);
-extern char		**ft_strsplit(char const *s, char c);
 extern char		*ft_strstr(char const *haystack, char const *needle);
 extern size_t	ft_strword(char const *s, char c, char e);
 

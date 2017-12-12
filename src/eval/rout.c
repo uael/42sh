@@ -12,7 +12,7 @@
 
 #include "msh/eval.h"
 
-inline t_st	sh_eval_rout(t_sh *self, t_job **job, t_tok *tok)
+inline int	sh_eval_rout(t_sh *self, t_job **job, t_tok *tok)
 {
 	if (tok->id != SH_TOK_ROUT)
 		return (SH_NEXT);
@@ -20,7 +20,7 @@ inline t_st	sh_eval_rout(t_sh *self, t_job **job, t_tok *tok)
 		return (ft_retf(SH_BREAK_NOK, N_SH"Unexpected token '%c'\n", tok->id));
 	if (!(tok = sh_skip(self, "\t ")) || tok->id != SH_TOK_WORD)
 		return (tok ? ft_retf(SH_BREAK_NOK, N_SH"Unexpected token '%c'\n",
-			tok->id) : OK);
+			tok->id) : (int)SH_OK);
 	(*job)->out = ft_tok_ident(tok)->buf;
 	sh_next(self, NULL);
 	return (SH_OK);
