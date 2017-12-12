@@ -20,7 +20,7 @@ static inline int	ofs_inst_wr(t_ofstream *s, char const **sr, size_t *len)
 		while (*len >= FT_PAGE_SIZE)
 		{
 			if ((sz = write(s->fd, *sr, FT_PAGE_SIZE)) < 0)
-				return (ft_ex_throw(WUT));
+				return (THROW(WUT));
 			*len -= sz;
 			*sr += sz;
 		}

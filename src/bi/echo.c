@@ -19,7 +19,7 @@ inline int	sh_bi_echo(t_sh *sh, int ac, char **av, t_job *out)
 	(void)sh;
 	(void)out;
 	if (ac < 2)
-		return (sh_bi_retf(sh, OK, "\n"));
+		return (sh_bi_retf(sh, YEP, "\n"));
 	i = 0;
 	while (++i < ac)
 	{
@@ -28,5 +28,5 @@ inline int	sh_bi_echo(t_sh *sh, int ac, char **av, t_job *out)
 			ft_omstream_putc(&sh->bi_out, ' ');
 	}
 	ft_omstream_putc(&sh->bi_out, '\n');
-	return (OK);
+	return (YEP);
 }

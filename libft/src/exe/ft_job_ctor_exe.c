@@ -54,7 +54,7 @@ inline int		ft_job_exe(t_job *self, char *path, char **av, char **env)
 	if (!exe_lookup(env, av[0], path, buf))
 		return (NOP);
 	if (access(buf, R_OK) != 0 || access(buf, X_OK) != 0)
-		return (ft_ex_throw(WUT));
+		return (THROW(WUT));
 	av[0] = ft_strdup(buf);
 	FT_INIT(self, t_job);
 	self->kind = JOB_EXE;

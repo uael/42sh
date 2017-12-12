@@ -21,7 +21,7 @@ inline t_bool	ft_imstream_rewind(t_imstream *self, size_t n)
 {
 	(void)self;
 	(void)n;
-	ft_eno_throw(WUT, ENIMPL);
+	ENO_THROW(WUT, ENIMPL);
 	return (FALSE);
 }
 
@@ -29,7 +29,7 @@ inline t_bool	ft_imstream_forward(t_imstream *self, size_t n)
 {
 	(void)self;
 	(void)n;
-	ft_eno_throw(WUT, ENIMPL);
+	ENO_THROW(WUT, ENIMPL);
 	return (FALSE);
 }
 

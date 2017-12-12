@@ -10,8 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <sys/ioctl.h>
-
 #include "libft/trm.h"
 
 inline void	ft_trm_on(t_trm *self)

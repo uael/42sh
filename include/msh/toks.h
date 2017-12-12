@@ -63,8 +63,8 @@ enum		e_sh_tok
 	SH_TOK_RCURLY = '}',
 };
 
-extern t_st		sh_tok_word(t_tok *tok, char peek, t_src *src);
-extern t_st		sh_tok_syntax(t_tok *tok, char peek, t_src *src);
+extern int		sh_tok_word(t_tok *tok, char peek, t_src *src);
+extern int		sh_tok_syntax(t_tok *tok, char peek, t_src *src);
 extern char 	*sh_tok_str(t_tok *tok);
 
 #endif

@@ -30,10 +30,10 @@ typedef struct	s_sh
 }				t_sh;
 
 extern void		sh_init_stream(t_sh *self, char **env, t_istream *stream);
-extern t_st		sh_init_file(t_sh *self, char **env, char const *filename);
+extern int		sh_init_file(t_sh *self, char **env, char const *filename);
 extern void		sh_dtor(t_sh *self);
-extern t_st		sh_prompt(t_sh *self, char *prompt);
+extern void		sh_prompt(t_sh *self, char *prompt);
 extern void		sh_clean(t_sh *self);
-extern t_st		sh_eval(t_sh *self);
+extern int		sh_eval(t_sh *self);
 
 #endif

@@ -15,7 +15,7 @@
 #define M_NREQ "Numeric argument required"
 #define N_EXIT COLOR_RED COLOR_BOLD "exit: " COLOR_RESET
 
-inline t_st	sh_bi_exit(t_sh *sh, int ac, char **av, t_job *out)
+inline int	sh_bi_exit(t_sh *sh, int ac, char **av, t_job *out)
 {
 	size_t	i;
 	size_t	j;
@@ -23,16 +23,16 @@ inline t_st	sh_bi_exit(t_sh *sh, int ac, char **av, t_job *out)
 
 	(void)out;
 	if (ac > 2)
-		return (sh_bi_retf(sh, NOK, N_EXIT"%e\n", E2BIG));
+		return (sh_bi_retf(sh, NOP, N_EXIT"%e\n", E2BIG));
 	if (ac < 2)
 		exit(sh->st);
 	a = av[1];
 	if (!(i = ft_strlen(a)) || i > 19)
-		ft_fatal(NOK, NULL, NULL, N_EXIT"%s: %s\n", a, M_NREQ);
+		ft_fatal(NOP, NULL, NULL, N_EXIT"%s: %s\n", a, M_NREQ);
 	j = 0;
 	while (j < i)
 		if (!ft_isdigit(a[j]) && !ft_isspace(a[j]))
-			ft_fatal(NOK, NULL, NULL, N_EXIT"%s: %s\n", a, M_NREQ);
+			ft_fatal(NOP, NULL, NULL, N_EXIT"%s: %s\n", a, M_NREQ);
 		else
 			j++;
 	exit((int)ft_atoi(a));

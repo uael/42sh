@@ -12,7 +12,7 @@
 
 #include "msh/eval.h"
 
-inline t_st	sh_eval_pipe(t_sh *self, t_job **job, t_tok *tok)
+inline int	sh_eval_pipe(t_sh *self, t_job **job, t_tok *tok)
 {
 	(void)self;
 	if (tok->id != SH_TOK_PIPE)

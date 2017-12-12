@@ -42,7 +42,7 @@ static inline ssize_t	ifs_buf(t_ifstream *s, char **b, size_t *l)
 	if (*l >= FT_PAGE_SIZE)
 	{
 		if ((r = read(s->fd, *b, FT_PAGE_SIZE)) <= 0)
-			return (r == 0 ? -2 : ft_ex_throw(-1));
+			return (r == 0 ? -2 : THROW(-1));
 		if (r < FT_PAGE_SIZE)
 			return (r);
 		(void)((*l -= r) && (*b ? *b += r : *b));
@@ -56,7 +56,7 @@ static inline ssize_t	ifs_buf(t_ifstream *s, char **b, size_t *l)
 			s->cap = FT_PAGE_SIZE;
 		}
 		if ((r = read(s->fd, s->buf, FT_PAGE_SIZE)) < 0)
-			return (ft_ex_throw(-1));
+			return (THROW(-1));
 		return ((s->len = (size_t)r) == 0 ? -2 :
 			ifs_cpy(s, b, l, s->beg - s->cur));
 	}
@@ -70,7 +70,7 @@ inline ssize_t			ft_ifstream_read(t_ifstream *self, char *b, size_t len)
 	ssize_t	sz;
 
 	if (self->fd < 0)
-		return (ft_eno_throw(WUT, EINVAL));
+		return (ENO_THROW(WUT, EINVAL));
 	beg = len;
 	while (len)
 	{

@@ -43,7 +43,7 @@ static inline ssize_t	ifs_bufferize(t_ifstream *self, size_t len)
 			if ((sz = read(self->fd, self->buf + self->len, FT_PAGE_SIZE)) == 0)
 				break ;
 			if (sz < 0)
-				return (ft_ex_throw(WUT));
+				return (THROW(WUT));
 			cnt += sz;
 			self->len += sz;
 			self->end += sz;

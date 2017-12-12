@@ -27,7 +27,7 @@ int				ft_worker_join(t_worker *self)
 		if (it->pid <= 0)
 			continue ;
 		if (waitpid(it->pid, &st, 0) < 0)
-			return (ft_ex_throw(WUT));
+			return (THROW(WUT));
 		if (WIFEXITED(st))
 			it->st = WEXITSTATUS(st);
 		if (it->cb)
@@ -49,16 +49,16 @@ int				ft_worker_run(t_worker *self)
 		if (it->pipe)
 		{
 			if (pipe(c))
-				return (ft_ex_throw(WUT));
+				return (THROW(WUT));
 			if (ft_job_run(it, c, p))
 				return (WUT);
 			if (p && (close(p[0]) || close(p[1])))
-				return (ft_ex_throw(WUT));
+				return (THROW(WUT));
 			p = ft_memcpy(d, c, 2 * sizeof(int));
 		}
 		else if (ft_job_run(it, NULL, p))
 			return (WUT);
 		else if (p && (close(p[0]) || close(p[1])))
-			return (ft_ex_throw(WUT));
+			return (THROW(WUT));
 	return (0);
 }

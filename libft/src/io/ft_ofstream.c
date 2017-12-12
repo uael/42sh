@@ -17,7 +17,7 @@ inline int	ft_ofstream_open(t_ofstream *self, char const *filename)
 	FT_INIT(self, t_ofstream);
 	if ((self->fd = open(filename, O_APPEND | O_CREAT | O_RDWR,
 		S_IRUSR | S_IWUSR)) < 0)
-		return (ft_ex_throw(WUT));
+		return (THROW(WUT));
 	self->filename = filename;
 	return (YEP);
 }
@@ -28,7 +28,7 @@ inline int	ft_ofstream_close(t_ofstream *self)
 	{
 		ft_ofstream_flush(self);
 		if (close(self->fd) < 0)
-			return (ft_ex_throw(WUT));
+			return (THROW(WUT));
 		if (self->buf)
 		{
 			free(self->buf);

@@ -12,7 +12,7 @@
 
 NAME = libft.a
 CC = gcc
-CFLAGS = -Werror -Wextra -Wall -g3 -DFT_CLI="\"21sh\""
+CFLAGS = -Werror -Wextra -Wall -g3 -DDEBUG
 
 SRC_PATH = ./src/
 OBJ_PATH = ./obj/

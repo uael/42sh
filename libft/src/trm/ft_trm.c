@@ -16,20 +16,20 @@
 
 #define TRM_USG "%s: Specify a terminal type with `setenv TERM <yourtype>`\n"
 
-t_st		ft_trm_ctor(t_trm *self)
+int		ft_trm_ctor(t_trm *self)
 {
 	char		*tnm;
 	const char	*dev;
 
 	FT_INIT(self, t_trm);
 	if (!(tnm = getenv("TERM")))
-		return (ft_retf(NOK, TRM_USG, "select"));
+		return (ft_retf(NOP, TRM_USG, "select"));
 	if (!(dev = ttyname(STDIN_FILENO)))
 		dev = ttyname(STDOUT_FILENO);
 	if (!dev && !(dev = ttyname(STDERR_FILENO)))
-		return (ERR(errno = ENOTTY));
-	if (tgetent(NULL, tnm) <= 0 || ST_NOK(ft_ostream_open(&self->out, dev)))
-		return (ft_retf(NOK, "%s: %e.\n", "trm", errno));
+		return (ENO_THROW(WUT, ENOTTY));
+	if (tgetent(NULL, tnm) <= 0 || ft_ostream_open(&self->out, dev))
+		return (ft_retf(NOP, "%s: %e.\n", "trm", errno));
 	ft_du8_ctor(&self->in);
 	tcgetattr(self->out.u.file.fd, &self->tty);
 	ft_memcpy(&self->tmp, &self->tty, sizeof(t_trmios));
@@ -39,7 +39,7 @@ t_st		ft_trm_ctor(t_trm *self)
 	self->tty.c_cc[VTIME] = 100;
 	ft_trm_on(self);
 	ft_trm_refresh(self);
-	return (OK);
+	return (YEP);
 }
 
 void		ft_trm_dtor(t_trm *self)
@@ -57,7 +57,7 @@ inline void	ft_trm_refresh(t_trm *self)
 	if (!isatty(self->out.u.file.fd))
 		return ;
 	if (ioctl(self->out.u.file.fd, TIOCGWINSZ, &w))
-		ft_fatal(ERR(errno), (t_dtor)ft_trm_dtor, self, "ioctl: %e", errno);
+		ft_fatal(NOP, (t_dtor)ft_trm_dtor, self, "ioctl: %e", errno);
 	self->w = w.ws_col;
 	self->h = w.ws_row;
 }

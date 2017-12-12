@@ -12,9 +12,8 @@
 
 #include "msh/eval.h"
 
-inline t_st	sh_eval_sep(t_sh *self, t_job **job, t_tok *tok)
+inline int	sh_eval_sep(t_sh *self, t_job **job, t_tok *tok)
 {
-	t_st	st;
 	char	id;
 
 	id = tok->id;
@@ -22,8 +21,7 @@ inline t_st	sh_eval_sep(t_sh *self, t_job **job, t_tok *tok)
 	{
 		if (ft_vec_size(&self->worker))
 		{
-			if (ISE(st = ft_worker_run(&self->worker)))
-				ft_putf(2, N_SH"%e", ST_TOENO(st));
+			ft_worker_run(&self->worker);
 			self->st = ft_worker_join(&self->worker);
 		}
 		sh_clean(self);

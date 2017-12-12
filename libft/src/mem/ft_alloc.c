@@ -20,7 +20,7 @@ inline void	*ft_malloc(size_t sz)
 	void *p;
 
 	if (!(p = malloc(sz)))
-		ft_ex_throw(WUT);
+		THROW(WUT);
 	return (p);
 }
 

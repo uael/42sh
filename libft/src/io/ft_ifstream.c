@@ -23,7 +23,7 @@ inline int	ft_ifstream_open(t_ifstream *self, char const *filename)
 {
 	FT_INIT(self, t_ifstream);
 	if ((self->fd = open(filename, O_RDONLY)) < 0)
-		return (ft_ex_throw(WUT));
+		return (THROW(WUT));
 	self->filename = filename;
 	return (YEP);
 }
@@ -34,7 +34,7 @@ inline int	ft_ifstream_close(t_ifstream *self)
 	{
 		ft_ifstream_flush(self);
 		if (close(self->fd))
-			return (ft_ex_throw(WUT));
+			return (THROW(WUT));
 		if (self->buf)
 		{
 			free(self->buf);

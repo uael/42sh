@@ -24,20 +24,18 @@ inline void	sh_init_stream(t_sh *self, char **env, t_istream *stream)
 	sh_lex(&self->lexer);
 }
 
-inline t_st	sh_init_file(t_sh *self, char **env, char const *filename)
+inline int	sh_init_file(t_sh *self, char **env, char const *filename)
 {
-	t_st st;
-
 	FT_INIT(self, t_sh);
 	ft_vstr_ctor(&self->env);
 	ft_worker_ctor(&self->worker);
 	ft_omstream_open(&self->bi_out);
 	ft_omstream_open(&self->bi_err);
 	sh_initenv(&self->env, env);
-	if (ST_NOK(st = ft_lexer_init_file(&self->lexer, filename)))
-		return (st);
+	if (ft_lexer_init_file(&self->lexer, filename))
+		return (WUT);
 	sh_lex(&self->lexer);
-	return (OK);
+	return (YEP);
 }
 
 inline void	sh_dtor(t_sh *self)
@@ -49,16 +47,19 @@ inline void	sh_dtor(t_sh *self)
 	ft_worker_dtor(&self->worker);
 }
 
-inline t_st	sh_prompt(t_sh *self, char *prompt)
+inline void	sh_prompt(t_sh *self, char *prompt)
 {
 	size_t	l;
 	char	cwd[PATH_MAX + 1];
 	char	*p;
 	char	*home;
 
-	if (!(p = getcwd(cwd, PATH_MAX)) &&
-		!(p = ft_getenv(self->env.buf, "PWD")))
-		return (ft_ex_throw(NOK));
+	if (!(p = getcwd(cwd, PATH_MAX)))
+	{
+		THROW(WUT);
+		ft_puts(0, prompt);
+		return ;
+	}
 	sh_envadd(&self->env, "PWD", p);
 	if ((home = ft_getenv(self->env.buf, "HOME")) && ft_strbegw(home, p))
 	{
@@ -70,7 +71,6 @@ inline t_st	sh_prompt(t_sh *self, char *prompt)
 	}
 	ft_puts(0, p);
 	ft_puts(0, prompt);
-	return (OK);
 }
 
 extern void		sh_clean(t_sh *self)

@@ -30,7 +30,7 @@ inline t_bool	sh_unsetenv(t_vstr *self, char *var, t_bool m)
 	char	**it;
 
 	if (!self->len)
-		return (NOK);
+		return (FALSE);
 	i = 0;
 	while (i < ft_vstr_size(self))
 		if ((it = ft_vstr_at(self, i)) && *it &&
@@ -38,11 +38,11 @@ inline t_bool	sh_unsetenv(t_vstr *self, char *var, t_bool m)
 		{
 			if (ft_vstr_remove(self, i, it) && m)
 				free(*it);
-			return (OK);
+			return (YEP);
 		}
 		else
 			++i;
-	return (NOK);
+	return (FALSE);
 }
 
 inline void		sh_setenv(t_vstr *self, char *var, char *val)
@@ -74,12 +74,12 @@ inline t_bool	sh_envadd(t_vstr *self, char *var, char *val)
 	char **it;
 
 	if (!self->len || !(it = ft_vstr_begin(self)))
-		return (NULL);
+		return (FALSE);
 	while (it && it != ft_vstr_end(self))
 		if (!*it || !ft_strbegw(var, *it) || (*it)[ft_strlen(var)] != '=')
 			++it;
 		else
-			return (NOK);
+			return (FALSE);
 	it = ft_vstr_push(self);
 	*it = ft_malloc((ft_strlen(var) + (val ? ft_strlen(val) : 0) + 2) *
 					sizeof(char));
@@ -88,5 +88,5 @@ inline t_bool	sh_envadd(t_vstr *self, char *var, char *val)
 	(val ? ft_strcat(*it, val) : NULL);
 	ft_vstr_grow(self, 1);
 	FT_INIT(ft_vstr_end(self), char *);
-	return (OK);
+	return (TRUE);
 }

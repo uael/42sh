@@ -24,24 +24,21 @@ inline void		sh_lex(t_lexer *self)
 inline t_tok	*sh_peek(t_sh *self)
 {
 	t_tok	*tok;
-	t_st	st;
 
-	if (ISE(st = ft_lexer_peek(&self->lexer, 0, &tok)))
-		ft_fatal(ST_TOENO(st), (t_dtor)sh_dtor, self, N_SH"%e\n", ST_TOENO(st));
-	return (ST_OK(st) ? tok : NULL);
+	if (ft_lexer_peek(&self->lexer, 0, &tok))
+		return (NULL);
+	return (tok);
 }
 
 inline t_tok	*sh_next(t_sh *self, t_tok **next)
 {
 	t_tok	*tok;
-	t_sz	sz;
 
-	if (ISE(sz = ft_lexer_next(&self->lexer, 1, &tok)))
-		ft_fatal((int)ST_TOENO(sz), (t_dtor)sh_dtor, self,
-			N_SH"%e\n", ST_TOENO(sz));
+	if (ft_lexer_next(&self->lexer, 1, &tok) <= 0)
+		return (NULL);
 	if (next)
 		*next = sh_peek(self);
-	return (SZ_OK(sz) ? tok : NULL);
+	return (tok);
 }
 
 inline void		sh_consume_line(t_sh *self)

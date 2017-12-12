@@ -42,6 +42,6 @@ inline size_t	ft_imstream_vreadf(t_imstream *self, char *fmt, va_list ap)
 	(void)self;
 	(void)fmt;
 	(void)ap;
-	ft_eno_throw(WUT, ENIMPL);
+	ENO_THROW(WUT, ENIMPL);
 	return (0);
 }
