@@ -17,17 +17,17 @@ inline void		ft_cout_flush(void)
 	return (ft_ostream_flush(g_cout));
 }
 
-inline t_st		ft_cout_rewind(size_t n)
+inline int		ft_cout_rewind(size_t n)
 {
 	return (ft_ostream_rewind(g_cout, n));
 }
 
-inline t_st		ft_cout_forward(size_t n)
+inline int		ft_cout_forward(size_t n)
 {
 	return (ft_ostream_forward(g_cout, n));
 }
 
-inline t_st		ft_cout_seek(size_t off)
+inline int		ft_cout_seek(size_t off)
 {
 	return (ft_ostream_seek(g_cout, off));
 }

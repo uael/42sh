@@ -18,6 +18,7 @@ inline void		ft_istream_flush(t_istream *self)
 		return (ft_ifstream_flush(&self->u.file));
 	if (self->kind == ISTREAM_MEM)
 		return (ft_imstream_flush(&self->u.mem));
+	ft_eno_throw(WUT, EBOUND);
 }
 
 inline int		ft_istream_rewind(t_istream *self, size_t n)
@@ -53,5 +54,5 @@ inline size_t	ft_istream_tell(t_istream const *self)
 		return (ft_ifstream_tell(&self->u.file));
 	if (self->kind == ISTREAM_MEM)
 		return (ft_imstream_tell(&self->u.mem));
-	return (0);
+	return ((size_t)ft_eno_throw(0, EBOUND));
 }

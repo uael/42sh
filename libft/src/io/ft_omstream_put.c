@@ -12,23 +12,23 @@
 
 #include "libft/io/omstream.h"
 
-inline t_sz	ft_omstream_putc(t_omstream *self, char c)
+inline t_bool	ft_omstream_putc(t_omstream *self, char c)
 {
-	return (ft_omstream_write(self, &c, 1));
+	return (ft_omstream_write(self, &c, 1) == 1 ? TRUE : FALSE);
 }
 
-inline t_sz	ft_omstream_puts(t_omstream *self, char const *s)
+inline size_t	ft_omstream_puts(t_omstream *self, char const *s)
 {
 	return (ft_omstream_write(self, s, ft_strlen(s)));
 }
 
-inline t_sz	ft_omstream_putl(t_omstream *self, char const *s)
+inline size_t	ft_omstream_putl(t_omstream *self, char const *s)
 {
 	return (ft_omstream_write(self, s, ft_strlen(s)) +
 		ft_omstream_putc(self, '\n'));
 }
 
-inline void	ft_omstream_clear(t_omstream *self)
+inline void		ft_omstream_clear(t_omstream *self)
 {
 	self->len = 0;
 	self->cur = 0;

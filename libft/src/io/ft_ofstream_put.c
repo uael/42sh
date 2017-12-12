@@ -12,12 +12,14 @@
 
 #include "libft/io/ofstream.h"
 
-inline t_sz	ft_ofstream_putc(t_ofstream *self, char c)
-{
-	return (ft_ofstream_write(self, &c, 1));
-}
-
-inline t_sz	ft_ofstream_puts(t_ofstream *self, char const *s)
+inline ssize_t	ft_ofstream_puts(t_ofstream *self, char const *s)
 {
 	return (ft_ofstream_write(self, s, ft_strlen(s)));
+}
+
+inline int		ft_ofstream_putc(t_ofstream *self, char c)
+{
+	ssize_t sz;
+
+	return ((sz = ft_ofstream_write(self, &c, 1)) == 1 ? YEP : (int)sz);
 }

@@ -63,7 +63,7 @@ int			ft_job_run(t_job *self, int *wr, int *rd)
 		return (ft_ex_throw(WUT));
 	if (pid == 0)
 		return (job_exec(self, wr, rd, (int[2]){in, out}));
-	if (in >= 0 && close(in) || (out >= 0 && close(out)))
+	if ((in >= 0 && close(in)) || (out >= 0 && close(out)))
 		return (ft_ex_throw(WUT));
 	self->pid = pid;
 	return (YEP);

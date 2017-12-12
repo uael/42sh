@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:44:14 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/11 11:13:39 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/12 11:32:19 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ inline void	*ft_malloc(size_t sz)
 	void *p;
 
 	if (!(p = malloc(sz)))
-		return ((void	*)ft_ex_throw(0));
+		ft_ex_throw(WUT);
 	return (p);
 }
 

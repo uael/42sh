@@ -50,7 +50,7 @@ inline void		ft_ex_unregister(int eno)
 {
 	if (eno < 0 || eno > FT_ELAST)
 		return ;
-	g_eno_hdls[eno] = NULL;
+	ft_memset(g_eno_hdls + eno, 0, sizeof(t_ex_hdl));
 }
 
 inline t_ex_hdl	*ft_ex_get(int eno)

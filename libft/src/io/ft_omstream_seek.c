@@ -25,23 +25,23 @@ inline void		ft_omstream_flush(t_omstream *self, int fd)
 	}
 }
 
-inline t_st		ft_omstream_rewind(t_omstream *self, size_t n)
+inline t_bool	ft_omstream_rewind(t_omstream *self, size_t n)
 {
 	if (n > self->cur)
-		return (ERR(errno = EINVAL));
+		return (FALSE);
 	self->cur -= n;
-	return (OK);
+	return (TRUE);
 }
 
-inline t_st		ft_omstream_forward(t_omstream *self, size_t n)
+inline t_bool	ft_omstream_forward(t_omstream *self, size_t n)
 {
 	if (self->cur + n > self->len)
-		return (ERR(errno = EINVAL));
+		return (FALSE);
 	self->cur += n;
-	return (OK);
+	return (TRUE);
 }
 
-inline t_st		ft_omstream_seek(t_omstream *self, size_t off)
+inline t_bool	ft_omstream_seek(t_omstream *self, size_t off)
 {
 	if (self->cur > off)
 		return (ft_omstream_rewind(self, self->cur - off));

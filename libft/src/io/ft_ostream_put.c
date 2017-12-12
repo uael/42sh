@@ -12,16 +12,16 @@
 
 #include "libft/io/ostream.h"
 
-inline t_sz	ft_ostream_putc(t_ostream *self, char c)
+inline int		ft_ostream_putc(t_ostream *self, char c)
 {
 	if (self->kind == OSTREAM_FILE)
 		return (ft_ofstream_putc(&self->u.file, c));
-	return (ft_omstream_putc(&self->u.mem, c));
+	return (ft_omstream_putc(&self->u.mem, c) ? YEP : NOP);
 }
 
-inline t_sz	ft_ostream_puts(t_ostream *self, char const *s)
+inline ssize_t	ft_ostream_puts(t_ostream *self, char const *s)
 {
 	if (self->kind == OSTREAM_FILE)
 		return (ft_ofstream_puts(&self->u.file, s));
-	return (ft_omstream_puts(&self->u.mem, s));
+	return ((ssize_t)ft_omstream_puts(&self->u.mem, s));
 }

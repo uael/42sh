@@ -20,7 +20,7 @@ extern void		ft_src_init_stream(t_src *self, t_istream *stream)
 	self->in = stream;
 }
 
-inline t_st		ft_src_init_file(t_src *self, char const *filename)
+inline int		ft_src_init_file(t_src *self, char const *filename)
 {
 	FT_INIT(self, t_src);
 	self->cur.col = 1;

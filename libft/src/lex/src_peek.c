@@ -12,16 +12,16 @@
 
 #include "libft/lex/src.h"
 
-inline t_sz	ft_src_next(t_src *self, char *peek, size_t n)
+inline ssize_t		ft_src_next(t_src *self, char *peek, size_t n)
 {
-	t_sz	sz;
-	t_sz	i;
+	ssize_t	sz;
+	ssize_t	i;
 	char	*s;
 	char	buf[n];
 
 	s = peek ? peek : buf;
-	if (SZ_NOK(sz = ft_istream_read(self->in ? self->in : &self->in_own, s, n)))
-		return (sz);
+	if ((sz = ft_istream_read(self->in ? self->in : &self->in_own, s, n)) < 0)
+		return (WUT);
 	i = -1;
 	while (++i < sz)
 	{
@@ -33,21 +33,19 @@ inline t_sz	ft_src_next(t_src *self, char *peek, size_t n)
 	return (sz);
 }
 
-inline t_st	ft_src_getc(t_src *self, char *peek, char *next)
+inline int		ft_src_getc(t_src *self, char *peek, char *next)
 {
-	t_sz sz;
-
-	if (SZ_NOK(sz = ft_src_next(self, peek, 1)))
-		return (SZ_TOST(sz));
+	if (ft_src_next(self, peek, 1) < 0)
+		return (WUT);
 	return (ft_src_peek(self, next, 0));
 }
 
-inline t_sz	ft_src_get(t_src *self, char *buf, size_t n)
+inline ssize_t	ft_src_get(t_src *self, char *buf, size_t n)
 {
 	return (ft_istream_get(self->in ? self->in : &self->in_own, buf, n));
 }
 
-inline t_st	ft_src_peek(t_src *self, char *c, size_t n)
+inline int		ft_src_peek(t_src *self, char *c, size_t n)
 {
 	return (ft_istream_peek(self->in ? self->in : &self->in_own, c, n));
 }

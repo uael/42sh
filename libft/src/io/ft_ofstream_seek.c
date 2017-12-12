@@ -23,24 +23,24 @@ inline void		ft_ofstream_flush(t_ofstream *self)
 	}
 }
 
-inline t_st		ft_ofstream_rewind(t_ofstream *self, size_t n)
+inline int		ft_ofstream_rewind(t_ofstream *self, size_t n)
 {
 	(void)self;
 	(void)n;
-	return (ERR(errno = ENIMPL));
+	return (ft_eno_throw(WUT, ENIMPL));
 }
 
-inline t_st		ft_ofstream_forward(t_ofstream *self, size_t n)
+inline int		ft_ofstream_forward(t_ofstream *self, size_t n)
 {
 	(void)self;
 	(void)n;
-	return (ERR(errno = ENIMPL));
+	return (ft_eno_throw(WUT, ENIMPL));
 }
 
-inline t_st		ft_ofstream_seek(t_ofstream *self, size_t off)
+inline int		ft_ofstream_seek(t_ofstream *self, size_t off)
 {
 	if (!self->filename || self->fd < 0)
-		return (ERR(errno = EINVAL));
+		return (ft_eno_throw(WUT, EINVAL));
 	if (self->cur > off)
 		return (ft_ofstream_rewind(self, self->cur - off));
 	return (ft_ofstream_forward(self, off - self->cur));

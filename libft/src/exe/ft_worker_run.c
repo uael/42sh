@@ -19,7 +19,7 @@
 int				ft_worker_join(t_worker *self)
 {
 	t_job	*it;
-	t_st	st;
+	int		st;
 
 	it = (t_job *)ft_vec_end(self);
 	while (--it >= (t_job *)ft_vec_begin(self))

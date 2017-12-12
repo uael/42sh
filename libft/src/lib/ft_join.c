@@ -24,8 +24,7 @@ inline char		*ft_join(char const *s1, char const *s2, char c)
 	if (!(l2 = ft_strlen(s2)) && !l1)
 		return (NULL);
 	ds = (t_bool)((!l1 || s1[l1 - 1] != c) && (!l2 || s2[0] != c));
-	if (!(r = ft_malloc((l1 + l2 + ds + 1) * sizeof(char))))
-		return (NULL);
+	r = ft_malloc((l1 + l2 + ds + 1) * sizeof(char));
 	if (l1)
 		ft_strcpy(r, s1);
 	if (ds)

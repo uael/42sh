@@ -38,8 +38,7 @@ inline char		*ft_strdup(char const *src)
 	size_t	sz;
 
 	sz = ft_strlen(src);
-	if (!(dup = ft_malloc((sz + 1) * sizeof(char))))
-		return (NULL);
+	dup = ft_malloc((sz + 1) * sizeof(char));
 	return (ft_strcpy(dup, src));
 }
 

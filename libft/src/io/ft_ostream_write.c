@@ -12,17 +12,17 @@
 
 #include "libft/io/ostream.h"
 
-inline t_sz	ft_ostream_write(t_ostream *self, char const *sr, size_t len)
+inline ssize_t	ft_ostream_write(t_ostream *self, char const *sr, size_t len)
 {
 	if (self->kind == OSTREAM_FILE)
 		return (ft_ofstream_write(&self->u.file, sr, len));
-	return (ft_omstream_write(&self->u.mem, sr, len));
+	return ((ssize_t)ft_omstream_write(&self->u.mem, sr, len));
 }
 
-t_sz		ft_ostream_writef(t_ostream *self, char const *fmt, ...)
+ssize_t			ft_ostream_writef(t_ostream *self, char const *fmt, ...)
 {
 	va_list	ap;
-	t_sz	sz;
+	ssize_t	sz;
 
 	va_start(ap, fmt);
 	sz = ft_ostream_vwritef(self, fmt, ap);
@@ -30,9 +30,9 @@ t_sz		ft_ostream_writef(t_ostream *self, char const *fmt, ...)
 	return (sz);
 }
 
-inline t_sz	ft_ostream_vwritef(t_ostream *self, char const *fmt, va_list ap)
+inline ssize_t	ft_ostream_vwritef(t_ostream *self, char const *fmt, va_list ap)
 {
 	if (self->kind == OSTREAM_FILE)
 		return (ft_ofstream_vwritef(&self->u.file, fmt, ap));
-	return (ft_omstream_vwritef(&self->u.mem, fmt, ap));
+	return ((ssize_t)ft_omstream_vwritef(&self->u.mem, fmt, ap));
 }

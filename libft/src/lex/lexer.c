@@ -27,9 +27,8 @@ inline void		ft_lexer_init_stream(t_lexer *self, t_istream *stream)
 	s->cur.src = self->srcs.buf;
 }
 
-inline t_st		ft_lexer_init_file(t_lexer *self, char const *filename)
+inline int		ft_lexer_init_file(t_lexer *self, char const *filename)
 {
-	int		st;
 	t_src	src;
 	t_src	*s;
 
@@ -38,11 +37,11 @@ inline t_st		ft_lexer_init_file(t_lexer *self, char const *filename)
 	ft_deq_ctor(&self->srcs, sizeof(t_src));
 	ft_deq_ctor(&self->toks, sizeof(t_tok));
 	ft_vec_ctor(&self->vals, sizeof(t_tokv));
-	if (ST_NOK(st = ft_src_init_file(&src, filename)))
-		return (st);
+	if (ft_src_init_file(&src, filename) < 0)
+		return (WUT);
 	s = ft_deq_pushc(&self->srcs, &src);
 	s->cur.src = self->srcs.buf;
-	return (OK);
+	return (YEP);
 }
 
 inline void		ft_lexer_init_str(t_lexer *self, char const *str)
