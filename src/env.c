@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/11 13:18:24 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/13 07:15:25 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,10 +56,11 @@ inline void		sh_setenv(t_vstr *self, char *var, char *val)
 			++it;
 		else
 		{
-			free(*it);
+			ft_pfree((void **)it);
 			break ;
 		}
-	it = ft_vstr_push(self);
+	if (!it || *it)
+		it = ft_vstr_push(self);
 	*it = ft_malloc((ft_strlen(var) + (val ? ft_strlen(val) : 0) + 2) *
 		sizeof(char));
 	ft_strcpy(*it, var);
@@ -82,7 +83,7 @@ inline t_bool	sh_envadd(t_vstr *self, char *var, char *val)
 			return (FALSE);
 	it = ft_vstr_push(self);
 	*it = ft_malloc((ft_strlen(var) + (val ? ft_strlen(val) : 0) + 2) *
-					sizeof(char));
+		sizeof(char));
 	ft_strcpy(*it, var);
 	(!ft_strrchr(*it, '=') ? ft_strcat(*it, "=") : NULL);
 	(val ? ft_strcat(*it, val) : NULL);

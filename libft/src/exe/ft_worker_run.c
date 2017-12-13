@@ -26,8 +26,9 @@ int				ft_worker_join(t_worker *self)
 	{
 		if (it->pid <= 0)
 			continue ;
-		if (waitpid(it->pid, &st, 0) < 0)
-			return (THROW(WUT));
+		while (waitpid(it->pid, &st, 0) < 0)
+			if (errno != EINTR)
+				return (THROW(WUT));
 		if (WIFEXITED(st))
 			it->st = WEXITSTATUS(st);
 		if (it->cb)
