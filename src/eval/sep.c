@@ -42,7 +42,7 @@ inline int	sh_eval_sep(t_sh *self, t_job **job, t_tok *tok)
 	}
 	else if (id == ';')
 	{
-		ft_putf(2, N_SH" '%c'\n", id);
+		ft_putf(2, N_SH"Syntax error '%c'\n", id);
 		self->st = NOP;
 	}
 	sh_clean(self);
