@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/06 20:35:47 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/13 08:28:05 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ static inline int		sh_pp(char *peek, t_src *src, char *t)
 		return (NOP);
 	else if (*peek != '\\')
 		return (YEP);
-	if ((st = ft_src_peek(src, peek, 1)) != 0)
+	if ((st = ft_src_peek(src, peek, 1)))
 		return (st);
 	if (*t && !ft_strchr(*t == '\"' ? "$`\"\\\n" : "'", *peek))
 		return (NOP);
@@ -45,13 +45,13 @@ inline int				sh_tok_syntax(t_tok *tok, char peek, t_src *src)
 {
 	char	b[3];
 	char	*c;
-	ssize_t	n;
+	size_t	n;
 
 	n = 0;
-	if ((b[n++] = peek) != '\n')
-		while (n < 3 && ft_src_peek(src, b + n, (size_t)n) == YEP)
-			if (b[n++] == '\n')
-				break ;
+	b[n] = peek;
+	while (++n < 3 && b[n - 1] && b[n - 1] != '\n')
+		if (ft_src_peek(src, b + n, (size_t) n))
+			break;
 	if (n == 3 && b[0] == '>' && b[1] == '>' && b[2] == '-')
 		return (MATCH(tok, src, 3, SH_TOK_RARROW));
 	if (n >= 2 && b[1] == '>' && (b[0] == '>' || b[0] == '&'))
@@ -64,9 +64,8 @@ inline int				sh_tok_syntax(t_tok *tok, char peek, t_src *src)
 		return (MATCH(tok, src, 2, b[1] == '>' ? TOK(CMP) : TOK(HEREDOC)));
 	if (n >= 2 && b[1] == '&' && (b[0] == '<' || b[0] == '&'))
 		return (MATCH(tok, src, 2, b[0] == '<' ? TOK(LAMP) : TOK(LAND)));
-	if (n >= 1 && (c = ft_strchr("=\t\n !&()-;<=>[]{|}", peek)))
-		return (MATCH(tok, src, 1, (uint8_t)*c));
-	return (NOP);
+	return ((n >= 1 && (c = ft_strchr("=\t\n !&()-;<=>[]{|}", peek))) ?
+		MATCH(tok, src, 1, (uint8_t)*c) : NOP);
 }
 
 static inline uint8_t	sh_keyword(char const *s, size_t l)

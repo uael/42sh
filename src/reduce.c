@@ -15,9 +15,10 @@
 inline int	sh_reduce(t_sh *self)
 {
 	t_tok	*tok;
+	ssize_t	st;
 
-	if (ft_lexer_until(&self->lexer, '\n') < 0)
-		return (WUT);
+	if ((st = ft_lexer_until(&self->lexer, '\n')) <= 0)
+		return (st < 0 ? WUT : NOP);
 	tok = (t_tok *)ft_deq_begin(&self->lexer.toks) - 1;
 	while (++tok != ft_deq_end(&self->lexer.toks))
 		if (tok->id == SH_TOK_HEREDOC && !tok->val)

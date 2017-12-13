@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/07 15:42:16 by null             ###   ########.fr       */
+/*   Updated: 2017/12/13 08:28:05 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,8 @@ static inline int	lexer_scan_one(t_lexer *self, char peek, t_src *src)
 			ft_deq_pushc(&self->toks, &t);
 			return (YEP);
 		}
-		else if ((st = ft_src_peek(src, &peek, 0)))
-			return (st);
+		else if ((st = ft_src_peek(src, &peek, 0)) || !peek)
+			return (st ? st : NOP);
 	return (NOP);
 }
 
@@ -59,11 +59,10 @@ inline ssize_t		ft_lexer_scan(t_lexer *self, size_t n)
 			break ;
 		else if ((st = ft_src_peek(src, &peek, 0)) < 0)
 			return (st);
-		else if (st)
-		{
-			self->srcs.len > 1 ? ft_deq_shift(&self->srcs, NULL) : 0;
+		else if (st && self->srcs.len > 1)
+			ft_deq_shift(&self->srcs, NULL);
+		else if (st || !peek)
 			break ;
-		}
 		else if ((st = lexer_scan_one(self, peek, src)) < 0)
 			return (WUT);
 		else if (st == YEP)
@@ -84,11 +83,10 @@ inline ssize_t		ft_lexer_until(t_lexer *self, uint8_t id)
 			break ;
 		else if ((st = ft_src_peek(src, &peek, 0)) < 0)
 			return (st);
-		else if (st)
-		{
-			self->srcs.len > 1 ? ft_deq_shift(&self->srcs, NULL) : 0;
+		else if (st && self->srcs.len > 1)
+			ft_deq_shift(&self->srcs, NULL);
+		else if (st || !peek)
 			break ;
-		}
 		else if ((st = lexer_scan_one(self, peek, src)) < 0)
 			return (WUT);
 		else if (st == YEP)

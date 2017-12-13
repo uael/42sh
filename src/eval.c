@@ -24,36 +24,42 @@ static int	(*g_rules[])(t_sh *self, t_job **pjob, t_tok *tok) =
 	NULL
 };
 
+static inline int	eval_rules(t_sh *self, t_tok *tok, t_job **job)
+{
+	int		st;
+	int		(**rule)(t_sh *, t_job **, t_tok *);
+
+	rule = g_rules - 1;
+	while (*++rule)
+		if ((st = (*rule)(self, job, tok)) < 0)
+			return (NOP);
+		else if (st == SH_NEXT)
+			continue ;
+		else if (st == SH_OK || st == SH_NOK)
+			break ;
+		else if (st == SH_BREAK)
+			return (YEP);
+		else if (st == SH_BREAK_NOK && sh_peek(self) == tok)
+		{
+			sh_consume_line(self);
+			sh_clean(self);
+			return (self->st = NOP);
+		}
+	return (SH_NEXT);
+}
+
 inline int	sh_eval(t_sh *self)
 {
 	t_tok	*tok;
 	int		st;
 	t_job	*job;
-	int		(**rule)(t_sh *, t_job **, t_tok *);
 
 	if (sh_reduce(self))
 		return (WUT);
 	job = NULL;
-	while ((rule = g_rules - 1))
+	while (1)
 		if (!(tok = sh_next(self, NULL)))
 			return (NOP);
-		else
-		{
-			while (*++rule)
-				if ((st = (*rule)(self, &job, tok)) < 0)
-					return (NOP);
-				else if (st == SH_NEXT)
-					continue ;
-				else if (st == SH_OK || st == SH_NOK)
-					break ;
-				else if (st == SH_BREAK)
-					return (YEP);
-				else if (st == SH_BREAK_NOK && sh_peek(self) == tok)
-				{
-					sh_consume_line(self);
-					sh_clean(self);
-					return (self->st = NOP);
-				}
-		}
-	return (NOP);
+		else if ((st = eval_rules(self, tok, &job)) != SH_NEXT)
+			return (st);
 }

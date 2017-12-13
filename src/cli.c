@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/11 13:12:44 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/13 07:40:30 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static int 			sh_on_errno(int rcode, void *arg)
 	if (!errno)
 		return (rcode);
 	if (arg)
-		ft_putf(2, N_SH"%e '%s'\n", errno, arg);
+		ft_putf(2, N_SH"%s: %e\n", arg, errno);
 	else
 		ft_putf(2, N_SH"%e\n", errno);
 	if (errno == ENOMEM || errno > ELAST ||

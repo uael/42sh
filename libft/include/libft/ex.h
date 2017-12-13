@@ -17,8 +17,8 @@
 #  define THROW(RCODE) ft_ex_throw(RCODE, __FUNCTION__, __LINE__)
 #  define ENO_THROW(RCODE, ENO) ft_eno_throw(RCODE, ENO, __FUNCTION__, __LINE__)
 # else
-#  define THROW(RCODE) ft_ex_throw(RCODE, NULL)
-#  define ENO_THROW(RCODE, ENO) ft_eno_throw(RCODE, ENO, NULL)
+#  define THROW(RCODE) ft_ex_throw(RCODE, NULL, 0)
+#  define ENO_THROW(RCODE, ENO) ft_eno_throw(RCODE, ENO, NULL, 0)
 # endif
 
 typedef int		(*t_ex_cb)(int rcode, void *arg);
