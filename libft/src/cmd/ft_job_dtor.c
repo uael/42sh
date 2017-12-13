@@ -1,28 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_job.c                                           :+:      :+:    :+:   */
+/*   ft_job_dtor.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:33 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/06 17:50:28 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/06 14:08:15 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/exe.h"
+#include "libft/cmd.h"
 
-inline void		ft_job_cb(t_job *self, t_job_cb cb)
+inline void		ft_job_free_data(t_job *self)
 {
-	self->cb = cb;
+	free(self->data);
 }
 
-inline void		ft_job_data(t_job *self, void *data)
+inline void		ft_job_dtor(t_job *self)
 {
-	self->data = data;
-}
-
-inline void		ft_job_pipe(t_job *self)
-{
-	self->pipe = 1;
+	if (!self->av)
+		return ;
+	if (self->kind == JOB_EXE)
+		free(self->av[0]);
+	free(self->av);
 }

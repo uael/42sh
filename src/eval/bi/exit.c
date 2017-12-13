@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   bi/exit.c                                          :+:      :+:    :+:   */
+/*   eval/bi/exit.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "msh/bi.h"
+#include "bi.h"
 
 #define M_NREQ "Numeric argument required"
 #define N_EXIT COLOR_RED COLOR_BOLD "exit: " COLOR_RESET

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   eval/bi.c                                          :+:      :+:    :+:   */
+/*   eval/cmd.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,7 +12,31 @@
 
 #include "msh/eval.h"
 
-inline int	sh_eval_exe(t_sh *self, t_job **pjob, t_tok *tok)
+static inline void	eval_bi_cmd(t_sh *self, t_vstr *av, char *exe)
+{
+	t_tok *end;
+
+	if (av)
+	{
+		ft_vstr_ctor(av);
+		ft_vstr_pushc(av, exe);
+	}
+	while ((end = sh_peek(self)) && end->id)
+	{
+		if (end->id == SH_TOK_WORD && av)
+			ft_vstr_pushc(av, ft_tok_ident(end)->buf);
+		else if (end->id != SH_TOK_WORD && !ft_strchr(" \t", end->id))
+			break ;
+		sh_next(self, NULL);
+	}
+	if (av)
+	{
+		ft_vstr_grow(av, 1);
+		FT_INIT(ft_vstr_end(av), char *);
+	}
+}
+
+inline int			sh_eval_cmd(t_sh *self, t_job **pjob, t_tok *tok)
 {
 	t_vstr	av;
 	int		st;
@@ -21,8 +45,8 @@ inline int	sh_eval_exe(t_sh *self, t_job **pjob, t_tok *tok)
 
 	if (tok->id != SH_TOK_WORD)
 		return (SH_NEXT);
-	sh_exe_av(self, &av, ft_tok_ident(tok)->buf);
-	if ((st = ft_job_exe(&job, "PATH", av.buf, self->env.buf)) < 0)
+	eval_bi_cmd(self, &av, ft_tok_ident(tok)->buf);
+	if ((st = ft_job_cmd(&job, "PATH", av.buf, self->env.buf)) < 0)
 		return (WUT);
 	else if (st)
 		return (ft_retf(SH_NOK, N_SH"%s: Command not found\n", av.buf[0]));

@@ -12,7 +12,7 @@
 
 #include <sys/stat.h>
 
-#include "libft/exe.h"
+#include "libft/cmd.h"
 
 static int	av_count(char **av)
 {

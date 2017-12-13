@@ -18,6 +18,7 @@ set(CMAKE_C_FLAGS_RELEASE "")
 set(21sh_HDR ${21sh_INC_DIR}/msh.h)
 file(GLOB_RECURSE 21sh_HDRS ${21sh_HDRS} ${21sh_INC_DIR}/msh/*.h)
 file(GLOB_RECURSE 21sh_SRCS ${21sh_SRCS} ${21sh_SRC_DIR}/*.c)
+file(GLOB_RECURSE 21sh_SRCS ${21sh_SRCS} ${21sh_SRC_DIR}/*.h)
 
 add_executable(21sh ${21sh_HDR} ${21sh_HDRS} ${21sh_SRCS})
 set_property(TARGET 21sh PROPERTY C_STANDARD 90)

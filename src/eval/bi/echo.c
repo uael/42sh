@@ -1,40 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exe.c                                              :+:      :+:    :+:   */
+/*   eval/bi/echo.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/05 14:53:15 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/05 16:21:12 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <sys/stat.h>
-#include <limits.h>
+#include "bi.h"
 
-#include "msh.h"
-
-inline void		sh_exe_av(t_sh *self, t_vstr *av, char *exe)
+inline int	sh_bi_echo(t_sh *sh, int ac, char **av, t_job *out)
 {
-	t_tok *end;
+	int i;
 
-	if (av)
+	(void)sh;
+	(void)out;
+	if (ac < 2)
+		return (sh_bi_retf(sh, YEP, "\n"));
+	i = 0;
+	while (++i < ac)
 	{
-		ft_vstr_ctor(av);
-		ft_vstr_pushc(av, exe);
+		ft_omstream_puts(&sh->bi_out, av[i]);
+		if (i < ac - 1)
+			ft_omstream_putc(&sh->bi_out, ' ');
 	}
-	while ((end = sh_peek(self)) && end->id)
-	{
-		if (end->id == SH_TOK_WORD && av)
-			ft_vstr_pushc(av, ft_tok_ident(end)->buf);
-		else if (end->id != SH_TOK_WORD && !ft_strchr(" \t", end->id))
-			break ;
-		sh_next(self, NULL);
-	}
-	if (av)
-	{
-		ft_vstr_grow(av, 1);
-		FT_INIT(ft_vstr_end(av), char *);
-	}
+	ft_omstream_putc(&sh->bi_out, '\n');
+	return (YEP);
 }

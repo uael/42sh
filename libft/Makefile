@@ -24,6 +24,13 @@ LNK_PATH = ./ $(3TH_PATH)
 OBJ_NAME = $(SRC_NAME:.c=.o)
 3TH_NAME = m ncurses
 SRC_NAME = \
+	cmd/ft_job.c \
+	cmd/ft_job_ctor.c \
+	cmd/ft_job_ctor_exe.c \
+	cmd/ft_job_dtor.c \
+	cmd/ft_job_run.c \
+	cmd/ft_worker.c \
+	cmd/ft_worker_run.c \
 	cty/ft_cty.c \
 	cty/ft_cty_2.c \
 	ds/ft_dstr_append.c \
@@ -179,13 +186,6 @@ SRC_NAME = \
 	ds/ft_node_prev.c \
 	ex/ft_ex.c \
 	ex/ft_ex_throw.c \
-	exe/ft_job.c \
-	exe/ft_job_ctor.c \
-	exe/ft_job_ctor_exe.c \
-	exe/ft_job_dtor.c \
-	exe/ft_job_run.c \
-	exe/ft_worker.c \
-	exe/ft_worker_run.c \
 	fs/ft_basename.c \
 	fs/ft_isdots.c \
 	fs/ft_pathjoin.c \

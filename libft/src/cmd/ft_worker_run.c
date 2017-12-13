@@ -14,7 +14,7 @@
 # include <wait.h>
 #endif
 
-#include "libft/exe.h"
+#include "libft/cmd.h"
 
 int				ft_worker_join(t_worker *self)
 {

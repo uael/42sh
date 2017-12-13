@@ -14,8 +14,6 @@
 # define MSH_REDUCE_H
 
 # include "sh.h"
-# include "exe.h"
-# include "bi.h"
 # include "lex.h"
 
 extern int	sh_reduce(t_sh *self);

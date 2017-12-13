@@ -12,7 +12,7 @@
 
 #include <sys/stat.h>
 
-#include "libft/exe.h"
+#include "libft/cmd.h"
 
 static t_bool	exe_test(char *exe)
 {
@@ -47,7 +47,7 @@ static t_bool	exe_lookup(char **env, char *exe, char *path, char *buf)
 	return (FALSE);
 }
 
-inline int		ft_job_exe(t_job *self, char *path, char **av, char **env)
+inline int		ft_job_cmd(t_job *self, char *path, char **av, char **env)
 {
 	char	buf[PATH_MAX + 1];
 

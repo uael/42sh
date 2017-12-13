@@ -1,33 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   bi.c                                               :+:      :+:    :+:   */
+/*   eval/bi/utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/08 15:43:46 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/12 12:11:14 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "msh/bi.h"
-
-inline t_bi_fn	sh_bi(char *exe)
-{
-	if (ft_strcmp("cd", exe) == 0)
-		return (sh_bi_cd);
-	if (ft_strcmp("echo", exe) == 0)
-		return (sh_bi_echo);
-	if (ft_strcmp("env", exe) == 0)
-		return (sh_bi_env);
-	if (ft_strcmp("exit", exe) == 0)
-		return (sh_bi_exit);
-	if (ft_strcmp("setenv", exe) == 0 || ft_strcmp("export", exe) == 0)
-		return (sh_bi_setenv);
-	if (ft_strcmp("unsetenv", exe) == 0 || ft_strcmp("unset", exe) == 0)
-		return (sh_bi_unsetenv);
-	return (NULL);
-}
+#include "bi.h"
 
 int				sh_bi_retf(t_sh *self, int code, char const *msg, ...)
 {

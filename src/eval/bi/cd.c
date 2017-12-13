@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   bi/cd.c                                            :+:      :+:    :+:   */
+/*   eval/bi/cd.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -13,7 +13,7 @@
 #include <sys/stat.h>
 #include <limits.h>
 
-#include "msh/bi.h"
+#include "bi.h"
 #include "msh/env.h"
 
 #define N_CD COLOR_RED COLOR_BOLD "cd: " COLOR_RESET

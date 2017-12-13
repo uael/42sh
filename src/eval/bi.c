@@ -10,9 +10,50 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "msh/eval.h"
+#include "bi/bi.h"
 
-inline int	sh_eval_bi(t_sh *self, t_job **pjob, t_tok *tok)
+static inline t_bi_fn	bi_fn(char *exe)
+{
+	if (ft_strcmp("cd", exe) == 0)
+		return (sh_bi_cd);
+	if (ft_strcmp("echo", exe) == 0)
+		return (sh_bi_echo);
+	if (ft_strcmp("env", exe) == 0)
+		return (sh_bi_env);
+	if (ft_strcmp("exit", exe) == 0)
+		return (sh_bi_exit);
+	if (ft_strcmp("setenv", exe) == 0 || ft_strcmp("export", exe) == 0)
+		return (sh_bi_setenv);
+	if (ft_strcmp("unsetenv", exe) == 0 || ft_strcmp("unset", exe) == 0)
+		return (sh_bi_unsetenv);
+	return (NULL);
+}
+
+static inline void		eval_bi_av(t_sh *self, t_vstr *av, char *exe)
+{
+	t_tok *end;
+
+	if (av)
+	{
+		ft_vstr_ctor(av);
+		ft_vstr_pushc(av, exe);
+	}
+	while ((end = sh_peek(self)) && end->id)
+	{
+		if (end->id == SH_TOK_WORD && av)
+			ft_vstr_pushc(av, ft_tok_ident(end)->buf);
+		else if (end->id != SH_TOK_WORD && !ft_strchr(" \t", end->id))
+			break ;
+		sh_next(self, NULL);
+	}
+	if (av)
+	{
+		ft_vstr_grow(av, 1);
+		FT_INIT(ft_vstr_end(av), char *);
+	}
+}
+
+inline int				sh_eval_bi(t_sh *self, t_job **pjob, t_tok *tok)
 {
 	t_vstr		av;
 	t_bi_fn		bi;
@@ -21,10 +62,10 @@ inline int	sh_eval_bi(t_sh *self, t_job **pjob, t_tok *tok)
 
 	if (tok->id != SH_TOK_WORD)
 		return (SH_NEXT);
-	if (!(bi = sh_bi(ft_tok_ident(tok)->buf)))
+	if (!(bi = bi_fn(ft_tok_ident(tok)->buf)))
 		return (SH_NEXT);
 	FT_INIT(&job, t_job);
-	sh_exe_av(self, &av, ft_tok_ident(tok)->buf);
+	eval_bi_av(self, &av, ft_tok_ident(tok)->buf);
 	self->st = bi(self, (int)av.len, av.buf, &job);
 	job.av ? 0 : sh_bi_job(&job, av.buf, self->env.buf);
 	if ((tok = sh_skip(self, "\t ")) && tok->id == SH_TOK_HEREDOC)

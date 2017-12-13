@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   bi/env.c                                           :+:      :+:    :+:   */
+/*   eval/bi/env.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "msh/bi.h"
+#include "bi.h"
 #include "msh/env.h"
 
 #define ENV_I (1 << 0)
@@ -69,7 +69,7 @@ static int		env_finalize(t_sh *sh, char *path, char ***vars, t_job *out)
 	while (*vars[0])
 		ft_vstr_pushc(&av, *vars[0]++);
 	ft_vstr_pushc(&av, NULL);
-	if ((s = ft_job_exe(out, path, av.buf, vars[1])) < 0)
+	if ((s = ft_job_cmd(out, path, av.buf, vars[1])) < 0)
 		return (WUT);
 	else if (s)
 	{

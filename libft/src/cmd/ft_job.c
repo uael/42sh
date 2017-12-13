@@ -1,20 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   msh/exe.h                                          :+:      :+:    :+:   */
+/*   ft_job.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/05 14:31:35 by alucas-          ###   ########.fr       */
+/*   Created: 2017/11/07 09:52:33 by alucas-           #+#    #+#             */
+/*   Updated: 2017/12/06 17:50:28 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MSH_EXE_H
-# define MSH_EXE_H
+#include "libft/cmd.h"
 
-# include "sh.h"
+inline void		ft_job_cb(t_job *self, t_job_cb cb)
+{
+	self->cb = cb;
+}
 
-extern void		sh_exe_av(t_sh *self, t_vstr *av, char *exe);
+inline void		ft_job_data(t_job *self, void *data)
+{
+	self->data = data;
+}
 
-#endif
+inline void		ft_job_pipe(t_job *self)
+{
+	self->pipe = 1;
+}

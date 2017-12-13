@@ -13,18 +13,11 @@
 #ifndef MSH_H
 # define MSH_H
 
-/*
-** todo: cleaner error handing
-*/
-
-# include "msh/bi.h"
 # include "msh/env.h"
 # include "msh/eval.h"
-# include "msh/exe.h"
 # include "msh/lex.h"
 # include "msh/reduce.h"
 # include "msh/sh.h"
 # include "msh/sig.h"
-# include "msh/toks.h"
 
 #endif

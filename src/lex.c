@@ -16,9 +16,10 @@ inline void		sh_lex(t_lexer *self)
 {
 	t_lrule *it;
 
-	it = ft_vec_pushn(&self->rules, 2);
-	*it = sh_tok_word;
-	*(it + 1) = sh_tok_syntax;
+	it = ft_vec_pushn(&self->rules, 3);
+	*it = sh_lex_word;
+	*(it + 1) = sh_lex_op;
+	*(it + 2) = sh_lex_syn;
 }
 
 inline t_tok	*sh_peek(t_sh *self)

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libft/exe.h                                        :+:      :+:    :+:   */
+/*   libft/cmd.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -46,7 +46,7 @@ typedef struct	s_job
 
 typedef t_vec	t_worker;
 
-extern int		ft_job_exe(t_job *self, char *path, char **av, char **env);
+extern int		ft_job_cmd(t_job *self, char *path, char **av, char **env);
 extern void		ft_job_fn(t_job *self, t_job_fn fn, char **av, char **env);
 extern void		ft_job_output(t_job *self, char *str);
 extern void		ft_job_cb(t_job *self, t_job_cb cb);

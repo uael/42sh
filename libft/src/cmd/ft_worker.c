@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/exe.h"
+#include "libft/cmd.h"
 
 inline void		ft_worker_ctor(t_worker *jobs)
 {
