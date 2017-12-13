@@ -20,7 +20,7 @@ inline int	sh_eval_raout(t_sh *self, t_job **job, t_tok *t)
 	if (t->id != SH_TOK_RAOUT)
 		return (SH_NEXT);
 	if (!*job)
-		return (ft_retf(SH_BREAK_NOK, N_SH"oops '%c'\n", t->id));
+		return (ft_retf(SH_BREAK_NOK, N_SH"Syntax error '%c'\n", t->id));
 	dup.from = t->val && t->val->kind == TOKV_I32
 		? t->val->val.i32 : STDOUT_FILENO;
 	if (!(t = sh_peek(self)) || t->id != SH_TOK_WORD)

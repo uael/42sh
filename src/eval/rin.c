@@ -20,7 +20,7 @@ inline int	sh_eval_rin(t_sh *self, t_job **job, t_tok *t)
 	if (t->id != SH_TOK_RIN)
 		return (SH_NEXT);
 	if (!*job)
-		return (ft_retf(SH_BREAK_NOK, N_SH"oops '%c'\n", t->id));
+		return (ft_retf(SH_BREAK_NOK, N_SH"Syntax error '%c'\n", t->id));
 	dup.from = t->val && t->val->kind == TOKV_I32
 		? t->val->val.i32 : STDIN_FILENO;
 	if (!(t = sh_peek(self)) || t->id != SH_TOK_WORD)

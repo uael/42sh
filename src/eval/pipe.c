@@ -18,7 +18,7 @@ inline int	sh_eval_pipe(t_sh *self, t_job **job, t_tok *tok)
 	if (tok->id != SH_TOK_PIPE)
 		return (SH_NEXT);
 	if (!*job)
-		return (ft_retf(SH_BREAK_NOK, N_SH"Unexpected token '%c'\n", tok->id));
+		return (ft_retf(SH_BREAK_NOK, N_SH"Syntax error '%c'\n", tok->id));
 	ft_job_pipe(*job);
 	return (SH_OK);
 }

@@ -28,23 +28,26 @@ inline int	sh_eval_sep(t_sh *self, t_job **job, t_tok *tok)
 	char	id;
 
 	id = tok->id;
-	if (ft_strchr(";\n", id))
+	if (!ft_strchr(";\n", id))
+		return (SH_NEXT);
+	if (ft_vec_size(&self->worker))
 	{
-		if (ft_vec_size(&self->worker))
-		{
-			g_st = 0;
-			signal(SIGINT,  worker_sigint_hdl);
-			ft_worker_run(&self->worker);
-			self->st = ft_worker_join(&self->worker);
-			if (g_st)
-				self->st = g_st;
-			signal(SIGINT, sh_sigint_hdl);
-		}
-		sh_clean(self);
-		if (id == '\n')
-			return (SH_BREAK);
-		*job = NULL;
-		return (SH_OK);
+		g_st = 0;
+		signal(SIGINT,  worker_sigint_hdl);
+		ft_worker_run(&self->worker);
+		self->st = ft_worker_join(&self->worker);
+		if (g_st)
+			self->st = g_st;
+		signal(SIGINT, sh_sigint_hdl);
 	}
-	return (SH_NEXT);
+	else if (id == ';')
+	{
+		ft_putf(2, N_SH" '%c'\n", id);
+		self->st = NOP;
+	}
+	sh_clean(self);
+	if (id == '\n')
+		return (SH_BREAK);
+	*job = NULL;
+	return (SH_OK);
 }

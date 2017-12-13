@@ -47,7 +47,7 @@ int			sh_reduce_heredoc(t_sh *self, t_tok *tok)
 
 	if ((next = tok + 1) == ft_deq_end(&self->lexer.toks) ||
 		next->id != SH_TOK_WORD)
-		return (ft_retf(NOP, N_SH"oops '%c'\n", tok->id));
+		return (ft_retf(NOP, N_SH"Syntax error '%c'\n", tok->id));
 	if (ft_deq_size(&self->lexer.srcs) == 0 ||
 		!(src = ft_deq_at(&self->lexer.srcs, 0)))
 		return (ft_retf(NOP, N_SH"oops '%c'\n", tok->id));
