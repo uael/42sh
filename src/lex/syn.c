@@ -12,34 +12,21 @@
 
 #include "msh.h"
 
-#define M(p, c) (s[p] == (c))
-#define W SH_TOK_WORD
-#define TOK(T) SH_TOK_ ## T
-#define MATCH(tok, src, n, id) ft_lexer_match(tok, src, n, id)
-
 inline int				sh_lex_syn(t_tok *tok, char peek, t_src *src)
 {
-	char	b[3];
-	char	*c;
-	size_t	n;
+	ssize_t sz;
 
-	n = 0;
-	b[n] = peek;
-	while (++n < 3 && b[n - 1] && b[n - 1] != '\n')
-		if (ft_src_peek(src, b + n, n))
-			break ;
-	if (n == 3 && b[0] == '>' && b[1] == '>' && b[2] == '-')
-		return (MATCH(tok, src, 3, SH_TOK_RARROW));
-	if (n >= 2 && b[1] == '>' && (b[0] == '>' || b[0] == '&'))
-		return (MATCH(tok, src, 2, b[0] == '>' ? TOK(RAOUT) : TOK(AMPR)));
-	if (n >= 2 && b[0] == '>' && b[1] == '&')
-		return (MATCH(tok, src, 2, SH_TOK_RAMP));
-	if (n >= 2 && b[1] == '|' && (b[0] == '>' || b[0] == '|'))
-		return (MATCH(tok, src, 2, b[0] == '>' ? TOK(RPIPE) : TOK(LOR)));
-	if (n >= 2 && b[0] == '<' && (b[1] == '>' || b[1] == '<'))
-		return (MATCH(tok, src, 2, b[1] == '>' ? TOK(CMP) : TOK(HEREDOC)));
-	if (n >= 2 && b[1] == '&' && (b[0] == '<' || b[0] == '&'))
-		return (MATCH(tok, src, 2, b[0] == '<' ? TOK(LAMP) : TOK(LAND)));
-	return ((n >= 1 && (c = ft_strchr("=\t\n !&()-;<=>[]{|}", peek))) ?
-			MATCH(tok, src, 1, (uint8_t)*c) : NOP);
+	while (peek == ' ' || peek == '\t')
+	{
+		ft_src_getc(src, NULL, &peek);
+	}
+	if (ft_strchr("=!()-;[]{|}\n", peek))
+	{
+		tok->val = NULL;
+		tok->id = (uint8_t)peek;
+		if ((sz = ft_src_next(src, NULL, 1)) <= 0)
+			return (sz < 0 ? WUT : NOP);
+		return (YEP);
+	}
+	return (NOP);
 }

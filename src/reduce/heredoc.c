@@ -60,6 +60,6 @@ int			sh_reduce_heredoc(t_sh *self, t_tok *tok)
 	free(eof);
 	tok->val = next->val;
 	next->val = NULL;
-	next->id = SH_TOK_SPACE;
+	next->id = SH_TOK_SKIP;
 	return (YEP);
 }

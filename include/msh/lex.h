@@ -24,7 +24,6 @@ enum			e_sh_tok
 	SH_TOK_RAMP,
 	SH_TOK_CMP,
 	SH_TOK_RARROW,
-	SH_TOK_TAB = '\t',
 	SH_TOK_EOL = '\n',
 	SH_TOK_RPIPE = SH_TOK_EOL + 1,
 	SH_TOK_AMPR,
@@ -46,7 +45,7 @@ enum			e_sh_tok
 	SH_TOK_UNTIL,
 	SH_TOK_WHILE,
 	SH_TOK_WORD,
-	SH_TOK_SPACE = ' ',
+	SH_TOK_SKIP,
 	SH_TOK_NOT = '!',
 	SH_TOK_AMP = '&',
 	SH_TOK_LPAR = '(',
@@ -64,6 +63,7 @@ enum			e_sh_tok
 };
 
 extern void		sh_lex(t_lexer *self);
+extern int		sh_lex_skip(t_tok *tok, char peek, t_src *src);
 extern int		sh_lex_word(t_tok *tok, char peek, t_src *src);
 extern int		sh_lex_op(t_tok *tok, char peek, t_src *src);
 extern int		sh_lex_syn(t_tok *tok, char peek, t_src *src);
@@ -71,6 +71,5 @@ extern int		sh_lex_syn(t_tok *tok, char peek, t_src *src);
 extern t_tok	*sh_peek(t_sh *self);
 extern t_tok	*sh_next(t_sh *self, t_tok **next);
 extern void		sh_consume_line(t_sh *self);
-extern t_tok	*sh_skip(t_sh *self, char *ids);
 
 #endif

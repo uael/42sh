@@ -28,16 +28,15 @@ static inline int	lexer_scan_one(t_lexer *self, char peek, t_src *src)
 	t.loc = src->cur;
 	ft_vec_grow(&self->vals, 1);
 	val = ft_vec_end(&self->vals);
-	FT_INIT(val, t_tokv);
-	t.val = val;
+	FT_INIT(t.val = val, t_tokv);
 	rule = (t_lrule *)ft_vec_begin(&self->rules) - 1;
 	while (++rule < (t_lrule *)ft_vec_end(&self->rules))
 		if ((st = (*rule)(&t, peek, src)) < 0)
 			return (st);
 		else if (st == 0)
 		{
-			if ((t.loc.len = (uint16_t)(src->cur.cur - t.loc.cur)) && t.val)
-				++self->vals.len;
+			t.loc.len = (uint16_t)(src->cur.cur - t.loc.cur);
+			t.val ? ++self->vals.len : 0;
 			ft_deq_pushc(&self->toks, &t);
 			return (YEP);
 		}

@@ -18,7 +18,7 @@ inline int	sh_eval_rin(t_sh *self, t_job **job, t_tok *t)
 		return (SH_NEXT);
 	if (!*job)
 		return (ft_retf(SH_BREAK_NOK, N_SH"oops '%c'\n", t->id));
-	if (!(t = sh_skip(self, "\t ")) || t->id != SH_TOK_WORD)
+	if (!(t = sh_peek(self)) || t->id != SH_TOK_WORD)
 		return (t ? ft_retf(SH_BREAK_NOK, N_SH"o '%c'\n", t->id) : (int)SH_OK);
 	sh_next(self, NULL);
 	if (((*job)->in = open(ft_tok_ident(t)->buf, O_RDWR,

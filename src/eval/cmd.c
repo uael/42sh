@@ -50,7 +50,7 @@ inline int			sh_eval_cmd(t_sh *self, t_job **pjob, t_tok *tok)
 		return (WUT);
 	else if (st)
 		return (ft_retf(SH_NOK, N_SH"%s: Command not found\n", av.buf[0]));
-	if ((tok = sh_skip(self, "\t ")) && tok->id == SH_TOK_HEREDOC)
+	if ((tok = sh_peek(self)) && tok->id == SH_TOK_HEREDOC)
 	{
 		sh_next(self, NULL);
 		ft_job_output(&hdoc, ft_tok_ident(tok)->buf);

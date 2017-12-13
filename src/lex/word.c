@@ -14,7 +14,6 @@
 
 #define M(p, c) (s[p] == (c))
 #define W SH_TOK_WORD
-#define TOK(T) SH_TOK_ ## T
 
 static inline int		word_pp(char *peek, t_src *src, char *t)
 {

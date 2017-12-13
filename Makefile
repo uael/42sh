@@ -23,7 +23,7 @@ LNK_PATH = ./ $(3TH_PATH)
 OBJ_NAME = $(SRC_NAME:.c=.o)
 3TH_NAME = ft ncurses
 SRC_NAME = \
-	lex/op.c lex/syn.c lex/word.c \
+	lex/op.c lex/skip.c lex/syn.c lex/word.c \
 	eval/bi.c eval/bi/utils.c eval/bi/cd.c eval/bi/echo.c eval/bi/env.c \
 	eval/bi/exit.c eval/bi/setenv.c eval/bi/unsetenv.c \
 	eval.c eval/cmd.c eval/heredoc.c eval/pipe.c eval/rin.c eval/rout.c \

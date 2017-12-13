@@ -16,10 +16,11 @@ inline void		sh_lex(t_lexer *self)
 {
 	t_lrule *it;
 
-	it = ft_vec_pushn(&self->rules, 3);
-	*it = sh_lex_word;
+	it = ft_vec_pushn(&self->rules, 4);
+	*it = sh_lex_skip;
 	*(it + 1) = sh_lex_op;
-	*(it + 2) = sh_lex_syn;
+	*(it + 2) = sh_lex_word;
+	*(it + 3) = sh_lex_syn;
 }
 
 inline t_tok	*sh_peek(t_sh *self)
@@ -28,6 +29,8 @@ inline t_tok	*sh_peek(t_sh *self)
 
 	if (ft_lexer_peek(&self->lexer, 0, &tok))
 		return (NULL);
+	if (tok->id == SH_TOK_SKIP)
+		sh_next(self, &tok);
 	return (tok);
 }
 
@@ -37,6 +40,8 @@ inline t_tok	*sh_next(t_sh *self, t_tok **next)
 
 	if (ft_lexer_next(&self->lexer, 1, &tok) <= 0)
 		return (NULL);
+	if (tok->id == SH_TOK_SKIP)
+		return (sh_next(self, next));
 	if (next)
 		*next = sh_peek(self);
 	return (tok);
@@ -49,17 +54,4 @@ inline void		sh_consume_line(t_sh *self)
 	while ((tok = sh_peek(self)) && tok->id)
 		if ((tok = sh_next(self, NULL)) && tok->id == '\n')
 			break ;
-}
-
-inline t_tok	*sh_skip(t_sh *self, char *ids)
-{
-	t_tok	*tok;
-
-	while ((tok = sh_peek(self)) && tok->id)
-	{
-		if (!ft_strchr(ids, tok->id))
-			break ;
-		sh_next(self, NULL);
-	}
-	return (tok);
 }
