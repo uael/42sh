@@ -12,7 +12,7 @@
 
 NAME = 21sh
 CC = gcc
-CFLAGS = -Werror -Wextra -Wall -g -fsanitize=address -DDEBUG
+CFLAGS = -Werror -Wextra -Wall -O2
 
 SRC_PATH = ./src/
 OBJ_PATH = ./obj/
@@ -27,7 +27,7 @@ SRC_NAME = \
 	eval/bi.c eval/bi/utils.c eval/bi/cd.c eval/bi/echo.c eval/bi/env.c \
 	eval/bi/exit.c eval/bi/setenv.c eval/bi/unsetenv.c \
 	eval.c eval/cmd.c eval/heredoc.c eval/pipe.c eval/rin.c eval/rout.c \
-	eval/raout.c eval/sep.c \
+	eval/raout.c eval/sep.c eval/lamp.c eval/ramp.c \
 	reduce.c reduce/heredoc.c \
 	cli.c env.c lex.c sh.c
 

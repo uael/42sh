@@ -24,6 +24,12 @@ typedef enum	e_job_kind
 	JOB_FN
 }				t_job_kind;
 
+typedef struct	s_dup2
+{
+	int 		from;
+	int			to;
+}				t_dup2;
+
 struct s_job;
 
 typedef int		(*t_job_fn)(void *data, int ac, char **av, char **env);
@@ -40,8 +46,9 @@ typedef struct	s_job
 	int			st;
 	void		*data;
 	t_bool		pipe;
-	int			from;
-	int			to;
+	int			pin;
+	int			pout;
+	t_vec		dups;
 }				t_job;
 
 typedef t_vec	t_worker;

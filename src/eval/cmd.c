@@ -54,10 +54,7 @@ inline int			sh_eval_cmd(t_sh *self, t_job **pjob, t_tok *tok)
 		sh_next(self, NULL);
 		ft_job_pipe(*pjob);
 		if (tok->val && tok->val->kind == TOKV_I32)
-		{
-			job.from = STDIN_FILENO;
-			job.to = tok->val->val.i32;
-		}
+			job.pin = tok->val->val.i32;
 	}
 	ft_job_data(&job, self);
 	*pjob = ft_worker_push(&self->worker, &job);

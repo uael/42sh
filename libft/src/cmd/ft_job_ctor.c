@@ -15,12 +15,13 @@
 inline void		ft_job_fn(t_job *self, t_job_fn fn, char **av, char **env)
 {
 	FT_INIT(self, t_job);
+	ft_vec_ctor(&self->dups, sizeof(t_dup2));
 	self->kind = JOB_FN;
 	self->av = av;
 	self->env = env;
 	self->fn = fn;
-	self->from = -1;
-	self->to = -1;
+	self->pin = STDIN_FILENO;
+	self->pout = STDOUT_FILENO;
 }
 
 static int		job_output(void *s, int ac, char **av, char **env)
@@ -35,9 +36,10 @@ static int		job_output(void *s, int ac, char **av, char **env)
 inline void		ft_job_output(t_job *self, char *str)
 {
 	FT_INIT(self, t_job);
+	ft_vec_ctor(&self->dups, sizeof(t_dup2));
 	self->kind = JOB_FN;
 	self->fn = job_output;
 	self->data = str;
-	self->from = -1;
-	self->to = -1;
+	self->pin = STDIN_FILENO;
+	self->pout = STDOUT_FILENO;
 }

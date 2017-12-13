@@ -19,6 +19,8 @@ static int			(*g_rules[])(t_sh *self, t_job **pjob, t_tok *tok) =
 	sh_eval_rin,
 	sh_eval_rout,
 	sh_eval_raout,
+	sh_eval_ramp,
+	sh_eval_lamp,
 	sh_eval_bi,
 	sh_eval_cmd,
 	NULL

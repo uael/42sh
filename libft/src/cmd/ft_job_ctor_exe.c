@@ -57,10 +57,11 @@ inline int		ft_job_cmd(t_job *self, char *path, char **av, char **env)
 		return (THROW(WUT));
 	av[0] = ft_strdup(buf);
 	FT_INIT(self, t_job);
+	ft_vec_ctor(&self->dups, sizeof(t_dup2));
 	self->kind = JOB_EXE;
 	self->av = av;
 	self->env = env;
-	self->from = -1;
-	self->to = -1;
+	self->pin = STDIN_FILENO;
+	self->pout = STDOUT_FILENO;
 	return (YEP);
 }

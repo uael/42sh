@@ -19,4 +19,5 @@ inline void		ft_job_dtor(t_job *self)
 	if (self->kind == JOB_EXE)
 		free(self->av[0]);
 	free(self->av);
+	ft_vec_dtor(&self->dups, NULL);
 }
