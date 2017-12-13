@@ -18,6 +18,7 @@ static int			(*g_rules[])(t_sh *self, t_job **pjob, t_tok *tok) =
 	sh_eval_pipe,
 	sh_eval_rin,
 	sh_eval_rout,
+	sh_eval_raout,
 	sh_eval_heredoc,
 	sh_eval_bi,
 	sh_eval_exe,
@@ -39,11 +40,12 @@ static inline int	eval_rules(t_sh *self, t_tok *tok, t_job **job)
 			break ;
 		else if (st == SH_BREAK)
 			return (YEP);
-		else if (st == SH_BREAK_NOK && sh_peek(self) == tok)
+		else if (st == SH_BREAK_NOK)
 		{
 			sh_consume_line(self);
 			sh_clean(self);
-			return (self->st = NOP);
+			self->st = NOP;
+			return (YEP);
 		}
 	return (SH_NEXT);
 }

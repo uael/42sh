@@ -26,15 +26,15 @@ static int	av_count(char **av)
 	return ((int)(av - beg));
 }
 
-static int	job_exec(t_job *self, int *wr, int *rd, int *dup)
+static int	job_exec(t_job *self, int *wr, int *rd)
 {
 	if (wr && (dup2(wr[1], STDOUT_FILENO) < 0 || close(wr[0]) || close(wr[1])))
 		return (THROW(WUT));
 	if (rd && (dup2(rd[0], STDIN_FILENO) < 0 || close(rd[0]) || close(rd[1])))
 		return (THROW(WUT));
-	if (dup[0] >= 0 && dup2(dup[0], STDIN_FILENO) < 0)
+	if (self->in >= 0 && dup2(self->in, STDIN_FILENO) < 0)
 		return (THROW(WUT));
-	if (dup[1] >= 0 && dup2(dup[1], STDOUT_FILENO) < 0)
+	if (self->out >= 0 && dup2(self->out, STDOUT_FILENO) < 0)
 		return (THROW(WUT));
 	if (self->kind == JOB_FN)
 		exit(self->fn(self->data, av_count(self->av), self->av, self->env));
@@ -45,26 +45,16 @@ static int	job_exec(t_job *self, int *wr, int *rd, int *dup)
 	}
 }
 
-int			ft_job_run(t_job *self, int *wr, int *rd)
+int			ft_job_run(t_job *job, int *wr, int *rd)
 {
 	pid_t	pid;
-	int		out;
-	int		in;
 
-	out = -1;
-	in = -1;
-	if (self->out &&
-		(out = open(self->out, O_RDWR | O_CREAT, S_IRUSR | S_IWUSR)) < 0)
-		return (THROW(WUT));
-	if (self->in &&
-		(in = open(self->in, O_RDWR, S_IRUSR | S_IWUSR)) < 0)
-		return (THROW(WUT));
 	if ((pid = fork()) < 0)
 		return (THROW(WUT));
 	if (pid == 0)
-		return (job_exec(self, wr, rd, (int[2]){in, out}));
-	if ((in >= 0 && close(in)) || (out >= 0 && close(out)))
+		return (job_exec(job, wr, rd));
+	if ((job->in >= 0 && close(job->in)) || (job->out >= 0 && close(job->out)))
 		return (THROW(WUT));
-	self->pid = pid;
+	job->pid = pid;
 	return (YEP);
 }

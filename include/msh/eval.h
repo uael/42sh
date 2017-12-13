@@ -34,6 +34,7 @@ extern int		sh_eval_exe(t_sh *self, t_job **pjob, t_tok *tok);
 extern int		sh_eval_pipe(t_sh *self, t_job **job, t_tok *tok);
 extern int		sh_eval_rin(t_sh *self, t_job **job, t_tok *t);
 extern int		sh_eval_rout(t_sh *self, t_job **pjob, t_tok *t);
+extern int		sh_eval_raout(t_sh *self, t_job **pjob, t_tok *t);
 extern int		sh_eval_heredoc(t_sh *self, t_job **pjob, t_tok *tok);
 
 #endif

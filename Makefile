@@ -25,7 +25,7 @@ OBJ_NAME = $(SRC_NAME:.c=.o)
 SRC_NAME = \
 	bi.c bi/cd.c bi/echo.c bi/env.c bi/exit.c bi/setenv.c bi/unsetenv.c \
 	eval.c eval/bi.c eval/exe.c eval/heredoc.c eval/pipe.c eval/rin.c \
-	eval/rout.c eval/sep.c \
+	eval/rout.c eval/raout.c eval/sep.c \
 	reduce.c reduce/heredoc.c \
 	cli.c env.c exe.c lex.c sh.c toks.c
 

@@ -40,8 +40,8 @@ typedef struct	s_job
 	int			st;
 	t_bool		pipe;
 	void		*data;
-	char		*out;
-	char		*in;
+	int			out;
+	int			in;
 }				t_job;
 
 typedef t_vec	t_worker;
@@ -54,7 +54,7 @@ extern void		ft_job_data(t_job *self, void *data);
 extern void		ft_job_pipe(t_job *self);
 extern void		ft_job_free_data(t_job *self);
 extern void		ft_job_dtor(t_job *self);
-extern int		ft_job_run(t_job *self, int *wr, int *rd);
+extern int		ft_job_run(t_job *job, int *wr, int *rd);
 
 extern void		ft_worker_ctor(t_worker *jobs);
 extern void		ft_worker_dtor(t_worker *self);

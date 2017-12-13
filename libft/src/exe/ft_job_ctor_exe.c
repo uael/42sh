@@ -60,5 +60,7 @@ inline int		ft_job_exe(t_job *self, char *path, char **av, char **env)
 	self->kind = JOB_EXE;
 	self->av = av;
 	self->env = env;
+	self->out = -1;
+	self->in = -1;
 	return (YEP);
 }
