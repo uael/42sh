@@ -73,7 +73,7 @@ inline void	sh_prompt(t_sh *self, char *prompt)
 	ft_puts(0, prompt);
 }
 
-extern void		sh_clean(t_sh *self)
+extern void	sh_clean(t_sh *self)
 {
 	ft_omstream_clear(&self->bi_out);
 	ft_omstream_clear(&self->bi_err);

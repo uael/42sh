@@ -50,8 +50,8 @@ inline int				sh_tok_syntax(t_tok *tok, char peek, t_src *src)
 	n = 0;
 	b[n] = peek;
 	while (++n < 3 && b[n - 1] && b[n - 1] != '\n')
-		if (ft_src_peek(src, b + n, (size_t) n))
-			break;
+		if (ft_src_peek(src, b + n, n))
+			break ;
 	if (n == 3 && b[0] == '>' && b[1] == '>' && b[2] == '-')
 		return (MATCH(tok, src, 3, SH_TOK_RARROW));
 	if (n >= 2 && b[1] == '>' && (b[0] == '>' || b[0] == '&'))
@@ -122,7 +122,7 @@ inline int				sh_tok_word(t_tok *tok, char peek, t_src *src)
 	return (YEP);
 }
 
-inline char 			*sh_tok_str(t_tok *tok)
+inline char				*sh_tok_str(t_tok *tok)
 {
 	if (tok->id == SH_TOK_WORD)
 		return (ft_tok_ident(tok)->buf);

@@ -12,7 +12,7 @@
 
 #include "msh/eval.h"
 
-static int heredoc_rd(t_src *src, t_dstr *hdoc, char *eof)
+static int	heredoc_rd(t_src *src, t_dstr *hdoc, char *eof)
 {
 	char	c;
 	size_t	l;
@@ -47,12 +47,10 @@ int			sh_reduce_heredoc(t_sh *self, t_tok *tok)
 
 	if ((next = tok + 1) == ft_deq_end(&self->lexer.toks) ||
 		next->id != SH_TOK_WORD)
-		return (ft_retf((self->st = 1) & 0,
-			N_SH"Unexpected token '%c'\n", tok->id));
+		return (ft_retf((self->st = 1) & 0, N_SH"oops '%c'\n", tok->id));
 	if (ft_deq_size(&self->lexer.srcs) == 0 ||
 		!(src = ft_deq_at(&self->lexer.srcs, 0)))
-		return (ft_retf((self->st = 1) & 0,
-			N_SH"Unexpected token '%c'\n", tok->id));
+		return (ft_retf((self->st = 1) & 0, N_SH"oops '%c'\n", tok->id));
 	hdoc = ft_tokv_ident(next->val);
 	eof = ft_strdup(hdoc->buf);
 	hdoc->len = 0;

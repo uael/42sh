@@ -12,16 +12,15 @@
 
 #include "msh/eval.h"
 
-inline int	sh_eval_rin(t_sh *self, t_job **job, t_tok *tok)
+inline int	sh_eval_rin(t_sh *self, t_job **job, t_tok *t)
 {
-	if (tok->id != SH_TOK_RIN)
+	if (t->id != SH_TOK_RIN)
 		return (SH_NEXT);
 	if (!*job)
-		return (ft_retf(SH_BREAK_NOK, N_SH"Unexpected token '%c'\n", tok->id));
-	if (!(tok = sh_skip(self, "\t ")) || tok->id != SH_TOK_WORD)
-		return (tok ? ft_retf(SH_BREAK_NOK, N_SH"Unexpected token '%c'\n",
-			tok->id) : (int)SH_OK);
-	(*job)->in = ft_tok_ident(tok)->buf;
+		return (ft_retf(SH_BREAK_NOK, N_SH"oops '%c'\n", t->id));
+	if (!(t = sh_skip(self, "\t ")) || t->id != SH_TOK_WORD)
+		return (t ? ft_retf(SH_BREAK_NOK, N_SH"o '%c'\n", t->id) : (int)SH_OK);
+	(*job)->in = ft_tok_ident(t)->buf;
 	sh_next(self, NULL);
 	return (SH_OK);
 }

@@ -15,7 +15,7 @@
 
 # include <libft.h>
 
-enum		e_sh_tok
+enum			e_sh_tok
 {
 	SH_TOK_END = '\0',
 	SH_TOK_HEREDOC = SH_TOK_END + 1,
@@ -65,6 +65,6 @@ enum		e_sh_tok
 
 extern int		sh_tok_word(t_tok *tok, char peek, t_src *src);
 extern int		sh_tok_syntax(t_tok *tok, char peek, t_src *src);
-extern char 	*sh_tok_str(t_tok *tok);
+extern char		*sh_tok_str(t_tok *tok);
 
 #endif

@@ -16,7 +16,7 @@
 
 static t_sh	*g_sh;
 
-static int 			sh_on_errno(int rcode, void *arg)
+static int			sh_on_errno(int rcode, void *arg)
 {
 	if (!errno)
 		return (rcode);

@@ -12,7 +12,7 @@
 
 #include "msh/eval.h"
 
-static int	(*g_rules[])(t_sh *self, t_job **pjob, t_tok *tok) =
+static int			(*g_rules[])(t_sh *self, t_job **pjob, t_tok *tok) =
 {
 	sh_eval_sep,
 	sh_eval_pipe,
@@ -48,7 +48,7 @@ static inline int	eval_rules(t_sh *self, t_tok *tok, t_job **job)
 	return (SH_NEXT);
 }
 
-inline int	sh_eval(t_sh *self)
+inline int			sh_eval(t_sh *self)
 {
 	t_tok	*tok;
 	int		st;
