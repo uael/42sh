@@ -15,7 +15,6 @@
 inline void		ft_ifstream_flush(t_ifstream *self)
 {
 	(void)self;
-	ENO_THROW(WUT, ENIMPL);
 }
 
 inline int		ft_ifstream_rewind(t_ifstream *self, size_t n)

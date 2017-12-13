@@ -6,11 +6,12 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:33 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/10 19:25:16 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/13 08:19:07 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft/io/ifstream.h"
+#include "libft/io.h"
 #include "libft/ex.h"
 
 static inline void		ifs_alloc(t_ifstream *self)
@@ -76,7 +77,7 @@ inline int				ft_ifstream_peek(t_ifstream *self, char *c, size_t n)
 	ssize_t sz;
 
 	if ((sz = ifs_bufferize(self, n + 1)) < (ssize_t)n + 1)
-		return (sz < 0 ? (int)sz : 0);
+		return (sz < 0 ? WUT : NOP);
 	if (c)
 		*c = self->buf[self->cur - self->beg + n];
 	return (YEP);
