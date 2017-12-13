@@ -76,7 +76,7 @@ static int		env_finalize(t_sh *sh, char *path, char ***vars, t_job *out)
 		sh_bi_retf(sh, NOP, N_ENV"%s: Command not found\n", av.buf[0]);
 		free(vars[1]);
 		ft_vstr_dtor(&av, NULL);
-		return (NOP);
+		return (BI_NOP);
 	}
 	ft_job_cb(out, env_job_cb);
 	return (YEP);
@@ -94,7 +94,7 @@ inline int		sh_bi_env(t_sh *sh, int ac, char **av, t_job *out)
 	ft_vstr_ctor(&e);
 	ft_memset(opt, flag = 0, 2 * sizeof(char *));
 	if ((s = env_parse_opts(sh, av, (void *[2]){&flag, opt}, &e)) <= 0)
-		return (NOP);
+		return (BI_NOP);
 	if ((s == (i = -1) + 2 && s == ac) || !(flag & ENV_I))
 		while (++i < (int)sh->env.len)
 		{

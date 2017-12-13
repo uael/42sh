@@ -19,7 +19,6 @@ static int			(*g_rules[])(t_sh *self, t_job **pjob, t_tok *tok) =
 	sh_eval_rin,
 	sh_eval_rout,
 	sh_eval_raout,
-	sh_eval_heredoc,
 	sh_eval_bi,
 	sh_eval_cmd,
 	NULL
@@ -37,10 +36,7 @@ static inline int	eval_rules(t_sh *self, t_tok *tok, t_job **job)
 		else if (st == SH_NEXT)
 			continue ;
 		else if (st == SH_OK || st == SH_NOK)
-		{
-			self->st = st;
 			break ;
-		}
 		else if (st == SH_BREAK)
 			return (YEP);
 		else if (st == SH_BREAK_NOK)
@@ -59,8 +55,10 @@ inline int			sh_eval(t_sh *self)
 	int		st;
 	t_job	*job;
 
-	if (sh_reduce(self))
+	if ((st = sh_reduce(self)) < 0)
 		return (WUT);
+	if (st)
+		return (self->st = st);
 	job = NULL;
 	while (1)
 		if (!(tok = sh_next(self, NULL)))

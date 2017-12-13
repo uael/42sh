@@ -16,7 +16,7 @@ inline int	sh_eval_rout(t_sh *self, t_job **job, t_tok *t)
 {
 	char *word;
 
-	if (t->id != SH_TOK_ROUT)
+	if (t->id != SH_TOK_ROUT && t->id != SH_TOK_RPOUT)
 		return (SH_NEXT);
 	if (!*job)
 		return (ft_retf(SH_BREAK_NOK, N_SH"oops '%c'\n", t->id));

@@ -58,7 +58,6 @@ inline int				sh_eval_bi(t_sh *self, t_job **pjob, t_tok *tok)
 	t_vstr		av;
 	t_bi_fn		bi;
 	t_job		job;
-	t_job		hdoc;
 
 	if (tok->id != SH_TOK_WORD)
 		return (SH_NEXT);
@@ -68,12 +67,15 @@ inline int				sh_eval_bi(t_sh *self, t_job **pjob, t_tok *tok)
 	eval_bi_av(self, &av, ft_tok_ident(tok)->buf);
 	self->st = bi(self, (int)av.len, av.buf, &job);
 	job.av ? 0 : sh_bi_job(&job, av.buf, self->env.buf);
-	if ((tok = sh_peek(self)) && tok->id == SH_TOK_HEREDOC)
+	if ((tok = sh_peek(self)) && sh_eval_heredoc(self, pjob, tok) == SH_OK)
 	{
 		sh_next(self, NULL);
-		ft_job_output(&hdoc, ft_tok_ident(tok)->buf);
-		ft_worker_push(&self->worker, &hdoc);
 		ft_job_pipe(*pjob);
+		if (tok->val && tok->val->kind == TOKV_I32)
+		{
+			job.from = tok->val->val.i32;
+			job.to = STDIN_FILENO;
+		}
 	}
 	ft_job_data(&job, self);
 	*pjob = ft_worker_push(&self->worker, &job);

@@ -12,7 +12,7 @@
 
 #include "msh/eval.h"
 
-static inline void	eval_bi_cmd(t_sh *self, t_vstr *av, char *exe)
+static inline void	eval_cmd_av(t_sh *self, t_vstr *av, char *exe)
 {
 	t_tok *end;
 
@@ -41,23 +41,25 @@ inline int			sh_eval_cmd(t_sh *self, t_job **pjob, t_tok *tok)
 	t_vstr	av;
 	int		st;
 	t_job	job;
-	t_job	hdoc;
 
 	if (tok->id != SH_TOK_WORD)
 		return (SH_NEXT);
-	eval_bi_cmd(self, &av, ft_tok_ident(tok)->buf);
+	eval_cmd_av(self, &av, ft_tok_ident(tok)->buf);
 	if ((st = ft_job_cmd(&job, "PATH", av.buf, self->env.buf)) < 0)
 		return (WUT);
-	else if (st)
+	else if (st && (self->st = 127))
 		return (ft_retf(SH_NOK, N_SH"%s: Command not found\n", av.buf[0]));
-	if ((tok = sh_peek(self)) && tok->id == SH_TOK_HEREDOC)
+	if ((tok = sh_peek(self)) && sh_eval_heredoc(self, pjob, tok) == SH_OK)
 	{
 		sh_next(self, NULL);
-		ft_job_output(&hdoc, ft_tok_ident(tok)->buf);
-		*pjob = ft_worker_push(&self->worker, &hdoc);
 		ft_job_pipe(*pjob);
+		if (tok->val && tok->val->kind == TOKV_I32)
+		{
+			job.from = STDIN_FILENO;
+			job.to = tok->val->val.i32;
+		}
 	}
 	ft_job_data(&job, self);
 	*pjob = ft_worker_push(&self->worker, &job);
-	return (SH_NOK);
+	return (SH_OK);
 }

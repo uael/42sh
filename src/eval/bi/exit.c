@@ -20,20 +20,24 @@ inline int	sh_bi_exit(t_sh *sh, int ac, char **av, t_job *out)
 	size_t	i;
 	size_t	j;
 	char	*a;
+	int 	c;
 
 	(void)out;
 	if (ac > 2)
-		return (sh_bi_retf(sh, NOP, N_EXIT"%e\n", E2BIG));
+		return (sh_bi_retf(sh, 128, N_EXIT"%e\n", E2BIG));
 	if (ac < 2)
 		exit(sh->st);
 	a = av[1];
 	if (!(i = ft_strlen(a)) || i > 19)
-		ft_fatal(NOP, NULL, NULL, N_EXIT"%s: %s\n", a, M_NREQ);
+		ft_fatal(128, NULL, NULL, N_EXIT"%s: %s\n", a, M_NREQ);
 	j = 0;
 	while (j < i)
 		if (!ft_isdigit(a[j]) && !ft_isspace(a[j]))
-			ft_fatal(NOP, NULL, NULL, N_EXIT"%s: %s\n", a, M_NREQ);
+			ft_fatal(128, NULL, NULL, N_EXIT"%s: %s\n", a, M_NREQ);
 		else
 			j++;
-	exit((int)ft_atoi(a));
+	c = (int)ft_atoi(a);
+	if (ft_intlen(c, 10) != ft_strlen(a))
+		exit(128);
+	exit(c > 255 || c < 0 ? 255 : 0);
 }

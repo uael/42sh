@@ -11,6 +11,17 @@
 /* ************************************************************************** */
 
 #include "msh/eval.h"
+#include "msh/sig.h"
+
+static int			g_st;
+
+static void			worker_sigint_hdl(int sign)
+{
+	(void)sign;
+	ft_putc(1, '\n');
+	ft_putc(0, '\n');
+	g_st = 130;
+}
 
 inline int	sh_eval_sep(t_sh *self, t_job **job, t_tok *tok)
 {
@@ -21,8 +32,13 @@ inline int	sh_eval_sep(t_sh *self, t_job **job, t_tok *tok)
 	{
 		if (ft_vec_size(&self->worker))
 		{
+			g_st = 0;
+			signal(SIGINT,  worker_sigint_hdl);
 			ft_worker_run(&self->worker);
 			self->st = ft_worker_join(&self->worker);
+			if (g_st)
+				self->st = g_st;
+			signal(SIGINT, sh_sigint_hdl);
 		}
 		sh_clean(self);
 		if (id == '\n')

@@ -38,13 +38,13 @@ static int		cd_test(t_sh *sh, char *path)
 	struct stat	s;
 
 	if (!*path || lstat(path, &s) != 0)
-		return (sh_bi_retf(sh, NOP, N_CD"%s: %e\n", path, errno));
+		return (sh_bi_retf(sh, BI_NOP, N_CD"%s: %e\n", path, errno));
 	if (!S_ISDIR(s.st_mode) && !S_ISLNK(s.st_mode))
-		return (sh_bi_retf(sh, NOP, N_CD"%s: %e\n", path, ENOTDIR));
+		return (sh_bi_retf(sh, BI_NOP, N_CD"%s: %e\n", path, ENOTDIR));
 	if (!S_ISLNK(s.st_mode) && access(path, R_OK) != 0)
-		return (sh_bi_retf(sh, NOP, N_CD"%s: %e\n", path, errno));
+		return (sh_bi_retf(sh, BI_NOP, N_CD"%s: %e\n", path, errno));
 	if (access(path, X_OK) != 0)
-		return (sh_bi_retf(sh, NOP, N_CD"%s: %e\n", path, errno));
+		return (sh_bi_retf(sh, BI_NOP, N_CD"%s: %e\n", path, errno));
 	return (YEP);
 }
 
@@ -54,7 +54,7 @@ static int		cd_chdir(t_sh *sh, char *path)
 
 	if (chdir(path))
 	{
-		st = sh_bi_retf(sh, NOP, N_CD"%s: %e\n", path, errno);
+		st = sh_bi_retf(sh, BI_NOP, N_CD"%s: %e\n", path, errno);
 		free(path);
 		return (st);
 	}
@@ -71,13 +71,13 @@ inline int		sh_bi_cd(t_sh *sh, int ac, char **av, t_job *out)
 
 	(void)out;
 	if (ac > 3)
-		return (sh_bi_retf(sh, NOP, N_CD"%e\n", E2BIG));
+		return (sh_bi_retf(sh, BI_NOP, N_CD"%e\n", E2BIG));
 	if (ac == 3 && ft_strcmp("-P", av[1]) != 0)
-		return (sh_bi_retf(sh, NOP, N_CD"%e '%s'\n", EINVAL, av[1]));
+		return (sh_bi_retf(sh, BI_NOP, N_CD"%e '%s'\n", EINVAL, av[1]));
 	if (!(path = cd_path(ac, av, sh->env.buf, (t_bool)(ac == 3))))
-		return (sh_bi_retf(sh, NOP, N_CD"%s\n", "Environ is empty"));
+		return (sh_bi_retf(sh, BI_NOP, N_CD"%s\n", "Environ is empty"));
 	if (cd_test(sh, path))
-		return (NOP);
+		return (BI_NOP);
 	if ((pwd = ft_getenv(sh->env.buf, "PWD")))
 		sh_setenv(&sh->env, "OLDPWD", pwd);
 	if (ft_pathabs(path, buf, ac != 3 && pwd ? pwd : NULL))

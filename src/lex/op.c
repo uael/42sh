@@ -31,8 +31,8 @@ static inline int		lex_op_3(t_tok *tok, t_src *src, char *b)
 	char d;
 
 	d = ft_isdigit(*b) ? *b++ : (char)'\0';
-	if (b[0] == '>' && b[1] == '>' && b[2] == '-')
-		return (lex_op_match(tok, src, 3, (int[2]){SH_TOK_RARROW, d}));
+	if (b[0] == '<' && b[1] == '<' && b[2] == '-')
+		return (lex_op_match(tok, src, 3, (int[2]){SH_TOK_HEREDOCT, d}));
 	return (NOP);
 }
 
@@ -48,7 +48,7 @@ static inline int		lex_op_2(t_tok *tok, t_src *src, char *b)
 	if (b[0] == '>' && b[1] == '&')
 		return (lex_op_match(tok, src, 2, (int[2]){SH_TOK_RAMP, d}));
 	if (b[0] == '>' && b[1] == '|')
-		return (lex_op_match(tok, src, 2, (int[2]){SH_TOK_RPIPE, d}));
+		return (lex_op_match(tok, src, 2, (int[2]){SH_TOK_RPOUT, d}));
 	if (b[0] == '|' && b[1] == '|')
 		return (lex_op_match(tok, src, 2, (int[2]){SH_TOK_LOR, d}));
 	if (b[0] == '<' && b[1] == '>')

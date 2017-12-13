@@ -21,7 +21,7 @@ inline int	sh_reduce(t_sh *self)
 		return (st < 0 ? WUT : NOP);
 	tok = (t_tok *)ft_deq_begin(&self->lexer.toks) - 1;
 	while (++tok != ft_deq_end(&self->lexer.toks))
-		if (tok->id == SH_TOK_HEREDOC && !tok->val)
+		if (tok->id == SH_TOK_HEREDOC || tok->id == SH_TOK_HEREDOCT)
 		{
 			if (sh_reduce_heredoc(self, tok))
 				return (WUT);

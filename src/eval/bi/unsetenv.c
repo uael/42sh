@@ -22,14 +22,14 @@ inline int	sh_bi_unsetenv(t_sh *sh, int ac, char **av, t_job *out)
 
 	(void)out;
 	if (ac < 2)
-		return (sh_bi_retf(sh, NOP, N_UNSET"%e\n", EINVAL));
+		return (sh_bi_retf(sh, BI_NOP, N_UNSET"%e\n", EINVAL));
 	i = 0;
 	fst = YEP;
 	while (++i < ac)
 		if (ft_strchr(av[i], '='))
-			return (sh_bi_retf(sh, NOP, N_UNSET"%s\n", "Syntax error"));
+			return (sh_bi_retf(sh, BI_NOP, N_UNSET"%s\n", "Syntax error"));
 		else if (!sh_unsetenv(&sh->env, av[i], 1))
-			sh_bi_retf(sh, (fst = NOP), N_UNSET"%s: Environ not fount\n",
+			sh_bi_retf(sh, (fst = BI_NOP), N_UNSET"%s: Environ not fount\n",
 				av[i]);
 	return (fst);
 }

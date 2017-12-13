@@ -15,6 +15,8 @@
 
 # include "msh/eval.h"
 
+# define BI_NOP (2)
+
 typedef int		(*t_bi_fn)(t_sh *sh, int ac, char **av, t_job *out);
 
 extern int		sh_bi_retf(t_sh *self, int code, char const *msg, ...);

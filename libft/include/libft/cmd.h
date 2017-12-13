@@ -38,8 +38,8 @@ typedef struct	s_job
 	t_job_fn	fn;
 	t_job_cb	cb;
 	int			st;
-	t_bool		pipe;
 	void		*data;
+	t_bool		pipe;
 	int			from;
 	int			to;
 }				t_job;
@@ -52,7 +52,6 @@ extern void		ft_job_output(t_job *self, char *str);
 extern void		ft_job_cb(t_job *self, t_job_cb cb);
 extern void		ft_job_data(t_job *self, void *data);
 extern void		ft_job_pipe(t_job *self);
-extern void		ft_job_free_data(t_job *self);
 extern void		ft_job_dtor(t_job *self);
 extern int		ft_job_run(t_job *job, int *wr, int *rd);
 
