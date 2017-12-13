@@ -18,7 +18,7 @@ static inline int		lex_op_match(t_tok *tok, t_src *src, size_t n, int *m)
 
 	tok->id = (uint8_t)m[0];
 	if (m[1])
-		ft_tokv_init_i32(tok->val, m[1] + '0');
+		ft_tokv_init_i32(tok->val, m[1] - '0');
 	else
 		tok->val = NULL;
 	if ((sz = ft_src_next(src, NULL, m[1] ? n + 1 : n)) <= 0)

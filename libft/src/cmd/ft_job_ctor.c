@@ -19,8 +19,8 @@ inline void		ft_job_fn(t_job *self, t_job_fn fn, char **av, char **env)
 	self->av = av;
 	self->env = env;
 	self->fn = fn;
-	self->out = -1;
-	self->in = -1;
+	self->from = -1;
+	self->to = -1;
 }
 
 static int		job_output(void *s, int ac, char **av, char **env)
@@ -38,6 +38,6 @@ inline void		ft_job_output(t_job *self, char *str)
 	self->kind = JOB_FN;
 	self->fn = job_output;
 	self->data = str;
-	self->out = -1;
-	self->in = -1;
+	self->from = -1;
+	self->to = -1;
 }

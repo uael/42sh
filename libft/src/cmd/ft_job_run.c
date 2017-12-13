@@ -32,9 +32,7 @@ static int	job_exec(t_job *self, int *wr, int *rd)
 		return (THROW(WUT));
 	if (rd && (dup2(rd[0], STDIN_FILENO) < 0 || close(rd[0]) || close(rd[1])))
 		return (THROW(WUT));
-	if (self->in >= 0 && dup2(self->in, STDIN_FILENO) < 0)
-		return (THROW(WUT));
-	if (self->out >= 0 && dup2(self->out, STDOUT_FILENO) < 0)
+	if (self->to >= 0 && self->from >= 0 && dup2(self->to, self->from) < 0)
 		return (THROW(WUT));
 	if (self->kind == JOB_FN)
 		exit(self->fn(self->data, av_count(self->av), self->av, self->env));
@@ -53,7 +51,7 @@ int			ft_job_run(t_job *job, int *wr, int *rd)
 		return (THROW(WUT));
 	if (pid == 0)
 		return (job_exec(job, wr, rd));
-	if ((job->in >= 0 && close(job->in)) || (job->out >= 0 && close(job->out)))
+	if (job->to >= 0 && close(job->to))
 		return (THROW(WUT));
 	job->pid = pid;
 	return (YEP);

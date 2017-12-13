@@ -40,8 +40,8 @@ typedef struct	s_job
 	int			st;
 	t_bool		pipe;
 	void		*data;
-	int			out;
-	int			in;
+	int			from;
+	int			to;
 }				t_job;
 
 typedef t_vec	t_worker;
