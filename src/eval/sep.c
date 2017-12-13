@@ -40,11 +40,6 @@ inline int	sh_eval_sep(t_sh *self, t_job **job, t_tok *tok)
 			self->st = g_st;
 		signal(SIGINT, sh_sigint_hdl);
 	}
-	else if (id == ';')
-	{
-		ft_putf(2, N_SH"Syntax error '%c'\n", id);
-		self->st = NOP;
-	}
 	sh_clean(self);
 	if (id == '\n')
 		return (SH_BREAK);
