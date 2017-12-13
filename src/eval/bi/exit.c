@@ -20,7 +20,7 @@ inline int	sh_bi_exit(t_sh *sh, int ac, char **av, t_job *out)
 	size_t	i;
 	size_t	j;
 	char	*a;
-	int 	c;
+	int		c;
 
 	(void)out;
 	if (ac > 2)
