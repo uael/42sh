@@ -55,9 +55,9 @@ static inline void		eval_bi_av(t_sh *self, t_vstr *av, char *exe)
 
 inline int				sh_eval_bi(t_sh *self, t_job **pjob, t_tok *tok)
 {
-	t_vstr		av;
-	t_bi_fn		bi;
-	t_job		job;
+	t_vstr	av;
+	t_bi_fn	bi;
+	t_job	job;
 
 	if (tok->id != SH_TOK_WORD)
 		return (SH_NEXT);
