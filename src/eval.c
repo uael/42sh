@@ -57,10 +57,8 @@ inline int			sh_eval(t_sh *self)
 	int		st;
 	t_job	*job;
 
-	if ((st = sh_reduce(self)) < 0)
+	if (sh_reduce(self) < 0)
 		return (WUT);
-	if (st)
-		return (self->st = st);
 	job = NULL;
 	while (1)
 		if (!(tok = sh_next(self, NULL)))
