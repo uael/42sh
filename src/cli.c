@@ -69,6 +69,7 @@ static inline int	main_stdin(t_sh *sh, char **env)
 		if (sh_eval(sh))
 			break ;
 	}
+	signal(SIGINT, SIG_DFL);
 	return (ft_dtor(sh->st, (t_dtor)sh_dtor, sh, NULL));
 }
 
