@@ -58,19 +58,35 @@ static inline int	main_av(t_sh *sh, int ac, char **av, char **env)
 	return (sh->st);
 }
 
+static int			on_up(t_tc *tc, int ch)
+{
+	t_sh *self;
+
+	(void)ch;
+	self = tc->arg;
+	if (self->cursor)
+		--self->cursor;
+	if (self->cursor < ft_vstr_size(&self->history))
+	{
+		tc_clrln(tc);
+		tc_puts(tc, *ft_vstr_at(&self->history, self->cursor));
+	}
+	return (YEP);
+}
+
 static inline int	main_stdin(t_sh *sh, char **env)
 {
+	t_tc tc;
+
 	FT_INIT(sh, t_sh);
 	ft_ex_register(0, ft_ex_hdl(sh_on_errno, NULL), NULL);
 	sh_init_stream(sh, SH_STDIN, env, g_cin);
 	sh_history_init(sh, ".21shry");
 	signal(SIGINT, sh_sigint_hdl);
-	while (1)
-	{
-		sh_prompt(sh, SH_PROMPT(sh));
-		if (sh_eval(sh))
-			break ;
-	}
+	if (tc_ctor(&tc, env, sh))
+		return (NOP);
+	tc_hook(&tc, TRK_UP, on_up);
+	tc_loop(&tc);
 	sh_history_save(sh, ".21shry");
 	signal(SIGINT, SIG_DFL);
 	return (ft_dtor(sh->st, (t_dtor)sh_dtor, sh, NULL));

@@ -44,7 +44,25 @@ inline int		ft_trm_getch(t_trm *t)
 
 inline ssize_t	ft_trm_puts(t_trm *self, char const *s)
 {
-	return (ft_ostream_puts(&self->out, s));
+	ssize_t	c;
+
+	c = (s ? ft_ostream_puts(&self->out, s) : 0);
+	ft_ostream_flush(&self->out);
+	return (c);
+}
+
+inline ssize_t	ft_trm_putnl(t_trm *self, char const *s)
+{
+	size_t	l;
+	ssize_t	c;
+
+	if (!s || !(l = ft_strlen(s)))
+		return (0);
+	if (s[l - 1] == '\n')
+		--l;
+	c = ft_ostream_write(&self->out, s, l);
+	ft_ostream_flush(&self->out);
+	return (c);
 }
 
 inline ssize_t	ft_trm_putr(t_trm *self, char c, size_t n)

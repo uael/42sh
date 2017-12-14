@@ -32,7 +32,10 @@ int	sh_history_init(t_sh *self, char *filename)
 	ifs.fd = fd;
 	ifs.filename = path;
 	while ((ln = ft_ifstream_getl(&ifs, '\n')))
-		ft_dqstr_pushc(&self->history, ln);
+	{
+		ft_vstr_pushc(&self->history, ln);
+	}
+	self->cursor = ft_vstr_size(&self->history);
 	if (errno)
 		return (WUT);
 	free(path);
@@ -58,8 +61,8 @@ int	sh_history_save(t_sh *self, char *filename)
 	FT_INIT(&ofs, t_ofstream);
 	ofs.fd = fd;
 	ofs.filename = path;
-	if ((it = ft_dqstr_begin(&self->history)))
-		while (it != ft_dqstr_end(&self->history))
+	if ((it = ft_vstr_begin(&self->history)))
+		while (it != ft_vstr_end(&self->history))
 			ft_ofstream_puts(&ofs, *it++);
 	free(path);
 	ft_ofstream_close(&ofs);

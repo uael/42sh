@@ -56,18 +56,57 @@ inline int			sh_eval(t_sh *self)
 	t_tok	*tok;
 	int		st;
 	t_job	*job;
-	t_src	src;
+	int 	ch;
 
-	if (self->mode == SH_STDIN)
-	{
-		if (!(self->ln = ft_src_getl(&self->src, '\n')))
-			return (NOP);
-		ft_dqstr_pushc(&self->history, self->ln);
-		while (ft_dqstr_size(&self->history) > 100)
-			ft_dqstr_shift(&self->history, NULL);
-		ft_src_init_str(&src, self->ln);
-		ft_lexer_push(&self->lexer, &src);
-	}
+	ft_trm_puts(&self->trm, tgetstr("sc", NULL));
+	while (1)
+		if (self->mode == SH_STDIN)
+		{
+			if ((ch = ft_trm_getch(&self->trm)) >= 0)
+			{
+				if (ch == TRK_UP)
+				{
+					if (self->cursor)
+						--self->cursor;
+					if (self->cursor < ft_vstr_size(&self->history))
+					{
+						ft_trm_puts(&self->trm, tgetstr("rc", NULL));
+						ft_trm_puts(&self->trm, tgetstr("ce", NULL));
+						ft_trm_putnl(&self->trm,
+							*ft_vstr_at(&self->history, self->cursor));
+					}
+				}
+				else if (ch == TRK_DOWN)
+				{
+					if (self->cursor < ft_vstr_size(&self->history))
+						++self->cursor;
+					if (self->cursor < ft_vstr_size(&self->history))
+					{
+						ft_trm_puts(&self->trm, tgetstr("rc", NULL));
+						ft_trm_puts(&self->trm, tgetstr("ce", NULL));
+						ft_trm_putnl(&self->trm,
+							*ft_vstr_at(&self->history, self->cursor));
+					}
+					else
+					{
+						ft_trm_puts(&self->trm, tgetstr("rc", NULL));
+						ft_trm_puts(&self->trm, tgetstr("ce", NULL));
+						ft_trm_puts(&self->trm, "");
+					}
+				}
+				else
+					exit(3);
+			}
+			if (ch < 0)
+				return (NOP);
+			/*if (!(self->ln = ft_src_getl(&self->src, '\n')))
+				return (NOP);
+			ft_vstr_pushc(&self->history, self->ln);
+			while (ft_vstr_size(&self->history) > 100)
+				ft_vstr_shift(&self->history, NULL);
+			ft_src_init_str(&src, self->ln);
+			ft_lexer_push(&self->lexer, &src);*/
+		}
 	if (sh_reduce(self) < 0)
 		return (WUT);
 	job = NULL;

@@ -45,5 +45,6 @@
 # include "msh/reduce.h"
 # include "msh/sh.h"
 # include "msh/sig.h"
+# include "msh/tc.h"
 
 #endif

@@ -28,8 +28,10 @@ typedef struct	s_sh
 {
 	t_sh_m		mode;
 	t_lexer		lexer;
+	t_trm		trm;
 	t_vstr		env;
-	t_dqstr		history;
+	t_vstr		history;
+	size_t		cursor;
 	t_src		src;
 	char		*ln;
 	t_worker	worker;

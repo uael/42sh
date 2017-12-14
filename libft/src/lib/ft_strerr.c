@@ -102,7 +102,8 @@ static char	*g_strerr[] =
 	[ENOTRECOVERABLE] = "State not recoverable",
 	[EOWNERDEAD] = "Previous owner died",
 	[ENIMPL] = "Function not implemented",
-	[EBOUND] = "Enum out of bounds"
+	[EBOUND] = "Enum out of bounds",
+	[ENOTRM] = "Terminal type not specified",
 };
 
 inline char	*ft_strerr(int errn)
