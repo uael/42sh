@@ -16,17 +16,7 @@ inline int	sh_reduce(t_sh *self)
 {
 	t_tok	*tok;
 	ssize_t	st;
-	t_src	src;
 
-	if (self->mode == SH_STDIN && !self->ln)
-	{
-		if (!(self->ln = ft_src_getl(&self->src, '\n')))
-			return (NOP);
-		ft_dqstr_pushc(&self->history, self->ln);
-		++self->history.cur;
-		ft_src_init_str(&src, self->ln);
-		ft_lexer_push(&self->lexer, &src);
-	}
 	if ((st = ft_lexer_until(&self->lexer, '\n')) <= 0)
 		return (st < 0 ? WUT : NOP);
 	tok = (t_tok *)ft_deq_begin(&self->lexer.toks) - 1;

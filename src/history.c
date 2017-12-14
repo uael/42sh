@@ -35,7 +35,6 @@ int	sh_history_init(t_sh *self, char *filename)
 		ft_dqstr_pushc(&self->history, ln);
 	if (errno)
 		return (WUT);
-	self->history.cur = self->history.len;
 	free(path);
 	return (YEP);
 }
@@ -45,18 +44,23 @@ int	sh_history_save(t_sh *self, char *filename)
 	t_ofstream	ofs;
 	char		**it;
 	char 		*path;
+	int			fd;
 
 	if (!(path = ft_getenv(self->env.buf, "HOME")))
 		return (NOP);
 	path = ft_join(path, filename, '/');
-	if (ft_ofstream_open(&ofs, path))
-		return (NOP);
+	while ((fd = open(path, O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR)) < 0)
+		if (errno != EINTR)
+		{
+			free(path);
+			return (NOP);
+		}
+	FT_INIT(&ofs, t_ofstream);
+	ofs.fd = fd;
+	ofs.filename = path;
 	if ((it = ft_dqstr_begin(&self->history)))
 		while (it != ft_dqstr_end(&self->history))
-		{
-			ft_ofstream_puts(&ofs, *it);
-			++it;
-		}
+			ft_ofstream_puts(&ofs, *it++);
 	free(path);
 	ft_ofstream_close(&ofs);
 	return (YEP);
