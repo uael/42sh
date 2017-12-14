@@ -17,8 +17,12 @@
 #define TC_DO 1
 #define TC_CH 2
 #define TC_CM 3
+#define TC_UP 4
+#define TC_LE 5
+#define TC_ND 6
 
 static int		g_tty = 0;
+static int		g_log = 0;
 char			*g_tcaps[10] = {NULL};
 static char		*g_tnames[10] =
 {
@@ -26,6 +30,9 @@ static char		*g_tnames[10] =
 	[TC_DO] = "do",
 	[TC_CH] = "ch",
 	[TC_CM] = "cm",
+	[TC_UP] = "up",
+	[TC_LE] = "le",
+	[TC_ND] = "nd",
 };
 
 static int		tputs_c(int c)
@@ -93,6 +100,7 @@ inline int		tc_ctor(t_tc *self, char **env, void *arg)
 	if (tgetent(NULL, term) <= 0 ||
 		(self->tty = open(tty, O_RDWR, S_IRUSR | S_IWUSR)) < 0)
 		return (THROW(WUT));
+	g_log = open("/Users/alucas-/.21shlog", O_RDWR | O_APPEND | O_CREAT, S_IRUSR | S_IWUSR);
 	self->arg = arg;
 	tcgetattr(self->tty, &self->curr);
 	ft_memcpy(&self->prev, &self->curr, sizeof(t_tcios));
@@ -127,7 +135,7 @@ inline int		tc_putc(t_tc *self, char c)
 	char *s;
 
 	s_tc_refresh(self);
-	if ((++self->x % self->col) == 0)
+	if (((self->x + 1) % self->col) == 0)
 	{
 		if (tputs(caps(TC_DO), 0, tputs_c) ||
 			tputs(tgoto(caps(TC_CH), 0, 0), 0, tputs_c))
@@ -135,6 +143,7 @@ inline int		tc_putc(t_tc *self, char c)
 		((self->y + 1) % self->row) == 0 ? --self->sy : ++self->y;
 		self->x = 0;
 	}
+	++self->x;
 	ft_dstr_pushc(&self->in, c);
 	if (c == '\n')
 		return (YEP);
@@ -170,7 +179,12 @@ inline int		tc_inss(t_tc *self, char const *s)
 
 inline int		tc_clrln(t_tc *self)
 {
-	return (tputs(tgoto(caps(TC_CM), self->sx, self->sy), 0, tputs_c));
+	int st;
+
+	st = tputs(tgoto(caps(TC_CM), self->sx, self->sy), 0, tputs_c);
+	self->x = self->sx;
+	self->y = self->sy;
+	return (st);
 }
 
 inline int		tc_clr(t_tc *self)
@@ -181,26 +195,59 @@ inline int		tc_clr(t_tc *self)
 
 inline int		tc_left(t_tc *self)
 {
-	(void)self;
-	return (ENO_THROW(WUT, ENIMPL));
+	if (!self->x && self->y > self->sy)
+	{
+		if (tputs(caps(TC_UP), 0, tputs_c) ||
+			tputs(tgoto(caps(TC_CH), self->col - 1, self->col - 1), 0, tputs_c))
+			return (THROW(WUT));
+		self->x = self->col - 1;
+		--self->y;
+	}
+	else if (self->x)
+	{
+		if (tputs(caps(TC_LE), 0, tputs_c))
+			return (THROW(WUT));
+		--self->x;
+	}
+	return (YEP);
 }
 
 inline int		tc_right(t_tc *self)
 {
-	(void)self;
-	return (ENO_THROW(WUT, ENIMPL));
+	if ((++self->x % self->col) == 0)
+	{
+		if (tputs(caps(TC_DO), 0, tputs_c) ||
+			tputs(tgoto(caps(TC_CH), 0, 0), 0, tputs_c))
+			return (THROW(WUT));
+		((self->y + 1) % self->row) == 0 ? --self->sy : ++self->y;
+		self->x = 0;
+	}
+	else if (tputs(caps(TC_ND), 0, tputs_c))
+		return (THROW(WUT));
+	return (YEP);
 }
 
 inline int		tc_up(t_tc *self)
 {
-	(void)self;
-	return (ENO_THROW(WUT, ENIMPL));
+	if (self->y > self->sy)
+	{
+		if (tputs(caps(TC_UP), 0, tputs_c))
+			return (THROW(WUT));
+		--self->y;
+		if (tputs(tgoto(caps(TC_CH), self->x, self->x), 0, tputs_c))
+			return (THROW(WUT));
+	}
+	return (YEP);
 }
 
 inline int		tc_down(t_tc *self)
 {
-	(void)self;
-	return (ENO_THROW(WUT, ENIMPL));
+	if (tputs(caps(TC_DO), 0, tputs_c))
+		return (THROW(WUT));
+	((self->y + 1) % self->row) == 0 ? --self->sy : ++self->y;
+	if (tputs(tgoto(caps(TC_CH), self->x, self->x), 0, tputs_c))
+		return (THROW(WUT));
+	return (YEP);
 }
 
 inline void		tc_hook(t_tc *self, int ch, t_tc_hook hook)
@@ -223,7 +270,7 @@ static int		tc_getch(t_tc *t)
 			((r = (int)read(t->tty, &c, 2)) < 0 ||
 			 (r > 0 && !ft_du8_pushnc(&t->r, c, (size_t)r))))
 			return (THROW(WUT));
-		else if (ft_du8_popn(&t->r, 2, c) <= 0)
+		else if (ft_du8_shiftn(&t->r, 2, c) <= 0)
 			break ;
 		else if ((n += r) == 1 && TRK_ONEK(c[0]))
 			return (c[0]);
@@ -233,8 +280,14 @@ static int		tc_getch(t_tc *t)
 			return (c[1]);
 		else if (n == 3 && (c[0] >= 65 && c[0] <= 68))
 			return (c[0]);
-		else
+		else if (n >= 1)
+		{
+			if (n <= t->r.cur)
+				t->r.cur -= n;
+			if (ft_du8_shiftn(&t->r, 1, c))
+				return (*c);
 			break ;
+		}
 	return (0);
 }
 
@@ -244,12 +297,31 @@ inline int		tc_loop(t_tc *self)
 	int st;
 
 	tc_resume(self);
-	s_tc_refresh(self);
 	trm_cursor(self->tty, &self->sx, &self->sy);
+	self->x = self->sx;
+	self->y = self->sy;
 	st = 0;
+	ft_putf(g_log, "[%d|%d] <%d,%d> <%d,%d>\n",
+		self->col, self->row, self->sx, self->sy, self->x, self->y);
 	while ((ch = tc_getch(self)) >= 0)
-		if (self->hook[ch] && (st = self->hook[ch](self, ch)))
-			break ;
+	{
+		if (ch == TRK_DOWN)
+			tc_down(self);
+		else if (ch == TRK_UP)
+			tc_up(self);
+		else if (ch == TRK_LEFT)
+			tc_left(self);
+		else if (ch == TRK_RIGHT)
+			tc_right(self);
+		else if (self->hook[ch] && (st = self->hook[ch](self, ch)))
+			break;
+		else if (ch == TRK_ESC)
+			break;
+		else if (ch)
+			tc_putc(self, (char)ch);
+		ft_putf(g_log, "[%d|%d] <%d,%d> <%d,%d>\n",
+			self->col, self->row, self->sx, self->sy, self->x, self->y);
+	}
 	tc_dtor(self);
 	return (ch < 0 ? ch : st);
 }
