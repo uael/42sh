@@ -17,17 +17,14 @@ inline void	sh_init_stream(t_sh *self, t_sh_m m, char **env, t_istream *stream)
 	FT_INIT(self, t_sh);
 	self->mode = m;
 	sh_initenv(&self->env, env);
-	if (self->mode == SH_STDIN)
+	if (self->mode == SH_TTY)
 	{
-		ft_trm_ctor(&self->trm, env, TRM_REL);
-		ft_src_init_stream(&self->src, stream);
+		ft_src_init_stream(&self->tty, stream);
 		ft_lexer_ctor(&self->lexer);
 	}
 	else
 		ft_lexer_init_stream(&self->lexer, stream);
 	ft_worker_ctor(&self->worker);
-	ft_src_init_stream(&self->src, stream);
-	ft_lexer_ctor(&self->lexer);
 	sh_lex(&self->lexer);
 }
 
@@ -36,10 +33,9 @@ inline int	sh_init_file(t_sh *self, t_sh_m m, char **env, char const *filename)
 	FT_INIT(self, t_sh);
 	self->mode = m;
 	sh_initenv(&self->env, env);
-	if (self->mode == SH_STDIN)
+	if (self->mode == SH_TTY)
 	{
-		ft_trm_ctor(&self->trm, env, TRM_REL);
-		if (ft_src_init_file(&self->src, filename))
+		if (ft_src_init_file(&self->tty, filename))
 			return (WUT);
 		ft_lexer_ctor(&self->lexer);
 	}
@@ -58,8 +54,8 @@ inline void	sh_dtor(t_sh *self)
 	ft_vstr_dtor(&self->history, (t_dtor)ft_pfree);
 	ft_lexer_dtor(&self->lexer);
 	ft_worker_dtor(&self->worker);
-	if (self->mode == SH_STDIN)
-		ft_trm_dtor(&self->trm);
+	if (self->mode == SH_TTY)
+		ft_src_dtor(&self->tty);
 }
 
 inline void	sh_prompt(t_sh *self, char *prompt)

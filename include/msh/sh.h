@@ -19,7 +19,8 @@
 
 typedef enum	e_sh_m
 {
-	SH_STDIN,
+	SH_TTY,
+	SH_NOTTY,
 	SH_AV,
 	SH_C
 }				t_sh_m;
@@ -28,11 +29,10 @@ typedef struct	s_sh
 {
 	t_sh_m		mode;
 	t_lexer		lexer;
-	t_trm		trm;
 	t_vstr		env;
 	t_vstr		history;
 	size_t		cursor;
-	t_src		src;
+	t_src		tty;
 	char		*ln;
 	t_worker	worker;
 	t_omstream	bi_out;
