@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "bi.h"
+#include "msh/history.h"
 
 #define M_NREQ "Numeric argument required"
 #define N_EXIT COLOR_RED COLOR_BOLD "exit: " COLOR_RESET
@@ -25,8 +26,8 @@ inline int	sh_bi_exit(t_sh *sh, int ac, char **av, t_job *out)
 	(void)out;
 	if (ac > 2)
 		return (sh_bi_retf(sh, 128, N_EXIT"%e\n", E2BIG));
-	if (ac < 2)
-		exit(sh->st);
+	sh->mode == SH_TTY ? sh_history_save(sh, ".21shry") : 0;
+	ac < 2 ? exit(sh->st) : 0;
 	a = av[1];
 	if (!(i = ft_strlen(a)) || i > 19)
 		ft_fatal(128, NULL, NULL, N_EXIT"%s: %s\n", a, M_NREQ);
