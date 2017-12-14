@@ -12,7 +12,7 @@
 
 NAME = 21sh
 CC = gcc
-CFLAGS = -Werror -Wextra -Wall -O2
+CFLAGS = -Werror -Wextra -Wall -g3 -DDEBUG
 
 SRC_PATH = ./src/
 OBJ_PATH = ./obj/
@@ -28,8 +28,9 @@ SRC_NAME = \
 	eval/bi/exit.c eval/bi/setenv.c eval/bi/unsetenv.c \
 	eval.c eval/cmd.c eval/heredoc.c eval/pipe.c eval/rin.c eval/rout.c \
 	eval/raout.c eval/sep.c eval/lamp.c eval/ramp.c \
+	keys.c keys/down.c keys/left.c keys/return.c keys/right.c keys/up.c \
 	reduce.c reduce/heredoc.c \
-	cli.c env.c history.c lex.c sh.c
+	cli.c env.c history.c lex.c sh.c tc.c
 
 SRC = $(addprefix $(SRC_PATH), $(SRC_NAME))
 OBJ = $(addprefix $(OBJ_PATH), $(OBJ_NAME))

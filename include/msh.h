@@ -41,9 +41,11 @@
 # include "msh/env.h"
 # include "msh/eval.h"
 # include "msh/history.h"
+# include "msh/keys.h"
 # include "msh/lex.h"
 # include "msh/reduce.h"
 # include "msh/sh.h"
 # include "msh/sig.h"
+# include "msh/tc.h"
 
 #endif

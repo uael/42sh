@@ -16,14 +16,14 @@
 
 #define TRM_USG "%s: Specify a terminal type with `setenv TERM <yourtype>`\n"
 
-int		ft_trm_ctor(t_trm *self)
+int		ft_trm_ctor(t_trm *self, char **env, t_trm_m mode)
 {
 	char		*tnm;
 	const char	*dev;
 
 	FT_INIT(self, t_trm);
-	if (!(tnm = getenv("TERM")))
-		return (ft_retf(NOP, TRM_USG, "select"));
+	if (!(tnm = ft_getenv(env, "TERM")))
+		return (ft_retf(NOP, TRM_USG, "21sh"));
 	if (!(dev = ttyname(STDIN_FILENO)))
 		dev = ttyname(STDOUT_FILENO);
 	if (!dev && !(dev = ttyname(STDERR_FILENO)))
@@ -33,10 +33,10 @@ int		ft_trm_ctor(t_trm *self)
 	ft_du8_ctor(&self->in);
 	tcgetattr(self->out.u.file.fd, &self->tty);
 	ft_memcpy(&self->tmp, &self->tty, sizeof(t_trmios));
-	self->tty.c_lflag &= ~ICANON;
-	self->tty.c_lflag &= ~ECHO;
+	self->tty.c_lflag &= ~(ICANON | ECHO);
 	self->tty.c_cc[VMIN] = 1;
-	self->tty.c_cc[VTIME] = 100;
+	self->tty.c_cc[VTIME] = 0;
+	self->mode = mode;
 	ft_trm_on(self);
 	ft_trm_refresh(self);
 	return (YEP);
@@ -62,17 +62,21 @@ inline void	ft_trm_refresh(t_trm *self)
 	self->h = w.ws_row;
 }
 
-/*
-** todo: check for tgetstr("*", NULL), TERM=i100 for ex
-*/
-
 inline void	ft_trm_clear(t_trm *self)
 {
-	ft_ostream_puts(&self->out, tgoto(tgetstr("cm", NULL), 0, 0));
-	ft_ostream_puts(&self->out, tgetstr("ce", NULL));
-	ft_ostream_puts(&self->out, tgoto(tgetstr("cm", NULL), 0, 0));
-	ft_ostream_puts(&self->out, tgetstr("cd", NULL));
-	ft_ostream_puts(&self->out, tgoto(tgetstr("cm", NULL), 0, 0));
-	ft_ostream_puts(&self->out, tgetstr("cl", NULL));
+	if (self->mode == TRM_ABS)
+	{
+		ft_ostream_puts(&self->out, tgoto(tgetstr("cm", NULL), 0, 0));
+		ft_ostream_puts(&self->out, tgetstr("ce", NULL));
+		ft_ostream_puts(&self->out, tgoto(tgetstr("cm", NULL), 0, 0));
+		ft_ostream_puts(&self->out, tgetstr("cd", NULL));
+		ft_ostream_puts(&self->out, tgoto(tgetstr("cm", NULL), 0, 0));
+		ft_ostream_puts(&self->out, tgetstr("cl", NULL));
+	}
+	else
+	{
+		ft_ostream_puts(&self->out, tgoto(tgetstr("ch", NULL), 0, 0));
+		ft_ostream_puts(&self->out, tgoto(tgetstr("cd", NULL), 0, 0));
+	}
 	ft_ostream_flush(&self->out);
 }

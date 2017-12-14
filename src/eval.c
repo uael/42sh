@@ -56,18 +56,7 @@ inline int			sh_eval(t_sh *self)
 	t_tok	*tok;
 	int		st;
 	t_job	*job;
-	t_src	src;
 
-	if (self->mode == SH_STDIN)
-	{
-		if (!(self->ln = ft_src_getl(&self->src, '\n')))
-			return (NOP);
-		ft_dqstr_pushc(&self->history, self->ln);
-		while (ft_dqstr_size(&self->history) > 100)
-			ft_dqstr_shift(&self->history, NULL);
-		ft_src_init_str(&src, self->ln);
-		ft_lexer_push(&self->lexer, &src);
-	}
 	if (sh_reduce(self) < 0)
 		return (WUT);
 	job = NULL;

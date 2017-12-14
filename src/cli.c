@@ -14,7 +14,8 @@
 
 #define SH_PROMPT(SH) ((SH)->st==0?" \033[32m❯\033[0m ":" \033[31m❯\033[0m ")
 
-static t_sh	*g_sh;
+static t_sh			*g_sh;
+static t_tc			*g_tc;
 
 static int			sh_on_errno(int rcode, void *arg)
 {
@@ -36,8 +37,12 @@ static int			sh_on_errno(int rcode, void *arg)
 inline void			sh_sigint_hdl(int sign)
 {
 	(void)sign;
-	ft_putc(0, '\n');
+	tc_clrln(g_tc);
+	ft_puts(g_tc->tty, "^C");
+	tc_down(g_tc);
+	tc_margin_left(g_tc);
 	sh_prompt(g_sh, SH_PROMPT(g_sh));
+	tc_register(g_tc);
 }
 
 static inline int	main_av(t_sh *sh, int ac, char **av, char **env)
@@ -58,21 +63,32 @@ static inline int	main_av(t_sh *sh, int ac, char **av, char **env)
 	return (sh->st);
 }
 
-static inline int	main_stdin(t_sh *sh, char **env)
+static inline int	main_tty(t_sh *sh, char **env)
 {
+	t_tc	tc;
+
 	FT_INIT(sh, t_sh);
 	ft_ex_register(0, ft_ex_hdl(sh_on_errno, NULL), NULL);
-	sh_init_stream(sh, SH_STDIN, env, g_cin);
-	sh_history_init(sh, ".21shry");
-	signal(SIGINT, sh_sigint_hdl);
-	while (1)
+	sh_init_stream(sh, isatty(STDIN_FILENO) ? SH_TTY : SH_NOTTY, env, g_cin);
+	if (sh->mode == SH_NOTTY)
+		sh_eval(sh);
+	else
 	{
-		sh_prompt(sh, SH_PROMPT(sh));
-		if (sh_eval(sh))
-			break ;
+		sh_history_init(sh, ".21shry");
+		signal(SIGINT, sh_sigint_hdl);
+		if (tc_ctor(&tc, env, sh))
+			return (NOP);
+		g_tc = &tc;
+		while (1)
+		{
+			sh_prompt(sh, SH_PROMPT(sh));
+			if (tc_loop(&tc, sh_keys) < 0)
+				break ;
+		}
+		tc_dtor(&tc);
+		sh_history_save(sh, ".21shry");
+		signal(SIGINT, SIG_DFL);
 	}
-	sh_history_save(sh, ".21shry");
-	signal(SIGINT, SIG_DFL);
 	return (ft_dtor(sh->st, (t_dtor)sh_dtor, sh, NULL));
 }
 
@@ -83,5 +99,5 @@ int					main(int ac, char **av, char **env)
 	g_sh = &sh;
 	if (ac > 1)
 		return (main_av(&sh, ac, av, env));
-	return (main_stdin(&sh, env));
+	return (main_tty(&sh, env));
 }

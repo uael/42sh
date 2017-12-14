@@ -34,7 +34,8 @@
 
 # define ENIMPL (ELAST + 1)
 # define EBOUND (ENIMPL + 1)
-# define FT_ELAST (EBOUND)
+# define ENOTRM (EBOUND + 1)
+# define FT_ELAST (ENOTRM)
 
 typedef void	(*t_dtor)(void *i, ...);
 typedef int		(*t_err_hdl)(void *self, int code);
