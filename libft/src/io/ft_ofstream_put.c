@@ -23,3 +23,9 @@ inline int		ft_ofstream_putc(t_ofstream *self, char c)
 
 	return ((sz = ft_ofstream_write(self, &c, 1)) == 1 ? YEP : (int)sz);
 }
+
+inline ssize_t	ft_ofstream_putl(t_ofstream *self, char const *s)
+{
+	return (ft_ofstream_write(self, s, ft_strlen(s)) +
+		ft_ofstream_putc(self, '\n'));
+}

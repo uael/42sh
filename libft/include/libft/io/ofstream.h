@@ -48,6 +48,7 @@ extern ssize_t	ft_ofstream_write(t_ofstream *s, char const *sr, size_t l);
 extern ssize_t	ft_ofstream_writef(t_ofstream *self, char const *fmt, ...);
 extern ssize_t	ft_ofstream_vwritef(t_ofstream *self, char const *f, va_list a);
 extern ssize_t	ft_ofstream_puts(t_ofstream *self, char const *str);
+extern ssize_t	ft_ofstream_putl(t_ofstream *self, char const *s);
 extern int		ft_ofstream_putc(t_ofstream *self, char c);
 extern void		ft_ofstream_flush(t_ofstream *self);
 extern int		ft_ofstream_rewind(t_ofstream *self, size_t n);

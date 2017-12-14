@@ -229,6 +229,7 @@ SRC_NAME = \
 	lex/lexer.c \
 	lex/lexer_peek.c \
 	lex/lexer_scan.c \
+	lex/lexer_src.c \
 	lex/src.c \
 	lex/src_peek.c \
 	lex/tok.c \

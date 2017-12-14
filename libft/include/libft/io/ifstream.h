@@ -50,6 +50,7 @@ extern ssize_t	ft_ifstream_read(t_ifstream *self, char *buf, size_t len);
 extern ssize_t	ft_ifstream_readf(t_ifstream *self, char *fmt, ...);
 extern ssize_t	ft_ifstream_vreadf(t_ifstream *self, char *fmt, va_list ap);
 extern ssize_t	ft_ifstream_get(t_ifstream *self, char *buf, size_t n);
+extern char		*ft_ifstream_getl(t_ifstream *self, char sep);
 extern int		ft_ifstream_peek(t_ifstream *self, char *c, size_t n);
 extern void		ft_ifstream_flush(t_ifstream *self);
 extern int		ft_ifstream_rewind(t_ifstream *self, size_t n);

@@ -26,7 +26,17 @@ inline void		sh_lex(t_lexer *self)
 inline t_tok	*sh_peek(t_sh *self)
 {
 	t_tok	*tok;
+	t_src	src;
 
+	if (self->mode == SH_STDIN && !self->ln)
+	{
+		if (!(self->ln = ft_src_getl(&self->src, '\n')))
+			return (NULL);
+		ft_dqstr_pushc(&self->history, self->ln);
+		++self->history.cur;
+		ft_src_init_str(&src, self->ln);
+		ft_lexer_push(&self->lexer, &src);
+	}
 	if (ft_lexer_peek(&self->lexer, 0, &tok))
 		return (NULL);
 	if (tok->id == SH_TOK_SKIP)
@@ -37,7 +47,17 @@ inline t_tok	*sh_peek(t_sh *self)
 inline t_tok	*sh_next(t_sh *self, t_tok **next)
 {
 	t_tok	*tok;
+	t_src	src;
 
+	if (self->mode == SH_STDIN && !self->ln)
+	{
+		if (!(self->ln = ft_src_getl(&self->src, '\n')))
+			return (NULL);
+		ft_dqstr_pushc(&self->history, self->ln);
+		++self->history.cur;
+		ft_src_init_str(&src, self->ln);
+		ft_lexer_push(&self->lexer, &src);
+	}
 	if (ft_lexer_next(&self->lexer, 1, &tok) <= 0)
 		return (NULL);
 	if (tok->id == SH_TOK_SKIP)

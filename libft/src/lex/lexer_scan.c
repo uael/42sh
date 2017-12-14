@@ -54,11 +54,11 @@ inline ssize_t		ft_lexer_scan(t_lexer *self, size_t n)
 
 	c = 0;
 	while (c < n)
-		if (ft_deq_size(&self->srcs) == 0 || !(src = ft_deq_at(&self->srcs, 0)))
+		if (!(src = ft_lexer_src(self)))
 			break ;
 		else if ((st = ft_src_peek(src, &peek, 0)) < 0)
 			return (st);
-		else if (st && self->srcs.len > 1)
+		else if ((st || !peek) && self->srcs.len > 1)
 			ft_deq_shift(&self->srcs, NULL);
 		else if (st || !peek)
 			break ;
@@ -78,11 +78,11 @@ inline ssize_t		ft_lexer_until(t_lexer *self, uint8_t id)
 
 	c = 0;
 	while (1)
-		if (ft_deq_size(&self->srcs) == 0 || !(src = ft_deq_at(&self->srcs, 0)))
+		if (!(src = ft_lexer_src(self)))
 			break ;
 		else if ((st = ft_src_peek(src, &peek, 0)) < 0)
 			return (st);
-		else if (st && self->srcs.len > 1)
+		else if ((st || !peek) && self->srcs.len > 1)
 			ft_deq_shift(&self->srcs, NULL);
 		else if (st || !peek)
 			break ;

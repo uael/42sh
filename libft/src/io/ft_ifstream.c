@@ -12,6 +12,7 @@
 
 #include "libft/io/ifstream.h"
 #include "libft/ex.h"
+#include "libft/ds.h"
 
 inline void	ft_ofstream_cin(t_ifstream *self)
 {
@@ -43,4 +44,27 @@ inline int	ft_ifstream_close(t_ifstream *self)
 		self->filename = NULL;
 	}
 	return (YEP);
+}
+
+char		*ft_ifstream_getl(t_ifstream *self, char sep)
+{
+	ssize_t	st;
+	char	p;
+	t_dstr	r;
+
+	p = 0;
+	ft_dstr_ctor(&r);
+	while ((st = ft_ifstream_read(self, &p, 1)) == 1 && p)
+	{
+		ft_dstr_pushc(&r, p);
+		if (p == sep)
+			break ;
+	}
+	if (st < 0)
+	{
+		THROW(WUT);
+		ft_dstr_dtor(&r, NULL);
+		return (NULL);
+	}
+	return (r.buf);
 }

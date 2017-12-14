@@ -12,28 +12,38 @@
 
 #include "msh.h"
 
-inline void	sh_init_stream(t_sh *self, char **env, t_istream *stream)
+inline void	sh_init_stream(t_sh *self, t_sh_m m, char **env, t_istream *stream)
 {
 	FT_INIT(self, t_sh);
-	ft_vstr_ctor(&self->env);
+	self->mode = m;
+	if (self->mode == SH_STDIN)
+	{
+		ft_src_init_stream(&self->src, stream);
+		ft_lexer_ctor(&self->lexer);
+	}
+	else
+		ft_lexer_init_stream(&self->lexer, stream);
 	ft_worker_ctor(&self->worker);
-	ft_omstream_open(&self->bi_out);
-	ft_omstream_open(&self->bi_err);
 	sh_initenv(&self->env, env);
-	ft_lexer_init_stream(&self->lexer, stream);
+	ft_src_init_stream(&self->src, stream);
+	ft_lexer_ctor(&self->lexer);
 	sh_lex(&self->lexer);
 }
 
-inline int	sh_init_file(t_sh *self, char **env, char const *filename)
+inline int	sh_init_file(t_sh *self, t_sh_m m, char **env, char const *filename)
 {
 	FT_INIT(self, t_sh);
-	ft_vstr_ctor(&self->env);
-	ft_worker_ctor(&self->worker);
-	ft_omstream_open(&self->bi_out);
-	ft_omstream_open(&self->bi_err);
-	sh_initenv(&self->env, env);
-	if (ft_lexer_init_file(&self->lexer, filename))
+	self->mode = m;
+	if (self->mode == SH_STDIN)
+	{
+		if (ft_src_init_file(&self->src, filename))
+			return (WUT);
+		ft_lexer_ctor(&self->lexer);
+	}
+	else if (ft_lexer_init_file(&self->lexer, filename))
 		return (WUT);
+	ft_worker_ctor(&self->worker);
+	sh_initenv(&self->env, env);
 	sh_lex(&self->lexer);
 	return (YEP);
 }
@@ -43,6 +53,7 @@ inline void	sh_dtor(t_sh *self)
 	ft_omstream_close(&self->bi_err);
 	ft_omstream_close(&self->bi_out);
 	ft_vstr_dtor(&self->env, (t_dtor)ft_pfree);
+	ft_dqstr_dtor(&self->history, (t_dtor)ft_pfree);
 	ft_lexer_dtor(&self->lexer);
 	ft_worker_dtor(&self->worker);
 }

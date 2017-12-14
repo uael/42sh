@@ -57,6 +57,7 @@ inline int			sh_eval(t_sh *self)
 	int		st;
 	t_job	*job;
 
+	self->ln = NULL;
 	if (sh_reduce(self) < 0)
 		return (WUT);
 	job = NULL;

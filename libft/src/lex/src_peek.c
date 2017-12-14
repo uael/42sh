@@ -45,6 +45,11 @@ inline ssize_t	ft_src_get(t_src *self, char *buf, size_t n)
 	return (ft_istream_get(self->in ? self->in : &self->in_own, buf, n));
 }
 
+inline char		*ft_src_getl(t_src *self, char sep)
+{
+	return (ft_istream_getl(self->in ? self->in : &self->in_own, sep));
+}
+
 inline int		ft_src_peek(t_src *self, char *c, size_t n)
 {
 	return (ft_istream_peek(self->in ? self->in : &self->in_own, c, n));

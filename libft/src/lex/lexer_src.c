@@ -1,25 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_getenv.c                                        :+:      :+:    :+:   */
+/*   libft/lex/lexer_src.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/05 15:46:36 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/11 13:31:59 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/lib.h"
-#include "libft/str.h"
+#include "libft/lex/lexer.h"
 
-inline char		*ft_getenv(char **env, char *var)
+inline t_src	*ft_lexer_src(t_lexer *self)
 {
-	char *val;
+	t_src *src;
 
-	while (*env && (!ft_strbegw(var, *env) || (*env)[ft_strlen(var)] != '='))
-		++env;
-	if (!*env || !(val = ft_strchr(*env, '=')))
+	if (ft_deq_size(&self->srcs) == 0 || !(src = ft_deq_at(&self->srcs, 0)))
 		return (NULL);
-	return (val + 1);
+	return (src);
+}
+
+inline void		ft_lexer_push(t_lexer *self, t_src *src)
+{
+	t_src	*s;
+
+	s = ft_deq_pushc(&self->srcs, src);
+	s->cur.src = self->srcs.buf;
 }

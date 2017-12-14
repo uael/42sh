@@ -29,7 +29,7 @@ SRC_NAME = \
 	eval.c eval/cmd.c eval/heredoc.c eval/pipe.c eval/rin.c eval/rout.c \
 	eval/raout.c eval/sep.c eval/lamp.c eval/ramp.c \
 	reduce.c reduce/heredoc.c \
-	cli.c env.c lex.c sh.c
+	cli.c env.c history.c lex.c sh.c
 
 SRC = $(addprefix $(SRC_PATH), $(SRC_NAME))
 OBJ = $(addprefix $(OBJ_PATH), $(OBJ_NAME))

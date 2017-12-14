@@ -1,25 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_getenv.c                                        :+:      :+:    :+:   */
+/*   msh/history.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/05 15:46:36 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/08 09:49:12 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/lib.h"
-#include "libft/str.h"
+#ifndef MSH_HISTORY_H
+# define MSH_HISTORY_H
 
-inline char		*ft_getenv(char **env, char *var)
-{
-	char *val;
+# include "sh.h"
+# include "lex.h"
 
-	while (*env && (!ft_strbegw(var, *env) || (*env)[ft_strlen(var)] != '='))
-		++env;
-	if (!*env || !(val = ft_strchr(*env, '=')))
-		return (NULL);
-	return (val + 1);
-}
+extern int	sh_history_init(t_sh *self, char *filename);
+extern int	sh_history_save(t_sh *self, char *filename);
+
+#endif

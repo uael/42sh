@@ -55,6 +55,7 @@ extern ssize_t	ft_istream_read(t_istream *self, char *buf, size_t len);
 extern ssize_t	ft_istream_readf(t_istream *self, char *fmt, ...);
 extern ssize_t	ft_istream_vreadf(t_istream *self, char *fmt, va_list ap);
 extern ssize_t	ft_istream_get(t_istream *self, char *buf, size_t n);
+extern char		*ft_istream_getl(t_istream *self, char sep);
 extern int		ft_istream_peek(t_istream *self, char *c, size_t n);
 extern void		ft_istream_flush(t_istream *self);
 extern int		ft_istream_rewind(t_istream *self, size_t n);

@@ -28,6 +28,7 @@ extern size_t	ft_imstream_read(t_imstream *self, char *buf, size_t len);
 extern size_t	ft_imstream_readf(t_imstream *self, char *fmt, ...);
 extern size_t	ft_imstream_vreadf(t_imstream *self, char *fmt, va_list ap);
 extern size_t	ft_imstream_get(t_imstream *self, char *buf, size_t len);
+extern char		*ft_imstream_getl(t_imstream *self, char sep);
 extern t_bool	ft_imstream_peek(t_imstream *self, char *c, size_t n);
 extern void		ft_imstream_flush(t_imstream *self);
 extern t_bool	ft_imstream_rewind(t_imstream *self, size_t n);

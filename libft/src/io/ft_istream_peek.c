@@ -29,3 +29,13 @@ inline int		ft_istream_peek(t_istream *self, char *c, size_t n)
 		return (ft_imstream_peek(&self->u.mem, c, n) ? YEP : NOP);
 	return (ENO_THROW(WUT, EBOUND));
 }
+
+char		*ft_istream_getl(t_istream *self, char sep)
+{
+	if (self->kind == ISTREAM_FILE)
+		return (ft_ifstream_getl(&self->u.file, sep));
+	if (self->kind == ISTREAM_MEM)
+		return (ft_imstream_getl(&self->u.mem, sep));
+	ENO_THROW(WUT, EBOUND);
+	return (NULL);
+}

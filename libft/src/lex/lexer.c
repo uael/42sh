@@ -12,16 +12,21 @@
 
 #include "libft/lex/lexer.h"
 
-inline void		ft_lexer_init_stream(t_lexer *self, t_istream *stream)
+inline void		ft_lexer_ctor(t_lexer *self)
 {
-	t_src	src;
-	t_src	*s;
-
 	FT_INIT(self, t_lexer);
 	ft_vec_ctor(&self->rules, sizeof(t_lrule));
 	ft_deq_ctor(&self->srcs, sizeof(t_src));
 	ft_deq_ctor(&self->toks, sizeof(t_tok));
 	ft_vec_ctor(&self->vals, sizeof(t_tokv));
+}
+
+inline void		ft_lexer_init_stream(t_lexer *self, t_istream *stream)
+{
+	t_src	src;
+	t_src	*s;
+
+	ft_lexer_ctor(self);
 	ft_src_init_stream(&src, stream);
 	s = ft_deq_pushc(&self->srcs, &src);
 	s->cur.src = self->srcs.buf;
@@ -32,11 +37,7 @@ inline int		ft_lexer_init_file(t_lexer *self, char const *filename)
 	t_src	src;
 	t_src	*s;
 
-	FT_INIT(self, t_lexer);
-	ft_vec_ctor(&self->rules, sizeof(t_lrule));
-	ft_deq_ctor(&self->srcs, sizeof(t_src));
-	ft_deq_ctor(&self->toks, sizeof(t_tok));
-	ft_vec_ctor(&self->vals, sizeof(t_tokv));
+	ft_lexer_ctor(self);
 	if (ft_src_init_file(&src, filename) < 0)
 		return (WUT);
 	s = ft_deq_pushc(&self->srcs, &src);
@@ -49,27 +50,8 @@ inline void		ft_lexer_init_str(t_lexer *self, char const *str)
 	t_src	src;
 	t_src	*s;
 
-	FT_INIT(self, t_lexer);
-	ft_vec_ctor(&self->rules, sizeof(t_lrule));
-	ft_deq_ctor(&self->srcs, sizeof(t_src));
-	ft_deq_ctor(&self->toks, sizeof(t_tok));
-	ft_vec_ctor(&self->vals, sizeof(t_tokv));
+	ft_lexer_ctor(self);
 	ft_src_init_str(&src, str);
-	s = ft_deq_pushc(&self->srcs, &src);
-	s->cur.src = self->srcs.buf;
-}
-
-inline void		ft_lexer_init_nstr(t_lexer *self, char const *str, size_t n)
-{
-	t_src	src;
-	t_src	*s;
-
-	FT_INIT(self, t_lexer);
-	ft_vec_ctor(&self->rules, sizeof(t_lrule));
-	ft_deq_ctor(&self->srcs, sizeof(t_src));
-	ft_deq_ctor(&self->toks, sizeof(t_tok));
-	ft_vec_ctor(&self->vals, sizeof(t_tokv));
-	ft_src_init_nstr(&src, str, n);
 	s = ft_deq_pushc(&self->srcs, &src);
 	s->cur.src = self->srcs.buf;
 }

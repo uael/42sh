@@ -46,10 +46,11 @@ static inline int	main_av(t_sh *sh, int ac, char **av, char **env)
 
 	i = 0;
 	FT_INIT(sh, t_sh);
+	sh->mode = SH_AV;
 	while (++i < ac)
 	{
 		ft_ex_register(0, ft_ex_hdl(sh_on_errno, av[i]), NULL);
-		if (sh_init_file(sh, env, av[i]))
+		if (sh_init_file(sh, SH_AV, env, av[i]))
 			continue ;
 		sh_eval(sh);
 		sh_dtor(sh);
@@ -61,7 +62,8 @@ static inline int	main_stdin(t_sh *sh, char **env)
 {
 	FT_INIT(sh, t_sh);
 	ft_ex_register(0, ft_ex_hdl(sh_on_errno, NULL), NULL);
-	sh_init_stream(sh, env, g_cin);
+	sh_init_stream(sh, SH_STDIN, env, g_cin);
+	sh_history_init(sh, ".21shry");
 	signal(SIGINT, sh_sigint_hdl);
 	while (1)
 	{
@@ -69,6 +71,7 @@ static inline int	main_stdin(t_sh *sh, char **env)
 		if (sh_eval(sh))
 			break ;
 	}
+	sh_history_save(sh, ".21shry");
 	signal(SIGINT, SIG_DFL);
 	return (ft_dtor(sh->st, (t_dtor)sh_dtor, sh, NULL));
 }
