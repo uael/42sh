@@ -12,19 +12,19 @@
 
 #include "msh.h"
 
-inline int				sh_lex_syn(t_tok *tok, char peek, t_src *src)
+inline int				sh_lex_syn(t_lexer *lex, t_tok *tok, char peek)
 {
 	ssize_t sz;
 
 	while (peek == ' ' || peek == '\t')
 	{
-		ft_src_getc(src, NULL, &peek);
+		ft_lexer_getc(lex, NULL, &peek);
 	}
 	if (ft_strchr("=!()-;[]{|}\n", peek))
 	{
 		tok->val = NULL;
 		tok->id = (uint8_t)peek;
-		if ((sz = ft_src_next(src, NULL, 1)) <= 0)
+		if ((sz = ft_lexer_next(lex, NULL, 1)) <= 0)
 			return (sz < 0 ? WUT : NOP);
 		return (YEP);
 	}

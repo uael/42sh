@@ -27,7 +27,7 @@ inline t_tok	*sh_peek(t_sh *self)
 {
 	t_tok	*tok;
 
-	if (ft_lexer_peek(&self->lexer, 0, &tok))
+	if (ft_tok_peek(&self->lexer, 0, &tok))
 		return (NULL);
 	if (tok->id == SH_TOK_SKIP)
 		sh_next(self, &tok);
@@ -38,7 +38,7 @@ inline t_tok	*sh_next(t_sh *self, t_tok **next)
 {
 	t_tok	*tok;
 
-	if (ft_lexer_next(&self->lexer, 1, &tok) <= 0)
+	if (ft_tok_next(&self->lexer, 1, &tok) <= 0)
 		return (NULL);
 	if (tok->id == SH_TOK_SKIP)
 		return (sh_next(self, next));

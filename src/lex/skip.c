@@ -12,10 +12,10 @@
 
 #include "msh.h"
 
-inline int				sh_lex_skip(t_tok *tok, char peek, t_src *src)
+inline int				sh_lex_skip(t_lexer *lex, t_tok *tok, char peek)
 {
 	(void)tok;
 	while (peek == ' ' || peek == '\t')
-		ft_src_getc(src, NULL, &peek);
+		ft_lexer_getc(lex, NULL, &peek);
 	return (NOP);
 }

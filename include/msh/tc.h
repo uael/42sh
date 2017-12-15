@@ -58,6 +58,7 @@ typedef struct	s_tc
 	t_tcios		curr;
 	t_tcios		prev;
 	void		*arg;
+	char		*ttyn;
 	int			tty;
 	int			col;
 	int			row;

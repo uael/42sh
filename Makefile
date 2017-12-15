@@ -12,7 +12,7 @@
 
 NAME = 21sh
 CC = gcc
-CFLAGS = -Werror -Wextra -Wall -g3 -DDEBUG
+CFLAGS = -Werror -Wextra -Wall -g3 -fsanitize=address -DDEBUG
 
 SRC_PATH = ./src/
 OBJ_PATH = ./obj/

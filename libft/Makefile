@@ -12,7 +12,7 @@
 
 NAME = libft.a
 CC = gcc
-CFLAGS = -Werror -Wextra -Wall -g3 -DDEBUG
+CFLAGS = -Werror -Wextra -Wall -g3 -fsanitize=address -DDEBUG
 
 SRC_PATH = ./src/
 OBJ_PATH = ./obj/
@@ -233,6 +233,7 @@ SRC_NAME = \
 	lex/src.c \
 	lex/src_peek.c \
 	lex/tok.c \
+	lex/tok_peek.c \
 	lex/tokv_dtor.c \
 	lex/tokv_init0.c \
 	lex/tokv_init1.c \

@@ -29,13 +29,14 @@
 ** [X] - redirection fd duplication
 ** [X] - exit status
 ** [ ] - proper syntax error
-** [ ] - history
+** [X] - history
 ** [ ] - autocomplete
 ** [ ] - line edition
 ** [ ] - logical operator
 ** [ ] - variable expansion
 ** [ ] - subshell expansion
 ** [ ] - parenthesis
+** [ ] - fixes empty heredoc
 */
 
 # include "msh/env.h"

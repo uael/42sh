@@ -21,10 +21,11 @@ inline t_src	*ft_lexer_src(t_lexer *self)
 	return (src);
 }
 
-inline void		ft_lexer_push(t_lexer *self, t_src *src)
+inline void		ft_lexer_unshift(t_lexer *self, t_src *src)
 {
 	t_src	*s;
 
-	s = ft_deq_pushc(&self->srcs, src);
-	s->cur.src = self->srcs.buf;
+	s = ft_deq_unshiftc(&self->srcs, src);
+	s->cur.src = s;
+	self->src = s;
 }

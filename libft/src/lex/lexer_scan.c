@@ -17,7 +17,7 @@ inline size_t		ft_lexer_clean(t_lexer *self)
 	return (ft_deq_clean(&self->toks, (t_dtor)ft_tok_dtor));
 }
 
-static inline int	lexer_scan_one(t_lexer *self, char peek, t_src *src)
+static inline int	lexer_scan_one(t_lexer *self, char peek)
 {
 	int	st;
 	t_tok	t;
@@ -25,22 +25,22 @@ static inline int	lexer_scan_one(t_lexer *self, char peek, t_src *src)
 	t_lrule	*rule;
 
 	FT_INIT(&t, t_tok);
-	t.loc = src->cur;
+	t.loc = self->src->cur;
 	ft_vec_grow(&self->vals, 1);
 	val = ft_vec_end(&self->vals);
 	FT_INIT(t.val = val, t_tokv);
 	rule = (t_lrule *)ft_vec_begin(&self->rules) - 1;
 	while (++rule < (t_lrule *)ft_vec_end(&self->rules))
-		if ((st = (*rule)(&t, peek, src)) < 0)
+		if ((st = (*rule)(self, &t, peek)) < 0)
 			return (st);
 		else if (st == 0)
 		{
-			t.loc.len = (uint16_t)(src->cur.cur - t.loc.cur);
+			t.loc.len = (uint16_t)(self->src->cur.cur - t.loc.cur);
 			t.val ? ++self->vals.len : 0;
 			ft_deq_pushc(&self->toks, &t);
 			return (YEP);
 		}
-		else if ((st = ft_src_peek(src, &peek, 0)) || !peek)
+		else if ((st = ft_lexer_peek(self, &peek, 0)) || !peek)
 			return (st ? st : NOP);
 	return (NOP);
 }
@@ -48,21 +48,16 @@ static inline int	lexer_scan_one(t_lexer *self, char peek, t_src *src)
 inline ssize_t		ft_lexer_scan(t_lexer *self, size_t n)
 {
 	size_t	c;
-	t_src	*src;
 	char	peek;
 	int		st;
 
 	c = 0;
 	while (c < n)
-		if (!(src = ft_lexer_src(self)))
-			break ;
-		else if ((st = ft_src_peek(src, &peek, 0)) < 0)
+		if ((st = ft_lexer_peek(self, &peek, 0)) < 0)
 			return (st);
-		else if ((st || !peek) && self->srcs.len > 1)
-			ft_deq_shift(&self->srcs, NULL);
 		else if (st || !peek)
 			break ;
-		else if ((st = lexer_scan_one(self, peek, src)) < 0)
+		else if ((st = lexer_scan_one(self, peek)) < 0)
 			return (WUT);
 		else if (st == YEP)
 			++c;
@@ -72,21 +67,16 @@ inline ssize_t		ft_lexer_scan(t_lexer *self, size_t n)
 inline ssize_t		ft_lexer_until(t_lexer *self, uint8_t id)
 {
 	size_t	c;
-	t_src	*src;
 	char	peek;
 	int		st;
 
 	c = 0;
 	while (1)
-		if (!(src = ft_lexer_src(self)))
-			break ;
-		else if ((st = ft_src_peek(src, &peek, 0)) < 0)
+		if ((st = ft_lexer_peek(self, &peek, 0)) < 0)
 			return (st);
-		else if ((st || !peek) && self->srcs.len > 1)
-			ft_deq_shift(&self->srcs, NULL);
 		else if (st || !peek)
 			break ;
-		else if ((st = lexer_scan_one(self, peek, src)) < 0)
+		else if ((st = lexer_scan_one(self, peek)) < 0)
 			return (WUT);
 		else if (st == YEP)
 		{
@@ -95,16 +85,4 @@ inline ssize_t		ft_lexer_until(t_lexer *self, uint8_t id)
 				break ;
 		}
 	return (c);
-}
-
-inline int			ft_lexer_getc(t_lexer *self, char *c)
-{
-	t_src	*src;
-	ssize_t	sz;
-
-	if (ft_deq_size(&self->srcs) == 0 || !(src = ft_deq_at(&self->srcs, 0)))
-		return (NOP);
-	if ((sz = ft_src_next(src, c, 1)) < 0)
-		return (WUT);
-	return (sz == 1 ? YEP : NOP);
 }

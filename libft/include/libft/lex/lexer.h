@@ -15,15 +15,16 @@
 
 # include "tok.h"
 
-typedef int		(*t_lrule)(t_tok *, char, t_src *);
-
 typedef struct	s_lexer
 {
 	t_deq		srcs;
 	t_deq		toks;
 	t_vec		vals;
 	t_vec		rules;
+	t_src		*src;
 }				t_lexer;
+
+typedef int		(*t_lrule)(t_lexer *, t_tok *, char);
 
 extern void		ft_lexer_dtor(t_lexer *self);
 extern void		ft_lexer_init_stream(t_lexer *self, t_istream *stream);
@@ -33,12 +34,14 @@ extern void		ft_lexer_ctor(t_lexer *self);
 extern size_t	ft_lexer_clean(t_lexer *self);
 extern ssize_t	ft_lexer_scan(t_lexer *self, size_t n);
 extern ssize_t	ft_lexer_until(t_lexer *self, uint8_t id);
-extern int		ft_lexer_getc(t_lexer *self, char *c);
-extern int		ft_lexer_peek(t_lexer *self, size_t n, t_tok **peek);
-extern ssize_t	ft_lexer_next(t_lexer *self, size_t n, t_tok **peek);
-extern size_t	ft_lexer_skip(t_lexer *self, size_t n, t_tok **prevs);
-extern int		ft_lexer_match(t_tok *tok, t_src *src, size_t n, uint8_t id);
+extern ssize_t	ft_lexer_next(t_lexer *self, char *peek, size_t n);
+extern int		ft_lexer_getc(t_lexer *self, char *peek, char *next);
+extern int		ft_lexer_peek(t_lexer *self, char *peek, size_t n);
 extern t_src	*ft_lexer_src(t_lexer *self);
-extern void		ft_lexer_push(t_lexer *self, t_src *src);
+extern void		ft_lexer_unshift(t_lexer *self, t_src *src);
+
+extern int		ft_tok_peek(t_lexer *self, size_t n, t_tok **peek);
+extern ssize_t	ft_tok_next(t_lexer *self, size_t n, t_tok **peek);
+extern size_t	ft_tok_skip(t_lexer *self, size_t n, t_tok **prevs);
 
 #endif

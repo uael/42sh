@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/lex/src.h"
+#include "private.h"
 
 inline ssize_t		ft_src_next(t_src *self, char *peek, size_t n)
 {
@@ -31,23 +31,6 @@ inline ssize_t		ft_src_next(t_src *self, char *peek, size_t n)
 		++self->cur.col;
 	}
 	return (sz);
-}
-
-inline int		ft_src_getc(t_src *self, char *peek, char *next)
-{
-	if (ft_src_next(self, peek, 1) < 0)
-		return (WUT);
-	return (ft_src_peek(self, next, 0));
-}
-
-inline ssize_t	ft_src_get(t_src *self, char *buf, size_t n)
-{
-	return (ft_istream_get(self->in ? self->in : &self->in_own, buf, n));
-}
-
-inline char		*ft_src_getl(t_src *self, char sep)
-{
-	return (ft_istream_getl(self->in ? self->in : &self->in_own, sep));
 }
 
 inline int		ft_src_peek(t_src *self, char *c, size_t n)

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libft/lex/src.h                                    :+:      :+:    :+:   */
+/*   libft/lex/private.h                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,23 +10,12 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFT_LEX_SRC_H
-# define LIBFT_LEX_SRC_H
+#ifndef LIBFT_LEX_PRIVATE_H
+# define LIBFT_LEX_PRIVATE_H
 
-# include "../io.h"
-# include "loc.h"
+# include "libft/lex/src.h"
 
-typedef struct	s_src
-{
-	t_istream	*in;
-	t_istream	in_own;
-	t_loc		cur;
-}				t_src;
-
-extern void		ft_src_init_stream(t_src *self, t_istream *stream);
-extern int		ft_src_init_file(t_src *self, char const *filename);
-extern void		ft_src_init_str(t_src *self, char const *str);
-extern void		ft_src_init_nstr(t_src *self, char const *str, size_t n);
-extern void		ft_src_dtor(t_src *self);
+extern ssize_t	ft_src_next(t_src *self, char *peek, size_t n);
+extern int		ft_src_peek(t_src *self, char *c, size_t n);
 
 #endif

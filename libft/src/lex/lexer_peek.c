@@ -6,47 +6,50 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/12 11:21:55 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/13 08:23:58 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft/lex/lexer.h"
+#include "private.h"
 
-inline int			ft_lexer_peek(t_lexer *self, size_t n, t_tok **peek)
+inline ssize_t	ft_lexer_next(t_lexer *self, char *peek, size_t n)
 {
-	ssize_t sz;
+	ssize_t st;
 
-	if (ft_deq_size(&self->toks) < n + 1 &&
-		(sz = ft_lexer_scan(self, n + 1)) < (ssize_t)n + 1)
-		return (sz <= 0 ? (int)sz : NOP);
+	if (!self->src && !(self->src = ft_lexer_src(self)))
+		return (0);
+	if ((st = ft_src_next(self->src, peek, n)) < 0)
+		return (st);
+	if (st || !self->srcs.len)
+		return (st);
+	ft_deq_shift(&self->srcs, NULL);
+	self->src = NULL;
+	return (ft_lexer_next(self, peek, n));
+}
+
+inline int		ft_lexer_peek(t_lexer *self, char *peek, size_t n)
+{
+	int		st;
+	char	c;
+
+	if (!self->src && !(self->src = ft_lexer_src(self)))
+		return (NOP);
+	if (n)
+		return (ft_src_peek(self->src, peek, n));
+	st = ft_src_peek(self->src, &c, n);
 	if (peek)
-		*peek = (t_tok *)ft_deq_at(&self->toks, n);
-	return (YEP);
+		*peek = c;
+	if (!st && c)
+		return (st);
+	ft_deq_shift(&self->srcs, NULL);
+	self->src = NULL;
+	return (ft_lexer_peek(self, peek, n));
 }
 
-inline ssize_t		ft_lexer_next(t_lexer *self, size_t n, t_tok **peek)
+inline int		ft_lexer_getc(t_lexer *self, char *peek, char *next)
 {
-	ssize_t sz;
-
-	if (ft_deq_size(&self->toks) < n && (sz = ft_lexer_scan(self, n)) <= 0)
-		return (sz);
-	if (peek)
-		*peek = (t_tok *)ft_deq_at(&self->toks, 0);
-	return (ft_deq_shiftn(&self->toks, n, NULL));
-}
-
-inline size_t		ft_lexer_skip(t_lexer *self, size_t n, t_tok **out)
-{
-	return (ft_deq_shiftn(&self->toks, n, out));
-}
-
-inline int			ft_lexer_match(t_tok *tok, t_src *src, size_t n, uint8_t id)
-{
-	ssize_t sz;
-
-	tok->id = id;
-	tok->val = NULL;
-	if ((sz = ft_src_next(src, NULL, n)) <= 0)
-		return ((int)sz);
-	return (YEP);
+	if (ft_lexer_next(self, peek, 1) < 0)
+		return (WUT);
+	return (ft_lexer_peek(self, next, 0));
 }

@@ -69,16 +69,17 @@ static inline int	main_tty(t_sh *sh, char **env)
 
 	FT_INIT(sh, t_sh);
 	ft_ex_register(0, ft_ex_hdl(sh_on_errno, NULL), NULL);
-	sh_init_stream(sh, isatty(STDIN_FILENO) ? SH_TTY : SH_NOTTY, env, g_cin);
+	g_tc = &tc;
+	if (isatty(STDIN_FILENO) && !tc_ctor(&tc, env, sh))
+		sh_init_file(sh, SH_TTY, env, tc.ttyn);
+	else
+		sh_init_stream(sh, SH_NOTTY, env, g_cin);
 	if (sh->mode == SH_NOTTY)
 		sh_eval(sh);
 	else
 	{
 		sh_history_init(sh, ".21shry");
 		signal(SIGINT, sh_sigint_hdl);
-		if (tc_ctor(&tc, env, sh))
-			return (NOP);
-		g_tc = &tc;
 		while (1)
 		{
 			sh_prompt(sh, SH_PROMPT(sh));

@@ -33,6 +33,8 @@ file(GLOB_RECURSE libft_HDRS ${libft_HDRS}
   ${libft_INC_DIR}/libft/*.h)
 file(GLOB_RECURSE libft_SRCS ${libft_SRCS}
   ${libft_SRC_DIR}/*.c)
+file(GLOB_RECURSE libft_SRCS ${libft_SRCS}
+  ${libft_SRC_DIR}/*.h)
 
 add_library(ft ${libft_HDR} ${libft_HDRS} ${libft_SRCS})
 set_property(TARGET ft PROPERTY C_STANDARD 90)

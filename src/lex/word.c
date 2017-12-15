@@ -15,28 +15,28 @@
 #define M(p, c) (s[p] == (c))
 #define W SH_TOK_WORD
 
-static inline int		word_pp(char *peek, t_src *src, char *t)
+static inline int		word_pp(t_lexer *lex, char *peek, char *t)
 {
 	int		st;
 
 	if ((*peek == '\'' || *peek == '\"') && (!*t || *t == *peek))
 	{
 		*t = (char)(*t ? '\0' : *peek);
-		if ((st = ft_src_getc(src, NULL, peek)) != 0)
+		if ((st = ft_lexer_getc(lex, NULL, peek)) != 0)
 			return (st);
-		return (word_pp(peek, src, t));
+		return (word_pp(lex, peek, t));
 	}
 	if (!*t && *peek != '\\' && ft_strchr("|&;<>()$`\\\"' \n\t", *peek))
 		return (NOP);
 	else if (*peek != '\\')
 		return (YEP);
-	if ((st = ft_src_peek(src, peek, 1)))
+	if ((st = ft_lexer_peek(lex, peek, 1)))
 		return (st);
 	if (*t && !ft_strchr(*t == '\"' ? "$`\"\\\n" : "'", *peek))
 		return (NOP);
 	if (!*t && !ft_strchr("|&;<>()$`\\\"' \n\t", *peek))
 		return (NOP);
-	return (ft_src_next(src, NULL, 1) < 0 ? WUT : YEP);
+	return (ft_lexer_next(lex, NULL, 1) < 0 ? WUT : YEP);
 }
 
 static inline uint8_t	word_keyword(char const *s, size_t l)
@@ -68,7 +68,7 @@ static inline uint8_t	word_keyword(char const *s, size_t l)
 	return ((uint8_t)((l == 2 && M(0, 'f') && M(1, 'i')) ? SH_TOK_FI : W));
 }
 
-inline int				sh_lex_word(t_tok *tok, char peek, t_src *src)
+inline int				sh_lex_word(t_lexer *lex, t_tok *tok, char peek)
 {
 	t_dstr	*dstr;
 	int		st;
@@ -78,10 +78,10 @@ inline int				sh_lex_word(t_tok *tok, char peek, t_src *src)
 	dstr = &tok->val->val.ident;
 	if (!dstr->buf)
 		ft_dstr_ctor(dstr);
-	while (peek && (st = word_pp(&peek, src, &t)) == 0)
+	while (peek && (st = word_pp(lex, &peek, &t)) == 0)
 	{
 		ft_dstr_pushc(dstr, peek);
-		if ((st = ft_src_getc(src, NULL, &peek)))
+		if ((st = ft_lexer_getc(lex, NULL, &peek)))
 			return (st);
 	}
 	if (st < 0 || dstr->len == 0)

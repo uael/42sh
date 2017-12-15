@@ -32,7 +32,6 @@ typedef struct	s_sh
 	t_vstr		env;
 	t_vstr		history;
 	size_t		cursor;
-	t_src		tty;
 	char		*ln;
 	t_worker	worker;
 	t_omstream	bi_out;

@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include <sys/ioctl.h>
-#include <stdio.h>
+
 #include "msh/tc.h"
 
 #define TC_U7 0
@@ -92,17 +92,16 @@ static void		s_tc_refresh(t_tc *self)
 inline int		tc_ctor(t_tc *self, char **env, void *arg)
 {
 	char		*term;
-	char const	*tty;
 
 	FT_INIT(self, t_tc);
 	if (!(term = ft_getenv(env, "TERM")))
 		return (ENO_THROW(WUT, ENOTRM));
-	if (!(tty = ttyname(STDIN_FILENO)) &&
-		!(tty = ttyname(STDOUT_FILENO)) &&
-		!(tty = ttyname(STDERR_FILENO)))
+	if (!(self->ttyn = ttyname(STDIN_FILENO)) &&
+		!(self->ttyn = ttyname(STDOUT_FILENO)) &&
+		!(self->ttyn = ttyname(STDERR_FILENO)))
 		return (ENO_THROW(WUT, ENOTTY));
 	if (tgetent(NULL, term) <= 0 ||
-		(self->tty = open(tty, O_RDWR, S_IRUSR | S_IWUSR)) < 0)
+		(self->tty = open(self->ttyn, O_RDWR, S_IRUSR | S_IWUSR)) < 0)
 		return (THROW(WUT));
 	self->arg = arg;
 	tcgetattr(self->tty, &self->curr);
@@ -150,7 +149,7 @@ inline int		tc_putc(t_tc *self, char c)
 	{
 		tc_down(self);
 		tputs(tgoto(caps(TC_CH), 0, 0), 0, tputs_c);
-		tc_register(self);
+		self->x = 0;
 		return (YEP);
 	}
 	s_tc_refresh(self);

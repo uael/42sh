@@ -63,10 +63,10 @@ enum			e_sh_tok
 };
 
 extern void		sh_lex(t_lexer *self);
-extern int		sh_lex_skip(t_tok *tok, char peek, t_src *src);
-extern int		sh_lex_word(t_tok *tok, char peek, t_src *src);
-extern int		sh_lex_op(t_tok *tok, char peek, t_src *src);
-extern int		sh_lex_syn(t_tok *tok, char peek, t_src *src);
+extern int		sh_lex_skip(t_lexer *lex, t_tok *tok, char peek);
+extern int		sh_lex_word(t_lexer *lex, t_tok *tok, char peek);
+extern int		sh_lex_op(t_lexer *lex, t_tok *tok, char peek);
+extern int		sh_lex_syn(t_lexer *src, t_tok *tok, char peek);
 
 extern t_tok	*sh_peek(t_sh *self);
 extern t_tok	*sh_next(t_sh *self, t_tok **next);
