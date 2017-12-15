@@ -24,7 +24,6 @@
 # include "libft/lib.h"
 # include "libft/math.h"
 # include "libft/mem.h"
-# include "libft/mlx.h"
 # include "libft/str.h"
 # include "libft/trm.h"
 # include "libft/tys.h"

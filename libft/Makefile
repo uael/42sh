@@ -12,7 +12,7 @@
 
 NAME = libft.a
 CC = gcc
-CFLAGS = -Werror -Wextra -Wall -g3 -fsanitize=address -DDEBUG
+CFLAGS = -Werror -Wextra -Wall -g3 -DDEBUG
 
 SRC_PATH = ./src/
 OBJ_PATH = ./obj/
@@ -22,7 +22,7 @@ INC_PATH = ./include/ $(addprefix $(3TH_PATH), include/)
 LNK_PATH = ./ $(3TH_PATH)
 
 OBJ_NAME = $(SRC_NAME:.c=.o)
-3TH_NAME = m ncurses
+3TH_NAME = m termcap
 SRC_NAME = \
 	cmd/ft_job.c \
 	cmd/ft_job_ctor.c \
@@ -258,10 +258,6 @@ SRC_NAME = \
 	math/ft_v3.c \
 	math/ft_v3_nor.c \
 	mem/ft_alloc.c \
-	mlx/ft_img.c \
-	mlx/ft_img_wli.c \
-	mlx/ft_mlx.c \
-	mlx/ft_win.c \
 	str/ft_mem.c \
 	str/ft_mem_2.c \
 	str/ft_str.c \
