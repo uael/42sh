@@ -15,5 +15,7 @@
 inline int	sh_keys_left(t_sh *self, t_tc *tc)
 {
 	(void)self;
-	return (tc_left(tc));
+	if (tc->c)
+		return (tc_left(tc));
+	return (YEP);
 }

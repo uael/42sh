@@ -16,8 +16,9 @@ inline int	sh_keys_down(t_sh *self, t_tc *tc)
 {
 	if (self->cursor < ft_vstr_size(&self->history))
 		++self->cursor;
-	tc_clrln(tc);
+	if (tc_clrln(tc))
+		return (WUT);
 	if (self->cursor < ft_vstr_size(&self->history))
-		tc_putnl(tc, *ft_vstr_at(&self->history, self->cursor));
+		return (tc_putnl(tc, *ft_vstr_at(&self->history, self->cursor)));
 	return (YEP);
 }

@@ -38,11 +38,7 @@ inline void			sh_sigint_hdl(int sign)
 {
 	(void)sign;
 	tc_clrln(g_tc);
-	ft_puts(g_tc->tty, "^C");
-	tc_down(g_tc);
-	tc_margin_left(g_tc);
 	sh_prompt(g_sh, SH_PROMPT(g_sh));
-	tc_register(g_tc);
 }
 
 static inline int	main_av(t_sh *sh, int ac, char **av, char **env)

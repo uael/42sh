@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   keys/right.c                                       :+:      :+:    :+:   */
+/*   keys/delete.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,10 +12,8 @@
 
 #include "msh/keys.h"
 
-inline int	sh_keys_right(t_sh *self, t_tc *tc)
+inline int	sh_keys_delete(t_sh *self, t_tc *tc)
 {
 	(void)self;
-	if ((size_t)tc->c < tc->in.len)
-		return (tc_right(tc));
-	return (YEP);
+	return (tc_delc(tc));
 }

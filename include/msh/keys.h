@@ -25,6 +25,8 @@ typedef struct	s_keys_hdl
 }				t_keys_hdl;
 
 extern int	sh_keys(t_tc *tc, char *in);
+extern int	sh_keys_backspace(t_sh *self, t_tc *tc);
+extern int	sh_keys_delete(t_sh *self, t_tc *tc);
 extern int	sh_keys_down(t_sh *self, t_tc *tc);
 extern int	sh_keys_left(t_sh *self, t_tc *tc);
 extern int	sh_keys_return(t_sh *self, t_tc *tc);

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   keys/right.c                                       :+:      :+:    :+:   */
+/*   keys/backspace.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,10 +12,10 @@
 
 #include "msh/keys.h"
 
-inline int	sh_keys_right(t_sh *self, t_tc *tc)
+inline int	sh_keys_backspace(t_sh *self, t_tc *tc)
 {
 	(void)self;
-	if ((size_t)tc->c < tc->in.len)
-		return (tc_right(tc));
+	if (tc->c && (tc_left(tc) || tc_delc(tc)))
+		return (WUT);
 	return (YEP);
 }

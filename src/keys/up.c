@@ -18,8 +18,9 @@ inline int	sh_keys_up(t_sh *self, t_tc *tc)
 		--self->cursor;
 	if (self->cursor < ft_vstr_size(&self->history))
 	{
-		tc_clrln(tc);
-		tc_putnl(tc, *ft_vstr_at(&self->history, self->cursor));
+		if (tc_clrln(tc) ||
+			tc_putnl(tc, *ft_vstr_at(&self->history, self->cursor)))
+			return (WUT);
 	}
 	return (YEP);
 }

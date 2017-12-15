@@ -16,11 +16,13 @@ inline int	sh_keys_return(t_sh *self, t_tc *tc)
 {
 	t_src	src;
 
-	tc_putc(tc, '\n');
-	tc_register(tc);
+	ft_dstr_pushc(&tc->in, '\n');
+	if (tc_down(tc) || tc_margin_left(tc))
+		return (WUT);
 	if (!tc->in.len || !(self->ln = ft_strdup(tc->in.buf)))
 		return (NOP);
-	tc_clrln(tc);
+	if (tc_clrln(tc))
+		return (WUT);
 	tc_pause(tc);
 	ft_src_init_str(&src, self->ln);
 	ft_lexer_unshift(&self->lexer, &src);

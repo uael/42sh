@@ -17,7 +17,7 @@
 
 # define K_RETURN		"\xa"
 # define K_BACKSPACE	"\x7f"
-# define K_DEL			"\x1b\x5b\x33\x7e"
+# define K_DELETE			"\x1b\x5b\x33\x7e"
 # define K_CTRL_U		"\x15"
 # define K_CTRL_D		"\x4"
 # define K_CTRL_A		"\x1"
@@ -53,6 +53,13 @@ struct s_tc;
 
 typedef int		(*t_tc_hook)(struct s_tc *self, char *ch);
 
+typedef enum	e_tc_m
+{
+	TC_NONE,
+	TC_INSERT,
+	TC_VISUAL
+}				t_tc_m;
+
 typedef struct	s_tc
 {
 	t_tcios		curr;
@@ -62,26 +69,23 @@ typedef struct	s_tc
 	int			tty;
 	int			col;
 	int			row;
-	int			sx;
-	int			sy;
-	int			x;
-	int 		y;
+	int			c;
 	t_dstr		in;
 	t_du8		r;
+	t_tc_m		mode;
 }				t_tc;
 
 extern char		*g_tcaps[];
 
 extern int		tc_ctor(t_tc *self, char **env, void *arg);
 extern void		tc_dtor(t_tc *self);
+extern int 		tc_switch(t_tc *self, t_tc_m mode);
 extern void		tc_pause(t_tc *self);
-extern void		tc_resume(t_tc *self);
-extern int		tc_register(t_tc *self);
+extern int		tc_resume(t_tc *self);
 extern int		tc_putc(t_tc *self, char c);
 extern int		tc_puts(t_tc *self, char const *s);
 extern int		tc_putnl(t_tc *self, char const *s);
-extern int		tc_insc(t_tc *self, char c);
-extern int		tc_inss(t_tc *self, char const *s);
+extern int		tc_delc(t_tc *self);
 extern int		tc_clrln(t_tc *self);
 extern int		tc_clr(t_tc *self);
 extern int		tc_left(t_tc *self);

@@ -29,6 +29,7 @@ SRC_NAME = \
 	eval.c eval/cmd.c eval/heredoc.c eval/pipe.c eval/rin.c eval/rout.c \
 	eval/raout.c eval/sep.c eval/lamp.c eval/ramp.c \
 	keys.c keys/down.c keys/left.c keys/return.c keys/right.c keys/up.c \
+	keys/backspace.c keys/delete.c \
 	reduce.c reduce/heredoc.c \
 	cli.c env.c history.c lex.c sh.c tc.c
 

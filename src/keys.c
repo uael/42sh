@@ -14,6 +14,8 @@
 
 static t_keys_hdl	g_hdls[] =
 {
+	{K_BACKSPACE, sh_keys_backspace},
+	{K_DELETE, sh_keys_delete},
 	{K_DOWN, sh_keys_down},
 	{K_LEFT, sh_keys_left},
 	{K_RETURN, sh_keys_return},
