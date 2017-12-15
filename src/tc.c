@@ -81,6 +81,32 @@ static void		s_tc_refresh(t_tc *self)
 
 int g_log = 0;
 
+static int	trm_cursor(int tty, int *col, int *row)
+{
+	uint8_t	c;
+	int		st;
+
+	if (tty == -1)
+		return ENOTTY;
+	write(tty, "\033[6n", 4);
+	st = EIO;
+	if (read(tty, &c, 1) <= 0 || c != 27 || read(tty, &c, 1) <= 0 || c != '[')
+		return (st);
+	*row = 0;
+	while (read(tty, &c, 1) > 0 && c >= '0' && c <= '9')
+		*row = 10 * *row + c - '0';
+	*row ? --*row : 0;
+	if (c != ';')
+		return (st);
+	*col = 0;
+	while (read(tty, &c, 1) > 0 && c >= '0' && c <= '9')
+		*col = 10 * *col + c - '0';
+	*col ? --*col : 0;
+	if (c != 'R')
+		return (st);
+	return (0);
+}
+
 inline int		tc_ctor(t_tc *self, char **env, void *arg)
 {
 	char		*term;
@@ -123,10 +149,8 @@ inline int 		tc_switch(t_tc *self, t_tc_m mode)
 	{
 		if (tputs(caps(TC_IM), 1, tputs_c))
 			return (THROW(WUT));
-		if (tputs(caps(TC_DM), 1, tputs_c))
-			return (THROW(WUT));
 	}
-	else if (tputs(caps(TC_EI), 1, tputs_c) || tputs(caps(TC_ED), 1, tputs_c))
+	else if (tputs(caps(TC_EI), 1, tputs_c))
 		return (THROW(WUT));
 	self->mode = mode;
 	return (YEP);
@@ -140,11 +164,10 @@ inline void		tc_pause(t_tc *self)
 
 inline int		tc_resume(t_tc *self)
 {
-	tc_switch(self, TC_INSERT);
 	tcsetattr(self->tty, TCSADRAIN, &self->curr);
 	s_tc_refresh(self);
-	tputs(tgetstr("am", NULL), 1, tputs_c);
-	tputs(tgetstr("xn", NULL), 1, tputs_c);
+	tc_switch(self, TC_INSERT);
+	trm_cursor(self->tty, &self->x, &self->y);
 	return (YEP);
 }
 
@@ -154,6 +177,12 @@ extern int		tc_delc(t_tc *self)
 		return (YEP);
 	if (tputs(caps(TC_DC), 1, tputs_c))
 		return (THROW(WUT));
+	if (self->x == self->col - 1)
+	{
+		tputs(" ", 1, tputs_c);
+		tputs(caps(TC_LE), 1, tputs_c);
+		tputs(caps(TC_ND), 1, tputs_c);
+	}
 	ft_dstr_remove(&self->in, (size_t)self->c, NULL);
 	return (YEP);
 }
@@ -173,6 +202,14 @@ inline int		tc_putc(t_tc *self, char c)
 		return (THROW(WUT));
 	ft_dstr_putc(&self->in, (size_t)self->c, c);
 	++self->c;
+	if ((++self->x % self->col) == 0)
+	{
+		if (tputs(caps(TC_DO), 1, tputs_c))
+			return (THROW(WUT));
+		if (tputs(tgoto(caps(TC_CH), 0, 0), 1, tputs_c))
+			return (THROW(WUT));
+		self->x = 0;
+	}
 	return (YEP);
 }
 
@@ -227,6 +264,15 @@ inline int		tc_left(t_tc *self)
 	if (tputs(caps(TC_LE), 1, tputs_c))
 		return (THROW(WUT));
 	--self->c;
+	if (self->x == 0)
+	{
+		if (tputs(caps(TC_UP), 1, tputs_c))
+			return (THROW(WUT));
+		if (tputs(tgoto(caps(TC_CH), 0, self->col - 1), 1, tputs_c))
+			return (THROW(WUT));
+		self->x = self->col;
+	}
+	--self->x;
 	return (YEP);
 }
 
@@ -237,6 +283,14 @@ inline int		tc_right(t_tc *self)
 	if (tputs(caps(TC_ND), 1, tputs_c))
 		return (THROW(WUT));
 	++self->c;
+	if ((++self->x % self->col) == 0)
+	{
+		if (tputs(caps(TC_DO), 1, tputs_c))
+			return (THROW(WUT));
+		if (tputs(tgoto(caps(TC_CH), 0, 0), 1, tputs_c))
+			return (THROW(WUT));
+		self->x = 0;
+	}
 	return (YEP);
 }
 
@@ -267,7 +321,8 @@ inline int		tc_loop(t_tc *self, t_tc_hook hook)
 	{
 		if ((st = hook(self, buf)))
 			break;
-		dprintf(g_log, "[%d:%d] <%d>\n", self->col, self->row, self->c);
+		dprintf(g_log, "[%d:%d] <%d:%d> <%d>\n", self->col, self->row,
+			self->x, self->y, self->c);
 		dprintf(g_log, "in[%zu]: '%s'\n", self->in.len, self->in.buf);
 	}
 	return (r < 0 ? WUT : st);

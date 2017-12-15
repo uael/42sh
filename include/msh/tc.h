@@ -69,6 +69,8 @@ typedef struct	s_tc
 	int			tty;
 	int			col;
 	int			row;
+	int			x;
+	int			y;
 	int			c;
 	t_dstr		in;
 	t_du8		r;
