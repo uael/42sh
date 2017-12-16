@@ -32,20 +32,14 @@
 # define K_DOWN			"\x1b\x5b\x42"
 # define K_RIGHT		"\x1b\x5b\x43"
 # define K_LEFT			"\x1b\x5b\x44"
-# define K_CTRL_UP		"\x1b\x5b\x31\x3b\x35\x41"
-# define K_CTRL_DOWN	"\x1b\x5b\x31\x3b\x35\x42"
-# define K_CTRL_RIGHT	"\x1b\x5b\x31\x3b\x35\x43"
-# define K_CTRL_LEFT	"\x1b\x5b\x31\x3b\x35\x44"
+# define K_SHIFT_UP "\x1b\x5b\x31\x3b\x32\x41"
+# define K_SHIFT_DOWN "\x1b\x5b\x31\x3b\x32\x42"
+# define K_SHIFT_RIGHT "\x1b\x5b\x31\x3b\x32\x43"
+# define K_SHIFT_LEFT "\x1b\x5b\x31\x3b\x32\x44"
 
-# ifdef LINUX
-#  define K_START		"\x1b\x4f\x48"
-#  define K_END			"\x1b\x4f\x46"
-#  define K_CTRL_Y		"\x19"
-# else
-#  define K_START		K_CTRL_A
-#  define K_END			K_CTRL_E
-#  define K_CTRL_Y		"\x8"
-# endif
+# define K_HOME		"\x1b\x5b\x48"
+# define K_END			"\x1b\x5b\x46"
+# define K_CTRL_Y		"\x19"
 
 #define TC_U7 0
 #define TC_DO 1
@@ -193,18 +187,20 @@ static int		term_delc(t_term *self)
 	return (YEP);
 }
 
-static int		term_putc(t_term *self, char c)
+static int		term_putc(t_term *self, char c, size_t pl)
 {
 	char	*s;
+	int		n;
 
 	if (self->mode != TERM_INSERT)
 		return (YEP);
-	if (tputs(caps(TC_IC), 1, tputs_c))
+	n = (int)((self->line.len - self->curs.i + pl) / self->col) + 1;
+	if (tputs(caps(TC_IC), 3, tputs_c))
 		return (THROW(WUT));
 	s = alloca(2 * sizeof(char));
 	s[0] = c;
 	s[1] = '\0';
-	if (tputs(s, 1, tputs_c) || tputs(caps(TC_IP), 1, tputs_c))
+	if (tputs(s, n, tputs_c) || tputs(caps(TC_IP), n, tputs_c))
 		return (THROW(WUT));
 	ft_dstr_putc(&self->line, self->curs.i, c);
 	++self->curs.i;
@@ -219,22 +215,22 @@ static int		term_putc(t_term *self, char c)
 	return (YEP);
 }
 
-static int		term_puts(t_term *self, char const *s)
+static int		term_puts(t_term *self, char const *s, size_t pl)
 {
 	int st;
 
 	while (*s)
-		if ((st = term_putc(self, *s++)))
+		if ((st = term_putc(self, *s++, pl)))
 			return (st);
 	return (YEP);
 }
 
-static int		term_putnl(t_term *self, char const *s)
+static int		term_putnl(t_term *self, char const *s, size_t pl)
 {
 	int st;
 
 	while (*s && *s != '\n')
-		if ((st = term_putc(self, *s++)))
+		if ((st = term_putc(self, *s++, pl)))
 			return (st);
 	return (YEP);
 }
@@ -264,7 +260,41 @@ static int		term_clrl(t_term *self, char *prompt)
 		{
 			while (n--)
 			{
-				if (tputs(tgoto(caps(TC_DO), 1, 1), 1, tputs_c))
+				if (tputs(tgoto(caps(TC_UP), 1, 1), 1, tputs_c))
+					return (THROW(WUT));
+				if (tputs(caps(TC_CE), n, tputs_c))
+					return (THROW(WUT));
+			}
+		}
+		self->curs.i = 0;
+	}
+	if (tputs(prompt, 1, tputs_c))
+		return (THROW(WUT));
+	self->curs.x += pl;
+	return (YEP);
+}
+
+static int		term_clrl_bis(t_term *self, char *prompt)
+{
+	size_t pl;
+	int		n;
+
+	pl = ft_strlen(prompt);
+	if (self->curs.x)
+	{
+		if (tputs(tgoto(caps(TC_CH), 0, 0), 1, tputs_c))
+			return (THROW(WUT));
+		if (tputs(caps(TC_CE), 1, tputs_c))
+			return (THROW(WUT));
+		self->curs.x = 0;
+	}
+	if (self->curs.i)
+	{
+		if ((n = (int)((self->curs.i + pl) / self->col)))
+		{
+			while (n--)
+			{
+				if (tputs(tgoto(caps(TC_UP), 1, 1), 1, tputs_c))
 					return (THROW(WUT));
 				if (tputs(caps(TC_CE), n, tputs_c))
 					return (THROW(WUT));
@@ -280,6 +310,7 @@ static int		term_clrl(t_term *self, char *prompt)
 
 static char		*rl_exit(t_term *self, char *ret)
 {
+	self->curs.i = 0;
 	if (self->mode == TERM_INSERT)
 	{
 		if (tputs(caps(TC_EI), 1, tputs_c))
@@ -297,11 +328,13 @@ inline char		*ft_readline(t_term *self, char *prompt)
 {
 	int		r;
 	char	buf[7];
+	size_t	pl;
 
 	if (self->mode == TERM_NOTTY)
 		return (ft_istream_getl(g_cin, '\n'));
 	else
 	{
+		pl = ft_strlen(prompt);
 		if (self->mode == TERM_OFF)
 		{
 			tcsetattr(self->fd, TCSADRAIN, &self->on);
@@ -332,7 +365,7 @@ inline char		*ft_readline(t_term *self, char *prompt)
 				if (self->hcurs < ft_vstr_size(&self->history))
 				{
 					if (term_clrl(self, prompt) ||
-						term_putnl(self, *ft_vstr_at(&self->history, self->hcurs)))
+						term_putnl(self, *ft_vstr_at(&self->history, self->hcurs), pl))
 						return (rl_exit(self, NULL));
 				}
 			}
@@ -343,7 +376,7 @@ inline char		*ft_readline(t_term *self, char *prompt)
 				if (term_clrl(self, prompt))
 					return (rl_exit(self, NULL));
 				if (self->hcurs < ft_vstr_size(&self->history) &&
-					term_putnl(self, *ft_vstr_at(&self->history, self->hcurs)))
+					term_putnl(self, *ft_vstr_at(&self->history, self->hcurs), pl))
 					return (rl_exit(self, NULL));
 			}
 			else if (r == 3 && ft_strcmp(K_LEFT, buf) == 0)
@@ -351,10 +384,89 @@ inline char		*ft_readline(t_term *self, char *prompt)
 				if (term_left(self))
 					return (rl_exit(self, NULL));
 			}
+			else if (r == 6 && ft_strcmp(K_SHIFT_LEFT, buf) == 0)
+			{
+				if (self->line.len)
+				{
+					if (self->curs.i && term_left(self))
+						return (rl_exit(self, NULL));
+					while (self->curs.i &&
+						ft_strchr(" \t",
+						*ft_dstr_at(&self->line, self->curs.i)))
+					{
+						if (term_left(self))
+							return (rl_exit(self, NULL));
+					}
+					while (self->curs.i)
+					{
+						if (ft_strchr(" \t",
+							*(ft_dstr_at(&self->line, self->curs.i) - 1)))
+							break ;
+						if (term_left(self))
+							return (rl_exit(self, NULL));
+					}
+				}
+			}
 			else if (r == 3 && ft_strcmp(K_RIGHT, buf) == 0)
 			{
 				if (term_right(self))
 					return (rl_exit(self, NULL));
+			}
+			else if (r == 6 && ft_strcmp(K_SHIFT_RIGHT, buf) == 0)
+			{
+				if (self->line.len)
+				{
+					while (self->curs.i < self->line.len &&
+						!ft_strchr(" \t",
+						*ft_dstr_at(&self->line, self->curs.i)))
+					{
+						if (term_right(self))
+							return (rl_exit(self, NULL));
+					}
+					while (self->curs.i < self->line.len &&
+						ft_strchr(" \t",
+						*ft_dstr_at(&self->line, self->curs.i)))
+					{
+						if (term_right(self))
+							return (rl_exit(self, NULL));
+					}
+					if (self->curs.i == self->line.len)
+					{
+						while (self->curs.i &&
+							ft_strchr(" \t",
+							*ft_dstr_at(&self->line, self->curs.i)))
+						{
+							if (term_left(self))
+								return (rl_exit(self, NULL));
+						}
+						while (self->curs.i)
+						{
+							if (ft_strchr(" \t",
+								*(ft_dstr_at(&self->line, self->curs.i) - 1)))
+								break ;
+							if (term_left(self))
+								return (rl_exit(self, NULL));
+						}
+					}
+				}
+			}
+			else if (ft_strcmp(K_HOME, buf) == 0)
+			{
+				if (self->line.len)
+				{
+					while (self->curs.i)
+						if (term_left(self))
+							return (rl_exit(self, NULL));
+				}
+			}
+			else if (ft_strcmp(K_END, buf) == 0)
+			{
+				if (self->line.len)
+				{
+					while (self->curs.i < self->line.len)
+						if (term_right(self))
+							return (rl_exit(self, NULL));
+				}
 			}
 			else if (r == 4 && ft_strcmp(K_DELETE, buf) == 0)
 			{
@@ -370,13 +482,22 @@ inline char		*ft_readline(t_term *self, char *prompt)
 			{
 				while (self->curs.i < self->line.len)
 					term_right(self);
-				if (term_puts(self, "\n"))
+				if (term_puts(self, "\n", pl))
 					return (rl_exit(self, NULL));
 				break ;
 			}
+			else if (r > 1 || (*buf < 32 || *buf == 127) || !ft_isascii(*buf))
+			{
+				char *s = buf;
+
+				dprintf(2, "\"");
+				while (*s)
+					dprintf(2, "\\x%x", *s++);
+				dprintf(2, "\"\n");
+			}
 			else
 			{
-				if (term_puts(self, buf))
+				if (term_putc(self, *buf, pl))
 					return (rl_exit(self, NULL));
 			}
 		}

@@ -27,23 +27,22 @@
 # define K_CTRL_K		"\xb"
 # define K_CTRL_P		"\x10"
 # define K_ALT_B		"\x1b\x62"
-# define K_ALT_B		"\x1b\x62"
 # define K_ALT_F		"\x1b\x66"
 # define K_UP			"\x1b\x5b\x41"
 # define K_DOWN			"\x1b\x5b\x42"
 # define K_RIGHT		"\x1b\x5b\x43"
 # define K_LEFT			"\x1b\x5b\x44"
-# define K_CTRL_UP		"\x1b\x5b\x31\x3b\x35\x41"
-# define K_CTRL_DOWN	"\x1b\x5b\x31\x3b\x35\x42"
-# define K_CTRL_RIGHT	"\x1b\x5b\x31\x3b\x35\x43"
-# define K_CTRL_LEFT	"\x1b\x5b\x31\x3b\x35\x44"
+# define K_SHIFT_UP "\x1b\x5b\x31\x3b\x32\x41"
+# define K_SHIFT_DOWN "\x1b\x5b\x31\x3b\x32\x42"
+# define K_SHIFT_RIGHT "\x1b\x5b\x31\x3b\x32\x43"
+# define K_SHIFT_LEFT "\x1b\x5b\x31\x3b\x32\x44"
 
 # ifdef LINUX
 #  define K_START		"\x1b\x4f\x48"
 #  define K_END			"\x1b\x4f\x46"
 #  define K_CTRL_Y		"\x19"
 # else
-#  define K_START		K_CTRL_A
+#  define K_HOME		K_CTRL_A
 #  define K_END			K_CTRL_E
 #  define K_CTRL_Y		"\x8"
 # endif

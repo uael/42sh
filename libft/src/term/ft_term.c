@@ -27,8 +27,9 @@ static int		term_init_history(t_term *self, char *history)
 	ifs.fd = fd;
 	ifs.filename = history;
 	while ((ln = ft_ifstream_getl(&ifs, '\n')))
-		ft_vstr_pushc(&self->history, ln);
+		ft_vstr_pushc(&self->history, ft_strdup(ln));
 	self->hcurs = ft_vstr_size(&self->history);
+	ft_ifstream_close(&ifs);
 	return (YEP);
 }
 
