@@ -17,7 +17,7 @@
 
 # define K_RETURN		"\xa"
 # define K_BACKSPACE	"\x7f"
-# define K_DELETE			"\x1b\x5b\x33\x7e"
+# define K_DELETE		"\x1b\x5b\x33\x7e"
 # define K_CTRL_U		"\x15"
 # define K_CTRL_D		"\x4"
 # define K_CTRL_A		"\x1"
