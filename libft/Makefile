@@ -263,7 +263,9 @@ SRC_NAME = \
 	str/ft_str.c \
 	str/ft_str_2.c \
 	str/ft_str_3.c \
-	str/ft_str_4.c
+	str/ft_str_4.c \
+	term/ft_readline.c \
+	term/ft_term.c
 
 SRC = $(addprefix $(SRC_PATH), $(SRC_NAME))
 SOB = $(addprefix $(OBJ_PATH), $(SOB_PATH))

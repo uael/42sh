@@ -32,6 +32,7 @@ typedef TTY		t_termios;
 typedef enum	e_term_mode
 {
 	TERM_OFF,
+	TERM_NOTTY,
 	TERM_INSERT,
 	TERM_VISUAL
 }				t_term_mode;
@@ -39,15 +40,17 @@ typedef enum	e_term_mode
 typedef struct	s_term_curs
 {
 	size_t		i;
-	size_t		x;
-	size_t		y;
+	uint32_t	x;
+	uint32_t	y;
 }				t_term_curs;
 
 typedef struct	s_term
 {
 	t_term_mode	mode;
 	int			fd;
-	char		*history;
+	char		*history_fn;
+	t_vstr		history;
+	size_t		hcurs;
 	t_termios	on;
 	t_termios	off;
 	t_term_curs	curs;

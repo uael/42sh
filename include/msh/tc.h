@@ -27,6 +27,7 @@
 # define K_CTRL_K		"\xb"
 # define K_CTRL_P		"\x10"
 # define K_ALT_B		"\x1b\x62"
+# define K_ALT_B		"\x1b\x62"
 # define K_ALT_F		"\x1b\x66"
 # define K_UP			"\x1b\x5b\x41"
 # define K_DOWN			"\x1b\x5b\x42"

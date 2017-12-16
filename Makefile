@@ -23,15 +23,7 @@ LNK_PATH = ./ $(3TH_PATH)
 OBJ_NAME = $(SRC_NAME:.c=.o)
 3TH_NAME = ft ncurses
 SRC_NAME = \
-	lex/op.c lex/skip.c lex/syn.c lex/word.c \
-	eval/bi.c eval/bi/utils.c eval/bi/cd.c eval/bi/echo.c eval/bi/env.c \
-	eval/bi/exit.c eval/bi/setenv.c eval/bi/unsetenv.c \
-	eval.c eval/cmd.c eval/heredoc.c eval/pipe.c eval/rin.c eval/rout.c \
-	eval/raout.c eval/sep.c eval/lamp.c eval/ramp.c \
-	keys.c keys/down.c keys/left.c keys/return.c keys/right.c keys/up.c \
-	keys/backspace.c keys/delete.c \
-	reduce.c reduce/heredoc.c \
-	cli.c env.c history.c lex.c sh.c tc.c
+	main.c
 
 SRC = $(addprefix $(SRC_PATH), $(SRC_NAME))
 OBJ = $(addprefix $(OBJ_PATH), $(OBJ_NAME))
