@@ -28,15 +28,24 @@
 ** [X] - redirection
 ** [X] - redirection fd duplication
 ** [X] - exit status
-** [ ] - proper syntax error
-** [X] - history
-** [ ] - autocomplete
-** [ ] - line edition
-** [ ] - logical operator
-** [ ] - variable expansion
-** [ ] - subshell expansion
-** [ ] - parenthesis
+** [/] - librl (readline library)
+** [/] - history (librl)
+** [/] - autocomplete (librl)
+** [/] - line edition (librl)
+** [ ] - file stream adaptation to librl
+** [ ] - lexing adaptation to librl
+** [ ] - quote expansion adaptation to librl
+** [ ] - heredoc adaptation to librl
 ** [ ] - fixes empty heredoc
+** [ ] - proper syntax error
+** [ ] - pipe fixes in some cases ? (see shell tester)
+** [ ] - logical operators (BONUS)
+** [ ] - async operator (BONUS)
+** [ ] - variable expansion (BONUS)
+** [ ] - subshell expansion (BONUS)
+** [ ] - parenthesis (BONUS)
+** [ ] - #! binary interpretation (BONUS)
+** [ ] - &> redirection operator (BONUS)
 */
 
 # include "msh/env.h"

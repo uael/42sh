@@ -16,7 +16,6 @@ CFLAGS = -Werror -Wextra -Wall -g3 -DDEBUG
 
 SRC_PATH = ./src/
 OBJ_PATH = ./obj/
-SOB_PATH = cty/ ds/ fs /int/ io/ lex/ lib/ math/ mem/ str/ trm/
 3TH_PATH =
 INC_PATH = ./include/ $(addprefix $(3TH_PATH), include/)
 LNK_PATH = ./ $(3TH_PATH)
@@ -268,9 +267,8 @@ SRC_NAME = \
 	term/ft_term.c
 
 SRC = $(addprefix $(SRC_PATH), $(SRC_NAME))
-SOB = $(addprefix $(OBJ_PATH), $(SOB_PATH))
 OBJ = $(addprefix $(OBJ_PATH), $(OBJ_NAME))
-INC = $(addprefix -I, $(INC_PATH))
+INC = $(addprefix -I, $(INC_PATH) $(addsuffix include/, $(3TH_PATH)))
 LNK = $(addprefix -L, $(LNK_PATH))
 3TH = $(addprefix -l, $(3TH_NAME))
 EXE =
@@ -278,12 +276,12 @@ LIB = $(NAME)
 
 all: $(EXE) $(LIB)
 
-$(LIB): 3th $(OBJ)
+$(LIB): lib $(OBJ)
 	@ar -rc $(NAME) $(OBJ)
 	@ranlib $(NAME)
 	@printf  "%-25s\033[32m[✔]\033[0m\n" "$(NAME): lib"
 
-$(EXE): 3th $(OBJ)
+$(EXE): lib $(OBJ)
 	@$(CC) $(CFLAGS) $(LNK) $(INC) $(OBJ) -o $(NAME) $(3TH)
 	@printf  "%-25s\033[32m[✔]\033[0m\n" "$(NAME): exe"
 
@@ -295,21 +293,21 @@ $(OBJ_PATH)%.o: $(SRC_PATH)%.c
 
 clean:
 ifneq ($(3TH_PATH),)
-	@$(MAKE) -C $(3TH_PATH) clean
+	@$(foreach lib,$(3TH_PATH),$(MAKE) -C $(lib) clean;)
 endif
 	@rm -rf $(OBJ_PATH)
 	@printf  "%-25s\033[32m[✔]\033[0m\n" "$(NAME): $@"
 
 fclean: clean
 ifneq ($(3TH_PATH),)
-	@$(MAKE) -C $(3TH_PATH) fclean
+	@$(foreach lib,$(3TH_PATH),$(MAKE) -C $(lib) fclean;)
 endif
 	@rm -f $(NAME)
 	@printf  "%-25s\033[32m[✔]\033[0m\n" "$(NAME): $@"
 
-3th:
+lib:
 ifneq ($(3TH_PATH),)
-	@$(MAKE) -C $(3TH_PATH) -j4
+	@$(foreach lib,$(3TH_PATH),$(MAKE) -C $(lib) -j4;)
 endif
 
 norm:

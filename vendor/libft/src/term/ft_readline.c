@@ -274,40 +274,6 @@ static int		term_clrl(t_term *self, char *prompt)
 	return (YEP);
 }
 
-static int		term_clrl_bis(t_term *self, char *prompt)
-{
-	size_t pl;
-	int		n;
-
-	pl = ft_strlen(prompt);
-	if (self->curs.x)
-	{
-		if (tputs(tgoto(caps(TC_CH), 0, 0), 1, tputs_c))
-			return (THROW(WUT));
-		if (tputs(caps(TC_CE), 1, tputs_c))
-			return (THROW(WUT));
-		self->curs.x = 0;
-	}
-	if (self->curs.i)
-	{
-		if ((n = (int)((self->curs.i + pl) / self->col)))
-		{
-			while (n--)
-			{
-				if (tputs(tgoto(caps(TC_UP), 1, 1), 1, tputs_c))
-					return (THROW(WUT));
-				if (tputs(caps(TC_CE), n, tputs_c))
-					return (THROW(WUT));
-			}
-		}
-		self->curs.i = 0;
-	}
-	if (tputs(prompt, 1, tputs_c))
-		return (THROW(WUT));
-	self->curs.x += pl;
-	return (YEP);
-}
-
 static char		*rl_exit(t_term *self, char *ret)
 {
 	self->curs.i = 0;

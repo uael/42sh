@@ -40,7 +40,6 @@ add_library(ft ${libft_HDR} ${libft_HDRS} ${libft_SRCS})
 set_property(TARGET ft PROPERTY C_STANDARD 90)
 target_include_directories(ft PUBLIC ${libft_INC_DIR})
 target_compile_definitions(ft PRIVATE U_COMPILE)
-target_link_libraries(ft mlx)
 
 target_compile_definitions(ft
   PRIVATE $<$<CONFIG:Debug>:DEBUG>$<$<CONFIG:Release>:NDEBUG>
