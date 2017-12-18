@@ -23,6 +23,7 @@ LNK_PATH = ./ $(3TH_PATH)
 OBJ_NAME = $(SRC_NAME:.c=.o)
 3TH_NAME = m termcap
 SRC_NAME = \
+	buf/ft_buf.c \
 	cmd/ft_job.c \
 	cmd/ft_job_ctor.c \
 	cmd/ft_job_ctor_exe.c \
@@ -263,6 +264,7 @@ SRC_NAME = \
 	str/ft_str_2.c \
 	str/ft_str_3.c \
 	str/ft_str_4.c \
+	str/ft_str_5.c \
 	term/ft_readline.c \
 	term/ft_term.c
 

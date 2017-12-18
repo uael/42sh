@@ -1,32 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libft.h                                            :+:      :+:    :+:   */
+/*   libft/buf.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/09 07:00:16 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/10 10:18:52 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFT_H
-# define LIBFT_H
+#ifndef LIBFT_BUF_H
+# define LIBFT_BUF_H
 
-# include "libft/buf.h"
-# include "libft/cty.h"
-# include "libft/cmd.h"
-# include "libft/ds.h"
-# include "libft/ex.h"
-# include "libft/fs.h"
-# include "libft/int.h"
-# include "libft/io.h"
-# include "libft/lex.h"
-# include "libft/lib.h"
-# include "libft/math.h"
-# include "libft/mem.h"
-# include "libft/str.h"
-# include "libft/term.h"
-# include "libft/tys.h"
+# include "str.h"
+# include "math.h"
+
+extern void		ft_bufgrow(void *buf_ptr, size_t sz, size_t n, size_t isz);
+extern void		*ft_bufpush(void *buf_ptr, size_t *sz, size_t n, size_t isz);
+extern size_t	ft_bufshift(void *buf, size_t *sz, size_t n, size_t isz);
 
 #endif

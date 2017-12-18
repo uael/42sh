@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libft.h                                            :+:      :+:    :+:   */
+/*   rl_read.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,23 +10,18 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFT_H
-# define LIBFT_H
+#include "rl.h"
 
-# include "libft/buf.h"
-# include "libft/cty.h"
-# include "libft/cmd.h"
-# include "libft/ds.h"
-# include "libft/ex.h"
-# include "libft/fs.h"
-# include "libft/int.h"
-# include "libft/io.h"
-# include "libft/lex.h"
-# include "libft/lib.h"
-# include "libft/math.h"
-# include "libft/mem.h"
-# include "libft/str.h"
-# include "libft/term.h"
-# include "libft/tys.h"
+extern char	*rl_readline(struct s_rl *self, char const *prompt)
+{
+	(void)self;
+	(void)prompt;
+	return (NULL);
+}
 
-#endif
+extern char	*rl_readnext(struct s_rl *self, char const *prompt)
+{
+	(void)self;
+	(void)prompt;
+	return (NULL);
+}

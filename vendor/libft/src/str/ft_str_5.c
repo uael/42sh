@@ -1,32 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libft.h                                            :+:      :+:    :+:   */
+/*   ft_str_5.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/09 07:00:16 by alucas-          ###   ########.fr       */
+/*   Created: 2017/11/07 09:53:08 by alucas-           #+#    #+#             */
+/*   Updated: 2017/11/07 09:53:34 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFT_H
-# define LIBFT_H
+#include "libft/str.h"
 
-# include "libft/buf.h"
-# include "libft/cty.h"
-# include "libft/cmd.h"
-# include "libft/ds.h"
-# include "libft/ex.h"
-# include "libft/fs.h"
-# include "libft/int.h"
-# include "libft/io.h"
-# include "libft/lex.h"
-# include "libft/lib.h"
-# include "libft/math.h"
-# include "libft/mem.h"
-# include "libft/str.h"
-# include "libft/term.h"
-# include "libft/tys.h"
-
-#endif
+inline char	*ft_strnchr(char const *s, int c, size_t n)
+{
+	if (c == 0)
+		while (n--)
+			if (!*s++)
+				return ((char *)s - 1);
+	if (c == 0)
+		return (NULL);
+	while (n-- && *s)
+		if (*s++ == c)
+			return ((char *)s - 1);
+	return (NULL);
+}

@@ -42,6 +42,7 @@ extern size_t	ft_strlcat(char *dest, char const *src, size_t size);
 extern uint8_t	ft_strnbr(char *dst, int64_t n, uint8_t base);
 extern char		*ft_strncat(char *dest, char const *src, size_t nb);
 extern int		ft_strncmp(char const *s1, char const *s2, size_t n);
+extern char		*ft_strnchr(char const *s, int c, size_t n);
 extern char		*ft_strncpy(char *dest, char const *src, size_t n);
 extern size_t	ft_strnlen(char const *str, size_t size);
 extern char		*ft_strnstr(char const *str, char const *f, size_t l);

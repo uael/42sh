@@ -58,7 +58,7 @@ inline uint64_t	*ft_vu64_pushn(t_vu64 *self, size_t n)
 
 inline void		*ft_vec_pushn(t_vec *self, size_t n)
 {
-	uint64_t *it;
+	void *it;
 
 	if (!n || !ft_vec_grow(self, n))
 		return (NULL);
