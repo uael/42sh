@@ -12,22 +12,23 @@
 
 #include "rl.h"
 
-int			rl_hist_add(struct s_rl *self, char const *line)
+char		*rl_hist_add(struct s_rl *self, char const *line)
 {
 	size_t	sz;
+	char	**it;
 
 	if (!(sz = ft_strlen(line)))
-		return (NOP);
+		return (NULL);
 	if (self->hist.len && !ft_strcmp(line, self->hist.buf[self->hist.len - 1]))
-		return (NOP);
+		return (self->hist.buf[self->hist.len - 1]);
 	if (self->hist.len == self->hist.max)
 	{
 		free(self->hist.buf[0]);
 		ft_bufshift(self->hist.buf, &self->hist.len, 1, sizeof(char *));
 	}
-	*(char **)ft_bufpush(&self->hist.buf, &self->hist.len, 1, sizeof(char *)) =
-		ft_memcpy(ft_malloc((sz + 1) * sizeof(char)), line, sz + 1);
-	return (YEP);
+	it = (char **)ft_bufpush(&self->hist.buf, &self->hist.len, sizeof(char),
+		sizeof(char *));
+	return (*it = ft_memcpy(ft_malloc((sz + 1) * sizeof(char)), line, sz + 1));
 }
 
 int			rl_hist_load(struct s_rl *self, char const *filename)

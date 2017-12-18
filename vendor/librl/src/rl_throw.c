@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   librl.h                                            :+:      :+:    :+:   */
+/*   rl_throw.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,21 +10,13 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBRL_H
-# define LIBRL_H
+#include "rl.h"
 
-# include <libft.h>
-
-struct s_rl;
-
-extern int	rl_ctor(struct s_rl *self, int ifd, int ofd, t_bool ml);
-extern void	rl_dtor(struct s_rl *self);
-
-extern int	rl_hist_load(struct s_rl *self, char const *filename);
-extern int	rl_hist_save(struct s_rl *self, char const *filename);
-extern char	*rl_hist_add(struct s_rl *self, char const *line);
-
-extern char	*rl_readline(struct s_rl *self, char const *prompt);
-extern char	*rl_readnext(struct s_rl *self, char const *prompt);
-
-#endif
+inline char	*rl_throw(int eno)
+{
+	if (eno)
+		ENO_THROW(WUT, eno);
+	else
+		THROW(WUT);
+	return (NULL);
+}

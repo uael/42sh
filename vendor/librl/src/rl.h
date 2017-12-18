@@ -58,5 +58,19 @@ typedef struct	s_rl
 	t_rl_hist	hist;
 }				t_rl;
 
+extern char		*rl_throw(int eno);
+
+extern int		rl_edit(t_rl *self);
+extern void		rl_refresh(t_rl *self);
+
+extern void		rl_move_home(t_rl *self);
+extern void		rl_move_end(t_rl *self);
+extern void		rl_move_left(t_rl *self);
+extern void		rl_move_right(t_rl *self);
+extern void		rl_move_prev(t_rl *self);
+extern void		rl_move_next(t_rl *self);
+
+extern int		rl_cursor(int ifd, int ofd);
+extern int		rl_cols(int ifd, int ofd);
 
 #endif
