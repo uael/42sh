@@ -17,7 +17,7 @@
 int	rl_cursor(int ifd, int ofd)
 {
 	char	buf[32];
-	int		i;
+	uint	i;
 
 	i = 0;
 	if (write(ofd, "\x1b[6n", 4) != 4)

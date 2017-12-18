@@ -12,11 +12,6 @@
 
 #include "rl.h"
 
-void	rl_refresh(t_rl *self)
-{
-	(void)self;
-}
-
 void	rl_backspace(t_rl *self)
 {
 	(void)self;
@@ -74,11 +69,61 @@ int		rl_edit(t_rl *self)
 		{
 			if (read(self->ifd, seq, 1) == -1)
 				continue ;
-			c = ft_tolower(seq[0]);
-			if (c == 'b')
+			c = seq[0];
+			if ((c | 0x20) == 'b')
 				rl_move_prev(self);
-			else if (c == 'f')
+			else if ((c | 0x20) == 'f')
 				rl_move_next(self);
+			else if (c == '0' || c ==  '[')
+			{
+				if (read(self->ifd, seq + 1, 1) == -1)
+					continue ;
+				if ((c = seq[1]) == 'C')
+					rl_move_right(self);
+				else if (c == 'D')
+					rl_move_left(self);
+				else if (c == 'H')
+					rl_move_home(self);
+				else if (c == 'F')
+					rl_move_end(self);
+				else if (ft_isdigit(c))
+				{
+					if (read(self->ifd, seq + 2, 1) == -1)
+						continue ;
+					if (seq[2] == '~')
+					{
+						if (c == '3')
+							rl_delete(self);
+						else if (c == '1')
+							rl_move_home(self);
+						else if (c == '4')
+							rl_move_end(self);
+					}
+
+				}
+			}
 		}
-	return (NULL);
+		else if (!ft_iscntrl(c) && ft_isascii(c) && self->len + 1 < self->mlen)
+		{
+			if (self->len == self->pos)
+			{
+				self->buf[self->len] = (char)c;
+				self->buf[++self->len] = '\0';
+				++self->pos;
+				if (self->pos / self->cols < (size_t)self->cols)
+					write(self->ofd, &c, 1);
+				else
+					rl_refresh(self);
+			}
+			else
+			{
+				memmove(self->buf + self->pos + 1, self->buf + self->pos,
+					self->len - self->pos);
+				self->buf[self->pos] = (char)c;
+				self->buf[++self->len] = '\0';
+				++self->pos;
+				rl_refresh(self);
+			}
+		}
+	return ((int)self->len);
 }

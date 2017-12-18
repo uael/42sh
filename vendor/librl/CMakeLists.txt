@@ -40,7 +40,7 @@ add_library(rl ${librl_HDR} ${librl_HDRS} ${librl_SRCS})
 set_property(TARGET rl PROPERTY C_STANDARD 90)
 target_include_directories(rl PUBLIC ${librl_INC_DIR})
 target_compile_definitions(rl PRIVATE U_COMPILE)
-target_link_libraries(rl ft termcap)
+target_link_libraries(rl ft)
 
 target_compile_definitions(rl
   PRIVATE $<$<CONFIG:Debug>:DEBUG>$<$<CONFIG:Release>:NDEBUG>
@@ -57,33 +57,19 @@ else ()
     PRIVATE -O$<$<CONFIG:Debug>:0 -g3>$<$<CONFIG:Release>:3>)
 endif ()
 
-if (librl_ENABLE_TEST)
-  file(GLOB librl_TEST_SRCS ${librl_TEST_SRCS}
-    ${librl_TEST_DIR}/*.c)
-  foreach (librl_TEST_SRC ${librl_TEST_SRCS})
-    get_filename_component(librl_TEST_NAME ${librl_TEST_SRC} NAME_WE)
-    set(test test_librl_${librl_TEST_NAME})
-    add_executable(${test} ${librl_TEST_SRC})
-    set_property(TARGET ${test}
-      PROPERTY C_STANDARD 90)
-    add_dependencies(${test} rl)
-    add_dependencies(check ${test})
-    target_include_directories(${test} PUBLIC
-      ${librl_TEST_DIR})
-    target_link_libraries(${test} rl)
-    target_compile_definitions(${test}
-      PRIVATE $<$<CONFIG:Debug>:DEBUG>$<$<CONFIG:Release>:NDEBUG>)
-    add_test(librl_${librl_TEST_NAME} ${test}
-      WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
-    if (MSVC)
-      target_compile_options(${test}
-        PRIVATE /MTd /Oy /W3
-        PRIVATE /D_CRT_SECURE_NO_WARNINGS
-        PRIVATE /Od)
-    else ()
-      target_compile_options(${test}
-        PRIVATE -fomit-frame-pointer -ansi
-        PRIVATE -O0 -g3)
-    endif ()
-  endforeach ()
+add_executable(test_rl test/cli.c)
+target_link_libraries(test_rl rl)
+target_compile_definitions(test_rl
+  PRIVATE $<$<CONFIG:Debug>:DEBUG>$<$<CONFIG:Release>:NDEBUG>
+  PRIVATE API_COMPILE)
+if (MSVC)
+  target_compile_options(test_rl
+    PRIVATE /MT$<$<CONFIG:Debug>:d> /Oy /W3
+    PRIVATE /D_CRT_SECURE_NO_WARNINGS /Dinline=__inline
+    PRIVATE /O$<$<CONFIG:Debug>:d>$<$<CONFIG:Release>:x>)
+else ()
+  target_compile_options(test_rl
+    PRIVATE -Wall -Werror -Wextra -fomit-frame-pointer -ansi
+    PRIVATE -Wno-missing-field-initializers -Wno-missing-braces
+    PRIVATE -O$<$<CONFIG:Debug>:0 -g3>$<$<CONFIG:Release>:3>)
 endif ()

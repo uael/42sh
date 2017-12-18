@@ -27,10 +27,11 @@ static char	*rl_notty(t_rl *self)
 			ft_bufpush(&self->buf, &self->len, (size_t)rd, sizeof(char)), buf,
 			(size_t)rd),'\n'))))
 			break ;
-	if (!(rd = eol ? (eol - self->buf + 1) : self->len))
+	if (!(rd = eol ? (eol - self->buf + 1) : (ssize_t)self->len))
 		return (NULL);
-	line = ft_memcpy(ft_malloc((size_t)(rd += (eol ? 1 : 0)) * sizeof(char)),
-		self->buf, (size_t)rd * sizeof(char));
+	rd += (ssize_t)(eol ? 1 : 0);
+	line = ft_memcpy(ft_malloc((size_t)rd * sizeof(char)), self->buf,
+		(size_t)rd * sizeof(char));
 	line[rd] = '\0';
 	ft_bufshift(self->buf, &self->len, (size_t)rd, sizeof(char));
 	return (line);
@@ -48,7 +49,7 @@ static char	*rl_tty(t_rl *self)
 		self->mode = RL_INSERT;
 	}
 	self->buf = ft_memset(buf, 0, RL_MAX_LINE + 1);
-	self->buflen = RL_MAX_LINE;
+	self->mlen = RL_MAX_LINE;
 	len = rl_edit(self);
 	if (self->mode != RL_OFF)
 	{
@@ -76,6 +77,7 @@ char		*rl_readline(t_rl *self, char const *prompt)
 
 char		*rl_readnext(t_rl *self, char const *prompt)
 {
+	(void)self;
 	(void)prompt;
 	return (NULL);
 }
