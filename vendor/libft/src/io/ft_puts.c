@@ -15,27 +15,27 @@
 
 inline ssize_t	ft_puts(int fd, char const *s)
 {
-	return (write(fd, s, ft_strlen(s)));
+	return (ft_write(fd, s, ft_strlen(s)));
 }
 
 inline ssize_t	ft_padl(int fd, char const *s, size_t pad)
 {
-	size_t len;
+	size_t sz;
 
-	if (!(len = ft_strlen(s)))
+	if (!(sz = ft_strlen(s)))
 		return (0);
-	else if (len >= pad)
-		return (write(fd, s, len));
-	return (write(fd, s, len) + ft_putr(fd, ' ', (pad - len) * sizeof(char)));
+	else if (sz >= pad)
+		return (ft_write(fd, s, sz));
+	return (ft_write(fd, s, sz) + ft_putr(fd, ' ', (pad - sz) * sizeof(char)));
 }
 
 inline ssize_t	ft_padr(int fd, char const *s, size_t pad)
 {
-	size_t len;
+	size_t sz;
 
-	if (!(len = ft_strlen(s)))
+	if (!(sz = ft_strlen(s)))
 		return (0);
-	else if (len >= pad)
-		return (write(fd, s, len));
-	return (ft_putr(fd, ' ', (pad - len) * sizeof(char)) + write(fd, s, len));
+	else if (sz >= pad)
+		return (ft_write(fd, s, sz));
+	return (ft_putr(fd, ' ', (pad - sz) * sizeof(char)) + ft_write(fd, s, sz));
 }

@@ -40,6 +40,9 @@ extern ssize_t	ft_putr(int fd, char c, size_t n);
 extern ssize_t	ft_padl(int fd, char const *s, size_t pad);
 extern ssize_t	ft_padr(int fd, char const *s, size_t pad);
 extern ssize_t	ft_putf(int fd, char const *fmt, ...);
-extern ssize_t	ft_vputf(int fd, char const *fmt, va_list ap);
+extern ssize_t	ft_vputf(int fd, char const *f, va_list ap);
+
+extern ssize_t	ft_read(int fd, void *buf, size_t sz);
+extern ssize_t	ft_write(int fd, void const *buf, size_t sz);
 
 #endif

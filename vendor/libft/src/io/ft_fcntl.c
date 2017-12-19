@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putc.c                                          :+:      :+:    :+:   */
+/*   ft_fcntl.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,16 +12,22 @@
 
 #include "libft/io.h"
 
-inline ssize_t	ft_putc(int fd, char c)
+extern ssize_t	ft_read(int fd, void *buf, size_t sz)
 {
-	return (ft_write(fd, (uint8_t *)(&c), sizeof(char)));
+	ssize_t		rd;
+
+	while ((rd = read(fd, buf, sz)) < 0)
+		if (errno != EINTR && errno != EAGAIN)
+			return (THROW(WUT));
+	return (rd);
 }
 
-inline ssize_t	ft_putr(int fd, char c, size_t n)
+extern ssize_t	ft_write(int fd, void const *buf, size_t sz)
 {
-	char buf[(n * sizeof(char)) + 1];
+	ssize_t		wr;
 
-	ft_memset(buf, c, n);
-	buf[n] = '\0';
-	return (ft_puts(fd, buf));
+	while ((wr = write(fd, buf, sz)) < 0)
+		if (errno != EINTR && errno != EAGAIN)
+			return (THROW(WUT));
+	return (wr);
 }

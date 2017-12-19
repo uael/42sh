@@ -16,19 +16,19 @@ inline ssize_t	ft_putd(int fd, float n, int precision, uint8_t base)
 {
 	char	buf[20];
 
-	return (write(fd, buf, (size_t)ft_floatstr(buf, n, precision, base)));
+	return (ft_write(fd, buf, (size_t)ft_floatstr(buf, n, precision, base)));
 }
 
 inline ssize_t	ft_putn(int fd, int64_t n, uint8_t base)
 {
 	char	buf[20];
 
-	return (write(fd, buf, (size_t)ft_intstr(buf, n, base)));
+	return (ft_write(fd, buf, (size_t)ft_intstr(buf, n, base)));
 }
 
 inline ssize_t	ft_putu(int fd, uint64_t n, uint8_t base)
 {
 	char	buf[20];
 
-	return (write(fd, buf, (size_t)ft_uintstr(buf, n, base)));
+	return (ft_write(fd, buf, (size_t)ft_uintstr(buf, n, base)));
 }

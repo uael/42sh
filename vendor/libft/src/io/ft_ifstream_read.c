@@ -12,6 +12,7 @@
 
 #include "libft/math.h"
 #include "libft/ex.h"
+#include "libft/io.h"
 #include "libft/io/ifstream.h"
 
 static inline ssize_t	ifs_cpy(t_ifstream *s, char **b, size_t *l, size_t c)
@@ -41,8 +42,8 @@ static inline ssize_t	ifs_buf(t_ifstream *s, char **b, size_t *l)
 
 	if (*l >= FT_PAGE_SIZE)
 	{
-		if ((r = read(s->fd, *b, FT_PAGE_SIZE)) <= 0)
-			return (r == 0 ? -2 : THROW(-1));
+		if ((r = ft_read(s->fd, *b, FT_PAGE_SIZE)) <= 0)
+			return (r == 0 ? -2 : WUT);
 		if (r < FT_PAGE_SIZE)
 			return (r);
 		(void)((*l -= r) && (*b ? *b += r : *b));
@@ -55,8 +56,8 @@ static inline ssize_t	ifs_buf(t_ifstream *s, char **b, size_t *l)
 			s->buf = ft_malloc(FT_PAGE_SIZE * sizeof(char));
 			s->cap = FT_PAGE_SIZE;
 		}
-		if ((r = read(s->fd, s->buf, FT_PAGE_SIZE)) < 0)
-			return (THROW(-1));
+		if ((r = ft_read(s->fd, s->buf, FT_PAGE_SIZE)) < 0)
+			return (WUT);
 		return ((s->len = (size_t)r) == 0 ? -2 :
 			ifs_cpy(s, b, l, s->beg - s->cur));
 	}
@@ -79,7 +80,7 @@ inline ssize_t			ft_ifstream_read(t_ifstream *self, char *b, size_t len)
 			return (sz);
 		else if ((sz = ifs_buf(self, &b, &len)) >= 0)
 			return (beg - len + sz);
-		if (sz == -1)
+		if (sz == WUT)
 			return (WUT);
 		if (sz == -2)
 			break ;

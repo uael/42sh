@@ -114,7 +114,7 @@ static int		term_cursor(int tty, uint32_t *col, uint32_t *row)
 	uint8_t	c;
 	int		st;
 
-	if (write(tty, "\033[6n", 4) < 0)
+	if (ft_write(tty, "\033[6n", 4) < 0)
 		return (WUT);
 	st = EIO;
 	if (read(tty, &c, 1) <= 0 || c != 27 || read(tty, &c, 1) <= 0 || c != '[')

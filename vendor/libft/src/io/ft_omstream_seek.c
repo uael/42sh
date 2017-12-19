@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "libft/io.h"
 #include "libft/io/omstream.h"
 
 inline void		ft_omstream_flush(t_omstream *self, int fd)
@@ -21,7 +22,7 @@ inline void		ft_omstream_flush(t_omstream *self, int fd)
 		l = self->cur;
 		self->len = 0;
 		self->cur = 0;
-		write(fd, self->buf, l);
+		ft_write(fd, self->buf, l);
 	}
 }
 

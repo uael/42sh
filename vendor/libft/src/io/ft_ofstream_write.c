@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "libft/io.h"
 #include "libft/io/ofstream.h"
 
 static inline int	ofs_inst_wr(t_ofstream *s, char const **sr, size_t *len)
@@ -19,8 +20,8 @@ static inline int	ofs_inst_wr(t_ofstream *s, char const **sr, size_t *len)
 	if (!s->len)
 		while (*len >= FT_PAGE_SIZE)
 		{
-			if ((sz = write(s->fd, *sr, FT_PAGE_SIZE)) < 0)
-				return (THROW(WUT));
+			if ((sz = ft_write(s->fd, *sr, FT_PAGE_SIZE)) < 0)
+				return (WUT);
 			*len -= sz;
 			*sr += sz;
 		}

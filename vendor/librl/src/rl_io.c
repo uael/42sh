@@ -20,14 +20,14 @@ int	rl_cursor(int ifd, int ofd)
 	uint	i;
 
 	i = 0;
-	if (write(ofd, "\x1b[6n", 4) != 4)
+	if (ft_write(ofd, "\x1b[6n", 4) != 4)
 		return (THROW(WUT));
 	while (++i < sizeof(buf))
-		if (read(ifd, buf + i - 1, 1) != 1 || buf[i] == 'R')
+		if (ft_read(ifd, buf + i - 1, 1) != 1 || buf[i] == 'R')
 			break;
 	buf[i] = '\0';
 	if (buf[0] != 27 || buf[1] != '[')
-		return (THROW(WUT));
+		return (WUT);
 	return ((int)ft_atoi(ft_strchr(buf, ';') + 1));
 }
 
@@ -44,7 +44,7 @@ int	rl_cols(int ifd, int ofd)
 	{
 		if ((start = rl_cursor(ifd, ofd)) == -1)
 			return (WUT);
-		if (write(ofd, "\x1b[999C", 6) != 6)
+		if (ft_write(ofd, "\x1b[999C", 6) != 6)
 			return (THROW(WUT));
 		if ((cols = rl_cursor(ifd, ofd)) == -1)
 			return (WUT);
@@ -52,7 +52,7 @@ int	rl_cols(int ifd, int ofd)
 		{
 			ft_memcpy(seq, "\x1b[", sizeof("\x1b["));
 			seq[ft_intstr(seq + sizeof("\x1b["), cols - start, 10)] = '\0';
-			if (write(ofd, ft_strcat(seq, "D"), ft_strlen(seq)) < 0)
+			if (ft_write(ofd, ft_strcat(seq, "D"), ft_strlen(seq)) < 0)
 				return (THROW(WUT));
 		}
 		return (cols);

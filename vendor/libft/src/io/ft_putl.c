@@ -18,5 +18,5 @@ inline ssize_t	ft_putl(int fd, char const *s)
 
 	if (!(len = ft_strlen(s)))
 		return (ft_putc(fd, '\n'));
-	return (write(fd, s, len) + ft_putc(fd, '\n'));
+	return (ft_write(fd, s, len) + ft_putc(fd, '\n'));
 }

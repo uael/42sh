@@ -23,14 +23,14 @@ ssize_t			ft_putf(int fd, char const *fmt, ...)
 	return (n);
 }
 
-inline ssize_t	ft_vputf(int fd, char const *fmt, va_list ap)
+inline ssize_t	ft_vputf(int fd, char const *f, va_list ap)
 {
 	char	*sp;
 	ssize_t	sz;
 
 	sz = 0;
-	while ((sp = ft_strchr(fmt, '%')) && (sz += write(fd, fmt, sp - fmt)) >= 0)
-		if (*((fmt = ++sp + 1) - 1) == 'd')
+	while ((sp = ft_strchr(f, '%')) && (sz += ft_write(fd, f, sp - f)) >= 0)
+		if (*((f = ++sp + 1) - 1) == 'd')
 			sz += ft_putn(fd, va_arg(ap, int64_t), 10);
 		else if (*sp == 'u')
 			sz += ft_putu(fd, va_arg(ap, uint64_t), 10);
@@ -42,5 +42,5 @@ inline ssize_t	ft_vputf(int fd, char const *fmt, va_list ap)
 			sz += ft_putd(fd, (float)va_arg(ap, double), 10, 10);
 		else if (*sp == 'e')
 			sz += ft_puts(fd, ft_strerr(va_arg(ap, int)));
-	return (sz + write(fd, fmt, ft_strlen(fmt)));
+	return (sz + ft_write(fd, f, ft_strlen(f)));
 }

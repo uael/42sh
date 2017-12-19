@@ -41,10 +41,10 @@ static inline ssize_t	ifs_bufferize(t_ifstream *self, size_t len)
 		{
 			if (self->cap - self->len < FT_PAGE_SIZE)
 				ifs_alloc(self);
-			if ((sz = read(self->fd, self->buf + self->len, FT_PAGE_SIZE)) == 0)
+			if (!(sz = ft_read(self->fd, self->buf + self->len, FT_PAGE_SIZE)))
 				break ;
 			if (sz < 0)
-				return (THROW(WUT));
+				return (WUT);
 			cnt += sz;
 			self->len += sz;
 			self->end += sz;

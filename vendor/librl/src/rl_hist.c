@@ -41,10 +41,10 @@ int			rl_hist_load(struct s_rl *self, char const *filename)
 
 	if ((fd = open(filename, O_RDONLY, S_IRUSR | S_IWUSR)) < (rd = 0))
 		return (THROW(WUT));
-	while ((rd = read(fd, buf + rd, RL_MAX_LINE)))
-		if (rd < 0 && errno != EINTR)
-			return (THROW(WUT));
-		else if (rd > 0)
+	while ((rd = ft_read(fd, buf + rd, RL_MAX_LINE)))
+		if (rd < 0)
+			return (WUT);
+		else
 		{
 			str = buf;
 			while ((eol = ft_strnchr(str, '\n', (size_t)rd)))
@@ -73,8 +73,8 @@ int			rl_hist_save(struct s_rl *self, char const *filename)
 	end = self->hist.buf + self->hist.len;
 	while (line != end)
 	{
-		write(fd, *line, ft_strlen(*line));
-		write(fd, "\n", 1);
+		ft_write(fd, *line, ft_strlen(*line));
+		ft_write(fd, "\n", 1);
 		++line;
 	}
 	if (close(fd))

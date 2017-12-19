@@ -196,6 +196,7 @@ SRC_NAME = \
 	io/ft_cin_seek.c \
 	io/ft_cout_write.c \
 	io/ft_cout_seek.c \
+	io/ft_fcntl.c \
 	io/ft_ifstream.c \
 	io/ft_ifstream_peek.c \
 	io/ft_ifstream_read.c \

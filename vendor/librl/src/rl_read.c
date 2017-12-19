@@ -21,11 +21,11 @@ static char	*rl_notty(t_rl *self)
 
 	eol = NULL;
 	while ((!self->buf || (eol || !(eol = ft_strchr(self->buf, '\n')))))
-		if ((rd = read(self->ifd, buf, RL_MAX_LINE)) < 0 && errno != EINTR)
-			return (rl_throw(0));
-		else if (!rd || (rd > 0 && (eol = ft_strchr(ft_memcpy(*(char **)
-			ft_bufpush(&self->buf, &self->len, (size_t)rd, sizeof(char)), buf,
-			(size_t)rd),'\n'))))
+		if ((rd = ft_read(self->ifd, buf, RL_MAX_LINE)) < 0)
+			return (NULL);
+		else if (!rd || (eol = ft_strchr(ft_memcpy(*(char **)ft_bufpush(
+			&self->buf, &self->len, (size_t)rd, sizeof(char)), buf, (size_t)rd),
+			'\n')))
 			break ;
 	if (!(rd = eol ? (eol - self->buf + 1) : (ssize_t)self->len))
 		return (NULL);
@@ -64,8 +64,8 @@ char		*rl_readline(t_rl *self, char const *prompt)
 {
 	if (self->mode == RL_NOTTY)
 		return (rl_notty(self));
-	if (write(self->ofd, prompt, self->plen = ft_strlen(prompt)) < 0)
-		return (rl_throw(0));
+	if (ft_write(self->ofd, prompt, self->plen = ft_strlen(prompt)) < 0)
+		return (NULL);
 	self->prompt = prompt;
 	self->len = 0;
 	self->hist.search = 0;

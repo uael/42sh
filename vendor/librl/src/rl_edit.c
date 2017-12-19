@@ -12,6 +12,11 @@
 
 #include "rl.h"
 
+void	rl_refresh(t_rl *self)
+{
+	(void)self;
+}
+
 void	rl_backspace(t_rl *self)
 {
 	(void)self;
@@ -30,11 +35,9 @@ int		rl_edit(t_rl *self)
 	char	seq[3];
 	ssize_t	nr;
 
-	while ((nr = read(self->ifd, cbuf, 1)))
-		if (nr < 0 && errno != EINTR)
-			return (THROW((int)self->len));
-		else if (nr < 0)
-			continue ;
+	while ((nr = ft_read(self->ifd, cbuf, 1)))
+		if (nr < 0)
+			break ;
 		else if ((c = cbuf[0]) == 13)
 		{
 			if (self->ml)
@@ -67,7 +70,7 @@ int		rl_edit(t_rl *self)
 			rl_move_right(self);
 		else if (c == 27)
 		{
-			if (read(self->ifd, seq, 1) == -1)
+			if (ft_read(self->ifd, seq, 1) == -1)
 				continue ;
 			c = seq[0];
 			if ((c | 0x20) == 'b')
@@ -76,7 +79,7 @@ int		rl_edit(t_rl *self)
 				rl_move_next(self);
 			else if (c == '0' || c ==  '[')
 			{
-				if (read(self->ifd, seq + 1, 1) == -1)
+				if (ft_read(self->ifd, seq + 1, 1) == -1)
 					continue ;
 				if ((c = seq[1]) == 'C')
 					rl_move_right(self);
@@ -88,7 +91,7 @@ int		rl_edit(t_rl *self)
 					rl_move_end(self);
 				else if (ft_isdigit(c))
 				{
-					if (read(self->ifd, seq + 2, 1) == -1)
+					if (ft_read(self->ifd, seq + 2, 1) == -1)
 						continue ;
 					if (seq[2] == '~')
 					{
@@ -111,13 +114,13 @@ int		rl_edit(t_rl *self)
 				self->buf[++self->len] = '\0';
 				++self->pos;
 				if (self->pos / self->cols < (size_t)self->cols)
-					write(self->ofd, &c, 1);
+					ft_write(self->ofd, &c, 1);
 				else
 					rl_refresh(self);
 			}
 			else
 			{
-				memmove(self->buf + self->pos + 1, self->buf + self->pos,
+				ft_memmove(self->buf + self->pos + 1, self->buf + self->pos,
 					self->len - self->pos);
 				self->buf[self->pos] = (char)c;
 				self->buf[++self->len] = '\0';

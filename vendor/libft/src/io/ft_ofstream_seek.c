@@ -10,13 +10,14 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "libft/io.h"
 #include "libft/io/ofstream.h"
 
 inline void		ft_ofstream_flush(t_ofstream *self)
 {
 	ssize_t	sz;
 
-	if ((sz = write(self->fd, self->buf, self->len)) >= 0)
+	if ((sz = ft_write(self->fd, self->buf, self->len)) >= 0)
 	{
 		self->beg += sz;
 		self->len = 0;
