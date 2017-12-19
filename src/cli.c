@@ -25,11 +25,10 @@ static int			sh_on_errno(int rcode, void *arg)
 		ft_putf(2, N_SH"%s: %e\n", arg, errno);
 	else
 		ft_putf(2, N_SH"%e\n", errno);
-	if (errno == ENOMEM || errno > ELAST ||
-		(!arg && (errno == EBADF || errno == EINVAL)))
+	if (errno == ENOMEM || errno == EIO || errno == EINVAL || errno > ELAST)
 	{
 		sh_dtor(g_sh);
-		exit(ENOMEM);
+		exit(errno);
 	}
 	return (rcode);
 }
