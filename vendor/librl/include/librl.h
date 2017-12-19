@@ -48,11 +48,13 @@ typedef struct	s_rl
 	int			ifd;
 	int			ofd;
 	char		*buf;
-	size_t		mlen;
-	size_t		len;
+	int			mlen;
+	int			len;
 	const char	*prompt;
-	size_t		plen;
-	size_t		pos;
+	int			plen;
+	int			pos;
+	int			oldpos;
+	int			mrows;
 	int			cols;
 	uint8_t		ml;
 	t_rl_hist	hist;

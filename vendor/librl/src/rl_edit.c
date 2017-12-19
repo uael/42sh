@@ -12,11 +12,6 @@
 
 #include "rl.h"
 
-void	rl_refresh(t_rl *self)
-{
-	(void)self;
-}
-
 void	rl_backspace(t_rl *self)
 {
 	(void)self;
@@ -42,7 +37,7 @@ int		rl_edit(t_rl *self)
 		{
 			if (self->ml)
 				rl_move_end(self);
-			return (int)self->len;
+			return self->len;
 		}
 		else if (c == 127 || c == 8)
 			rl_backspace(self);
@@ -113,7 +108,7 @@ int		rl_edit(t_rl *self)
 				self->buf[self->len] = (char)c;
 				self->buf[++self->len] = '\0';
 				++self->pos;
-				if (self->pos / self->cols < (size_t)self->cols)
+				if (self->pos / self->cols < self->cols)
 					ft_write(self->ofd, &c, 1);
 				else
 					rl_refresh(self);
@@ -121,12 +116,12 @@ int		rl_edit(t_rl *self)
 			else
 			{
 				ft_memmove(self->buf + self->pos + 1, self->buf + self->pos,
-					self->len - self->pos);
+					(size_t)(self->len - self->pos));
 				self->buf[self->pos] = (char)c;
 				self->buf[++self->len] = '\0';
 				++self->pos;
 				rl_refresh(self);
 			}
 		}
-	return ((int)self->len);
+	return (self->len);
 }

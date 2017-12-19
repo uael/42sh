@@ -317,6 +317,7 @@ inline int		tc_loop(t_tc *self, t_tc_hook hook)
 		g_log = open("/Users/alucas-/.21shlog", O_APPEND | O_CREAT | O_RDWR,
 			S_IRUSR | S_IWUSR);
 	st = 0;
+	r = 0;
 	while (ft_memset(buf, 0, 7) && (r = (int)read(self->tty, buf, 6)) > 0)
 	{
 		if ((st = hook(self, buf)))

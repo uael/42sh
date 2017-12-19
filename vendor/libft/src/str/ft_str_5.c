@@ -25,3 +25,15 @@ inline char	*ft_strnchr(char const *s, int c, size_t n)
 			return ((char *)s - 1);
 	return (NULL);
 }
+
+inline char	*ft_strscpy(char **dst, size_t *n, char *src)
+{
+	while (*src && *n)
+	{
+		*(*dst)++ = *src++;
+		--*n;
+	}
+	if (!*src)
+		return (NULL);
+	return (src);
+}

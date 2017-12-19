@@ -18,7 +18,7 @@
 extern uint8_t	ft_intlen(int64_t n, uint8_t base);
 extern uint8_t	ft_floatlen(float n, int precision, uint8_t base);
 extern uint8_t	ft_uintlen(uint64_t n, uint8_t base);
-extern uint8_t	ft_floatstr(char *dst, float n, int precision, uint8_t base);
+extern uint8_t	ft_floatstr(char *dst, double n, int precision, uint8_t base);
 extern uint8_t	ft_intstr(char *dst, int64_t n, uint8_t base);
 extern uint8_t	ft_uintstr(char *dst, uint64_t n, uint8_t base);
 

@@ -34,7 +34,7 @@ void	rl_move_left(t_rl *self)
 {
 	if (self->pos > 0)
 	{
-		++self->pos;
+		--self->pos;
 		rl_refresh(self);
 	}
 }
@@ -43,7 +43,7 @@ void	rl_move_right(t_rl *self)
 {
 	if (self->pos != self->len)
 	{
-		--self->pos;
+		++self->pos;
 		rl_refresh(self);
 	}
 }

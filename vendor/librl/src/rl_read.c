@@ -24,8 +24,8 @@ static char	*rl_notty(t_rl *self)
 		if ((rd = ft_read(self->ifd, buf, RL_MAX_LINE)) < 0)
 			return (NULL);
 		else if (!rd || (eol = ft_strchr(ft_memcpy(*(char **)ft_bufpush(
-			&self->buf, &self->len, (size_t)rd, sizeof(char)), buf, (size_t)rd),
-			'\n')))
+			&self->buf, (size_t *)&self->len, (size_t)rd, sizeof(char)), buf,
+			(size_t)rd), '\n')))
 			break ;
 	if (!(rd = eol ? (eol - self->buf + 1) : (ssize_t)self->len))
 		return (NULL);
@@ -33,7 +33,7 @@ static char	*rl_notty(t_rl *self)
 	line = ft_memcpy(ft_malloc((size_t)rd * sizeof(char)), self->buf,
 		(size_t)rd * sizeof(char));
 	line[rd] = '\0';
-	ft_bufshift(self->buf, &self->len, (size_t)rd, sizeof(char));
+	ft_bufshift(self->buf, (size_t *)&self->len, (size_t)rd, sizeof(char));
 	return (line);
 }
 
@@ -51,6 +51,7 @@ static char	*rl_tty(t_rl *self)
 	self->buf = ft_memset(buf, 0, RL_MAX_LINE + 1);
 	self->mlen = RL_MAX_LINE;
 	len = rl_edit(self);
+	ft_write(self->ofd, "\n", 1);
 	if (self->mode != RL_OFF)
 	{
 		if (tcsetattr(self->ifd, TCSADRAIN, &self->orig) == -1)
@@ -64,13 +65,16 @@ char		*rl_readline(t_rl *self, char const *prompt)
 {
 	if (self->mode == RL_NOTTY)
 		return (rl_notty(self));
-	if (ft_write(self->ofd, prompt, self->plen = ft_strlen(prompt)) < 0)
+	if (ft_write(self->ofd, prompt,
+		(size_t)(self->plen = (int)ft_strlen(prompt))) < 0)
 		return (NULL);
 	self->prompt = prompt;
 	self->len = 0;
 	self->hist.search = 0;
 	self->hist.idx = 0;
 	self->pos = 0;
+	self->mrows = 0;
+	self->oldpos = 0;
 	self->cols = rl_cols(self->ifd, self->ofd);
 	return (rl_tty(self));
 }

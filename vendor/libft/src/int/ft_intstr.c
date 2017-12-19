@@ -12,7 +12,7 @@
 
 #include "libft/int.h"
 
-inline uint8_t	ft_floatstr(char *dst, float n, int precision, uint8_t base)
+inline uint8_t	ft_floatstr(char *dst, double n, int precision, uint8_t base)
 {
 	uint8_t	l;
 	float	d;

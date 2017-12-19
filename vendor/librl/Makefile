@@ -23,7 +23,7 @@ LNK_PATH = ./ $(3TH_PATH)
 OBJ_NAME = $(SRC_NAME:.c=.o)
 3TH_NAME = ft
 SRC_NAME = \
-	rl_ctor.c rl_hist.c rl_read.c rl_edit.c rl_io.c
+	rl_ctor.c rl_hist.c rl_read.c rl_edit.c rl_io.c rl_refresh.c
 
 SRC = $(addprefix $(SRC_PATH), $(SRC_NAME))
 OBJ = $(addprefix $(OBJ_PATH), $(OBJ_NAME))
