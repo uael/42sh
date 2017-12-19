@@ -30,6 +30,7 @@ static int			sh_on_errno(int rcode, void *arg)
 		sh_dtor(g_sh);
 		exit(errno);
 	}
+	errno = 0;
 	return (rcode);
 }
 
