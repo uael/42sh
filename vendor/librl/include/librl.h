@@ -34,9 +34,9 @@ typedef enum	e_rl_mode
 typedef struct	s_rl_hist
 {
 	char		**buf;
-	size_t		len;
-	size_t		max;
-	size_t		idx;
+	int			len;
+	int			max;
+	int			idx;
 	int8_t		search;
 }				t_rl_hist;
 

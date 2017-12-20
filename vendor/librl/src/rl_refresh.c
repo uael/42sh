@@ -44,7 +44,7 @@ ssize_t		ft_wrc(t_obuf *self, unsigned char c)
 	self->buf[self->i++] = c;
 	if (self->i == self->sz && ft_obuf_flush(self) < 0)
 		return (WUT);
-	return (1);
+	return (YEP);
 }
 
 ssize_t		ft_wr(t_obuf *self, void const *buf, size_t n)

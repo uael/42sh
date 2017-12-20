@@ -17,17 +17,17 @@ char		*rl_hist_add(struct s_rl *self, char const *line)
 	size_t	sz;
 	char	**it;
 
-	if (!(sz = ft_strlen(line)))
-		return (NULL);
 	if (self->hist.len && !ft_strcmp(line, self->hist.buf[self->hist.len - 1]))
 		return (self->hist.buf[self->hist.len - 1]);
 	if (self->hist.len && self->hist.len == self->hist.max)
 	{
 		free(self->hist.buf[0]);
-		ft_bufshift(self->hist.buf, &self->hist.len, 1, sizeof(char *));
+		ft_bufshift(self->hist.buf, (size_t *)&self->hist.len, 1,
+			sizeof(char *));
 	}
-	it = (char **)ft_bufpush(&self->hist.buf, &self->hist.len, sizeof(char),
-		sizeof(char *));
+	sz = ft_strlen(line);
+	it = (char **)ft_bufpush(&self->hist.buf, (size_t *)&self->hist.len,
+		sizeof(char), sizeof(char *));
 	return (*it = ft_memcpy(ft_malloc((sz + 1) * sizeof(char)), line, sz + 1));
 }
 
@@ -80,4 +80,27 @@ int			rl_hist_save(struct s_rl *self, char const *filename)
 	if (close(fd))
 		return (THROW(WUT));
 	return (YEP);
+}
+
+void	rl_hist_next(t_rl *self, int dir)
+{
+	if (self->hist.len > 1)
+	{
+		free(self->hist.buf[self->hist.len - 1 - self->hist.idx]);
+		self->hist.buf[self->hist.len - 1 - self->hist.idx] =
+			ft_strdup(self->buf);
+		self->hist.idx += dir;
+		if (self->hist.idx < 0)
+			self->hist.idx = 0;
+		else if (self->hist.idx >= self->hist.len)
+			self->hist.idx = self->hist.len - 1;
+		else
+		{
+			ft_strcpy(self->buf,
+				self->hist.buf[self->hist.len - 1 - self->hist.idx]);
+			self->len = (int)ft_strlen(self->buf);
+			self->pos = self->len;
+			rl_refresh(self);
+		}
+	}
 }

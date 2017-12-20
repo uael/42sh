@@ -25,9 +25,13 @@ extern void		rl_move_end(t_rl *self);
 extern void		rl_move_left(t_rl *self);
 extern void		rl_move_right(t_rl *self);
 extern void		rl_move_prev(t_rl *self);
+extern void		rl_move_up(t_rl *self);
+extern void		rl_move_down(t_rl *self);
 extern void		rl_move_next(t_rl *self);
 
 extern int		rl_cursor(int ifd, int ofd);
 extern int		rl_cols(int ifd, int ofd);
+
+extern void		rl_hist_next(t_rl *self, int dir);
 
 #endif

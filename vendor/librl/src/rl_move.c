@@ -48,22 +48,38 @@ void	rl_move_right(t_rl *self)
 	}
 }
 
-void	rl_move_prev(t_rl *l)
+void	rl_move_up(t_rl *self)
 {
-	while (l->pos > 0 && l->buf[l->pos - 1] == ' ')
-		l->pos--;
-	while (l->pos > 0 && l->buf[l->pos - 1] != ' ')
-		l->pos--;
-	rl_refresh(l);
+	if (self->pos > self->cols)
+		self->pos -= self->cols;
+	rl_refresh(self);
 }
 
-void	rl_move_next(t_rl *l)
+void	rl_move_down(t_rl *self)
 {
-	while (l->pos < l->len && l->buf[l->pos + 1] != ' ')
-		l->pos++;
-	while (l->pos < l->len && l->buf[l->pos + 1] == ' ')
-		l->pos++;
-	if (l->pos < l->len)
-		l->pos++;
-	rl_refresh(l);
+	if (self->pos + self->cols <= self->len)
+		self->pos += self->cols;
+	else if (self->pos / self->cols < self->len / self->cols)
+		self->pos = self->len;
+	rl_refresh(self);
+}
+
+void	rl_move_prev(t_rl *self)
+{
+	while (self->pos > 0 && self->buf[self->pos - 1] == ' ')
+		self->pos--;
+	while (self->pos > 0 && self->buf[self->pos - 1] != ' ')
+		self->pos--;
+	rl_refresh(self);
+}
+
+void	rl_move_next(t_rl *self)
+{
+	while (self->pos < self->len && self->buf[self->pos + 1] != ' ')
+		self->pos++;
+	while (self->pos < self->len && self->buf[self->pos + 1] == ' ')
+		self->pos++;
+	if (self->pos < self->len)
+		self->pos++;
+	rl_refresh(self);
 }
