@@ -15,17 +15,19 @@
 
 # include "librl.h"
 
-extern char		*rl_throw(int eno);
+typedef int		(t_rl_keyc)(t_rl *self, char const *key, int rd);
+
+typedef struct	s_rl_bind
+{
+	int			rd;
+	char const	*key;
+	t_rl_keyc	*cb;
+}				t_rl_bind;
 
 extern int		rl_edit(t_rl *self);
 extern void		rl_refresh(t_rl *self);
 
-extern void		rl_move_home(t_rl *self);
-extern void		rl_move_end(t_rl *self);
-extern void		rl_move_left(t_rl *self);
-extern void		rl_move_right(t_rl *self);
 extern void		rl_move_prev(t_rl *self);
-extern void		rl_move_up(t_rl *self);
 extern void		rl_move_down(t_rl *self);
 extern void		rl_move_next(t_rl *self);
 

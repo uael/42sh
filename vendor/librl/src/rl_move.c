@@ -12,49 +12,6 @@
 
 #include "rl.h"
 
-void	rl_move_home(t_rl *self)
-{
-	if (self->pos != 0)
-	{
-		self->pos = 0;
-		rl_refresh(self);
-	}
-}
-
-void	rl_move_end(t_rl *self)
-{
-	if (self->pos != self->len)
-	{
-		self->pos = self->len;
-		rl_refresh(self);
-	}
-}
-
-void	rl_move_left(t_rl *self)
-{
-	if (self->pos > 0)
-	{
-		--self->pos;
-		rl_refresh(self);
-	}
-}
-
-void	rl_move_right(t_rl *self)
-{
-	if (self->pos != self->len)
-	{
-		++self->pos;
-		rl_refresh(self);
-	}
-}
-
-void	rl_move_up(t_rl *self)
-{
-	if (self->pos > self->cols)
-		self->pos -= self->cols;
-	rl_refresh(self);
-}
-
 void	rl_move_down(t_rl *self)
 {
 	if (self->pos + self->cols <= self->len)

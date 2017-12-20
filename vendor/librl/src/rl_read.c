@@ -45,7 +45,10 @@ static char	*rl_tty(t_rl *self)
 	if (self->mode == RL_OFF)
 	{
 		if (tcsetattr(self->ifd, TCSADRAIN, &self->raw) < 0)
-			return (rl_throw(ENOTTY));
+		{
+			ENO_THROW(WUT, ENOTTY);
+			return (NULL);
+		}
 		self->mode = RL_INSERT;
 	}
 	self->buf = ft_memset(buf, 0, RL_MAX_LINE + 1);

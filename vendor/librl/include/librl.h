@@ -28,6 +28,7 @@ typedef enum	e_rl_mode
 	RL_OFF,
 	RL_NOTTY,
 	RL_INSERT,
+	RL_SEARCH,
 	RL_VISUAL
 }				t_rl_mode;
 

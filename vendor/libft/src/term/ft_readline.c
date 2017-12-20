@@ -30,7 +30,7 @@
 # define K_ALT_F		"\x1b\x66"
 # define K_UP			"\x1b\x5b\x41"
 # define K_DOWN			"\x1b\x5b\x42"
-# define K_RIGHT		"\x1b\x5b\x43"
+# define K_RGT		"\x1b\x5b\x43"
 # define K_LEFT			"\x1b\x5b\x44"
 # define K_CTRL_UP "\x1b\x5b\x31\x3b\x32\x41"
 # define K_CTRL_DOWN "\x1b\x5b\x31\x3b\x32\x42"
@@ -373,7 +373,7 @@ inline char		*ft_readline(t_term *self, char *prompt)
 					}
 				}
 			}
-			else if (r == 3 && ft_strcmp(K_RIGHT, buf) == 0)
+			else if (r == 3 && ft_strcmp(K_RGT, buf) == 0)
 			{
 				if (term_right(self))
 					return (rl_exit(self, NULL));

@@ -19,7 +19,7 @@ static t_keys_hdl	g_hdls[] =
 	{K_DOWN, sh_keys_down},
 	{K_LEFT, sh_keys_left},
 	{K_RETURN, sh_keys_return},
-	{K_RIGHT, sh_keys_right},
+	{K_RGT, sh_keys_right},
 	{K_UP, sh_keys_up},
 	{NULL, NULL}
 };
