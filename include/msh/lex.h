@@ -62,11 +62,11 @@ enum			e_sh_tok
 	SH_TOK_RCURLY = '}',
 };
 
-extern void		sh_lex(t_lexer *self);
-extern int		sh_lex_skip(t_lexer *lex, t_tok *tok, char peek);
-extern int		sh_lex_word(t_lexer *lex, t_tok *tok, char peek);
-extern int		sh_lex_op(t_lexer *lex, t_tok *tok, char peek);
-extern int		sh_lex_syn(t_lexer *src, t_tok *tok, char peek);
+extern void		sh_lex(t_sh *self, char *ln);
+extern int		sh_lex_skip(t_sh_tok *tok, char **ln);
+extern int		sh_lex_word(t_sh_tok *tok, char **it);
+extern int		sh_lex_op(t_sh_tok *tok, char **ln);
+extern int		sh_lex_syn(t_sh_tok *tok, char **it);
 
 extern t_tok	*sh_peek(t_sh *self);
 extern t_tok	*sh_next(t_sh *self, t_tok **next);

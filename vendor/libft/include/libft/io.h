@@ -19,12 +19,13 @@
 # include "int.h"
 # include "str.h"
 
-# include "io/ifstream.h"
+# include "io/ibuf.h"
 # include "io/imstream.h"
 # include "io/istream.h"
 # include "io/ofstream.h"
 # include "io/omstream.h"
 # include "io/ostream.h"
+# include "io/fcntl.h"
 
 extern ssize_t	ft_putc(int fd, char c);
 extern ssize_t	ft_putl(int fd, char const *s);
@@ -41,8 +42,5 @@ extern ssize_t	ft_padl(int fd, char const *s, size_t pad);
 extern ssize_t	ft_padr(int fd, char const *s, size_t pad);
 extern ssize_t	ft_putf(int fd, char const *fmt, ...);
 extern ssize_t	ft_vputf(int fd, char const *f, va_list ap);
-
-extern ssize_t	ft_read(int fd, void *buf, size_t sz);
-extern ssize_t	ft_write(int fd, void const *buf, size_t sz);
 
 #endif

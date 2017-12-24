@@ -43,6 +43,18 @@
 #define K_END "\x1b\x5b\x46"
 #define K_CTRL_Y "\x19"
 
+static int		rl_insert(t_rl *self, char c)
+{
+	if (self->len != self->pos)
+		ft_memmove(self->buf + self->pos + 1, self->buf + self->pos,
+			(size_t) (self->len - self->pos));
+	self->buf[self->pos] = c;
+	self->buf[++self->len] = '\0';
+	++self->pos;
+	rl_refresh(self);
+	return (YEP);
+}
+
 static int		rl_return(t_rl *self, char const *key, int rd)
 {
 	(void)key;
@@ -53,6 +65,8 @@ static int		rl_return(t_rl *self, char const *key, int rd)
 		self->pos = self->len;
 		rl_refresh(self);
 	}
+	self->buf[self->len] = '\n';
+	self->buf[++self->len] = '\0';
 	return (NOP);
 }
 
@@ -154,17 +168,6 @@ static t_rl_bind	g_insert_binding[] =
 	{6, K_CTRL_LEFT, rl_move},
 	{0, NULL, NULL},
 };
-
-static void	rl_insert(t_rl *self, char c)
-{
-	if (self->len != self->pos)
-		ft_memmove(self->buf + self->pos + 1, self->buf + self->pos,
-			(size_t) (self->len - self->pos));
-	self->buf[self->pos] = c;
-	self->buf[++self->len] = '\0';
-	++self->pos;
-	rl_refresh(self);
-}
 
 int			rl_edit(t_rl *self)
 {

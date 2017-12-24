@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lex.c                                              :+:      :+:    :+:   */
+/*   test/test.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,43 +10,23 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "msh.h"
+#include <stdio.h>
+#include <libft.h>
 
-inline void		sh_lex(t_sh *self, char *ln)
+#define SNS(S) (S), sizeof(S) - 1
+#define OK ft_write(STDOUT_FILENO, SNS("\033[32m[✔]\033[0m\n"))
+#define NOK ft_putf(1,"\033[31m[✖]\033[0m %s:%d\n",__FILE__,__LINE__)
+#define ASSERT(E) if(!(E)){NOK;return(NOP);}
+
+typedef int		(t_test_cb)(void);
+
+typedef struct	s_test
 {
-	self->toks_len = 0;
-	self->toks_cur = 0;
-}
+	char const	*name;
+	t_test_cb	*cb;
+}				t_test;
 
-inline t_tok	*sh_peek(t_sh *self)
-{
-	t_tok	*tok;
+extern t_test	g_tests[];
 
-	if (ft_tok_peek(&self->lexer, 0, &tok))
-		return (NULL);
-	if (tok->id == SH_TOK_SKIP)
-		sh_next(self, &tok);
-	return (tok);
-}
-
-inline t_tok	*sh_next(t_sh *self, t_tok **next)
-{
-	t_tok	*tok;
-
-	if (ft_tok_next(&self->lexer, 1, &tok) <= 0)
-		return (NULL);
-	if (tok->id == SH_TOK_SKIP)
-		return (sh_next(self, next));
-	if (next)
-		*next = sh_peek(self);
-	return (tok);
-}
-
-inline void		sh_consume_line(t_sh *self)
-{
-	t_tok	*tok;
-
-	while ((tok = sh_peek(self)) && tok->id)
-		if ((tok = sh_next(self, NULL)) && tok->id == '\n')
-			break ;
-}
+extern int		setup(void);
+extern int		teardown(void);

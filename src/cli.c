@@ -41,52 +41,28 @@ inline void			sh_sigint_hdl(int sign)
 	sh_prompt(g_sh, SH_PROMPT(g_sh));
 }
 
-static inline int	main_av(t_sh *sh, int ac, char **av, char **env)
-{
-	int i;
-
-	i = 0;
-	FT_INIT(sh, t_sh);
-	sh->mode = SH_AV;
-	while (++i < ac)
-	{
-		ft_ex_register(0, ft_ex_hdl(sh_on_errno, av[i]), NULL);
-		if (sh_init_file(sh, SH_AV, env, av[i]))
-			continue ;
-		sh_eval(sh);
-		sh_dtor(sh);
-	}
-	return (sh->st);
-}
-
 static inline int	main_tty(t_sh *sh, char **env)
 {
 	t_tc	tc;
+	char	*ln;
 
-	FT_INIT(sh, t_sh);
-	ft_ex_register(0, ft_ex_hdl(sh_on_errno, NULL), NULL);
 	g_tc = &tc;
-	if (isatty(STDIN_FILENO) && !tc_ctor(&tc, env, sh))
-		sh_init_file(sh, SH_TTY, env, tc.ttyn);
-	else
-		sh_init_stream(sh, SH_NOTTY, env, g_cin);
-	if (sh->mode == SH_NOTTY)
-		sh_eval(sh);
-	else
+	ft_ex_register(0, ft_ex_hdl(sh_on_errno, NULL), NULL);
+	if (sh_init(sh, env))
+		return (WUT);
+	if (sh->mode == SH_TTY)
+		rl_hist_load(&sh->rl, ".21shry");
+	while ((ln = rl_readline(&sh->rl, SH_PROMPT(g_sh))))
 	{
-		sh_history_init(sh, ".21shry");
-		signal(SIGINT, sh_sigint_hdl);
-		while (1)
-		{
-			sh_prompt(sh, SH_PROMPT(sh));
-			if (tc_loop(&tc, sh_keys) < 0)
-				break ;
-		}
-		tc_dtor(&tc);
-		sh_history_save(sh, ".21shry");
-		signal(SIGINT, SIG_DFL);
+		if (sh_eval(sh, ln) < 0)
+			break ;
+		if (sh->mode == SH_TTY)
+			rl_hist_save(&sh->rl, ".21shry");
 	}
-	return (ft_dtor(sh->st, (t_dtor)sh_dtor, sh, NULL));
+	if (sh->mode == SH_TTY)
+		rl_hist_save(&sh->rl, ".21shry");
+	sh_dtor(sh);
+	return (sh->st);
 }
 
 int					main(int ac, char **av, char **env)
@@ -94,7 +70,5 @@ int					main(int ac, char **av, char **env)
 	t_sh	sh;
 
 	g_sh = &sh;
-	if (ac > 1)
-		return (main_av(&sh, ac, av, env));
 	return (main_tty(&sh, env));
 }

@@ -12,40 +12,39 @@
 
 #include "libft/buf.h"
 
-inline void		ft_bufgrow(void *buf_ptr, size_t sz, size_t n, size_t isz)
+inline void		*ft_bufaver(void const *buf, size_t n, size_t len, size_t isz)
 {
-	size_t cap;
-	size_t req;
-	size_t cur;
-
-	if (!sz)
-		*(void **)buf_ptr = ft_malloc(ft_u64max(32, pow2_next(n * isz)));
-	else
-	{
-		cur = sz * isz;
-		req = cur + (n * isz);
-		if (ft_u64max(32, pow2_next(cur)) < (cap = pow2_next(req)))
-			*(void **)buf_ptr = ft_realloc(*(void **)buf_ptr, cur, cap);
-	}
+	if (n > pow2_next(len))
+		return (ft_realloc(buf, len * isz, pow2_next(n) * isz));
+	return ((void *)buf);
 }
 
-inline void		*ft_bufpush(void *buf_ptr, size_t *sz, size_t n, size_t isz)
+inline void		*ft_bufgrow(void const *buf, size_t n, size_t len, size_t isz)
 {
-	void *it;
-
-	ft_bufgrow(buf_ptr, *sz, n, isz);
-	it = (char *)*(void **)buf_ptr + (*sz * isz);
-	*sz += n;
-	return (it);
+	if ((len + n) > pow2_next(len))
+		return (ft_realloc(buf, len * isz, pow2_next(len + n) * isz));
+	return ((void *)buf);
 }
 
-inline size_t	ft_bufshift(void *buf, size_t *sz, size_t n, size_t isz)
+inline void		*ft_bufpush(void const *buf, size_t n, size_t len, size_t isz)
 {
-	if (!*sz)
+	return (ft_bufgrow(buf, n, len, isz));
+}
+
+inline size_t	ft_bufshift(void *buf, size_t n, size_t len, size_t isz)
+{
+	size_t nsz;
+
+	if (!len)
 		return (0);
-	if (n > *sz)
-		n = *sz;
-	if (*sz -= n)
-		ft_memmove(buf, (char *)buf + (n * isz), *sz * isz);
+	if (n > len)
+		n = len;
+	if ((nsz = (len - n)))
+		ft_memmove(buf, ft_bufat(buf, n, isz), nsz * isz);
 	return (n);
+}
+
+inline void		*ft_bufat(void const *buf, size_t i, size_t isz)
+{
+	return ((char *)buf + (i * isz));
 }

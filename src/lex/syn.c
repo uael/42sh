@@ -12,20 +12,15 @@
 
 #include "msh.h"
 
-inline int				sh_lex_syn(t_lexer *lex, t_tok *tok, char peek)
+inline int	sh_lex_syn(t_sh_tok *tok, char **ln)
 {
-	ssize_t sz;
-
-	while (peek == ' ' || peek == '\t')
+	while (**ln == ' ' || **ln == '\t')
+		++*ln;
+	if (ft_strchr("=!()-;[]{|}\n", **ln))
 	{
-		ft_lexer_getc(lex, NULL, &peek);
-	}
-	if (ft_strchr("=!()-;[]{|}\n", peek))
-	{
-		tok->val = NULL;
-		tok->id = (uint8_t)peek;
-		if ((sz = ft_lexer_next(lex, NULL, 1)) <= 0)
-			return (sz < 0 ? WUT : NOP);
+		tok->val = *ln;
+		tok->id = (uint8_t)*(*ln)++;
+		tok->len = 1;
 		return (YEP);
 	}
 	return (NOP);

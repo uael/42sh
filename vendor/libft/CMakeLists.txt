@@ -3,9 +3,9 @@ cmake_policy(SET CMP0054 OLD)
 cmake_policy(SET CMP0045 OLD)
 
 project(libft C)
-get_directory_property(libft_PARENT PARENT_DIRECTORY)
 
 set(BUILD_SHARED_LIBS OFF)
+set(libft_ENABLE_TEST ON)
 
 set(libft_INC_DIR ${CMAKE_CURRENT_LIST_DIR}/include)
 set(libft_SRC_DIR ${CMAKE_CURRENT_LIST_DIR}/src)
@@ -18,14 +18,6 @@ set(CMAKE_C_FLAGS_RELEASE "")
 option(COVERAGE "Turn on COVERAGE support" OFF)
 if (COVERAGE AND NOT MSVC)
   set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} --coverage")
-endif ()
-
-if (NOT libft_PARENT AND EXISTS ${libft_TEST_DIR})
-  enable_testing()
-  add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND})
-  set(libft_ENABLE_TEST ON)
-else ()
-  set(libft_ENABLE_TEST OFF)
 endif ()
 
 set(libft_HDR ${libft_INC_DIR}/libft.h)
@@ -57,12 +49,14 @@ else ()
 endif ()
 
 if (libft_ENABLE_TEST)
+  enable_testing()
+  add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND})
   file(GLOB libft_TEST_SRCS ${libft_TEST_SRCS}
     ${libft_TEST_DIR}/*.c)
   foreach (libft_TEST_SRC ${libft_TEST_SRCS})
     get_filename_component(libft_TEST_NAME ${libft_TEST_SRC} NAME_WE)
     set(test test_libft_${libft_TEST_NAME})
-    add_executable(${test} ${libft_TEST_SRC})
+    add_executable(${test} test/test.h ${libft_TEST_SRC} test/lib/cli.c)
     set_property(TARGET ${test}
       PROPERTY C_STANDARD 90)
     add_dependencies(${test} ft)

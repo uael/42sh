@@ -51,7 +51,7 @@ static inline int	eval_rules(t_sh *self, t_tok *tok, t_job **job)
 	return (SH_NEXT);
 }
 
-inline int			sh_eval(t_sh *self)
+inline int			sh_eval(t_sh *self, char *ln)
 {
 	t_tok	*tok;
 	int		st;

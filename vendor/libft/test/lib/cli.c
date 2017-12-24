@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lex.c                                              :+:      :+:    :+:   */
+/*   test/test.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,43 +10,32 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "msh.h"
+#include "test.h"
 
-inline void		sh_lex(t_sh *self, char *ln)
+int			main(void)
 {
-	self->toks_len = 0;
-	self->toks_cur = 0;
-}
+	int		ok;
+	int		nok;
+	t_test	*it;
 
-inline t_tok	*sh_peek(t_sh *self)
-{
-	t_tok	*tok;
-
-	if (ft_tok_peek(&self->lexer, 0, &tok))
-		return (NULL);
-	if (tok->id == SH_TOK_SKIP)
-		sh_next(self, &tok);
-	return (tok);
-}
-
-inline t_tok	*sh_next(t_sh *self, t_tok **next)
-{
-	t_tok	*tok;
-
-	if (ft_tok_next(&self->lexer, 1, &tok) <= 0)
-		return (NULL);
-	if (tok->id == SH_TOK_SKIP)
-		return (sh_next(self, next));
-	if (next)
-		*next = sh_peek(self);
-	return (tok);
-}
-
-inline void		sh_consume_line(t_sh *self)
-{
-	t_tok	*tok;
-
-	while ((tok = sh_peek(self)) && tok->id)
-		if ((tok = sh_next(self, NULL)) && tok->id == '\n')
-			break ;
+	ft_write(STDOUT_FILENO, SNS("test: setup.........."));
+	if (setup())
+		return ((int)(NOK & 0) + EXIT_FAILURE);
+	OK;
+	ok = 0;
+	nok = 0;
+	it = g_tests - 1;
+	while (it && (++it)->name)
+		if (it->cb)
+		{
+			ft_write(STDOUT_FILENO, SNS("test: "));
+			ft_write(STDOUT_FILENO, it->name, ft_strlen(it->name));
+			ft_putr(STDOUT_FILENO, '.', 15 - ft_strlen(it->name));
+			(void)(it->cb() ? (++nok) : (++ok && OK));
+		}
+	ft_write(STDOUT_FILENO, SNS("test: teardown......."));
+	if (teardown())
+		return ((int)(NOK & 0) + EXIT_FAILURE);
+	OK;
+	return (EXIT_SUCCESS);
 }

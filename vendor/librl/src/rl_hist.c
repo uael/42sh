@@ -22,12 +22,13 @@ char		*rl_hist_add(struct s_rl *self, char const *line)
 	if (self->hist.len && self->hist.len == self->hist.max)
 	{
 		free(self->hist.buf[0]);
-		ft_bufshift(self->hist.buf, (size_t *)&self->hist.len, 1,
-			sizeof(char *));
+		ft_bufshift(self->hist.buf, 1, (size_t)self->hist.len, sizeof(char *));
+		--self->hist.len;
 	}
 	sz = ft_strlen(line);
-	it = (char **)ft_bufpush(&self->hist.buf, (size_t *)&self->hist.len,
-		sizeof(char), sizeof(char *));
+	if (!self->hist.buf)
+		self->hist.buf = ft_malloc(self->hist.max * sizeof(char *));
+	it = ft_bufat(self->hist.buf, (size_t)self->hist.len, sizeof(char *));
 	return (*it = ft_memcpy(ft_malloc((sz + 1) * sizeof(char)), line, sz + 1));
 }
 
@@ -40,7 +41,7 @@ int			rl_hist_load(struct s_rl *self, char const *filename)
 	char	*eol;
 
 	if ((fd = open(filename, O_RDONLY, S_IRUSR | S_IWUSR)) < (rd = 0))
-		return (THROW(WUT));
+		return (WUT);
 	while ((rd = ft_read(fd, buf + rd, RL_MAX_LINE)))
 		if (rd < 0)
 			return (WUT);
@@ -74,7 +75,6 @@ int			rl_hist_save(struct s_rl *self, char const *filename)
 	while (line != end)
 	{
 		ft_write(fd, *line, ft_strlen(*line));
-		ft_write(fd, "\n", 1);
 		++line;
 	}
 	if (close(fd))

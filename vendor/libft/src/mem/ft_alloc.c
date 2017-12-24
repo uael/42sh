@@ -33,7 +33,7 @@ inline void	*ft_calloc(size_t sz)
 	return (ptr);
 }
 
-inline void	*ft_realloc(void *ptr, size_t psz, size_t sz)
+inline void	*ft_realloc(void const *ptr, size_t psz, size_t sz)
 {
 	void *p;
 
@@ -42,6 +42,6 @@ inline void	*ft_realloc(void *ptr, size_t psz, size_t sz)
 	if (!ptr)
 		return (p);
 	ft_memcpy(p, ptr, psz);
-	free(ptr);
+	free((void *)ptr);
 	return (p);
 }
