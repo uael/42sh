@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libft/io/ifs.h                                     :+:      :+:    :+:   */
+/*   libft/io/ofs.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,26 +10,27 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFT_IO_IFS_H
-# define LIBFT_IO_IFS_H
+#ifndef LIBFT_IO_OFS_H
+# define LIBFT_IO_OFS_H
 
 # include "fcntl.h"
 
-typedef struct	s_ifs
+typedef struct	s_ofs
 {
-	int			ifd;
+	int			ofd;
 	size_t		i;
-	size_t		sz;
-	size_t		rd;
-	size_t		mcap;
-	char		*buf;
-	char		*mem;
-}				t_ifs;
+	char		buf[FT_PAGE_SIZE + 1];
+}				t_ofs;
 
-extern void		ft_ifsctor(t_ifs *self, int ifd, char *buf, size_t sz);
-extern char		ft_ifspeek(t_ifs *self, size_t i);
-extern ssize_t	ft_ifsbuf(t_ifs *self, size_t sz, char **out);
-extern ssize_t	ft_ifschr(t_ifs *self, char c, char **out);
-extern ssize_t	ft_ifsrd(t_ifs *s, void *b, size_t n);
+extern void		ft_ofsctor(t_ofs *self, int ofd);
+extern ssize_t	ft_ofsflush(t_ofs *self);
+extern ssize_t	ft_ofswrc(t_ofs *self, unsigned char c);
+extern ssize_t	ft_ofswr(t_ofs *self, void const *buf, size_t n);
+extern ssize_t	ft_ofswrs(t_ofs *self, char const *buf);
+extern ssize_t	ft_ofswrl(t_ofs *self, long i, uint8_t base);
+extern ssize_t	ft_ofswrul(t_ofs *self, ulong i, uint8_t base);
+extern ssize_t	ft_ofswrd(t_ofs *self, double i, int precision, uint8_t base);
+extern ssize_t	ft_ofsvwrf(t_ofs *self, char const *f, va_list ap);
+extern ssize_t	ft_ofswrf(t_ofs *self, char const *fmt, ...);
 
 #endif

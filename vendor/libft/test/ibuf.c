@@ -76,74 +76,49 @@ int				teardown(void)
 static int		test_ctor(void)
 {
 	t_ifs	*buf;
-	char	sbuf[FT_PAGE_SIZE + 1];
 
-	ft_ifsctor(buf = alloca(sizeof(t_ifs)), g_fd, sbuf, FT_PAGE_SIZE);
+	ft_ifsctor(buf = alloca(sizeof(t_ifs)), g_fd);
 	ASSERT(buf);
 	ASSERT(buf->ifd == g_fd);
 	ASSERT(buf->i == 0);
 	ASSERT(buf->rd == 0);
-	ASSERT(buf->sz == FT_PAGE_SIZE);
-	ASSERT(buf->buf == sbuf);
-	ASSERT(buf->mem == NULL);
 	return (YEP);
 }
 
-static int		test_buf_psize(void)
+static int		test_buf(void)
 {
 	t_ifs	*buf;
-	char	sbuf[FT_PAGE_SIZE + 1];
 
-	ft_ifsctor(buf = alloca(sizeof(t_ifs)), g_fd, sbuf, FT_PAGE_SIZE);
+	ft_ifsctor(buf = alloca(sizeof(t_ifs)), g_fd);
 	ASSERT(ft_ifsbuf(buf, 1, NULL) == 1);
 	ASSERT(ft_ifsbuf(buf, 10, NULL) == 10);
-	lseek(g_fd, 0, SEEK_SET);
-}
-
-static int		test_buf_1(void)
-{
-	t_ifs	*buf;
-	char	sbuf[1 + 1];
-
-	ft_ifsctor(buf = alloca(sizeof(t_ifs)), g_fd, sbuf, 1);
-	ASSERT(ft_ifsbuf(buf, 1, NULL) == 1);
-	ASSERT(ft_ifsbuf(buf, 10, NULL) == 10);
-	lseek(g_fd, 0, SEEK_SET);
-}
-
-static int		test_buf_42(void)
-{
-	t_ifs	*buf;
-	char	sbuf[42 + 1];
-
-	ft_ifsctor(buf = alloca(sizeof(t_ifs)), g_fd, sbuf, 42);
-	ASSERT(ft_ifsbuf(buf, 1, NULL) == 1);
-	ASSERT(ft_ifsbuf(buf, 10, NULL) == 10);
+	ASSERT(ft_ifsbuf(buf, FT_PAGE_SIZE, NULL) == FT_PAGE_SIZE);
+	ASSERT(ft_ifsbuf(buf, FT_PAGE_SIZE * 2, NULL) == g_sz);
 	lseek(g_fd, 0, SEEK_SET);
 }
 
 static int		test_chr(void)
 {
 	t_ifs	*buf;
-	char	sbuf[FT_PAGE_SIZE + 1];
+	ssize_t	tsz;
 	ssize_t	sz;
 	char	*ln;
 
-	ft_ifsctor(buf = alloca(sizeof(t_ifs)), g_fd, sbuf, FT_PAGE_SIZE);
+	ft_ifsctor(buf = alloca(sizeof(t_ifs)), g_fd);
+	tsz = 0;
 	while ((sz = ft_ifschr(buf, '\n', &ln)) > 0)
 	{
-		ft_write(1, ln, (size_t)sz);
-		ft_ifsrd(buf, NULL, (size_t)sz);
+		tsz += sz;
+		ASSERT(ft_ifsrd(buf, NULL, (size_t)sz) == sz);
 	}
+	ASSERT(tsz == g_sz);
 	lseek(g_fd, 0, SEEK_SET);
 }
 
 t_test			g_tests[] =
 {
 	{"ctor", test_ctor},
-	{"buf PSIZE", test_buf_psize},
-	{"buf 1", test_buf_1},
-	{"buf 42", test_buf_42},
+	{"buf", test_buf},
 	{"chr", test_chr},
 	{NULL, NULL}
 };

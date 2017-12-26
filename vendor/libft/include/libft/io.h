@@ -19,7 +19,8 @@
 # include "int.h"
 # include "str.h"
 
-# include "io/ibuf.h"
+# include "io/ifs.h"
+# include "io/ofs.h"
 # include "io/imstream.h"
 # include "io/istream.h"
 # include "io/ofstream.h"

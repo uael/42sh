@@ -48,6 +48,8 @@ else ()
     PRIVATE -O$<$<CONFIG:Debug>:0 -g3>$<$<CONFIG:Release>:3>)
 endif ()
 
+add_subdirectory(example)
+
 if (libft_ENABLE_TEST)
   enable_testing()
   add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND})

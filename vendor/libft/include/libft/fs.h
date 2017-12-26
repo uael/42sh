@@ -20,6 +20,9 @@
 # define COLOR_YELLOW "\033[33m"
 # define COLOR_CYAN "\033[36m"
 # define COLOR_BOLD "\033[1m"
+# define COLOR_BRED COLOR_BOLD"\033[31m"
+# define COLOR_BYELLOW COLOR_BOLD"\033[33m"
+# define COLOR_BCYAN COLOR_BOLD"\033[36m"
 
 extern char	const	*ft_basename(char const *path);
 extern t_bool		ft_isdots(char const *path);

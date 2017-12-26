@@ -21,6 +21,8 @@
 #  define ENO_THROW(RCODE, ENO) ft_eno_throw(RCODE, ENO, NULL, 0)
 # endif
 
+# define EXALL 0
+
 typedef int		(*t_ex_cb)(int rcode, void *arg);
 
 typedef struct	s_ex_hdl
@@ -29,8 +31,8 @@ typedef struct	s_ex_hdl
 	void		*arg;
 }				t_ex_hdl;
 
-extern t_ex_hdl	ft_ex_hdl(t_ex_cb cb, void *arg);
-extern void		ft_ex_register(int eno, t_ex_hdl hld, t_ex_hdl *out);
+extern t_ex_hdl	ft_exhdl(t_ex_cb cb, void *arg);
+extern void		ft_exbind(int eno, t_ex_hdl hld, t_ex_hdl *out);
 extern void		ft_ex_unregister(int eno);
 extern t_ex_hdl	*ft_ex_get(int eno);
 extern int		ft_ex_throw(int rcode, char const *fn, int line);

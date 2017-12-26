@@ -47,7 +47,7 @@ static inline int	main_tty(t_sh *sh, char **env)
 	char	*ln;
 
 	g_tc = &tc;
-	ft_ex_register(0, ft_ex_hdl(sh_on_errno, NULL), NULL);
+	ft_exbind(0, ft_exhdl(sh_on_errno, NULL), NULL);
 	if (sh_init(sh, env))
 		return (WUT);
 	if (sh->mode == SH_TTY)

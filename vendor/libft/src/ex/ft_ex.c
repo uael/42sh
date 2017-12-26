@@ -32,12 +32,12 @@ static t_ex_hdl	g_eno_hdls[FT_ELAST + 1] =
 	[0] = {ex_dft_hdl, NULL}
 };
 
-inline t_ex_hdl	ft_ex_hdl(t_ex_cb cb, void *arg)
+inline t_ex_hdl	ft_exhdl(t_ex_cb cb, void *arg)
 {
 	return ((t_ex_hdl){cb, arg});
 }
 
-inline void		ft_ex_register(int eno, t_ex_hdl hld, t_ex_hdl *out)
+inline void		ft_exbind(int eno, t_ex_hdl hld, t_ex_hdl *out)
 {
 	if (eno < 0 || eno > FT_ELAST)
 		return ;
