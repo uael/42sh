@@ -49,6 +49,7 @@ typedef struct	s_rl
 	int			ifd;
 	int			ofd;
 	char		*buf;
+	t_ifs		in;
 	int			mlen;
 	int			len;
 	const char	*prompt;

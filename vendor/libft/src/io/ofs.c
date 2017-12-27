@@ -18,6 +18,23 @@ void		ft_ofsctor(t_ofs *self, int ofd)
 	self->i = 0;
 }
 
+int			ft_ofsopen(t_ofs *self, char const *filename)
+{
+	int	fd;
+
+	if ((fd = open(filename, O_WRONLY, S_IRUSR | S_IWUSR)) < 0)
+		return (WUT);
+	ft_ofsctor(self, fd);
+	return (YEP);
+}
+
+int			ft_ofsclose(t_ofs *self)
+{
+	if (close(self->ofd))
+		return (WUT);
+	return (YEP);
+}
+
 ssize_t		ft_ofsflush(t_ofs *self)
 {
 	ssize_t	sz;

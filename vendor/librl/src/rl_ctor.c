@@ -17,11 +17,12 @@ int		rl_ctor(t_rl *self, int ifd, int ofd, t_bool ml)
 	ft_memset(self, 0, sizeof(t_rl));
 	self->ml = ml;
 	self->ofd = ofd;
-	if (!isatty(self->ifd = ifd))
+	ft_ifsctor(&self->in, self->ifd = ifd);
+	if (!isatty(ifd))
 		self->mode = RL_NOTTY;
 	else
 	{
-		if (tcgetattr(self->ifd, &self->orig) == -1)
+		if (tcgetattr(ifd, &self->orig) == -1)
 			return (ENO_THROW(WUT, ENOTTY));
 		self->raw = self->orig;
 		self->raw.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON | OPOST);

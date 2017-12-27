@@ -22,6 +22,23 @@ inline void				ft_ifsctor(t_ifs *self, int ifd)
 	self->buf = NULL;
 }
 
+inline int				ft_ifsopen(t_ifs *self, char const *filename)
+{
+	int	fd;
+
+	if ((fd = open(filename, O_RDONLY, S_IRUSR | S_IWUSR)) < 0)
+		return (WUT);
+	ft_ifsctor(self, fd);
+	return (YEP);
+}
+
+inline int				ft_ifsclose(t_ifs *self)
+{
+	if (close(self->ifd))
+		return (WUT);
+	return (YEP);
+}
+
 inline char				ft_ifspeek(t_ifs *self, size_t i)
 {
 	char	*buf;
@@ -115,12 +132,14 @@ ssize_t					ft_ifsrd(t_ifs *s, void *b, size_t n)
 	return (beg - n);
 }
 
-ssize_t					ft_ifschr(t_ifs *self, char c, char **out)
+ssize_t					ft_ifschr(t_ifs *self, size_t off, char c, char **out)
 {
 	ssize_t	rd;
 	char	*src;
 	char	*chr;
 
+	if (off > self->rd - self->i)
+		return (ENO_THROW(WUT, EINVAL));
 	if (!self->rd || self->i == self->rd)
 	{
 		if ((rd = ft_read(self->ifd, self->stack, BSZ)) <= 0)
@@ -128,7 +147,7 @@ ssize_t					ft_ifschr(t_ifs *self, char c, char **out)
 		self->i = 0;
 		self->rd = (size_t)rd;
 	}
-	src = (self->buf ? self->buf : self->stack) + self->i;
+	src = (self->buf ? self->buf : self->stack) + off + self->i;
 	while (!(chr = ft_strchr(src, c)))
 		if ((rd = ifsbuf(self, &src)))
 		{
@@ -138,5 +157,5 @@ ssize_t					ft_ifschr(t_ifs *self, char c, char **out)
 		}
 	if (out)
 		*out = src;
-	return (chr - src + 1);
+	return (chr - src + off + 1);
 }

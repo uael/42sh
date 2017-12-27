@@ -14,27 +14,15 @@
 
 static char	*rl_notty(t_rl *self)
 {
-	char	buf[RL_MAX_LINE + 1];
-	char	*eol;
-	char	*line;
+	char	*ln;
 	ssize_t	rd;
 
-	eol = NULL;
-	while ((!self->buf || (eol || !(eol = ft_strchr(self->buf, '\n')))))
-		if ((rd = ft_read(self->ifd, buf, RL_MAX_LINE)) < 0)
-			return (NULL);
-		else if (!rd || (eol = ft_strchr(ft_memcpy(*(char **) ft_bufmpush(
-			&self->buf, (size_t *) &self->len, (size_t) rd, sizeof(char)), buf,
-			(size_t)rd), '\n')))
-			break ;
-	if (!(rd = eol ? (eol - self->buf + 1) : (ssize_t)self->len))
+	if ((rd = ft_ifschr(&self->in, 0, '\n', &ln)) <= 0)
 		return (NULL);
-	rd += (ssize_t)(eol ? 1 : 0);
-	line = ft_memcpy(ft_malloc((size_t)rd * sizeof(char)), self->buf,
-		(size_t)rd * sizeof(char));
-	line[rd] = '\0';
-	ft_bufshift(self->buf, (size_t *)&self->len, (size_t)rd, sizeof(char));
-	return (line);
+	ln = ft_memcpy(ft_malloc((rd + 1) * sizeof(char)), ln, (size_t)rd);
+	ln[rd] = '\0';
+	ft_ifsrd(&self->in, NULL, (size_t)rd);
+	return (ln);
 }
 
 static char	*rl_tty(t_rl *self)

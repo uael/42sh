@@ -23,6 +23,8 @@ typedef struct	s_ofs
 }				t_ofs;
 
 extern void		ft_ofsctor(t_ofs *self, int ofd);
+extern int		ft_ofsopen(t_ofs *self, char const *filename);
+extern int		ft_ofsclose(t_ofs *self);
 extern ssize_t	ft_ofsflush(t_ofs *self);
 extern ssize_t	ft_ofswrc(t_ofs *self, unsigned char c);
 extern ssize_t	ft_ofswr(t_ofs *self, void const *buf, size_t n);

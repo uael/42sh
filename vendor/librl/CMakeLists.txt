@@ -57,19 +57,4 @@ else ()
     PRIVATE -O$<$<CONFIG:Debug>:0 -g3>$<$<CONFIG:Release>:3>)
 endif ()
 
-add_executable(test_rl test/cli.c)
-target_link_libraries(test_rl rl)
-target_compile_definitions(test_rl
-  PRIVATE $<$<CONFIG:Debug>:DEBUG>$<$<CONFIG:Release>:NDEBUG>
-  PRIVATE API_COMPILE)
-if (MSVC)
-  target_compile_options(test_rl
-    PRIVATE /MT$<$<CONFIG:Debug>:d> /Oy /W3
-    PRIVATE /D_CRT_SECURE_NO_WARNINGS /Dinline=__inline
-    PRIVATE /O$<$<CONFIG:Debug>:d>$<$<CONFIG:Release>:x>)
-else ()
-  target_compile_options(test_rl
-    PRIVATE -Wall -Werror -Wextra -fomit-frame-pointer -ansi
-    PRIVATE -Wno-missing-field-initializers -Wno-missing-braces
-    PRIVATE -O$<$<CONFIG:Debug>:0 -g3>$<$<CONFIG:Release>:3>)
-endif ()
+add_subdirectory(example)
