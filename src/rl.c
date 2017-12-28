@@ -22,11 +22,18 @@
 #define HIST_MAX (100)
 #define LN_MAX (2048)
 
+typedef struct	s_lnp
+{
+	char		buf[LN_MAX];
+	uint16_t	len;
+	t_bool		noedit;
+}				t_lnp;
+
 typedef struct s_ln
 {
 	char const	*prompt;
 	size_t		polen;
-	char		**parts;
+	t_lnp		*parts;
 	char		*resolved;
 	uint16_t	len;
 	uint16_t	idx;
@@ -131,7 +138,11 @@ t_ln			*ln_clear(t_ln *self)
 
 	i = 0;
 	while (i < self->plen)
-		*self->parts[i++] = '\0';
+	{
+		self->parts[i].noedit = 0;
+		self->parts[i].len = 0;
+		*self->parts[i++].buf = '\0';
+	}
 	*self->resolved = '\0';
 	self->prompt = NULL;
 	self->polen = 0;
