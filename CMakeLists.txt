@@ -4,7 +4,6 @@ cmake_policy(SET CMP0045 OLD)
 
 project(21sh C)
 add_subdirectory(vendor/libft)
-add_subdirectory(vendor/librl)
 
 set(BUILD_SHARED_LIBS OFF)
 
@@ -27,15 +26,15 @@ target_include_directories(21sh PUBLIC ${21sh_INC_DIR})
 target_link_libraries(21sh PUBLIC ft ncurses)
 
 target_compile_definitions(21sh
-    PRIVATE $<$<CONFIG:Debug>:DEBUG>$<$<CONFIG:Release>:NDEBUG>)
+  PRIVATE $<$<CONFIG:Debug>:DEBUG>$<$<CONFIG:Release>:NDEBUG>)
 if (MSVC)
-    target_compile_options(21sh
-        PRIVATE /MT$<$<CONFIG:Debug>:d> /Oy /W3
-        PRIVATE /D_CRT_SECURE_NO_WARNINGS /Dinline=__inline
-        PRIVATE /O$<$<CONFIG:Debug>:d>$<$<CONFIG:Release>:x>)
+  target_compile_options(21sh
+    PRIVATE /MT$<$<CONFIG:Debug>:d> /Oy /W3
+    PRIVATE /D_CRT_SECURE_NO_WARNINGS /Dinline=__inline
+    PRIVATE /O$<$<CONFIG:Debug>:d>$<$<CONFIG:Release>:x>)
 else ()
-    target_compile_options(21sh
-        PRIVATE -Wall -Werror -Wextra -fomit-frame-pointer -ansi
-        PRIVATE -Wno-missing-field-initializers -Wno-missing-braces
-        PRIVATE -O$<$<CONFIG:Debug>:0 -g3>$<$<CONFIG:Release>:3>)
+  target_compile_options(21sh
+    PRIVATE -Wall -Werror -Wextra -fomit-frame-pointer -ansi
+    PRIVATE -Wno-missing-field-initializers -Wno-missing-braces
+    PRIVATE -O$<$<CONFIG:Debug>:0 -g3>$<$<CONFIG:Release>:3>)
 endif ()

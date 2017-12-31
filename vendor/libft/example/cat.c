@@ -43,9 +43,14 @@ int			main(int ac, char **av)
 		return (THROW(EXIT_FAILURE));
 	ft_ifsctor(in = alloca(sizeof(t_ifs)), g_fd);
 	ft_ofsctor(out = alloca(sizeof(t_ofs)), STDOUT_FILENO);
-	while ((sz = ft_ifschr(in, '\n', &ln)) > 0)
+	while ((sz = ft_ifschr(in, 0, '\n', &ln)) > 0)
+	{
 		ft_ofswr(out, ln, (size_t)ft_ifsrd(in, NULL, (size_t)sz));
-	ft_ofsflush(out);
+		if (ac < 2)
+			ft_ofsflush(out);
+	}
+	if (ac >= 2)
+		ft_ofsflush(out);
 	if (close(g_fd))
 		return (THROW(EXIT_FAILURE));
 	return (EXIT_SUCCESS);

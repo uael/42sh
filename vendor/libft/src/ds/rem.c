@@ -1,29 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libft.h                                            :+:      :+:    :+:   */
+/*   rem.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/09 07:00:16 by alucas-          ###   ########.fr       */
+/*   Created: 2017/11/07 09:52:33 by alucas-           #+#    #+#             */
+/*   Updated: 2017/11/07 09:53:34 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFT_H
-# define LIBFT_H
+#include "libft/ds.h"
 
-# include "libft/buf.h"
-# include "libft/cty.h"
-# include "libft/ds.h"
-# include "libft/ex.h"
-# include "libft/fs.h"
-# include "libft/int.h"
-# include "libft/io.h"
-# include "libft/lib.h"
-# include "libft/math.h"
-# include "libft/mem.h"
-# include "libft/str.h"
-# include "libft/tys.h"
+inline t_bool	ft_deqrem(t_deq *self, size_t idx, void *out)
+{
+	return ((t_bool)(ft_deqnrem(self, idx, 1, out) == 1));
+}
 
-#endif
+inline t_bool	ft_sdsrem(t_sds *self, size_t idx, char *out)
+{
+	return ((t_bool)(ft_sdsnrem(self, idx, 1, out) == 1));
+}
+
+inline t_bool	ft_vecrem(t_vec *self, size_t idx, void *out)
+{
+	return ((t_bool)(ft_vecnrem(self, idx, 1, out) == 1));
+}

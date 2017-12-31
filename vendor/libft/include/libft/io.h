@@ -13,20 +13,12 @@
 #ifndef LIBFT_IO_H
 # define LIBFT_IO_H
 
-# include <unistd.h>
-# include <fcntl.h>
-
 # include "int.h"
 # include "str.h"
 
+# include "io/fcntl.h"
 # include "io/ifs.h"
 # include "io/ofs.h"
-# include "io/imstream.h"
-# include "io/istream.h"
-# include "io/ofstream.h"
-# include "io/omstream.h"
-# include "io/ostream.h"
-# include "io/fcntl.h"
 
 extern ssize_t	ft_putc(int fd, char c);
 extern ssize_t	ft_putl(int fd, char const *s);

@@ -1,29 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libft.h                                            :+:      :+:    :+:   */
+/*   cpush.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/09 07:00:16 by alucas-          ###   ########.fr       */
+/*   Created: 2017/11/07 09:52:33 by alucas-           #+#    #+#             */
+/*   Updated: 2017/11/17 18:02:00 by null             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFT_H
-# define LIBFT_H
+#include "libft/ds.h"
 
-# include "libft/buf.h"
-# include "libft/cty.h"
-# include "libft/ds.h"
-# include "libft/ex.h"
-# include "libft/fs.h"
-# include "libft/int.h"
-# include "libft/io.h"
-# include "libft/lib.h"
-# include "libft/math.h"
-# include "libft/mem.h"
-# include "libft/str.h"
-# include "libft/tys.h"
+inline void	*ft_deqcpush(t_deq *self, void *item)
+{
+	return (ft_memcpy(ft_deqnpush(self, 1), item, self->isz));
+}
 
-#endif
+inline char	*ft_sdscpush(t_sds *self, char item)
+{
+	char *it;
+
+	it = ft_sdsnpush(self, 1);
+	*it = item;
+	return (it);
+}
+
+inline void	*ft_veccpush(t_vec *self, void *item)
+{
+	return (ft_memcpy(ft_vecnpush(self, 1), item, self->isz));
+}

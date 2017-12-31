@@ -25,8 +25,6 @@
 # define YEP (0)
 # define NOP (1)
 # define WUT (-1)
-# define TRUE (1)
-# define FALSE (0)
 
 # ifndef ELAST
 #  define ELAST 200

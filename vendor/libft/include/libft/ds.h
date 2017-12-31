@@ -14,7 +14,7 @@
 # define LIBFT_DS_H
 
 # include "ds/deq.h"
-# include "ds/dstr.h"
+# include "ds/sds.h"
 # include "ds/vec.h"
 
 #endif

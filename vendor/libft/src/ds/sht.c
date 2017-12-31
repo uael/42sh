@@ -1,29 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libft.h                                            :+:      :+:    :+:   */
+/*   sht.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/09 07:00:16 by alucas-          ###   ########.fr       */
+/*   Created: 2017/11/07 09:52:33 by alucas-           #+#    #+#             */
+/*   Updated: 2017/11/07 09:53:34 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFT_H
-# define LIBFT_H
+#include "libft/ds.h"
 
-# include "libft/buf.h"
-# include "libft/cty.h"
-# include "libft/ds.h"
-# include "libft/ex.h"
-# include "libft/fs.h"
-# include "libft/int.h"
-# include "libft/io.h"
-# include "libft/lib.h"
-# include "libft/math.h"
-# include "libft/mem.h"
-# include "libft/str.h"
-# include "libft/tys.h"
+inline t_bool	ft_deqsht(t_deq *self, void *out)
+{
+	return ((t_bool)(ft_deqnsht(self, 1, out) == 1));
+}
 
-#endif
+inline t_bool	ft_sdssht(t_sds *self, char *out)
+{
+	return ((t_bool)(ft_sdsnsht(self, 1, out) == 1));
+}
+
+inline t_bool	ft_vecsht(t_vec *self, void *out)
+{
+	return ((t_bool)(ft_vecnsht(self, 1, out) == 1));
+}

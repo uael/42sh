@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "msh.h"
+#include "msh/tokenize.h"
 
-static inline void	lex_match(t_sh_tok *tok, char **ln, uint8_t len, uint8_t id)
+static inline void	lex_match(t_tok *tok, char **ln, uint8_t len, uint8_t id)
 {
 	tok->id = id;
 	*ln += len;
@@ -77,18 +77,16 @@ inline int	tok_dblquote(char **ln, char *word, uint16_t i)
 
 int	sh_tokenize(t_deq *toks, char *ln)
 {
-	t_sh_tok	*tok;
-	t_sh_tok	*prev;
+	t_tok		*tok;
 	char		word[LN_MAX];
 	uint16_t	i;
 	int			st;
 	
-	ft_deq_clean(toks, NULL);
+	ft_deqclean(toks, NULL);
 	i = 0;
-	prev = NULL;
 	while (*ln)
 	{
-		tok = ft_deq_push(toks);
+		tok = ft_deqpush(toks);
 		while (*ln == ' ' || *ln == '\t')
 			++ln;
 		tok->val = ln;
@@ -100,34 +98,34 @@ int	sh_tokenize(t_deq *toks, char *ln)
 		}
 		tok->len = (size_t)ft_isdigit(*ln);
 		if (ln[0] == '>' && ln[1] == '>' && ln[2] == '-')
-			lex_match(tok, &ln, 3, SH_TOK_HEREDOCT);
+			lex_match(tok, &ln, 3, TOK_HEREDOCT);
 		else if (ln[0] == '>' && ln[1] == '>')
-			lex_match(tok, &ln, 2, SH_TOK_RAOUT);
+			lex_match(tok, &ln, 2, TOK_RAOUT);
 		else if (ln[0] == '&' && ln[1] == '>')
-			lex_match(tok, &ln, 2, SH_TOK_AMPR);
+			lex_match(tok, &ln, 2, TOK_AMPR);
 		else if (ln[0] == '>' && ln[1] == '&')
-			lex_match(tok, &ln, 2, SH_TOK_RAMP);
+			lex_match(tok, &ln, 2, TOK_RAMP);
 		else if (ln[0] == '>' && ln[1] == '|')
-			lex_match(tok, &ln, 2, SH_TOK_RPOUT);
+			lex_match(tok, &ln, 2, TOK_RPOUT);
 		else if (ln[0] == '|' && ln[1] == '|')
-			lex_match(tok, &ln, 2, SH_TOK_LOR);
+			lex_match(tok, &ln, 2, TOK_LOR);
 		else if (ln[0] == '<' && ln[1] == '>')
-			lex_match(tok, &ln, 2, SH_TOK_CMP);
+			lex_match(tok, &ln, 2, TOK_CMP);
 		else if (ln[0] == '<' && ln[1] == '<')
 		{
-			lex_match(tok, &ln, 2, SH_TOK_HEREDOC);
+			lex_match(tok, &ln, 2, TOK_HEREDOC);
 		}
 		else if (ln[0] == '<' && ln[1] == '&')
-			lex_match(tok, &ln, 2, SH_TOK_LAMP);
+			lex_match(tok, &ln, 2, TOK_LAMP);
 		else if (ln[0] == '&' && ln[1] == '&')
-			lex_match(tok, &ln, 2, SH_TOK_LAND);
+			lex_match(tok, &ln, 2, TOK_LAND);
 		else if (ln[0] == '>' || ln[0] == '<')
 			lex_match(tok, &ln, 1, (uint8_t)ln[0]);
 		else
 		{
 			if (tok->len)
 				word[i++] = *tok->val;
-			while (*ln != ' ')
+			while (*ln && *ln != ' ')
 			{
 				if (*ln == '\'')
 				{
@@ -147,4 +145,5 @@ int	sh_tokenize(t_deq *toks, char *ln)
 
 		}
 	}
+	return (YEP);
 }

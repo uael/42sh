@@ -13,11 +13,10 @@
 #ifndef MSH_HIST_H
 # define MSH_HIST_H
 
-# include "sh.h"
-# include "lex.h"
+# include <libft.h>
 
-#define LN_MAX (2048)
-#define HIST_MAX (100)
+# define LN_MAX (2048)
+# define HIST_MAX (100)
 
 typedef struct	s_editln
 {

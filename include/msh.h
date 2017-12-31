@@ -49,13 +49,8 @@
 */
 
 # include "msh/edit.h"
-# include "msh/eval.h"
-# include "msh/eval.h"
 # include "msh/hist.h"
-# include "msh/lex.h"
 # include "msh/read.h"
-# include "msh/reduce.h"
-# include "msh/sh.h"
-# include "msh/sig.h"
+# include "msh/tokenize.h"
 
 #endif

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   edit.c                                             :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,26 +10,38 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
+#include "msh.h"
 
-#include "msh/edit.h"
-
-extern int		sh_editln(t_histln *ln, char *prompt, size_t plen)
+int	sh_av(t_deq *toks, char **av)
 {
-	ssize_t			rd;
-	char			key[6];
+	int		fd;
+	char	*ln;
 
-	(void)prompt;
-	(void)plen;
-	while ((rd = ft_read(STDIN_FILENO, key, 6)) > 0)
-	{
-		if (rd == 1 && (!ft_memcmp(key, "\xa", 1) || !ft_memcmp(key, "\xd", 1)))
-			*key = '\n';
-		ft_write(STDOUT_FILENO, key, (size_t)rd);
-		ft_memcpy(ln->edit.buf + ln->edit.len, key, (size_t)rd);
-		ln->edit.len += rd;
-		if (rd == 1 && *key == '\n')
-			break ;
-	}
+	while (++*av)
+		if ((fd = open(*av, O_RDONLY, S_IRGRP | S_IRUSR)) < 0)
+			THROW(WUT);
+		else
+			while ((ln = sh_readln(fd, "$> ")))
+			{
+				sh_tokenize(toks, ln);
+			}
 	return (YEP);
+}
+
+int	main(int ac, char **av)
+{
+	t_deq	*toks;
+	int		st;
+	char	*ln;
+
+	st = EXIT_SUCCESS;
+	ft_deqctor(toks = alloca(sizeof(t_deq)), sizeof(t_tok));
+	if (ac > 1)
+		st = sh_av(toks, av);
+	else
+		while ((ln = sh_readln(STDIN_FILENO, "$> ")))
+		{
+			st = sh_tokenize(toks, ln);
+		}
+	return (st);
 }

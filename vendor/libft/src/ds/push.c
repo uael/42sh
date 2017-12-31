@@ -1,29 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libft.h                                            :+:      :+:    :+:   */
+/*   push.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/09 07:00:16 by alucas-          ###   ########.fr       */
+/*   Created: 2017/11/07 09:52:33 by alucas-           #+#    #+#             */
+/*   Updated: 2017/11/07 09:53:34 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFT_H
-# define LIBFT_H
+#include "libft/ds.h"
 
-# include "libft/buf.h"
-# include "libft/cty.h"
-# include "libft/ds.h"
-# include "libft/ex.h"
-# include "libft/fs.h"
-# include "libft/int.h"
-# include "libft/io.h"
-# include "libft/lib.h"
-# include "libft/math.h"
-# include "libft/mem.h"
-# include "libft/str.h"
-# include "libft/tys.h"
+inline void	*ft_deqpush(t_deq *self)
+{
+	return (ft_deqnpush(self, 1));
+}
 
-#endif
+inline char	*ft_sdspush(t_sds *self)
+{
+	return (ft_sdsnpush(self, 1));
+}
+
+inline void	*ft_vecpush(t_vec *self)
+{
+	return (ft_vecnpush(self, 1));
+}
