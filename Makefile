@@ -12,11 +12,11 @@
 
 NAME = 21sh
 CC = gcc
-CFLAGS = -Werror -Wextra -Wall -g3 -fsanitize=address -DDEBUG
+CFLAGS = -Werror -Wextra -Wall -g3 -DDEBUG
 
 SRC_PATH = ./src/
 OBJ_PATH = ./obj/
-3TH_PATH = ./libft/
+3TH_PATH = ./vendor/libft/ ./vendor/librl/
 INC_PATH = ./include/
 LNK_PATH = ./ $(3TH_PATH)
 
@@ -29,12 +29,13 @@ SRC_NAME = \
 	eval.c eval/cmd.c eval/heredoc.c eval/pipe.c eval/rin.c eval/rout.c \
 	eval/raout.c eval/sep.c eval/lamp.c eval/ramp.c \
 	keys.c keys/down.c keys/left.c keys/return.c keys/right.c keys/up.c \
+	keys/backspace.c keys/delete.c \
 	reduce.c reduce/heredoc.c \
 	cli.c env.c history.c lex.c sh.c tc.c
 
 SRC = $(addprefix $(SRC_PATH), $(SRC_NAME))
 OBJ = $(addprefix $(OBJ_PATH), $(OBJ_NAME))
-INC = $(addprefix -I, $(INC_PATH) $(addprefix $(3TH_PATH), include/))
+INC = $(addprefix -I, $(INC_PATH) $(addsuffix include/, $(3TH_PATH)))
 LNK = $(addprefix -L, $(LNK_PATH))
 3TH = $(addprefix -l, $(3TH_NAME))
 EXE = $(NAME)
@@ -42,12 +43,12 @@ LIB =
 
 all: $(EXE) $(LIB)
 
-$(LIB): 3th $(OBJ)
+$(LIB): lib $(OBJ)
 	@ar -rc $(NAME) $(OBJ)
 	@ranlib $(NAME)
 	@printf  "%-25s\033[32m[✔]\033[0m\n" "$(NAME): lib"
 
-$(EXE): 3th $(OBJ)
+$(EXE): lib $(OBJ)
 	@$(CC) $(CFLAGS) $(LNK) $(INC) $(OBJ) -o $(NAME) $(3TH)
 	@printf  "%-25s\033[32m[✔]\033[0m\n" "$(NAME): exe"
 
@@ -59,21 +60,21 @@ $(OBJ_PATH)%.o: $(SRC_PATH)%.c
 
 clean:
 ifneq ($(3TH_PATH),)
-	@$(MAKE) -C $(3TH_PATH) clean
+	@$(foreach lib,$(3TH_PATH),$(MAKE) -C $(lib) clean;)
 endif
 	@rm -rf $(OBJ_PATH)
 	@printf  "%-25s\033[32m[✔]\033[0m\n" "$(NAME): $@"
 
 fclean: clean
 ifneq ($(3TH_PATH),)
-	@$(MAKE) -C $(3TH_PATH) fclean
+	@$(foreach lib,$(3TH_PATH),$(MAKE) -C $(lib) fclean;)
 endif
 	@rm -f $(NAME)
 	@printf  "%-25s\033[32m[✔]\033[0m\n" "$(NAME): $@"
 
-3th:
+lib:
 ifneq ($(3TH_PATH),)
-	@$(MAKE) -C $(3TH_PATH) -j4
+	@$(foreach lib,$(3TH_PATH),$(MAKE) -C $(lib) -j4;)
 endif
 
 norm:

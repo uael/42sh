@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "bi.h"
-#include "msh/history.h"
+#include "msh/hist.h"
 
 #define M_NREQ "Numeric argument required"
 #define N_EXIT COLOR_RED COLOR_BOLD "exit: " COLOR_RESET

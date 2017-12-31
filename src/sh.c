@@ -12,22 +12,29 @@
 
 #include "msh.h"
 
-inline void	sh_init_stream(t_sh *self, t_sh_m m, char **env, t_istream *stream)
+inline int	sh_init(t_sh *self, char **env)
 {
 	FT_INIT(self, t_sh);
-	self->mode = m;
+	if (rl_ctor(&self->rl, STDIN_FILENO, STDOUT_FILENO, 1))
+		return (WUT);
+	self->mode = self->rl.mode == RL_NOTTY ? SH_NOTTY : SH_TTY;
 	sh_initenv(&self->env, env);
-	ft_lexer_init_stream(&self->lexer, stream);
 	ft_worker_ctor(&self->worker);
 	sh_lex(&self->lexer);
+	return (YEP);
 }
 
-inline int	sh_init_file(t_sh *self, t_sh_m m, char **env, char const *filename)
+inline int	sh_init_file(t_sh *self, char **env, char const *filename)
 {
+	int fd;
+
 	FT_INIT(self, t_sh);
-	self->mode = m;
+	if ((fd = open(filename, O_RDONLY, S_IRUSR | S_IWUSR)) < 0)
+		return (THROW(WUT));
+	if (rl_ctor(&self->rl, fd, STDOUT_FILENO, 1))
+		return (WUT);
+	self->mode = SH_AV;
 	sh_initenv(&self->env, env);
-	ft_lexer_init_file(&self->lexer, filename);
 	ft_worker_ctor(&self->worker);
 	sh_lex(&self->lexer);
 	return (YEP);
@@ -39,7 +46,6 @@ inline void	sh_dtor(t_sh *self)
 	ft_omstream_close(&self->bi_out);
 	ft_vstr_dtor(&self->env, (t_dtor)ft_pfree);
 	ft_vstr_dtor(&self->history, (t_dtor)ft_pfree);
-	ft_lexer_dtor(&self->lexer);
 	ft_worker_dtor(&self->worker);
 }
 

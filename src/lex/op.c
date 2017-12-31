@@ -12,84 +12,39 @@
 
 #include "msh.h"
 
-static inline int		lex_op_match(t_lexer *lex, t_tok *tok, size_t n, int *m)
+static inline int	lex_match(t_sh_tok *tok, char **ln, uint8_t len, uint8_t id)
 {
-	ssize_t sz;
-
-	tok->id = (uint8_t)m[0];
-	if (m[1])
-		ft_tokv_init_i32(tok->val, m[1] - '0');
-	else
-		tok->val = NULL;
-	if ((sz = ft_lexer_next(lex, NULL, m[1] ? n + 1 : n)) <= 0)
-		return (sz < 0 ? WUT : NOP);
+	tok->id = id;
+	tok->val = *ln;
+	*ln += (tok->len += len);
 	return (YEP);
 }
 
-static inline int		lex_op_3(t_lexer *lex, t_tok *tok, char *b)
+inline int			sh_lex_op(t_sh_tok *tok, char **ln)
 {
-	char d;
+	char *b;
 
-	d = ft_isdigit(*b) ? *b++ : (char)'\0';
-	if (b[0] == '<' && b[1] == '<' && b[2] == '-')
-		return (lex_op_match(lex, tok, 3, (int[2]){SH_TOK_HEREDOCT, d}));
-	return (NOP);
-}
-
-static inline int		lex_op_2(t_lexer *lex, t_tok *tok, char *b)
-{
-	char d;
-
-	d = ft_isdigit(*b) ? *b++ : (char)'\0';
+	tok->len = (size_t)ft_isdigit(**ln);
+	if ((b = *ln + tok->len)[0] == '>' && b[1] == '>' && b[2] == '-')
+		return (lex_match(tok, ln, 3, SH_TOK_HEREDOCT));
 	if (b[0] == '>' && b[1] == '>')
-		return (lex_op_match(lex, tok, 2, (int[2]){SH_TOK_RAOUT, d}));
+		return (lex_match(tok, ln, 2, SH_TOK_RAOUT));
 	if (b[0] == '&' && b[1] == '>')
-		return (lex_op_match(lex, tok, 2, (int[2]){SH_TOK_AMPR, d}));
+		return (lex_match(tok, ln, 2, SH_TOK_AMPR));
 	if (b[0] == '>' && b[1] == '&')
-		return (lex_op_match(lex, tok, 2, (int[2]){SH_TOK_RAMP, d}));
+		return (lex_match(tok, ln, 2, SH_TOK_RAMP));
 	if (b[0] == '>' && b[1] == '|')
-		return (lex_op_match(lex, tok, 2, (int[2]){SH_TOK_RPOUT, d}));
+		return (lex_match(tok, ln, 2, SH_TOK_RPOUT));
 	if (b[0] == '|' && b[1] == '|')
-		return (lex_op_match(lex, tok, 2, (int[2]){SH_TOK_LOR, d}));
+		return (lex_match(tok, ln, 2, SH_TOK_LOR));
 	if (b[0] == '<' && b[1] == '>')
-		return (lex_op_match(lex, tok, 2, (int[2]){SH_TOK_CMP, d}));
+		return (lex_match(tok, ln, 2, SH_TOK_CMP));
 	if (b[0] == '<' && b[1] == '<')
-		return (lex_op_match(lex, tok, 2, (int[2]){SH_TOK_HEREDOC, d}));
+		return (lex_match(tok, ln, 2, SH_TOK_HEREDOC));
 	if (b[0] == '<' && b[1] == '&')
-		return (lex_op_match(lex, tok, 2, (int[2]){SH_TOK_LAMP, d}));
+		return (lex_match(tok, ln, 2, SH_TOK_LAMP));
 	if (b[0] == '&' && b[1] == '&')
-		return (lex_op_match(lex, tok, 2, (int[2]){SH_TOK_LAND, d}));
-	return (NOP);
-}
-
-static inline int		lex_op_1(t_lexer *lex, t_tok *tok, char *b)
-{
-	char d;
-
-	d = ft_isdigit(*b) ? *b++ : (char)'\0';
-	if (b[0] == '>' || b[0] == '<')
-		return (lex_op_match(lex, tok, 1, (int[2]){b[0], d}));
-	return (NOP);
-}
-
-inline int				sh_lex_op(t_lexer *lex, t_tok *tok, char peek)
-{
-	char	b[4];
-	size_t	n;
-	int		st;
-
-	n = 0;
-	b[n] = peek;
-	while (++n < 4 && b[n - 1] && b[n - 1] != '\n')
-		if ((st = ft_lexer_peek(lex, b + n, n)) < 0)
-			return (st);
-		else if (st)
-			break ;
-	if (n >= 3 && (st = lex_op_3(lex, tok, b)) <= 0)
-		return (st);
-	if (n >= 2 && (st = lex_op_2(lex, tok, b)) <= 0)
-		return (st);
-	if (n >= 1 && (st = lex_op_1(lex, tok, b)) <= 0)
-		return (st);
-	return (NOP);
+		return (lex_match(tok, ln, 2, SH_TOK_LAND));
+	return (b[0] == '>' || b[0] == '<' ?
+		lex_match(tok, ln, 1, (uint8_t)b[0]) : NOP);
 }

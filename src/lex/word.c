@@ -68,7 +68,7 @@ static inline uint8_t	word_keyword(char const *s, size_t l)
 	return ((uint8_t)((l == 2 && M(0, 'f') && M(1, 'i')) ? SH_TOK_FI : W));
 }
 
-inline int				sh_lex_word(t_lexer *lex, t_tok *tok, char peek)
+inline int				sh_lex_word_lol(t_lexer *lex, t_tok *tok, char peek)
 {
 	t_dstr	*dstr;
 	int		st;
@@ -91,4 +91,54 @@ inline int				sh_lex_word(t_lexer *lex, t_tok *tok, char peek)
 	else
 		ft_dstr_dtor(dstr, (void *)(tok->val = NULL));
 	return (YEP);
+}
+
+inline int				sh_lex_quote(t_sh_tok *tok, char **ln)
+{
+	char	buf[LN_MAX];
+	char	quote;
+
+	quote = **ln;
+	while (*++*ln)
+	{
+		if (**ln == quote)
+			break ;
+		if (!**ln)
+	}
+}
+
+inline int				sh_lex_word(t_sh_tok *tok, char **ln)
+{
+	char	*word;
+	size_t	len;
+	int		st;
+	char	quote;
+
+	quote = '\0';
+	while (**ln)
+	{
+		if ((**ln == '\'' || **ln == '\"') && (!quote || quote == **ln))
+		{
+			quote = (char)(quote ? '\0' : **ln);
+			if (quote && (!*++*ln && !(*ln = sh_readcat(rl, "> "))))
+				return (WUT); //todo syntax error
+		}
+		else if (!quote && **ln != '\\' && ft_strchr("|&;<>()$`\\\"' \n\t", **ln))
+			break ;
+		else if (**ln == '\\')
+		{
+			if (!*(*ln + 1))
+			{
+				if (!(*ln = rl_readnext(rl, "> ")))
+					return (WUT); //todo syntax error
+			}
+			else if (quote && !ft_strchr(quote == '\"' ? "$`\"\\\n" : "'", *(*ln + 1)))
+				break ;
+			else if (!quote && !ft_strchr("|&;<>()$`\\\"' \n\t", *(*ln + 1)))
+				break ;
+			++*ln;
+		}
+	}
+	if (st < 0 || len == 0)
+		return (ft_dtor(st < 0 ? st : NOP, (t_dtor)ft_pfree, &word, NULL));
 }

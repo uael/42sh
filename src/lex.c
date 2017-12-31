@@ -12,15 +12,10 @@
 
 #include "msh.h"
 
-inline void		sh_lex(t_lexer *self)
+inline void		sh_lex(t_sh *self, char *ln)
 {
-	t_lrule *it;
-
-	it = ft_vec_pushn(&self->rules, 4);
-	*it = sh_lex_skip;
-	*(it + 1) = sh_lex_op;
-	*(it + 2) = sh_lex_word;
-	*(it + 3) = sh_lex_syn;
+	self->toks_len = 0;
+	self->toks_cur = 0;
 }
 
 inline t_tok	*sh_peek(t_sh *self)

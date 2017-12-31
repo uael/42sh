@@ -3,7 +3,8 @@ cmake_policy(SET CMP0054 OLD)
 cmake_policy(SET CMP0045 OLD)
 
 project(21sh C)
-add_subdirectory(libft)
+add_subdirectory(vendor/libft)
+add_subdirectory(vendor/librl)
 
 set(BUILD_SHARED_LIBS OFF)
 
@@ -24,7 +25,6 @@ add_executable(21sh ${21sh_HDR} ${21sh_HDRS} ${21sh_SRCS})
 set_property(TARGET 21sh PROPERTY C_STANDARD 90)
 target_include_directories(21sh PUBLIC ${21sh_INC_DIR})
 target_link_libraries(21sh PUBLIC ft ncurses)
-target_compile_definitions(ft PUBLIC FT_CLI=21sh)
 
 target_compile_definitions(21sh
     PRIVATE $<$<CONFIG:Debug>:DEBUG>$<$<CONFIG:Release>:NDEBUG>)

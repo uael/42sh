@@ -25,10 +25,22 @@ typedef enum	e_sh_m
 	SH_C
 }				t_sh_m;
 
+typedef struct	s_sh_tok
+{
+	uint8_t		id;
+	char		*val;
+	size_t		len;
+}				t_sh_tok;
+
 typedef struct	s_sh
 {
+	int			fd;
+	t_deq		toks;
+
+
 	t_sh_m		mode;
-	t_lexer		lexer;
+	size_t		toks_len;
+	size_t		toks_cur;
 	t_vstr		env;
 	t_vstr		history;
 	size_t		cursor;
@@ -38,13 +50,14 @@ typedef struct	s_sh
 	t_omstream	bi_err;
 	t_bool		bi_merge_out;
 	int			st;
+	t_lexer		lexer;
 }				t_sh;
 
-extern void		sh_init_stream(t_sh *self, t_sh_m m, char **env, t_istream *s);
-extern int		sh_init_file(t_sh *self, t_sh_m m, char **env, char const *f);
+extern int		sh_init(t_sh *self, char **env);
+extern int		sh_init_file(t_sh *self, char **env, char const *filename);
 extern void		sh_dtor(t_sh *self);
 extern void		sh_prompt(t_sh *self, char *prompt);
 extern void		sh_clean(t_sh *self);
-extern int		sh_eval(t_sh *self);
+extern int		sh_eval(t_sh *self, char *ln);
 
 #endif
