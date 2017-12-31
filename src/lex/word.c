@@ -93,7 +93,21 @@ inline int				sh_lex_word_lol(t_lexer *lex, t_tok *tok, char peek)
 	return (YEP);
 }
 
-inline int				sh_lex_word(t_rl *rl, t_sh_tok *tok, char **ln)
+inline int				sh_lex_quote(t_sh_tok *tok, char **ln)
+{
+	char	buf[LN_MAX];
+	char	quote;
+
+	quote = **ln;
+	while (*++*ln)
+	{
+		if (**ln == quote)
+			break ;
+		if (!**ln)
+	}
+}
+
+inline int				sh_lex_word(t_sh_tok *tok, char **ln)
 {
 	char	*word;
 	size_t	len;
@@ -106,7 +120,7 @@ inline int				sh_lex_word(t_rl *rl, t_sh_tok *tok, char **ln)
 		if ((**ln == '\'' || **ln == '\"') && (!quote || quote == **ln))
 		{
 			quote = (char)(quote ? '\0' : **ln);
-			if (quote && (!*++*ln && !(*ln = rl_readnext(rl, "> "))))
+			if (quote && (!*++*ln && !(*ln = sh_readcat(rl, "> "))))
 				return (WUT); //todo syntax error
 		}
 		else if (!quote && **ln != '\\' && ft_strchr("|&;<>()$`\\\"' \n\t", **ln))

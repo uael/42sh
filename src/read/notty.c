@@ -1,21 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   keys/left.c                                        :+:      :+:    :+:   */
+/*   read/notty.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/08 15:06:07 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/13 08:23:58 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "msh/keys.h"
+#include "msh/read.h"
 
-inline int	sh_keys_left(t_sh *self, t_tc *tc)
+static t_ifs	in[OPEN_MAX + 1] = { 0 };
+static ssize_t	rd[OPEN_MAX + 1] = { 0 };
+
+inline char		*sh_readnotty(int fd)
 {
-	(void)self;
-	if (tc->c)
-		return (tc_left(tc));
-	return (YEP);
+	char		*ln;
+
+	if (fd <= 0 || fd > OPEN_MAX)
+	{
+		ENO_THROW(WUT, EINVAL);
+		return (NULL);
+	}
+	if (rd[fd] > 0 && ft_ifsrd(in + fd, NULL, (size_t)rd[fd]) < 0)
+		return (NULL);
+	if ((rd[fd] = ft_ifschr(in + fd, 0, '\n', &ln)) > 0)
+		return (ln);
+	return (NULL);
 }

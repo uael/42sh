@@ -14,7 +14,6 @@
 # define MSH_SH_H
 
 # include <libft.h>
-# include <librl.h>
 
 # define N_SH COLOR_RED COLOR_BOLD "21sh: " COLOR_RESET
 
@@ -35,8 +34,11 @@ typedef struct	s_sh_tok
 
 typedef struct	s_sh
 {
+	int			fd;
+	t_deq		toks;
+
+
 	t_sh_m		mode;
-	t_sh_tok	*toks;
 	size_t		toks_len;
 	size_t		toks_cur;
 	t_vstr		env;
@@ -48,8 +50,6 @@ typedef struct	s_sh
 	t_omstream	bi_err;
 	t_bool		bi_merge_out;
 	int			st;
-	t_rl		rl;
-
 	t_lexer		lexer;
 }				t_sh;
 
