@@ -50,6 +50,7 @@ extern char		*sh_readln(int fd, char *prompt)
 		ln->buf = ft_malloc(ln->cap * sizeof(char));
 	}
 	ft_memcpy(ln->buf, ln->edit.buf, ln->len = ln->edit.len);
+	ln->buf[ln->len] = '\0';
 	return (rd_finalize(ln->buf, 0));
 }
 
@@ -85,5 +86,6 @@ extern char	*sh_readcat(int fd, char *prompt, char c)
 	c > 0 ? (uint16_t)(*(ln->buf + middle - 1) = c) : --middle;
 	ft_strncpy(ln->buf + middle, ln->edit.buf, ln->edit.len);
 	ln->len = nlen;
+	ln->buf[ln->len] = '\0';
 	return (rd_finalize(ln->buf + middle, 0));
 }

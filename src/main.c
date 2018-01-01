@@ -23,7 +23,8 @@ int	sh_av(t_deq *toks, char **av)
 		else
 			while ((ln = sh_readln(fd, "$> ")))
 			{
-				sh_tokenize(toks, ln);
+				sh_tokenize(fd, toks, ln);
+				ft_puts(STDOUT_FILENO, sh_histln()->buf);
 			}
 	return (YEP);
 }
@@ -33,15 +34,23 @@ int	main(int ac, char **av)
 	t_deq	*toks;
 	int		st;
 	char	*ln;
+	t_tok	*tok;
 
 	st = EXIT_SUCCESS;
+	tok = alloca(sizeof(t_tok));
 	ft_deqctor(toks = alloca(sizeof(t_deq)), sizeof(t_tok));
 	if (ac > 1)
 		st = sh_av(toks, av);
 	else
 		while ((ln = sh_readln(STDIN_FILENO, "$> ")))
 		{
-			st = sh_tokenize(toks, ln);
+			st = sh_tokenize(STDIN_FILENO, toks, ln);
+			while (ft_deqsht(toks, tok))
+			{
+				ft_putf(1, "tok[id='%d',val[%d]='", tok->id, tok->len);
+				ft_write(1, tok->val, tok->len);
+				ft_puts(1, "']\n");
+			}
 		}
 	return (st);
 }
