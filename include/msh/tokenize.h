@@ -69,6 +69,6 @@ typedef struct	s_tok
 	size_t		len;
 }				t_tok;
 
-extern int		sh_tokenize(int fd, t_deq *toks, char *ln);
+extern int		sh_tokenize(int fd, t_deq *toks, char *str);
 
 #endif

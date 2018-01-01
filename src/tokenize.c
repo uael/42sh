@@ -12,64 +12,64 @@
 
 #include "msh/tokenize.h"
 
-static inline int	tok_opmatch(t_tok *tok, char **ln, uint8_t len, uint8_t id)
+static inline int	tok_opmatch(t_tok *tok, char **str, uint8_t len, uint8_t id)
 {
 	tok->id = id;
-	tok->val = *ln;
-	*ln += len;
+	tok->val = *str;
+	*str += len;
 	tok->len += len;
 	return (YEP);
 }
 
-static inline int	tok_op(t_tok *tok, char **ln)
+static inline int	tok_op(t_tok *tok, char **str)
 {
-	if ((*ln)[0] == '>' && (*ln)[1] == '>' && (*ln)[2] == '-')
-		return (tok_opmatch(tok, ln, 3, TOK_HEREDOCT));
-	else if ((*ln)[0] == '>' && (*ln)[1] == '>')
-		return (tok_opmatch(tok, ln, 2, TOK_RAOUT));
-	else if ((*ln)[0] == '&' && (*ln)[1] == '>')
-		return (tok_opmatch(tok, ln, 2, TOK_AMPR));
-	else if ((*ln)[0] == '>' && (*ln)[1] == '&')
-		return (tok_opmatch(tok, ln, 2, TOK_RAMP));
-	else if ((*ln)[0] == '>' && (*ln)[1] == '|')
-		return (tok_opmatch(tok, ln, 2, TOK_RPOUT));
-	else if ((*ln)[0] == '|' && (*ln)[1] == '|')
-		return (tok_opmatch(tok, ln, 2, TOK_LOR));
-	else if ((*ln)[0] == '<' && (*ln)[1] == '>')
-		return (tok_opmatch(tok, ln, 2, TOK_CMP));
-	else if ((*ln)[0] == '<' && (*ln)[1] == '<')
-		return (tok_opmatch(tok, ln, 2, TOK_HEREDOC));
-	else if ((*ln)[0] == '<' && (*ln)[1] == '&')
-		return (tok_opmatch(tok, ln, 2, TOK_LAMP));
-	else if ((*ln)[0] == '&' && (*ln)[1] == '&')
-		return (tok_opmatch(tok, ln, 2, TOK_LAND));
-	else if ((*ln)[0] == '>' || (*ln)[0] == '<')
-		return (tok_opmatch(tok, ln, 1, (uint8_t) (*ln)[0]));
+	if ((*str)[0] == '>' && (*str)[1] == '>' && (*str)[2] == '-')
+		return (tok_opmatch(tok, str, 3, TOK_HEREDOCT));
+	else if ((*str)[0] == '>' && (*str)[1] == '>')
+		return (tok_opmatch(tok, str, 2, TOK_RAOUT));
+	else if ((*str)[0] == '&' && (*str)[1] == '>')
+		return (tok_opmatch(tok, str, 2, TOK_AMPR));
+	else if ((*str)[0] == '>' && (*str)[1] == '&')
+		return (tok_opmatch(tok, str, 2, TOK_RAMP));
+	else if ((*str)[0] == '>' && (*str)[1] == '|')
+		return (tok_opmatch(tok, str, 2, TOK_RPOUT));
+	else if ((*str)[0] == '|' && (*str)[1] == '|')
+		return (tok_opmatch(tok, str, 2, TOK_LOR));
+	else if ((*str)[0] == '<' && (*str)[1] == '>')
+		return (tok_opmatch(tok, str, 2, TOK_CMP));
+	else if ((*str)[0] == '<' && (*str)[1] == '<')
+		return (tok_opmatch(tok, str, 2, TOK_HEREDOC));
+	else if ((*str)[0] == '<' && (*str)[1] == '&')
+		return (tok_opmatch(tok, str, 2, TOK_LAMP));
+	else if ((*str)[0] == '&' && (*str)[1] == '&')
+		return (tok_opmatch(tok, str, 2, TOK_LAND));
+	else if ((*str)[0] == '>' || (*str)[0] == '<')
+		return (tok_opmatch(tok, str, 1, (uint8_t) (*str)[0]));
 	return (NOP);
 }
 
-static inline int	tok_quote(int fd, char **ln, char *word, uint16_t i)
+static inline int	tok_quote(int fd, char **str, char *word, uint16_t i)
 {
 	char quote;
 
-	quote = *(*ln)++;
+	quote = *(*str)++;
 	while (1)
-		if (!**ln && !(*ln = sh_readcat(fd, "> ", '\n')))
+		if (!**str && (fd < 0 || !(*str = sh_readcat(fd, "> ", '\n'))))
 			return (WUT);
-		else if (quote == '"' && *(*ln - 1) == '\\')
-			word[i++] = ft_strchr("\\\n\"$", **ln) ? *(*ln)++ : (char)'\\';
-		else if (quote == '\'' && *(*ln - 1) == '\\')
-			word[i++] = **ln == '\'' ? *(*ln)++ : (char)'\\';
-		else if (**ln == quote && ++*ln)
+		else if (quote == '"' && *(*str - 1) == '\\')
+			word[i++] = ft_strchr("\\\n\"$", **str) ? *(*str)++ : (char)'\\';
+		else if (quote == '\'' && *(*str - 1) == '\\')
+			word[i++] = **str == '\'' ? *(*str)++ : (char)'\\';
+		else if (**str == quote && ++*str)
 			break ;
-		else if (**ln == '\\')
-			++*ln;
+		else if (**str == '\\')
+			++*str;
 		else
-			word[i++] = *(*ln)++;
+			word[i++] = *(*str)++;
 	return (i);
 }
 
-static inline int	tok_word(int fd, t_tok *tok, char **ln)
+static inline int	tok_word(int fd, t_tok *tok, char **str)
 {
 	char		word[LN_MAX];
 	uint16_t	i;
@@ -78,18 +78,18 @@ static inline int	tok_word(int fd, t_tok *tok, char **ln)
 	i = 0;
 	if (tok->len)
 		word[i++] = *tok->val;
-	while (**ln && **ln != ' ' && **ln != '\n')
-		if (**ln == '\'' || **ln == '"')
+	while (**str && **str != ' ' && **str != '\n')
+		if (**str == '\'' || **str == '"')
 		{
-			if ((st = tok_quote(fd, ln, word, i)) < 0)
+			if ((st = tok_quote(fd, str, word, i)) < 0)
 				return (WUT);
 			i = (uint16_t)st;
 		}
-		else if (**ln == '\\' && *++*ln == '\n' && !*++*ln &&
-			!(*ln = sh_readcat(fd, "> ", -1)))
+		else if (**str == '\\' && *++*str == '\n' && !*++*str &&
+			(fd < 0 || !(*str = sh_readcat(fd, "> ", -1))))
 			return (WUT);
 		else
-			word[i++] = *(*ln)++;
+			word[i++] = *(*str)++;
 	if (!(tok->len = i))
 		return (NOP);
 	tok->id = TOK_WORD;
@@ -98,25 +98,32 @@ static inline int	tok_word(int fd, t_tok *tok, char **ln)
 	return (YEP);
 }
 
-int					sh_tokenize(int fd, t_deq *toks, char *ln)
+int					sh_tokenize(int fd, t_deq *toks, char *str)
 {
 	t_tok		*tok;
-	
+	t_tok		*prev;
+
+	prev = NULL;
 	ft_deqclean(toks, NULL);
-	while (*ln)
+	while (*str)
 	{
 		tok = ft_deqpush(toks);
-		while (*ln == ' ' || *ln == '\t')
-			++ln;
-		if ((tok->len = (size_t)ft_isdigit(*ln)))
-			++ln;
-		if (tok_op(tok, &ln) && tok_word(fd, tok, &ln))
+		while (*str == ' ' || *str == '\t')
+			++str;
+		if ((tok->len = (size_t)ft_isdigit(*str)))
+			++str;
+		if (tok_op(tok, &str) && tok_word(fd, tok, &str))
 		{
-			if (ft_strchr("=!()-;[]{|}\n", *ln))
-				tok_opmatch(tok, &ln, 1, (uint8_t)*ln);
+			if (ft_strchr("=!()-;[]{|}\n", *str))
+				tok_opmatch(tok, &str, 1, (uint8_t)*str);
 			else
 				return (ENO_THROW(WUT, EINVAL));
 		}
+		else if (prev && prev->id == TOK_HEREDOC && tok->id == TOK_WORD)
+		{
+
+		}
+		prev = tok;
 	}
 	return (YEP);
 }
