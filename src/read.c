@@ -75,16 +75,17 @@ extern char	*sh_readcat(int fd, char *prompt, char c)
 	g_cols = (uint16_t)st;
 	if (sh_editln(ln, prompt, plen) || !ln->edit.len)
 		return (rd_finalize(NULL, 0));
-	middle = (uint16_t)(ln->len + (c < 0 ? c : 1));
-	if (ln->cap < (nlen = (uint16_t)(ln->edit.len + middle + 1)))
+	middle = (uint16_t)(ln->len + (c <= 0 ? c : 1));
+	if (ln->cap < (nlen = (uint16_t)(ln->edit.len + middle)))
 	{
-		free(ln->buf);
-		ln->cap = pow2_next16(nlen);
+		ln->cap = pow2_next16((uint16_t)(nlen + 1));
 		buf = ft_malloc(ln->cap * sizeof(char));
-		ln->buf = ft_memcpy(buf, ln->buf, (size_t)middle);
+		buf = ft_memcpy(buf, ln->buf, (size_t)middle);
+		free(ln->buf);
+		ln->buf = buf;
 	}
-	c > 0 ? (uint16_t)(*(ln->buf + middle - 1) = c) : --middle;
-	ft_strncpy(ln->buf + middle, ln->edit.buf, ln->edit.len);
+	c > 0 ? (uint16_t)(*(ln->buf + middle - 1) = c) : (c < 0 ? --middle : 0);
+	ft_memcpy(ln->buf + middle, ln->edit.buf, ln->edit.len);
 	ln->len = nlen;
 	ln->buf[ln->len] = '\0';
 	return (rd_finalize(ln->buf + middle, 0));

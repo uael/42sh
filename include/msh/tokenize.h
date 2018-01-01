@@ -64,9 +64,10 @@ enum			e_tok
 
 typedef struct	s_tok
 {
-	uint8_t		id;
 	char		*val;
+	size_t		cap;
 	size_t		len;
+	uint8_t		id;
 }				t_tok;
 
 extern int		sh_tokenize(int fd, t_deq *toks, char *str);
