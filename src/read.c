@@ -24,19 +24,17 @@ static char		*rd_finalize(char *result, int eno)
 	return (result);
 }
 
-extern char		*sh_readln(int fd, char *prompt)
+char			*sh_readln(int fd, char *prompt)
 {
 	t_histln	*ln;
-	int			st;
 	size_t		plen;
 
 	if (fd != 0 || !isatty(fd) || sh_rawmode(fd))
 		return (sh_readnotty(fd));
 	ln = sh_histpush("");
 	ft_write(STDIN_FILENO, prompt, plen = ft_strlen(prompt));
-	if ((st = sh_screenwidth(fd, STDOUT_FILENO)) <= 0)
+	if (sh_screenget(g_screen, fd, STDOUT_FILENO) < 0)
 		return (rd_finalize(NULL, 0));
-	g_cols = (uint16_t)st;
 	if (sh_editln(&ln->edit, prompt, plen) || !ln->edit.len)
 		return (rd_finalize(NULL, 0));
 	if (!ln->cap || ln->cap < ln->edit.len)
@@ -51,10 +49,15 @@ extern char		*sh_readln(int fd, char *prompt)
 	return (rd_finalize(ln->buf, 0));
 }
 
-extern char	*sh_readcat(int fd, char *prompt, char c)
+void			rd_sigwinch(int signo)
+{
+	(void)signo;
+	sh_screenget(g_screen, STDIN_FILENO, STDOUT_FILENO);
+}
+
+char			*sh_readcat(int fd, char *prompt, char c)
 {
 	t_histln	*ln;
-	int			st;
 	size_t		plen;
 	uint16_t	nlen;
 	uint16_t	middle;
@@ -65,11 +68,13 @@ extern char	*sh_readcat(int fd, char *prompt, char c)
 	ln = sh_histln();
 	ln->edit.len = 0;
 	ln->edit.idx = 0;
+	ln->edit.row = 0;
+	ln->edit.rows = 0;
 	*ln->edit.buf = '\0';
 	ft_write(STDIN_FILENO, prompt, plen = ft_strlen(prompt));
-	if ((st = sh_screenwidth(fd, STDOUT_FILENO)) <= 0)
+	signal(SIGWINCH, rd_sigwinch);
+	if (sh_screenget(g_screen, STDIN_FILENO, STDOUT_FILENO) < 0)
 		return (rd_finalize(NULL, 0));
-	g_cols = (uint16_t)st;
 	if (sh_editln(&ln->edit, prompt, plen) || !ln->edit.len)
 		return (rd_finalize(NULL, 0));
 	middle = (uint16_t)(ln->len + (c <= 0 ? c : 1));

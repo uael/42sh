@@ -12,10 +12,10 @@
 
 #include "msh/screen.h"
 
-uint16_t	g_cols;
-uint16_t	g_pos;
+static t_screen	g_stack_screen;
+t_screen		*g_screen = &g_stack_screen;
 
-int			sh_screenpos(int ifd, int ofd)
+int				sh_screenpos(int ifd, int ofd)
 {
 	char	buf[32];
 	uint	i;
@@ -32,7 +32,7 @@ int			sh_screenpos(int ifd, int ofd)
 	return ((int)ft_atoi(ft_strchr(buf, ';') + 1));
 }
 
-int			sh_screenwidth(int ifd, int ofd)
+int				sh_screenwidth(int ifd, int ofd)
 {
 	struct winsize	ws;
 	int				start;
@@ -58,4 +58,15 @@ int			sh_screenwidth(int ifd, int ofd)
 		}
 		return (cols);
 	}
+}
+
+int				sh_screenget(t_screen *self, int ifd, int ofd)
+{
+	int	width;
+
+	if ((width = sh_screenwidth(ifd, ofd)) <= 0)
+		return (WUT);
+	self->width = (uint16_t)width;
+	self->cursor = 0;
+	return (YEP);
 }

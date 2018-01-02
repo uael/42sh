@@ -1,31 +1,49 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   msh/screen.h                                       :+:      :+:    :+:   */
+/*   edit/move.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/06 12:00:10 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/13 08:23:58 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MSH_SCREEN_H
-# define MSH_SCREEN_H
+#include "msh/edit.h"
 
-# include <libft.h>
-# include <sys/ioctl.h>
-
-typedef struct	s_screen
+inline void	sh_editleft(t_editln *ln, char const *prompt)
 {
-	uint16_t	width;
-	uint16_t	cursor;
-}				t_screen;
+	if (ln->idx)
+	{
+		--ln->idx;
+		sh_editprint(ln, prompt);
+	}
+}
 
-extern t_screen	*g_screen;
+inline void	sh_editright(t_editln *ln, char const *prompt)
+{
+	if (ln->idx != ln->len)
+	{
+		++ln->idx;
+		sh_editprint(ln, prompt);
+	}
+}
 
-extern int		sh_screenpos(int ifd, int ofd);
-extern int		sh_screenwidth(int ifd, int ofd);
-extern int		sh_screenget(t_screen *self, int ifd, int ofd);
+inline void	sh_edithome(t_editln *ln, char const *prompt)
+{
+	if (ln->idx)
+	{
+		ln->idx = 0;
+		sh_editprint(ln, prompt);
+	}
+}
 
-#endif
+inline void	sh_editend(t_editln *ln, char const *prompt)
+{
+	if (ln->idx != ln->len)
+	{
+		ln->idx = ln->len;
+		sh_editprint(ln, prompt);
+	}
+}

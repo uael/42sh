@@ -41,6 +41,8 @@ t_histln		*sh_histpush(char const *buf)
 		ft_memmove(g_hist, g_hist + 1, (HIST_MAX - 1) * sizeof(t_histln));
 		g_hist[HIST_MAX - 1] = tmp;
 		ln->edit.idx = 0;
+		ln->edit.row = 0;
+		ln->edit.rows = 0;
 		ln->len = 0;
 		*ln->buf = '\0';
 	}

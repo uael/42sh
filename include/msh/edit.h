@@ -28,8 +28,24 @@ typedef struct	s_editln
 	char		buf[LN_MAX];
 	uint16_t	idx;
 	uint16_t	len;
+	uint16_t	row;
+	uint16_t	rows;
 }				t_editln;
 
-extern int		sh_editln(t_editln *ln, char *prompt, size_t plen);
+typedef void	(t_editcb)(t_editln *ln, char const *prompt);
+
+typedef struct	s_editbind
+{
+	int			rd;
+	char const	*key;
+	t_editcb	*cb;
+}				t_editbind;
+
+extern int		sh_editln(t_editln *ln, char const *prompt, size_t plen);
+extern void		sh_editprint(t_editln *ln, char const *prompt);
+extern void		sh_editleft(t_editln *ln, char const *prompt);
+extern void		sh_editright(t_editln *ln, char const *prompt);
+extern void		sh_edithome(t_editln *ln, char const *prompt);
+extern void		sh_editend(t_editln *ln, char const *prompt);
 
 #endif
