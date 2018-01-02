@@ -11,13 +11,10 @@
 /* ************************************************************************** */
 
 #include "msh/read.h"
-#include "msh/edit.h"
 
 t_rmode			g_mode;
 TTY				g_orig_mode;
 TTY				g_raw_mode;
-uint16_t		g_cols;
-uint16_t		g_pos;
 
 static char		*rd_finalize(char *result, int eno)
 {
@@ -40,7 +37,7 @@ extern char		*sh_readln(int fd, char *prompt)
 	if ((st = sh_screenwidth(fd, STDOUT_FILENO)) <= 0)
 		return (rd_finalize(NULL, 0));
 	g_cols = (uint16_t)st;
-	if (sh_editln(ln, prompt, plen) || !ln->edit.len)
+	if (sh_editln(&ln->edit, prompt, plen) || !ln->edit.len)
 		return (rd_finalize(NULL, 0));
 	if (!ln->cap || ln->cap < ln->edit.len)
 	{
@@ -73,7 +70,7 @@ extern char	*sh_readcat(int fd, char *prompt, char c)
 	if ((st = sh_screenwidth(fd, STDOUT_FILENO)) <= 0)
 		return (rd_finalize(NULL, 0));
 	g_cols = (uint16_t)st;
-	if (sh_editln(ln, prompt, plen) || !ln->edit.len)
+	if (sh_editln(&ln->edit, prompt, plen) || !ln->edit.len)
 		return (rd_finalize(NULL, 0));
 	middle = (uint16_t)(ln->len + (c <= 0 ? c : 1));
 	if (ln->cap < (nlen = (uint16_t)(ln->edit.len + middle)))

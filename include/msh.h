@@ -51,6 +51,7 @@
 # include "msh/edit.h"
 # include "msh/hist.h"
 # include "msh/read.h"
+# include "msh/screen.h"
 # include "msh/tokenize.h"
 
 #endif

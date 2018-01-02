@@ -12,16 +12,16 @@
 
 #include "msh/hist.h"
 
-t_histln	g_hist[HIST_MAX] = { 0 };
-uint8_t		g_hist_len = 0;
-uint8_t		g_hist_idx = 0;
+static t_histln	g_hist[HIST_MAX] = { 0 };
+static uint8_t	g_hist_len = 0;
+static uint8_t	g_hist_idx = 0;
 
-t_histln	*sh_histln(void)
+t_histln		*sh_histln(void)
 {
 	return (g_hist + g_hist_idx);
 }
 
-t_histln	*sh_histpush(char const *buf)
+t_histln		*sh_histpush(char const *buf)
 {
 	t_histln *ln;
 	t_histln tmp;

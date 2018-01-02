@@ -13,8 +13,23 @@
 #ifndef MSH_EDIT_H
 # define MSH_EDIT_H
 
-# include "read.h"
+# include <termios.h>
 
-extern int	sh_editln(t_histln *ln, char *prompt, size_t plen);
+# include "screen.h"
+
+# ifndef TTY
+#  define TTY struct termios
+# endif
+
+# define LN_MAX (2048)
+
+typedef struct	s_editln
+{
+	char		buf[LN_MAX];
+	uint16_t	idx;
+	uint16_t	len;
+}				t_editln;
+
+extern int		sh_editln(t_editln *ln, char *prompt, size_t plen);
 
 #endif
