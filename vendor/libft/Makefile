@@ -16,7 +16,6 @@ CFLAGS = -Werror -Wextra -Wall -g3 -DDEBUG
 
 SRC_PATH = ./src/
 OBJ_PATH = ./obj/
-SOB_PATH = cty/ ds/ fs /int/ io/ lex/ lib/ math/ mem/ str/ trm/
 3TH_PATH =
 INC_PATH = ./include/ $(addprefix $(3TH_PATH), include/)
 LNK_PATH = ./ $(3TH_PATH)
@@ -45,7 +44,6 @@ SRC_NAME = \
 	str/str_5.c
 
 SRC = $(addprefix $(SRC_PATH), $(SRC_NAME))
-SOB = $(addprefix $(OBJ_PATH), $(SOB_PATH))
 OBJ = $(addprefix $(OBJ_PATH), $(OBJ_NAME))
 INC = $(addprefix -I, $(INC_PATH))
 LNK = $(addprefix -L, $(LNK_PATH))
