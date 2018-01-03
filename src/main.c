@@ -10,6 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdio.h>
+#include <signal.h>
+
 #include "msh.h"
 
 int	sh_av(t_deq *toks, char **av)
@@ -29,6 +32,8 @@ int	sh_av(t_deq *toks, char **av)
 	return (YEP);
 }
 
+pid_t shell_pgid;
+
 int	main(int ac, char **av)
 {
 	t_deq	*toks;
@@ -42,8 +47,33 @@ int	main(int ac, char **av)
 	if (ac > 1)
 		st = sh_av(toks, av);
 	else
+	{
+		if (isatty(STDIN_FILENO))
+		{
+			/* Loop until we are in the foreground.  */
+			while (tcgetpgrp(STDIN_FILENO) != (shell_pgid = getpgrp()))
+				kill(-shell_pgid, SIGTTIN);
+			/* Ignore interactive and job-control signals.  */
+			signal(SIGINT, SIG_IGN);
+			signal(SIGQUIT, SIG_IGN);
+			signal(SIGTSTP, SIG_IGN);
+			signal(SIGTTIN, SIG_IGN);
+			signal(SIGTTOU, SIG_IGN);
+			signal(SIGCHLD, SIG_IGN);
+			/* Put ourselves in our own process group.  */
+			shell_pgid = getpid();
+			if (setpgid(shell_pgid, shell_pgid) < 0)
+			{
+				perror("Couldn't put the shell in its own process group");
+				exit(1);
+			}
+			/* Grab control of the terminal.  */
+			tcsetpgrp(STDIN_FILENO, shell_pgid);
+		}
 		while ((ln = sh_readln(STDIN_FILENO, "$> ")))
 		{
+			if (!ft_strcmp("exit\n", ln))
+				break ;
 			st = sh_tokenize(STDIN_FILENO, toks, ln);
 			while (ft_deqsht(toks, tok))
 			{
@@ -52,5 +82,6 @@ int	main(int ac, char **av)
 				ft_puts(1, "']\n");
 			}
 		}
+	}
 	return (st);
 }

@@ -109,6 +109,8 @@ extern int		sh_editln(t_editln *ln, char const *prompt, size_t plen)
 				sh_editprint(ln, prompt);
 			}
 		}
+		else
+			ft_write(STDOUT_FILENO, key, (size_t)rd);
 	}
 	return (YEP);
 }

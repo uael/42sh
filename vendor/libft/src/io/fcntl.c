@@ -12,7 +12,7 @@
 
 #include "libft/io.h"
 
-extern ssize_t	ft_read(int fd, void *buf, size_t sz)
+inline ssize_t	ft_read(int fd, void *buf, size_t sz)
 {
 	ssize_t		rd;
 
@@ -22,7 +22,7 @@ extern ssize_t	ft_read(int fd, void *buf, size_t sz)
 	return (rd);
 }
 
-extern ssize_t	ft_write(int fd, void const *buf, size_t sz)
+inline ssize_t	ft_write(int fd, void const *buf, size_t sz)
 {
 	ssize_t		wr;
 

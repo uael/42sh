@@ -12,13 +12,13 @@
 
 #include "libft/io.h"
 
-void		ft_ofsctor(t_ofs *self, int ofd)
+void			ft_ofsctor(t_ofs *self, int ofd)
 {
 	self->ofd = ofd;
 	self->i = 0;
 }
 
-int			ft_ofsopen(t_ofs *self, char const *filename)
+int				ft_ofsopen(t_ofs *self, char const *filename)
 {
 	int	fd;
 
@@ -28,14 +28,14 @@ int			ft_ofsopen(t_ofs *self, char const *filename)
 	return (YEP);
 }
 
-int			ft_ofsclose(t_ofs *self)
+int				ft_ofsclose(t_ofs *self)
 {
 	if (close(self->ofd))
 		return (WUT);
 	return (YEP);
 }
 
-ssize_t		ft_ofsflush(t_ofs *self)
+inline ssize_t	ft_ofsflush(t_ofs *self)
 {
 	ssize_t	sz;
 
@@ -46,7 +46,7 @@ ssize_t		ft_ofsflush(t_ofs *self)
 	return (sz);
 }
 
-ssize_t		ft_ofswrc(t_ofs *self, unsigned char c)
+inline ssize_t	ft_ofswrc(t_ofs *self, unsigned char c)
 {
 	self->buf[self->i++] = c;
 	if (self->i == FT_PAGE_SIZE && ft_ofsflush(self) < 0)
@@ -54,7 +54,7 @@ ssize_t		ft_ofswrc(t_ofs *self, unsigned char c)
 	return (YEP);
 }
 
-ssize_t		ft_ofswr(t_ofs *self, void const *buf, size_t n)
+inline ssize_t	ft_ofswr(t_ofs *self, void const *buf, size_t n)
 {
 	uint8_t const	*cbuf;
 	ssize_t			sz;
@@ -71,33 +71,33 @@ ssize_t		ft_ofswr(t_ofs *self, void const *buf, size_t n)
 	return (sz);
 }
 
-ssize_t		ft_ofswrs(t_ofs *self, char const *buf)
+ssize_t			ft_ofswrs(t_ofs *self, char const *buf)
 {
 	return (ft_ofswr(self, buf, ft_strlen(buf)));
 }
 
-ssize_t		ft_ofswrl(t_ofs *self, long i, uint8_t base)
+ssize_t			ft_ofswrl(t_ofs *self, long i, uint8_t base)
 {
 	char	buf[21];
 
 	return (ft_ofswr(self, buf, ft_intstr(buf, i, base)));
 }
 
-ssize_t		ft_ofswrul(t_ofs *self, ulong i, uint8_t base)
+ssize_t			ft_ofswrul(t_ofs *self, ulong i, uint8_t base)
 {
 	char	buf[21];
 
 	return (ft_ofswr(self, buf, ft_uintstr(buf, i, base)));
 }
 
-ssize_t		ft_ofswrd(t_ofs *self, double i, int precision, uint8_t base)
+ssize_t			ft_ofswrd(t_ofs *self, double i, int precision, uint8_t base)
 {
 	char	buf[21];
 
 	return (ft_ofswr(self, buf, ft_floatstr(buf, i, precision, base)));
 }
 
-ssize_t		ft_ofsvwrf(t_ofs *self, char const *f, va_list ap)
+ssize_t			ft_ofsvwrf(t_ofs *self, char const *f, va_list ap)
 {
 	char	*sp;
 	ssize_t	sz;
@@ -119,7 +119,7 @@ ssize_t		ft_ofsvwrf(t_ofs *self, char const *f, va_list ap)
 	return (sz + ft_ofswrs(self, f));
 }
 
-ssize_t		ft_ofswrf(t_ofs *self, char const *fmt, ...)
+ssize_t			ft_ofswrf(t_ofs *self, char const *fmt, ...)
 {
 	va_list	ap;
 	ssize_t	sz;

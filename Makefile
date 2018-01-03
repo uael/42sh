@@ -12,7 +12,7 @@
 
 NAME = 21sh
 CC = gcc
-CFLAGS = -Werror -Wextra -Wall -g3 -DDEBUG
+CFLAGS = -Werror -Wextra -Wall -O2
 
 SRC_PATH = ./src/
 OBJ_PATH = ./obj/
@@ -40,12 +40,12 @@ LIB =
 
 all: $(EXE) $(LIB)
 
-$(LIB): lib $(OBJ)
+$(LIB): 3th $(OBJ)
 	@ar -rc $(NAME) $(OBJ)
 	@ranlib $(NAME)
 	@printf  "%-25s\033[32m[✔]\033[0m\n" "$(NAME): lib"
 
-$(EXE): lib $(OBJ)
+$(EXE): 3th $(OBJ)
 	@$(CC) $(CFLAGS) $(LNK) $(INC) $(OBJ) -o $(NAME) $(3TH)
 	@printf  "%-25s\033[32m[✔]\033[0m\n" "$(NAME): exe"
 
@@ -56,9 +56,6 @@ $(OBJ_PATH)%.o: $(SRC_PATH)%.c
 	@printf "\033[A\033[2K"
 
 clean:
-ifneq ($(3TH_PATH),)
-	@$(foreach lib,$(3TH_PATH),$(MAKE) -C $(lib) clean;)
-endif
 	@rm -rf $(OBJ_PATH)
 	@printf  "%-25s\033[32m[✔]\033[0m\n" "$(NAME): $@"
 
@@ -69,14 +66,11 @@ endif
 	@rm -f $(NAME)
 	@printf  "%-25s\033[32m[✔]\033[0m\n" "$(NAME): $@"
 
-lib:
+3th:
 ifneq ($(3TH_PATH),)
 	@$(foreach lib,$(3TH_PATH),$(MAKE) -C $(lib) -j4;)
 endif
 
-norm:
-	@./norm.sh $(shell find $(SRC_PATH) $(INC_PATH) -name '*.h' -o -name '*.c')
-
 re: fclean all
 
-.PHONY: all, $(NAME), clean, fclean, re
+.PHONY: all, 3th, $(NAME), clean, fclean, re

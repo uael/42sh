@@ -12,7 +12,7 @@
 
 NAME = libft.a
 CC = gcc
-CFLAGS = -Werror -Wextra -Wall -g3 -DDEBUG
+CFLAGS = -Werror -Wextra -Wall -O2
 
 SRC_PATH = ./src/
 OBJ_PATH = ./obj/
@@ -21,7 +21,7 @@ INC_PATH = ./include/ $(addprefix $(3TH_PATH), include/)
 LNK_PATH = ./ $(3TH_PATH)
 
 OBJ_NAME = $(SRC_NAME:.c=.o)
-3TH_NAME = m ncurses
+3TH_NAME = m
 SRC_NAME = \
 	cty/cty.c cty/cty_2.c cty/cty_3.c \
 	ds/alloc.c ds/apd.c ds/at.c ds/aver.c ds/back.c ds/begin.c ds/clean.c \
@@ -69,27 +69,21 @@ $(OBJ_PATH)%.o: $(SRC_PATH)%.c
 	@printf "\033[A\033[2K"
 
 clean:
-ifneq ($(3TH_PATH),)
-	@$(MAKE) -C $(3TH_PATH) clean
-endif
 	@rm -rf $(OBJ_PATH)
 	@printf  "%-25s\033[32m[✔]\033[0m\n" "$(NAME): $@"
 
 fclean: clean
 ifneq ($(3TH_PATH),)
-	@$(MAKE) -C $(3TH_PATH) fclean
+	@$(foreach lib,$(3TH_PATH),$(MAKE) -C $(lib) fclean;)
 endif
 	@rm -f $(NAME)
 	@printf  "%-25s\033[32m[✔]\033[0m\n" "$(NAME): $@"
 
 3th:
 ifneq ($(3TH_PATH),)
-	@$(MAKE) -C $(3TH_PATH) -j4
+	@$(foreach lib,$(3TH_PATH),$(MAKE) -C $(lib) -j4;)
 endif
-
-norm:
-	@./norm.sh $(shell find $(SRC_PATH) $(INC_PATH) -name '*.h' -o -name '*.c')
 
 re: fclean all
 
-.PHONY: all, $(NAME), clean, fclean, re
+.PHONY: all, 3th, $(NAME), clean, fclean, re

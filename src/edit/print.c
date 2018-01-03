@@ -12,12 +12,6 @@
 
 #include "msh/edit.h"
 
-#define TC_GOTOUP(N) "\x1b[%dA", (N)
-#define TC_GOTODO(N) "\x1b[%dB", (N)
-#define TC_GOTOCO(N) "\r\x1b[%dC", (N)
-#define TC_UP "\x1b[1A"
-#define TC_CL "\r\x1b[0K"
-
 static uint16_t	g_idx_col;
 static uint16_t	g_idx_up;
 static t_ofs	g_edit_out;
@@ -33,19 +27,19 @@ static void		rl_print(t_ofs *out, char const *str, uint16_t i, uint16_t *row)
 	{
 		if (g_screen->cursor + 1 == g_screen->width || *str == '\n')
 		{
-			if (c < i)
+			if (c > i)
 				++g_idx_up;
 			ft_ofswrc(out, '\n');
 			++*row;
 			g_screen->cursor = 0;
 			if (*str == '\n')
 			{
-				++str;
+				(void)(++c && ++str);
 				continue ;
 			}
 		}
 		++g_screen->cursor;
-		ft_ofswrc(out, (unsigned char) *str++);
+		ft_ofswrc(out, (unsigned char)*str++);
 		if (++c == i)
 			g_idx_col = g_screen->cursor;
 	}
@@ -60,8 +54,9 @@ void			sh_editprint(t_editln *ln, char const *prompt)
 	if (ln->row < ln->rows)
 		ft_ofswrf(out, TC_GOTODO(ln->rows - ln->row));
 	i = 0;
-	while (++i <= ln->rows)
+	while (++i < ln->rows)
 		ft_ofswrs(out, TC_CL TC_UP);
+	ft_ofswrs(out, TC_CL);
 	ln->rows = 1;
 	g_screen->cursor = 0;
 	rl_print(out, prompt, 0, &ln->rows);
@@ -71,6 +66,9 @@ void			sh_editprint(t_editln *ln, char const *prompt)
 		ft_ofswrf(out, TC_GOTOUP(g_idx_up));
 	ln->row = ln->rows - g_idx_up;
 	if (g_screen->cursor != g_idx_col)
+	{
 		ft_ofswrf(out, TC_GOTOCO(g_idx_col));
+		g_screen->cursor = g_idx_col;
+	}
 	ft_ofsflush(out);
 }

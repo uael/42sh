@@ -22,6 +22,12 @@
 # endif
 
 # define LN_MAX (2048)
+# define TC_GOTOUP(N) "\x1b[%dA", (N)
+# define TC_GOTODO(N) "\x1b[%dB", (N)
+# define TC_GOTOCO(N) "\r\x1b[%dC", (N)
+# define TC_UP "\x1b[1A"
+# define TC_DO "\x1b[1B"
+# define TC_CL "\r\x1b[0K"
 
 typedef struct	s_editln
 {
