@@ -81,13 +81,13 @@ extern int		sh_editln(t_editln *ln, char const *prompt, size_t plen)
 	(void)plen;
 	while ((rd = ft_read(STDIN_FILENO, key, 6)) > 0)
 	{
-		if (rd == 3 && !ft_memcpy(key, K_LEFT, 3))
+		if (rd == 3 && !ft_memcmp(key, K_LEFT, 3))
 			sh_editleft(ln, prompt);
-		else if (rd == 3 && !ft_memcpy(key, K_RGT, 3))
+		else if (rd == 3 && !ft_memcmp(key, K_RGT, 3))
 			sh_editright(ln, prompt);
-		else if (rd == 3 && !ft_memcpy(key, K_HOME, 3))
+		else if (rd == 3 && !ft_memcmp(key, K_HOME, 3))
 			sh_edithome(ln, prompt);
-		else if (rd == 3 && !ft_memcpy(key, K_END, 3))
+		else if (rd == 3 && !ft_memcmp(key, K_END, 3))
 			sh_editend(ln, prompt);
 		else if (rd == 1)
 		{
