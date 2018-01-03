@@ -10,6 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <signal.h>
+#include <sys/signal.h>
+
 #include "msh/read.h"
 
 t_rmode			g_mode;
@@ -24,6 +27,12 @@ static char		*rd_finalize(char *result, int eno)
 	return (result);
 }
 
+void			rd_sigwinch(int signo)
+{
+	(void)signo;
+	sh_screenget(g_screen, STDIN_FILENO, STDOUT_FILENO);
+}
+
 char			*sh_readln(int fd, char *prompt)
 {
 	t_histln	*ln;
@@ -33,6 +42,7 @@ char			*sh_readln(int fd, char *prompt)
 		return (sh_readnotty(fd));
 	ln = sh_histpush("");
 	ft_write(STDIN_FILENO, prompt, plen = ft_strlen(prompt));
+	signal(SIGWINCH, rd_sigwinch);
 	if (sh_screenget(g_screen, fd, STDOUT_FILENO) < 0)
 		return (rd_finalize(NULL, 0));
 	if (sh_editln(&ln->edit, prompt, plen) || !ln->edit.len)
@@ -47,12 +57,6 @@ char			*sh_readln(int fd, char *prompt)
 	ft_memcpy(ln->buf, ln->edit.buf, ln->len = ln->edit.len);
 	ln->buf[ln->len] = '\0';
 	return (rd_finalize(ln->buf, 0));
-}
-
-void			rd_sigwinch(int signo)
-{
-	(void)signo;
-	sh_screenget(g_screen, STDIN_FILENO, STDOUT_FILENO);
 }
 
 char			*sh_readcat(int fd, char *prompt, char c)
@@ -72,7 +76,6 @@ char			*sh_readcat(int fd, char *prompt, char c)
 	ln->edit.rows = 0;
 	*ln->edit.buf = '\0';
 	ft_write(STDIN_FILENO, prompt, plen = ft_strlen(prompt));
-	signal(SIGWINCH, rd_sigwinch);
 	if (sh_screenget(g_screen, STDIN_FILENO, STDOUT_FILENO) < 0)
 		return (rd_finalize(NULL, 0));
 	if (sh_editln(&ln->edit, prompt, plen) || !ln->edit.len)

@@ -10,7 +10,13 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <sys/resource.h>
+
 #include "msh/read.h"
+
+#ifndef OPEN_MAX
+# define OPEN_MAX RLIMIT_NOFILE
+#endif
 
 static t_ifs	in[OPEN_MAX + 1] = { 0 };
 static ssize_t	rd[OPEN_MAX + 1] = { 0 };
