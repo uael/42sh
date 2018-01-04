@@ -28,6 +28,7 @@ SRC_NAME = \
 	main.c \
 	read.c read/notty.c read/tty.c \
 	screen.c \
+	shell.c \
 	tokenize.c
 
 SRC = $(addprefix $(SRC_PATH), $(SRC_NAME))

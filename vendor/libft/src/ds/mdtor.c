@@ -21,7 +21,8 @@ inline void	ft_deqmdtor(t_deq *self, t_dtor idtor)
 		if (idtor)
 		{
 			item = self->buf - self->isz;
-			while ((item += self->isz) <= self->buf + self->cap)
+			while ((item += self->isz) <= (char *)self->buf +
+				(self->cap * self->isz))
 				idtor(item);
 		}
 		free(self->buf);
@@ -38,7 +39,8 @@ inline void	ft_vecmdtor(t_vec *self, t_dtor idtor)
 		if (idtor)
 		{
 			item = self->buf - self->isz;
-			while ((item += self->isz) <= self->buf + self->cap)
+			while ((item += self->isz) <= (char *)self->buf +
+				(self->cap * self->isz))
 				idtor(item);
 		}
 		free(self->buf);

@@ -10,6 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <sys/signal.h>
+
 #include "msh/shell.h"
 
 static t_deq	g_stack_toks = { NULL, sizeof(t_tok), 0, 0, 0 };
