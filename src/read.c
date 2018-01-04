@@ -33,6 +33,13 @@ void			rd_sigwinch(int signo)
 	sh_screenget(g_screen, STDIN_FILENO, STDOUT_FILENO);
 }
 
+void			sh_readfinalize(int fd)
+{
+	if (isatty(fd))
+		return (sh_ttyfinalize(fd));
+	sh_nottyfinalize(fd);
+}
+
 char			*sh_readln(int fd, char *prompt)
 {
 	t_histln	*ln;

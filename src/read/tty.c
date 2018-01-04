@@ -12,7 +12,8 @@
 
 #include "msh/read.h"
 
-static void	rd_redirect(void) {
+static void		rd_redirect(void)
+{
 	TTY	t;
 	int	fd;
 
@@ -26,7 +27,12 @@ static void	rd_redirect(void) {
 	close(fd);
 }
 
-inline int	sh_rawmode(int fd)
+inline void		sh_ttyfinalize(int fd)
+{
+	sh_offmode(fd);
+}
+
+inline int		sh_rawmode(int fd)
 {
 	int st;
 
@@ -55,7 +61,7 @@ inline int	sh_rawmode(int fd)
 	return (YEP);
 }
 
-inline int	sh_offmode(int fd)
+inline int		sh_offmode(int fd)
 {
 	int st;
 

@@ -25,6 +25,7 @@ typedef struct	s_ifs
 }				t_ifs;
 
 extern void		ft_ifsctor(t_ifs *self, int ifd);
+extern void		ft_ifsdtor(t_ifs *self);
 extern int		ft_ifsopen(t_ifs *self, char const *filename);
 extern int		ft_ifsclose(t_ifs *self);
 extern char		ft_ifspeek(t_ifs *self, size_t i);

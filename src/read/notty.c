@@ -21,6 +21,11 @@
 static t_ifs	in[OPEN_MAX + 1] = { 0 };
 static ssize_t	rd[OPEN_MAX + 1] = { 0 };
 
+inline void		sh_nottyfinalize(int fd)
+{
+	ft_ifsclose(in + fd);
+}
+
 inline char		*sh_readnotty(int fd)
 {
 	char		*ln;

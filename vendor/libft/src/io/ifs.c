@@ -22,6 +22,13 @@ inline void				ft_ifsctor(t_ifs *self, int ifd)
 	self->buf = NULL;
 }
 
+inline void				ft_ifsdtor(t_ifs *self)
+{
+	if (self->buf)
+		free(self->buf);
+	FT_INIT(self, t_ifs);
+}
+
 inline int				ft_ifsopen(t_ifs *self, char const *filename)
 {
 	int	fd;
@@ -34,7 +41,11 @@ inline int				ft_ifsopen(t_ifs *self, char const *filename)
 
 inline int				ft_ifsclose(t_ifs *self)
 {
-	if (close(self->ifd))
+	int fd;
+
+	fd = self->ifd;
+	ft_ifsdtor(self);
+	if (close(fd))
 		return (WUT);
 	return (YEP);
 }
