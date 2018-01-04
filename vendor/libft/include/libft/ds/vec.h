@@ -30,6 +30,7 @@ typedef struct	s_vec
 
 extern void		ft_vecctor(t_vec *s, size_t isz);
 extern void		ft_vecdtor(t_vec *s, t_dtor i);
+extern void		ft_vecmdtor(t_vec *s, t_dtor i);
 extern void		ft_vecclear(t_vec *s, t_dtor i);
 extern size_t	ft_vecclean(t_vec *self, size_t n, t_dtor idtor);
 extern size_t	ft_veclen(t_vec *s);

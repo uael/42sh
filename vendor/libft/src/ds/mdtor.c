@@ -1,0 +1,47 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   mdtor.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/11/07 09:52:33 by alucas-           #+#    #+#             */
+/*   Updated: 2017/11/18 14:18:33 by null             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "libft/ds.h"
+
+inline void	ft_deqmdtor(t_deq *self, t_dtor idtor)
+{
+	char	*item;
+
+	if (self->cap)
+	{
+		if (idtor)
+		{
+			item = self->buf - self->isz;
+			while ((item += self->isz) <= self->buf + self->cap)
+				idtor(item);
+		}
+		free(self->buf);
+	}
+	FT_INIT(self, t_deq);
+}
+
+inline void	ft_vecmdtor(t_vec *self, t_dtor idtor)
+{
+	char	*item;
+
+	if (self->cap)
+	{
+		if (idtor)
+		{
+			item = self->buf - self->isz;
+			while ((item += self->isz) <= self->buf + self->cap)
+				idtor(item);
+		}
+		free(self->buf);
+	}
+	FT_INIT(self, t_vec);
+}

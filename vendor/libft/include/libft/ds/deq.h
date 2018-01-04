@@ -31,6 +31,7 @@ typedef struct	s_deq
 
 extern void		ft_deqctor(t_deq *s, size_t isz);
 extern void		ft_deqdtor(t_deq *s, t_dtor idtor);
+extern void		ft_deqmdtor(t_deq *s, t_dtor idtor);
 extern void		ft_deqclear(t_deq *s, t_dtor idtor);
 extern size_t	ft_deqclean(t_deq *s, t_dtor idtor);
 extern size_t	ft_deqlen(t_deq *s);

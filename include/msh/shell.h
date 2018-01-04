@@ -16,5 +16,6 @@
 # include "tokenize.h"
 
 extern int	sh_process(int fd);
+extern int	sh_exit(int exitno, char const *fmt, ...);
 
 #endif

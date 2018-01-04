@@ -73,3 +73,17 @@ inline int			sh_process(int fd)
 	sh_finalize(fd);
 	return (st);
 }
+
+int					sh_exit(int exitno, char const *fmt, ...)
+{
+	va_list	ap;
+
+	ft_deqmdtor(g_toks, (t_dtor)sh_tokdtor);
+	if (fmt)
+	{
+		va_start(ap, fmt);
+		ft_vputf(2, fmt, ap);
+		va_end(ap);
+	}
+	exit(exitno);
+}

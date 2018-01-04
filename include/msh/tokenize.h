@@ -71,5 +71,6 @@ typedef struct	s_tok
 }				t_tok;
 
 extern int		sh_tokenize(int fd, t_deq *toks, char *str);
+extern void		sh_tokdtor(t_tok *tok);
 
 #endif

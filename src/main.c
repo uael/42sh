@@ -19,12 +19,12 @@ int	main(int ac, char **av)
 
 	st = EXIT_SUCCESS;
 	if (ac == 1)
-		return (sh_process(STDIN_FILENO));
+		return (sh_exit(sh_process(STDIN_FILENO), NULL));
 	else
 		while (++*av)
 			if ((fd = open(*av, O_RDONLY, S_IRGRP | S_IRUSR)) < 0)
 				THROW(WUT);
 			else
 				st = sh_process(fd);
-	return (st);
+	return (sh_exit(st, NULL));
 }

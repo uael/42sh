@@ -194,3 +194,10 @@ int					sh_tokenize(int fd, t_deq *toks, char *str)
 	}
 	return (YEP);
 }
+
+inline void			sh_tokdtor(t_tok *tok)
+{
+	if (tok->val)
+		free(tok->val);
+	FT_INIT(tok, t_tok);
+}
