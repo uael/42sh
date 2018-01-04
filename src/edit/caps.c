@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   edit/move.c                                        :+:      :+:    :+:   */
+/*   edit/caps.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,50 +10,43 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <term.h>
+
 #include "msh/edit.h"
 
-inline void	sh_editleft(t_editln *ln, char const *prompt)
+static char			g_caps[32][6] = { 0 };
+static int8_t		g_caps_init[32] = { 0 };
+static char			*g_caps_names[32] =
 {
-	char *caps;
+	[CAPS_U7] = "u7",
+	[CAPS_DO] = "do",
+	[CAPS_CH] = "ch",
+	[CAPS_CM] = "cm",
+	[CAPS_UP] = "up",
+	[CAPS_LE] = "le",
+	[CAPS_ND] = "nd",
+	[CAPS_CD] = "cd",
+	[CAPS_CE] = "ce",
+};
 
-	if (ln->idx)
-	{
-		--ln->idx;
-		if (sh_getcaps(CAPS_LE, &caps))
-			ft_putf(1, caps);
-		else
-			sh_editprint(ln, prompt);
-	}
+static inline char	*loadcaps(uint8_t id)
+{
+	char *ret;
+
+	if (g_caps_init[id] == 1)
+		return (g_caps[id]);
+	if (g_caps_init[id] == -1)
+		return (NULL);
+	if ((ret = tgetstr(g_caps_names[id], (char **)&g_caps[id])))
+		g_caps_init[id] = -1;
+	else
+		g_caps_init[id] = 1;
+	return (ret);
 }
 
-inline void	sh_editright(t_editln *ln, char const *prompt)
+inline t_bool		sh_getcaps(uint8_t id, char **ret)
 {
-	char *caps;
-
-	if (ln->idx != ln->len)
-	{
-		++ln->idx;
-		if (sh_getcaps(CAPS_ND, &caps))
-			ft_putf(1, caps);
-		else
-			sh_editprint(ln, prompt);
-	}
-}
-
-inline void	sh_edithome(t_editln *ln, char const *prompt)
-{
-	if (ln->idx)
-	{
-		ln->idx = 0;
-		sh_editprint(ln, prompt);
-	}
-}
-
-inline void	sh_editend(t_editln *ln, char const *prompt)
-{
-	if (ln->idx != ln->len)
-	{
-		ln->idx = ln->len;
-		sh_editprint(ln, prompt);
-	}
+	if ((*ret = loadcaps(id)))
+		return (1);
+	return (0);
 }

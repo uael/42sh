@@ -21,9 +21,9 @@ INC_PATH = ./include/
 LNK_PATH = ./ $(3TH_PATH)
 
 OBJ_NAME = $(SRC_NAME:.c=.o)
-3TH_NAME = ft
+3TH_NAME = ft ncurses
 SRC_NAME = \
-	edit.c edit/ins.c edit/move.c edit/print.c \
+	edit.c edit/caps.c edit/ins.c edit/move.c edit/print.c \
 	hist.c \
 	main.c \
 	read.c read/notty.c read/tty.c \

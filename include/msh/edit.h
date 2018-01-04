@@ -29,6 +29,16 @@
 # define TC_DO "\x1b[1B"
 # define TC_CL "\r\x1b[0K"
 
+# define CAPS_U7 0
+# define CAPS_DO 1
+# define CAPS_CH 2
+# define CAPS_CM 3
+# define CAPS_UP 4
+# define CAPS_LE 5
+# define CAPS_ND 6
+# define CAPS_CD 7
+# define CAPS_CE 8
+
 typedef struct	s_editln
 {
 	char		buf[LN_MAX];
@@ -53,5 +63,6 @@ extern void		sh_editleft(t_editln *ln, char const *prompt);
 extern void		sh_editright(t_editln *ln, char const *prompt);
 extern void		sh_edithome(t_editln *ln, char const *prompt);
 extern void		sh_editend(t_editln *ln, char const *prompt);
+extern t_bool	sh_getcaps(uint8_t id, char **ret);
 
 #endif
