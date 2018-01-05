@@ -6,38 +6,50 @@
 #    By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/07 09:52:36 by alucas-           #+#    #+#              #
-#    Updated: 2017/12/08 09:48:05 by alucas-          ###   ########.fr        #
+#    Updated: 2017/12/11 12:29:40 by alucas-          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = 21sh
+NAME = libft.a
 CC = gcc
 CFLAGS = -Werror -Wextra -Wall -O2
 
 SRC_PATH = ./src/
 OBJ_PATH = ./obj/
-3TH_PATH = ./vendor/libft/
-INC_PATH = ./include/
+3TH_PATH =
+INC_PATH = ./include/ $(addprefix $(3TH_PATH), include/)
 LNK_PATH = ./ $(3TH_PATH)
 
 OBJ_NAME = $(SRC_NAME:.c=.o)
-3TH_NAME = ft ncurses
+3TH_NAME = m
 SRC_NAME = \
-	edit.c edit/caps.c edit/ins.c edit/move.c edit/print.c \
-	hist.c \
-	main.c \
-	read.c read/notty.c read/tty.c \
-	screen.c \
-	shell.c \
-	tokenize.c
+	cty/cty.c cty/cty_2.c cty/cty_3.c \
+	ds/alloc.c ds/apd.c ds/at.c ds/aver.c ds/back.c ds/begin.c ds/clean.c \
+	ds/clear.c ds/cpush.c ds/cput.c ds/ctor.c ds/cusht.c ds/dtor.c ds/emp.c \
+	ds/end.c ds/grow.c ds/len.c ds/mpush.c ds/mput.c ds/musht.c ds/npop.c \
+	ds/npush.c ds/nput.c ds/nrem.c ds/nsht.c ds/nusht.c ds/pop.c ds/prd.c \
+	ds/push.c ds/put.c ds/rem.c ds/sht.c ds/usht.c ds/mdtor.c \
+	ex/ex.c ex/ex_2.c \
+	fs/fs.c fs/fs_2.c fs/fs_3.c fs/fs_4.c \
+	int/len.c int/str.c \
+	io/fcntl.c io/ifs.c io/ofs.c io/padn.c io/putc.c io/putf.c io/putl.c \
+	io/putn.c io/puts.c \
+	lib/atoi.c lib/clean.c lib/dtor.c lib/getenv.c lib/itoa.c lib/join.c \
+	lib/strerr.c \
+	math/imax.c math/imin.c math/m4.c math/m4_mul.c math/m4_rot.c \
+	math/m4_trans.c math/pow.c math/pow2_next.c math/umax.c math/umin.c \
+	math/v3.c math/v3_2.c \
+	mem/alloc.c \
+	str/mem.c str/mem_2.c str/str.c str/str_2.c str/str_3.c str/str_4.c \
+	str/str_5.c
 
 SRC = $(addprefix $(SRC_PATH), $(SRC_NAME))
 OBJ = $(addprefix $(OBJ_PATH), $(OBJ_NAME))
-INC = $(addprefix -I, $(INC_PATH) $(addsuffix include/, $(3TH_PATH)))
+INC = $(addprefix -I, $(INC_PATH))
 LNK = $(addprefix -L, $(LNK_PATH))
 3TH = $(addprefix -l, $(3TH_NAME))
-EXE = $(NAME)
-LIB =
+EXE =
+LIB = $(NAME)
 
 all: $(EXE) $(LIB)
 
