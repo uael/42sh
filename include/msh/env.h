@@ -1,31 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   msh/env.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/11 13:31:59 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/06 12:00:10 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "msh.h"
+#ifndef MSH_ENV_H
+# define MSH_ENV_H
 
-int	main(int ac, char **av, char **envv)
-{
-	int		st;
-	int		fd;
+# include <libft.h>
 
-	st = EXIT_SUCCESS;
-	sh_envinit(envv);
-	if (ac == 1)
-		return (sh_exit(sh_process(STDIN_FILENO), NULL));
-	else
-		while (++*av)
-			if ((fd = open(*av, O_RDONLY, S_IRGRP | S_IRUSR)) < 0)
-				THROW(WUT);
-			else
-				st = sh_process(fd);
-	return (sh_exit(st, NULL));
-}
+extern char		**g_env;
+
+extern void		sh_envinit(char **envv);
+extern char		*sh_getenv(char *var);
+extern void		sh_setenv(char *var, char *val);
+
+#endif
