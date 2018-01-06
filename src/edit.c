@@ -41,11 +41,16 @@
 #define K_END "\x1b\x5b\x46"
 #define K_CTRL_Y "\x19"
 
-/*static t_editbind	g_inskeymap[] =
+/*
+ ** TODO: toutes les fonctions de key
+ ** TODO: URGENT gerer la tocuhe enter
+*/
+
+static t_editbind	g_inskeymap[] =
 {
 	{1, K_RETURN, NULL},
-	{1, K_ENTER, NULL},
 	{1, K_BACKSPACE, NULL},
+	{1, K_ENTER, NULL},
 	{1, K_CTRL_A, NULL},
 	{1, K_CTRL_B, NULL},
 	{1, K_CTRL_D, NULL},
@@ -59,8 +64,8 @@
 	{1, K_CTRL_U, NULL},
 	{3, K_LEFT, sh_editleft},
 	{3, K_RGT, sh_editright},
-	{3, K_UP, NULL},
-	{3, K_DOWN, NULL},
+	{3, K_UP, sh_editup},
+	{3, K_DOWN, sh_editend},
 	{3, K_HOME, sh_edithome},
 	{3, K_END, sh_editend},
 	{4, K_DELETE, NULL},
@@ -69,47 +74,51 @@
 	{6, K_CTRL_RIGHT, NULL},
 	{6, K_CTRL_LEFT, NULL},
 	{0, NULL, NULL},
-};*/
+};
 
 extern int		sh_editln(t_editln *ln, char const *prompt, size_t plen)
 {
 	ssize_t		rd;
 	char		key[6];
+	int 		i;
 
-
-	(void)prompt;
+	i = -1;
 	(void)plen;
+    g_ln = ln;
 	while ((rd = ft_read(STDIN_FILENO, key, 6)) > 0)
 	{
-		if (rd == 3 && !ft_memcmp(key, K_LEFT, 3))
-			sh_editleft(ln, prompt);
-		else if (rd == 3 && !ft_memcmp(key, K_RGT, 3))
-			sh_editright(ln, prompt);
-		else if (rd == 3 && !ft_memcmp(key, K_HOME, 3))
-			sh_edithome(ln, prompt);
-		else if (rd == 3 && !ft_memcmp(key, K_END, 3))
-			sh_editend(ln, prompt);
-		else if (rd == 1)
+		i = -1;
+		while (++i != 25)
+			if (rd == g_inskeymap[i].rd && !ft_memcmp(key, g_inskeymap[i].key, g_inskeymap[i].rd))
+			{
+				if (g_inskeymap[i].cb != NULL)
+					g_inskeymap[i].cb(g_ln, prompt);
+				break ;
+			}
+		if (rd == 1 && i == 25)
 		{
 			if (!ft_memcmp(key, "\xa", 1) || !ft_memcmp(key, "\xd", 1))
 				*key = '\n';
 			if (*key == '\n' || (!ft_iscntrl(*key) && ft_isascii(*key)))
 			{
-				if (ln->len != ln->idx)
-					ft_memmove(ln->buf + ln->idx + 1, ln->buf + ln->idx,
-						ln->len - ln->idx);
-				ln->buf[ln->idx] = *key;
-				ln->buf[++ln->len] = '\0';
-				++ln->idx;
+				if (g_ln->len != g_ln->idx)
+					ft_memmove(g_ln->buf + g_ln->idx + 1, g_ln->buf + g_ln->idx,
+						g_ln->len - g_ln->idx);
+				g_ln->buf[g_ln->idx] = *key;
+				g_ln->buf[++g_ln->len] = '\0';
+				++g_ln->idx;
+				/*
+				 ** TODO : corriger le segfault en cas de '\n'
+				*/
 				if (*key == '\n')
 				{
 					ft_write(STDOUT_FILENO, "\n", 1);
 					break ;
 				}
-				sh_editprint(ln, prompt);
+				sh_editprint(g_ln, prompt);
 			}
 		}
-		else
+		else if (i == 25)
 			ft_write(STDOUT_FILENO, key, (size_t)rd);
 	}
 	return (YEP);

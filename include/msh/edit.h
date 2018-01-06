@@ -48,6 +48,8 @@ typedef struct	s_editln
 	uint16_t	rows;
 }				t_editln;
 
+static t_editln *g_ln;
+
 typedef void	(t_editcb)(t_editln *ln, char const *prompt);
 
 typedef struct	s_editbind
@@ -60,6 +62,8 @@ typedef struct	s_editbind
 extern int		sh_editln(t_editln *ln, char const *prompt, size_t plen);
 extern void		sh_editprint(t_editln *ln, char const *prompt);
 extern void		sh_editleft(t_editln *ln, char const *prompt);
+extern void		sh_editup(t_editln *ln, char const *prompt);
+extern void		sh_editdown(t_editln *ln, char const *prompt);
 extern void		sh_editright(t_editln *ln, char const *prompt);
 extern void		sh_edithome(t_editln *ln, char const *prompt);
 extern void		sh_editend(t_editln *ln, char const *prompt);
