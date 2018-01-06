@@ -24,6 +24,7 @@ OBJ_NAME = $(SRC_NAME:.c=.o)
 3TH_NAME = ft ncurses
 SRC_NAME = \
 	edit.c edit/caps.c edit/ins.c edit/move.c edit/print.c \
+	env.c \
 	hist.c \
 	main.c \
 	read.c read/notty.c read/tty.c \
