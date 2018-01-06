@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/13 08:23:58 by alucas-          ###   ########.fr       */
+/*   Updated: 2018/01/06 11:05:04 by cmalfroy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 #include "msh/edit.h"
 
-static char			g_caps[32][6] = { 0 };
+static char			g_caps[32][6] = { { 0 } };
 static int8_t		g_caps_init[32] = { 0 };
 static char			*g_caps_names[32] =
 {
