@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:33 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/17 09:51:01 by null             ###   ########.fr       */
+/*   Updated: 2018/01/06 11:02:13 by cmalfroy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ ssize_t			ft_ofswrl(t_ofs *self, long i, uint8_t base)
 	return (ft_ofswr(self, buf, ft_intstr(buf, i, base)));
 }
 
-ssize_t			ft_ofswrul(t_ofs *self, ulong i, uint8_t base)
+ssize_t			ft_ofswrul(t_ofs *self, unsigned long i, uint8_t base)
 {
 	char	buf[21];
 
@@ -107,7 +107,7 @@ ssize_t			ft_ofsvwrf(t_ofs *self, char const *f, va_list ap)
 		if (*((f = ++sp + 1) - 1) == 'd')
 			sz += ft_ofswrl(self, va_arg(ap, long), 10);
 		else if (*sp == 'u')
-			sz += ft_ofswrul(self, va_arg(ap, ulong), 10);
+			sz += ft_ofswrul(self, va_arg(ap, unsigned long), 10);
 		else if (*sp == 's')
 			sz += ft_ofswrs(self, va_arg(ap, char const *));
 		else if (*sp == 'c')

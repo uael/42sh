@@ -6,13 +6,13 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/08 16:02:50 by alucas-          ###   ########.fr       */
+/*   Updated: 2018/01/06 11:10:01 by cmalfroy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "msh/hist.h"
 
-static t_histln	g_hist[HIST_MAX] = { 0 };
+static t_histln	g_hist[HIST_MAX] = { { 0, 0, 0, { { 0 }, 0, 0, 0, 0 } } };
 static uint8_t	g_hist_len = 0;
 static uint8_t	g_hist_idx = 0;
 

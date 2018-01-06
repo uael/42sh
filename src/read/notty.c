@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/13 08:23:58 by alucas-          ###   ########.fr       */
+/*   Updated: 2018/01/06 11:11:59 by cmalfroy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 # define OPEN_MAX RLIMIT_NOFILE
 #endif
 
-static t_ifs	in[OPEN_MAX + 1] = { 0 };
+static t_ifs	in[OPEN_MAX + 1] = { { 0, 0, 0, 0, { 0 } } };
 static ssize_t	rd[OPEN_MAX + 1] = { 0 };
 
 inline void		sh_nottyfinalize(int fd)
