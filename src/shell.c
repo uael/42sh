@@ -14,34 +14,35 @@
 
 #include "msh/shell.h"
 
+t_bool				g_shinteract = 0;
+pid_t				g_shpgid;
+TTY					g_rawmode;
 static t_deq		g_stack_toks = { NULL, sizeof(t_tok), 0, 0, 0 };
 static t_deq		*g_toks = &g_stack_toks;
 static size_t		g_toks_max = 0;
 
-static inline pid_t	sh_init(int fd)
+static inline void	sh_init(int fd)
 {
-	pid_t	pid;
-
-	if (!isatty(fd))
-		return (-1);
+	if (!(g_shinteract = (t_bool)isatty(fd)))
+		return ;
 	else
 	{
-		while (tcgetpgrp(fd) != (pid = getpgrp()))
-			kill(-pid, SIGTTIN);
+		while (tcgetpgrp(fd) != (g_shpgid = getpgrp()))
+			kill(-g_shpgid, SIGTTIN);
 		signal(SIGINT, SIG_IGN);
 		signal(SIGQUIT, SIG_IGN);
 		signal(SIGTSTP, SIG_IGN);
 		signal(SIGTTIN, SIG_IGN);
 		signal(SIGTTOU, SIG_IGN);
 		signal(SIGCHLD, SIG_IGN);
-		pid = getpid();
-		if (setpgid(pid, pid) < 0)
+		g_shpgid = getpid();
+		if (setpgid(g_shpgid, g_shpgid) < 0)
 		{
 			ft_putl(2, "21sh: Couldn't put the shell in its own process group");
 			exit(EXIT_FAILURE);
 		}
-		tcsetpgrp(fd, pid);
-		return (pid);
+		tcsetpgrp(fd, g_shpgid);
+		tcgetattr(fd, &g_rawmode);
 	}
 }
 
@@ -50,16 +51,14 @@ static inline void	sh_finalize(int fd)
 	sh_readfinalize(fd);
 }
 
-inline int			sh_process(int fd)
+inline int			sh_launch(int fd)
 {
 	char	*ln;
-	pid_t	pid;
 	int		st;
 	t_tok	*tok;
 
 	st = EXIT_SUCCESS;
-	pid = sh_init(fd);
-	(void)pid;
+	sh_init(fd);
 	tok = alloca(sizeof(t_tok));
 	while ((ln = sh_readln(STDIN_FILENO, "$> ")))
 	{

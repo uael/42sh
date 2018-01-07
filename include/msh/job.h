@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   msh/shell.h                                        :+:      :+:    :+:   */
+/*   msh/job.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,16 +10,33 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MSH_SHELL_H
-# define MSH_SHELL_H
+#ifndef MSH_JOB_H
+# define MSH_JOB_H
 
-# include "tokenize.h"
+# include "proc.h"
 
-extern t_bool	g_shinteract;
-extern pid_t	g_shpgid;
-extern TTY		g_rawmode;
+typedef struct	s_job
+{
+	struct s_job	*next;
+	char			*command;
+	t_proc			*prochead;
+	pid_t			pgid;
+	t_bool			notified;
+	TTY				tmodes;
+	int				io[3];
+}				t_job;
 
-extern int		sh_launch(int fd);
-extern int		sh_exit(int exitno, char const *fmt, ...);
+extern t_job	*g_jobhead;
+
+extern t_job	*sh_jobfind(pid_t pgid);
+extern int		sh_jobstopped(t_job *j);
+extern int		sh_jobcompleted(t_job *j);
+extern void		sh_joblaunch(t_job *j, int fg);
+extern void		sh_jobdebug(t_job *j, const char *status);
+extern void		sh_jobwait(t_job *j);
+extern void		sh_jobnotify(void);
+extern void		sh_jobfg(t_job *j, int cont);
+extern void		sh_jobbg(t_job *j, int cont);
+extern void		sh_jobcontinue(t_job *j, int fg);
 
 #endif

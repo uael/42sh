@@ -1,31 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   msh/proc.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/11 13:31:59 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/06 12:00:10 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "msh.h"
+#ifndef MSH_PROC_H
+# define MSH_PROC_H
 
-int	main(int ac, char **av, char **envv)
+# include "shell.h"
+
+typedef struct	s_proc
 {
-	int		st;
-	int		fd;
+	struct s_proc	*next;
+	char			**argv;
+	pid_t			pid;
+	t_bool			completed;
+	t_bool			stopped;
+	int				status;
+}				t_proc;
 
-	st = EXIT_SUCCESS;
-	sh_envinit(envv);
-	if (ac == 1)
-		return (sh_exit(sh_launch(STDIN_FILENO), NULL));
-	else
-		while (++*av)
-			if ((fd = open(*av, O_RDONLY, S_IRGRP | S_IRUSR)) < 0)
-				THROW(WUT);
-			else
-				st = sh_launch(fd);
-	return (sh_exit(st, NULL));
-}
+extern void		sh_proclaunch(t_proc *p, pid_t pgid, int *io, int fg);
+extern int		sh_procmark(pid_t pid, int status);
+extern void		sh_procupdate(void);
+
+#endif
