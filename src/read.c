@@ -40,6 +40,10 @@ void			sh_readfinalize(int fd)
 	sh_nottyfinalize(fd);
 }
 
+/*
+ * This function reads the line that the user write.
+*/
+
 char			*sh_readln(int fd, char *prompt)
 {
 	t_histln	*ln;
@@ -65,6 +69,10 @@ char			*sh_readln(int fd, char *prompt)
 	ln->buf[ln->len] = '\0';
 	return (rd_finalize(ln->buf, 0));
 }
+
+/*
+ ** TODO: memset ln
+*/
 
 char			*sh_readcat(int fd, char *prompt, char c)
 {

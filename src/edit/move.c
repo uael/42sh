@@ -21,8 +21,7 @@ inline void	sh_editleft(t_editln *ln, char const *prompt)
 		--ln->idx;
 		if (sh_getcaps(CAPS_LE, &caps))
 			ft_putf(1, caps);
-		else
-			sh_editprint(ln, prompt);
+		sh_editprint(ln, prompt);
 	}
 }
 
@@ -35,9 +34,30 @@ inline void	sh_editright(t_editln *ln, char const *prompt)
 		++ln->idx;
 		if (sh_getcaps(CAPS_ND, &caps))
 			ft_putf(1, caps);
-		else
-			sh_editprint(ln, prompt);
+		sh_editprint(ln, prompt);
 	}
+}
+
+inline void	sh_editup(t_editln *ln, char const *prompt)
+{
+	char *caps;
+	if (ln->row > 0 && ln->rows > 1)
+	{
+		ln->idx += ln->len - ln->idx;
+	}
+	if (sh_getcaps(CAPS_UP, &caps))
+		ft_putf(1, caps);
+	sh_editprint(ln, prompt);
+}
+
+inline void	sh_editdown(t_editln *ln, char const *prompt)
+{
+	char *caps;
+	if (ln->rows > 1 && ln->row != ln->rows)
+		ln->idx -= ln->len + ln->idx;
+	if (sh_getcaps(CAPS_DO, &caps))
+		ft_putf(1, caps);
+	sh_editprint(ln, prompt);
 }
 
 inline void	sh_edithome(t_editln *ln, char const *prompt)
