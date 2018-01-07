@@ -69,7 +69,7 @@ void	sh_jobfg(t_job *j, int cont)
 	sh_jobwait(j);
 	tcsetpgrp(STDIN_FILENO, g_shpgid);
 	tcgetattr(STDIN_FILENO, &j->tmodes);
-	tcsetattr(STDIN_FILENO, TCSADRAIN, &g_rawmode);
+	tcsetattr(STDIN_FILENO, TCSADRAIN, &g_shmode);
 }
 
 void	sh_jobbg(t_job *j, int cont)

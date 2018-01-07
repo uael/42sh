@@ -17,7 +17,7 @@
 
 extern t_bool	g_shinteract;
 extern pid_t	g_shpgid;
-extern TTY		g_rawmode;
+extern TTY		g_shmode;
 
 extern int		sh_launch(int fd);
 extern int		sh_exit(int exitno, char const *fmt, ...);

@@ -16,7 +16,7 @@
 #include "msh/proc.h"
 #include "msh/job.h"
 
-void sh_proclaunch(t_proc *p, pid_t pgid, int *io, int fg)
+void	sh_proclaunch(t_proc *p, pid_t pgid, int *io, int fg)
 {
 	pid_t pid;
 
@@ -54,7 +54,7 @@ void sh_proclaunch(t_proc *p, pid_t pgid, int *io, int fg)
 	exit(1);
 }
 
-int sh_procmark(pid_t pid, int status)
+int		sh_procmark(pid_t pid, int status)
 {
 	t_job *j;
 	t_proc *p;
@@ -91,7 +91,7 @@ int sh_procmark(pid_t pid, int status)
 	}
 }
 
-void sh_procupdate(void)
+void	sh_procupdate(void)
 {
 	int status;
 	pid_t pid;

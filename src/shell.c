@@ -16,7 +16,7 @@
 
 t_bool				g_shinteract = 0;
 pid_t				g_shpgid;
-TTY					g_rawmode;
+TTY					g_shmode;
 static t_deq		g_stack_toks = { NULL, sizeof(t_tok), 0, 0, 0 };
 static t_deq		*g_toks = &g_stack_toks;
 static size_t		g_toks_max = 0;
@@ -42,7 +42,7 @@ static inline void	sh_init(int fd)
 			exit(EXIT_FAILURE);
 		}
 		tcsetpgrp(fd, g_shpgid);
-		tcgetattr(fd, &g_rawmode);
+		tcgetattr(fd, &g_shmode);
 	}
 }
 
