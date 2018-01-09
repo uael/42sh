@@ -12,10 +12,9 @@
 
 #include "msh/lex.h"
 
-static inline int	opmtch(t_tok *tok, char **it, uint8_t len, uint8_t id)
+static inline int	opmth(t_tok *tok, char **it, uint8_t len, uint8_t id)
 {
 	tok->id = id;
-	++*it;
 	ft_sdsmpush((t_sds *)tok, *it - len, len);
 	return (YEP);
 }
@@ -32,13 +31,13 @@ static inline int	opright(int fd, t_tok *tok, char **it, char **ln)
 {
 	if (opnext(fd, it, ln))
 		return (WUT);
-	if (**it == '>')
-		return (opmtch(tok, it, 2, TOK_RAOUT));
-	if (**it == '&')
-		return (opmtch(tok, it, 2, TOK_RAMP));
-	if (**it == '|')
-		return (opmtch(tok, it, 2, TOK_RPOUT));
-	return (opmtch(tok, it, 1, '>'));
+	if (**it == '>' && ++*it)
+		return (opmth(tok, it, 2, TOK_RAOUT));
+	if (**it == '&' && ++*it)
+		return (opmth(tok, it, 2, TOK_RAMP));
+	if (**it == '|' && ++*it)
+		return (opmth(tok, it, 2, TOK_RPOUT));
+	return (opmth(tok, it, 1, '>'));
 }
 
 static inline int	opleft(int fd, t_tok *tok, char **it, char **ln)
@@ -49,15 +48,15 @@ static inline int	opleft(int fd, t_tok *tok, char **it, char **ln)
 	{
 		if (opnext(fd, it, ln))
 			return (WUT);
-		if (**it == '-')
-			return (opmtch(tok, it, 3, TOK_HEREDOCT));
-		return (opmtch(tok, it, 2, TOK_HEREDOC));
+		if (**it == '-' && ++*it)
+			return (opmth(tok, it, 3, TOK_HEREDOCT));
+		return (opmth(tok, it, 2, TOK_HEREDOC));
 	}
-	if (**it == '>')
-		return (opmtch(tok, it, 2, TOK_CMP));
-	if (**it == '&')
-		return (opmtch(tok, it, 2, TOK_LAMP));
-	return (opmtch(tok, it, 1, '<'));
+	if (**it == '>' && ++*it)
+		return (opmth(tok, it, 2, TOK_CMP));
+	if (**it == '&' && ++*it)
+		return (opmth(tok, it, 2, TOK_LAMP));
+	return (opmth(tok, it, 1, '<'));
 }
 
 inline int			sh_lexop(int fd, t_tok *tok, char **it, char **ln)
@@ -72,19 +71,19 @@ inline int			sh_lexop(int fd, t_tok *tok, char **it, char **ln)
 	{
 		if (opnext(fd, it, ln))
 			return (WUT);
-		if (**it == '&')
-			return (opmtch(tok, it, 2, TOK_LAND));
-		if (**it == '>')
-			return (opmtch(tok, it, 2, TOK_AMPR));
-		return (opmtch(tok, it, 1, '&'));
+		if (**it == '&' && ++*it)
+			return (opmth(tok, it, 2, TOK_LAND));
+		if (**it == '>' && ++*it)
+			return (opmth(tok, it, 2, TOK_AMPR));
+		return (opmth(tok, it, 1, '&'));
 	}
 	if (**it == '|')
 	{
 		if (opnext(fd, it, ln))
 			return (WUT);
-		if (**it == '|')
-			return (opmtch(tok, it, 2, TOK_LOR));
-		return (opmtch(tok, it, 1, '|'));
+		if (**it == '|' && ++*it)
+			return (opmth(tok, it, 2, TOK_LOR));
+		return (opmth(tok, it, 1, '|'));
 	}
-	return (ft_strchr("!;(){}", **it) ? opmtch(tok, it, 1, (uint8_t) **it) : 1);
+	return (ft_strchr("!;(){}", **it) ? opmth(tok, it, 1, (uint8_t)*++*it) : 1);
 }

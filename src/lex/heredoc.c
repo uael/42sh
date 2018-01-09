@@ -12,15 +12,10 @@
 
 #include "msh/lex.h"
 
-static inline char	*heredoc(t_tok *tok, char **it, char **eol, size_t *eofl)
+static inline char	*heredoc(t_tok *tok, size_t *eofl)
 {
 	char	*eof;
 
-	if (!(*eol = ft_strchr(*it, '\n')))
-	{
-		ENO_THROW(WUT, EINVAL);
-		return (NULL);
-	}
 	*eofl = tok->len;
 	eof = ft_memcpy(ft_malloc(*eofl * sizeof(char)), tok->val, tok->len);
 	tok->len = 0;
@@ -42,16 +37,16 @@ inline int			sh_lexheredoc(int fd, t_tok *tok, char **it, char **ln)
 	size_t	eofl;
 
 	beg = *ln;
-	if (!(eof = heredoc(tok, it, &eol, &eofl)))
-		return (WUT);
+	if (!(eol = ft_strchr(*it, '\n')))
+		return (ENO_THROW(WUT, EINVAL));
+	eof = heredoc(tok, &eofl);
 	while (++eol)
 		if (!*eol && (fd < 0 || !(eol = sh_readcat(fd, "> ", 0, ln))))
 			return (ENO_THROW(WUT, EINVAL));
 		else if (*ft_sdscpush((t_sds *)tok, *eol) == '\n' && tok->len >=
-			eofl + 2 && tok->val[tok->len - (eofl + 2)] == '\n')
+			eofl + 2 && tok->val[tok->len - (eofl + 2)] == '\n' &&
+			!ft_strncmp(tok->val + tok->len - (eofl + 1), eof, eofl))
 		{
-			if (ft_strncmp(tok->val + tok->len - (eofl + 1), eof, eofl))
-				continue ;
 			ft_sdsnpop((t_sds *)tok, eofl + 1, NULL);
 			break ;
 		}
@@ -66,8 +61,9 @@ inline int			sh_lexheredoct(int fd, t_tok *tok, char **it, char **ln)
 	size_t	eofl;
 
 	beg = *ln;
-	if (!(eof = heredoc(tok, it, &eol, &eofl)))
-		return (WUT);
+	if (!(eol = ft_strchr(*it, '\n')))
+		return (ENO_THROW(WUT, EINVAL));
+	eof = heredoc(tok, &eofl);
 	while (++eol)
 	{
 		if (!*eol && (fd < 0 || !(eol = sh_readcat(fd, "> ", 0, ln))))
@@ -76,10 +72,9 @@ inline int			sh_lexheredoct(int fd, t_tok *tok, char **it, char **ln)
 			while (*eol == '\t')
 				++eol;
 		if (*ft_sdscpush((t_sds *)tok, *eol) == '\n' && tok->len >=
-			eofl + 2 && tok->val[tok->len - (eofl + 2)] == '\n')
+			eofl + 2 && tok->val[tok->len - (eofl + 2)] == '\n' &&
+			!ft_strncmp(tok->val + tok->len - (eofl + 1), eof, eofl))
 		{
-			if (ft_strncmp(tok->val + tok->len - (eofl + 1), eof, eofl))
-				continue ;
 			ft_sdsnpop((t_sds *)tok, eofl + 1, NULL);
 			break ;
 		}

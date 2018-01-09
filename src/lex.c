@@ -41,6 +41,12 @@ static inline int	lex(int fd, t_tok *tok, char **it, char **ln)
 	return (YEP);
 }
 
+/*
+** TODO: parse heredoc once line is totaly parsed
+** to work, the current algo requires things that
+** the norme doesn't allow me to do..
+*/
+
 int					sh_lex(int fd, t_deq *toks, char *ln)
 {
 	t_tok	*tok;
@@ -55,10 +61,12 @@ int					sh_lex(int fd, t_deq *toks, char *ln)
 	{
 		if (lex(fd, tok = ft_deqpush(toks), &ln, &beg))
 			return (WUT);
-		if (prev && prev->id == TOK_HEREDOC && tok->id == TOK_WORD &&
+		if (tok->id == TOK_EOL)
+			break ;
+		if (prev && (tok - 1)->id == TOK_HEREDOC && tok->id == TOK_WORD &&
 			sh_lexheredoc(fd, tok, &ln, &beg))
 			return (WUT);
-		if (prev && prev->id == TOK_HEREDOCT && tok->id == TOK_WORD &&
+		if (prev && (tok - 1)->id == TOK_HEREDOCT && tok->id == TOK_WORD &&
 			sh_lexheredoct(fd, tok, &ln, &beg))
 			return (WUT);
 		prev = tok;

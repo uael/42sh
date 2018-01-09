@@ -22,7 +22,7 @@ inline size_t	ft_deqalloc(t_deq *self, size_t n)
 	self->buf = buf;
 	if (self->len > (self->cap = n))
 		self->len = n;
-	ft_memset(self->buf + self->len, 0, self->cap - self->len);
+	ft_memset(self->buf + self->len, 0, (self->cap - self->len) * self->isz);
 	return (self->cap);
 }
 
@@ -50,6 +50,6 @@ inline size_t	ft_vecalloc(t_vec *self, size_t n)
 	self->buf = buf;
 	if (self->len > (self->cap = n))
 		self->len = n;
-	ft_memset(self->buf + self->len, 0, self->cap - self->len);
+	ft_memset(self->buf + self->len, 0, (self->cap - self->len) * self->isz);
 	return (self->cap);
 }
