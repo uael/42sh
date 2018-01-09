@@ -27,47 +27,54 @@ static void		rl_print(t_ofs *out, char const *str, uint16_t i, uint16_t *row)
 	{
 		if (g_screen->cursor + 1 == g_screen->width || *str == '\n')
 		{
-			if (c > i)
+			if (c >= i)
 				++g_idx_up;
 			ft_ofswrc(out, '\n');
 			++*row;
-			g_screen->cursor = 0;
 			if (*str == '\n')
 			{
-				(void)(++c && ++str);
+				if (c++ == i)
+					g_idx_col = g_screen->cursor;
+				g_screen->cursor = 0;
+				++str;
 				continue ;
 			}
+			g_screen->cursor = 0;
 		}
-		++g_screen->cursor;
-		ft_ofswrc(out, (unsigned char)*str++);
-		if (++c == i)
+		if (c++ == i)
 			g_idx_col = g_screen->cursor;
+		ft_ofswrc(out, (unsigned char)*str++);
+		++g_screen->cursor;
 	}
+	if (c == i)
+		g_idx_col = g_screen->cursor;
 }
 
-void			sh_editprint(t_editln *ln, char const *prompt)
+void			sh_editprint(char const *prompt)
 {
 	t_ofs		*out;
 	uint16_t	i;
 
 	ft_ofsctor(out = &g_edit_out, STDOUT_FILENO);
-	if (ln->row < ln->rows)
-		ft_ofswrf(out, TC_GOTODO(ln->rows - ln->row));
+	if (g_editln->row < g_editln->rows)
+		ft_ofswrf(out, TC_GOTODO(g_editln->rows - g_editln->row));
 	i = 0;
-	while (++i < ln->rows)
+	while (++i < g_editln->rows)
 		ft_ofswrs(out, TC_CL TC_UP);
 	ft_ofswrs(out, TC_CL);
-	ln->rows = 1;
+	g_editln->rows = 1;
 	g_screen->cursor = 0;
-	rl_print(out, prompt, 0, &ln->rows);
-	ln->buf[ln->len] = '\0';
-	rl_print(out, ln->buf, ln->idx, &ln->rows);
+	rl_print(out, prompt, 0, &g_editln->rows);
+	rl_print(out, g_editln->str.buf, (uint16_t)g_editln->idx, &g_editln->rows);
 	if (g_idx_up)
 		ft_ofswrf(out, TC_GOTOUP(g_idx_up));
-	ln->row = ln->rows - g_idx_up;
+	g_editln->row = g_editln->rows - g_idx_up;
 	if (g_screen->cursor != g_idx_col)
 	{
-		ft_ofswrf(out, TC_GOTOCO(g_idx_col));
+		if (!g_idx_col)
+			ft_ofswrc(out, TC_GOTOCH0());
+		else
+			ft_ofswrf(out, TC_GOTOCH(g_idx_col));
 		g_screen->cursor = g_idx_col;
 	}
 	ft_ofsflush(out);

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   edit/ins.c                                         :+:      :+:    :+:   */
+/*   lex/word.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,11 +10,25 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "msh/edit.h"
+#include "msh/lex.h"
 
-inline int	sh_editins(char const *prompt, char c)
+inline int	sh_lexword(int fd, t_tok *tok, char **it, char **ln)
 {
-	ft_sdscput(&g_editln->str, g_editln->idx++, c);
-	sh_editprint(prompt);
+	while (**it)
+		if (ft_isspace(**it) || ft_strchr("><&|!;(){}", **it))
+			break ;
+		else if (**it == '\'' || **it == '"')
+		{
+			if (sh_lexquote(fd, tok, it, ln) < 0)
+				return (WUT);
+		}
+		else if (**it == '\\' && *++*it == '\n' && !*++*it &&
+			(fd < 0 || !(*it = sh_readcat(fd, "> ", -2, NULL))))
+			return (WUT);
+		else
+			ft_sdscpush((t_sds *)tok, *(*it)++);
+	if (!tok->len)
+		return (NOP);
+	tok->id = TOK_WORD;
 	return (YEP);
 }

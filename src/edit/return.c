@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   edit/ins.c                                         :+:      :+:    :+:   */
+/*   edit/return.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,9 +12,10 @@
 
 #include "msh/edit.h"
 
-inline int	sh_editins(char const *prompt, char c)
+inline int	sh_editreturn(char const *prompt)
 {
-	ft_sdscput(&g_editln->str, g_editln->idx++, c);
-	sh_editprint(prompt);
-	return (YEP);
+	(void)prompt;
+	ft_sdscpush(&g_editln->str, '\n');
+	ft_write(STDOUT_FILENO, "\n", 1);
+	return (NOP);
 }

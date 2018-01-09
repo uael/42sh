@@ -12,68 +12,86 @@
 
 #include "msh/edit.h"
 
-inline void	sh_editleft(t_editln *ln, char const *prompt)
+/*
+** TODO: handle margin when LE available
+*/
+
+inline int	sh_editleft(char const *prompt)
 {
 	char *caps;
 
-	if (ln->idx)
+	if (g_editln->idx)
 	{
-		--ln->idx;
-		if (sh_getcaps(CAPS_LE, &caps))
+		--g_editln->idx;
+		if (g_editln->rows == 1 && sh_getcaps(CAPS_LE, &caps))
 			ft_putf(1, caps);
-		sh_editprint(ln, prompt);
+		else
+			sh_editprint(prompt);
 	}
+	return (YEP);
 }
 
-inline void	sh_editright(t_editln *ln, char const *prompt)
+/*
+** TODO: handle margin when ND available
+*/
+
+inline int	sh_editright(char const *prompt)
 {
 	char *caps;
 
-	if (ln->idx != ln->len)
+	if (g_editln->idx != g_editln->str.len)
 	{
-		++ln->idx;
-		if (sh_getcaps(CAPS_ND, &caps))
+		++g_editln->idx;
+		if (g_editln->rows == 1 && sh_getcaps(CAPS_ND, &caps))
 			ft_putf(1, caps);
-		sh_editprint(ln, prompt);
+		else
+			sh_editprint(prompt);
 	}
+	return (YEP);
 }
 
-inline void	sh_editup(t_editln *ln, char const *prompt)
+inline int	sh_editup(char const *prompt)
 {
-	char *caps;
-	if (ln->row > 0 && ln->rows > 1)
+	if (g_edit_idx)
 	{
-		ln->idx += ln->len - ln->idx;
+		g_editln = g_edit + --g_edit_idx;
+		g_editln->idx = g_editln->str.len;
+		g_editln->row = (g_editln + 1)->row;
+		g_editln->rows = (g_editln + 1)->rows;
+		sh_editprint(prompt);
 	}
-	if (sh_getcaps(CAPS_UP, &caps))
-		ft_putf(1, caps);
-	sh_editprint(ln, prompt);
+	return (YEP);
 }
 
-inline void	sh_editdown(t_editln *ln, char const *prompt)
+inline int	sh_editdown(char const *prompt)
 {
-	char *caps;
-	if (ln->rows > 1 && ln->row != ln->rows)
-		ln->idx -= ln->len + ln->idx;
-	if (sh_getcaps(CAPS_DO, &caps))
-		ft_putf(1, caps);
-	sh_editprint(ln, prompt);
-}
-
-inline void	sh_edithome(t_editln *ln, char const *prompt)
-{
-	if (ln->idx)
+	if (g_edit_idx + 1 < g_edit_len)
 	{
-		ln->idx = 0;
-		sh_editprint(ln, prompt);
+		g_editln = g_edit + ++g_edit_idx;
+		g_editln->idx = g_editln->str.len;
+		g_editln->row = (g_editln - 1)->row;
+		g_editln->rows = (g_editln - 1)->rows;
+		sh_editprint(prompt);
 	}
+	return (YEP);
 }
 
-inline void	sh_editend(t_editln *ln, char const *prompt)
+inline int	sh_edithome(char const *prompt)
 {
-	if (ln->idx != ln->len)
+	if (g_editln->idx)
 	{
-		ln->idx = ln->len;
-		sh_editprint(ln, prompt);
+		g_editln->idx = 0;
+		sh_editprint(prompt);
 	}
+	return (YEP);
+}
+
+inline int	sh_editend(char const *prompt)
+{
+	if (g_editln->idx != g_editln->str.len)
+	{
+		g_editln->idx = g_editln->str.len;
+		sh_editprint(prompt);
+	}
+	return (YEP);
 }

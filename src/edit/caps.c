@@ -10,19 +10,15 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <term.h>
-
 #include "msh/edit.h"
+#include "msh/shell.h"
 
 static char			g_caps[32][6] = { { 0 } };
 static int8_t		g_caps_init[32] = { 0 };
 static char			*g_caps_names[32] =
 {
 	[CAPS_U7] = "u7",
-	[CAPS_DO] = "do",
-	[CAPS_CH] = "ch",
 	[CAPS_CM] = "cm",
-	[CAPS_UP] = "up",
 	[CAPS_LE] = "le",
 	[CAPS_ND] = "nd",
 	[CAPS_CD] = "cd",
@@ -46,7 +42,7 @@ static inline char	*loadcaps(uint8_t id)
 
 inline t_bool		sh_getcaps(uint8_t id, char **ret)
 {
-	if ((*ret = loadcaps(id)))
+	if (g_hastc && (*ret = loadcaps(id)))
 		return (1);
 	return (0);
 }

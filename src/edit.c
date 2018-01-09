@@ -41,17 +41,17 @@
 #define K_END "\x1b\x5b\x46"
 #define K_CTRL_Y "\x19"
 
-/*
- ** TODO: toutes les fonctions de key
- ** TODO: URGENT gerer la tocuhe enter
-*/
+t_editln			g_edit[HIST_MAX + 1] = { { { 0, 0, 0 }, 0, 0, 0 } };
+uint8_t				g_edit_len = 0;
+uint8_t				g_edit_idx = 0;
+t_editln			*g_editln;
 
 static t_editbind	g_inskeymap[] =
 {
-	{1, K_RETURN, NULL},
-	{1, K_BACKSPACE, NULL},
-	{1, K_ENTER, NULL},
-	{1, K_CTRL_A, NULL},
+	{1, K_RETURN, sh_editreturn},
+	/*{1, K_BACKSPACE, NULL},*/
+	{1, K_ENTER, sh_editreturn},
+	/*{1, K_CTRL_A, NULL},
 	{1, K_CTRL_B, NULL},
 	{1, K_CTRL_D, NULL},
 	{1, K_CTRL_E, NULL},
@@ -61,65 +61,48 @@ static t_editbind	g_inskeymap[] =
 	{1, K_CTRL_P, NULL},
 	{1, K_CTRL_R, NULL},
 	{1, K_CTRL_T, NULL},
-	{1, K_CTRL_U, NULL},
+	{1, K_CTRL_U, NULL},*/
 	{3, K_LEFT, sh_editleft},
 	{3, K_RGT, sh_editright},
 	{3, K_UP, sh_editup},
-	{3, K_DOWN, sh_editend},
+	{3, K_DOWN, sh_editdown},
 	{3, K_HOME, sh_edithome},
 	{3, K_END, sh_editend},
-	{4, K_DELETE, NULL},
+	/*{4, K_DELETE, NULL},
 	{6, K_CTRL_UP, NULL},
 	{6, K_CTRL_DOWN, NULL},
 	{6, K_CTRL_RIGHT, NULL},
-	{6, K_CTRL_LEFT, NULL},
+	{6, K_CTRL_LEFT, NULL},*/
 	{0, NULL, NULL},
 };
 
-extern int		sh_editln(t_editln *ln, char const *prompt, size_t plen)
+char	*sh_editln(char const *prompt, size_t *len)
 {
 	ssize_t		rd;
 	char		key[6];
-	int 		i;
+	int			st;
+	t_editbind	*bind;
 
-	i = -1;
-	(void)plen;
-    g_ln = ln;
+	g_edit_len = 0;
+	while (sh_histcpy(g_edit_len, &g_edit[g_edit_len].str))
+		++g_edit_len;
+	g_editln = g_edit + (g_edit_idx = g_edit_len++);
+	g_editln->str.len = 0;
+	ft_sdsgrow(&g_editln->str, 64);
+	*g_editln->str.buf = '\0';
+	g_editln->idx = 0;
+	g_editln->row = 0;
+	g_editln->rows = 0;
 	while ((rd = ft_read(STDIN_FILENO, key, 6)) > 0)
 	{
-		i = -1;
-		while (++i != 25)
-			if (rd == g_inskeymap[i].rd && !ft_memcmp(key, g_inskeymap[i].key, g_inskeymap[i].rd))
-			{
-				if (g_inskeymap[i].cb != NULL)
-					g_inskeymap[i].cb(g_ln, prompt);
-				break ;
-			}
-		if (rd == 1 && i == 25)
-		{
-			if (!ft_memcmp(key, "\xa", 1) || !ft_memcmp(key, "\xd", 1))
-				*key = '\n';
-			if (*key == '\n' || (!ft_iscntrl(*key) && ft_isascii(*key)))
-			{
-				if (g_ln->len != g_ln->idx)
-					ft_memmove(g_ln->buf + g_ln->idx + 1, g_ln->buf + g_ln->idx,
-						g_ln->len - g_ln->idx);
-				g_ln->buf[g_ln->idx] = *key;
-				g_ln->buf[++g_ln->len] = '\0';
-				++g_ln->idx;
-				/*
-				 ** TODO : corriger le segfault en cas de '\n'
-				*/
-				if (*key == '\n')
-				{
-					ft_write(STDOUT_FILENO, "\n", 1);
-					break ;
-				}
-				sh_editprint(g_ln, prompt);
-			}
-		}
-		else if (i == 25)
-			ft_write(STDOUT_FILENO, key, (size_t)rd);
+		st = 2;
+		bind = g_inskeymap - 1;
+		while (st == 2 && (++bind)->rd)
+			if (rd == bind->rd && !ft_memcmp(key, bind->key, (size_t)bind->rd))
+				st = bind->cb(prompt);
+		if (st == 1 || (rd == 1 && sh_editins(prompt, *key) == 1))
+			break ;
 	}
-	return (YEP);
+	*len = g_editln->str.len;
+	return (g_editln->str.buf);
 }

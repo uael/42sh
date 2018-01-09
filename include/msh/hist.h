@@ -13,19 +13,19 @@
 #ifndef MSH_HIST_H
 # define MSH_HIST_H
 
-# include "edit.h"
+# include <libft.h>
 
 # define HIST_MAX (100)
 
-typedef struct	s_histln
-{
-	char		*buf;
-	uint16_t	cap;
-	uint16_t	len;
-	t_editln	edit;
-}				t_histln;
+extern char		*sh_histadd(char const *ln, size_t len);
+extern char		*sh_histcat(char const *ln, size_t len, char c, char **out);
+extern t_bool	sh_histcpy(uint8_t id, t_sds *dest);
 
-extern t_histln	*sh_histln(void);
-extern t_histln	*sh_histpush(char const *ln);
+/*
+** TODO load/save
+*/
+
+extern int		sh_histload(char const *filename);
+extern int		sh_histsave(char const *filename);
 
 #endif

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   edit/ins.c                                         :+:      :+:    :+:   */
+/*   lex/quote.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,11 +10,26 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "msh/edit.h"
+#include "msh/lex.h"
 
-inline int	sh_editins(char const *prompt, char c)
+inline int	sh_lexquote(int fd, t_tok *tok, char **it, char **ln)
 {
-	ft_sdscput(&g_editln->str, g_editln->idx++, c);
-	sh_editprint(prompt);
+	char quote;
+
+	quote = *(*it)++;
+	while (1)
+		if (!**it && (fd < 0 || !(*it = sh_readcat(fd, "> ", 0, ln))))
+			return (WUT);
+		else if (quote == '"' && *(*it - 1) == '\\')
+			ft_sdscpush((t_sds *)tok, ft_strchr("\\\n\"$", **it)
+				? *(*it)++ : (char)'\\');
+		else if (quote == '\'' && *(*it - 1) == '\\')
+			ft_sdscpush((t_sds *)tok, **it == '\'' ? *(*it)++ : (char)'\\');
+		else if (**it == quote && ++*it)
+			break ;
+		else if (**it == '\\')
+			++*it;
+		else
+			ft_sdscpush((t_sds *)tok, *(*it)++);
 	return (YEP);
 }

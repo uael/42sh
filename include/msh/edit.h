@@ -13,44 +13,40 @@
 #ifndef MSH_EDIT_H
 # define MSH_EDIT_H
 
+# include <term.h>
 # include <termios.h>
 
+# include "hist.h"
 # include "screen.h"
 
 # ifndef TTY
 #  define TTY struct termios
 # endif
 
-# define LN_MAX (2048)
 # define TC_GOTOUP(N) "\x1b[%dA", (N)
 # define TC_GOTODO(N) "\x1b[%dB", (N)
-# define TC_GOTOCO(N) "\r\x1b[%dC", (N)
+# define TC_GOTOCH(N) "\r\x1b[%dC", (N)
+# define TC_GOTOCH0() '\r'
 # define TC_UP "\x1b[1A"
 # define TC_DO "\x1b[1B"
 # define TC_CL "\r\x1b[0K"
 
 # define CAPS_U7 0
-# define CAPS_DO 1
-# define CAPS_CH 2
-# define CAPS_CM 3
-# define CAPS_UP 4
-# define CAPS_LE 5
-# define CAPS_ND 6
-# define CAPS_CD 7
-# define CAPS_CE 8
+# define CAPS_CM 1
+# define CAPS_LE 2
+# define CAPS_ND 3
+# define CAPS_CD 4
+# define CAPS_CE 5
 
 typedef struct	s_editln
 {
-	char		buf[LN_MAX];
-	uint16_t	idx;
-	uint16_t	len;
+	t_sds		str;
+	size_t		idx;
 	uint16_t	row;
 	uint16_t	rows;
 }				t_editln;
 
-static t_editln *g_ln;
-
-typedef void	(t_editcb)(t_editln *ln, char const *prompt);
+typedef int	(t_editcb)(char const *prompt);
 
 typedef struct	s_editbind
 {
@@ -59,14 +55,21 @@ typedef struct	s_editbind
 	t_editcb	*cb;
 }				t_editbind;
 
-extern int		sh_editln(t_editln *ln, char const *prompt, size_t plen);
-extern void		sh_editprint(t_editln *ln, char const *prompt);
-extern void		sh_editleft(t_editln *ln, char const *prompt);
-extern void		sh_editup(t_editln *ln, char const *prompt);
-extern void		sh_editdown(t_editln *ln, char const *prompt);
-extern void		sh_editright(t_editln *ln, char const *prompt);
-extern void		sh_edithome(t_editln *ln, char const *prompt);
-extern void		sh_editend(t_editln *ln, char const *prompt);
+extern t_editln	g_edit[HIST_MAX + 1];
+extern uint8_t	g_edit_len;
+extern uint8_t	g_edit_idx;
+extern t_editln	*g_editln;
+
+extern char		*sh_editln(char const *prompt, size_t *len);
+extern void		sh_editprint(char const *prompt);
+extern int		sh_editins(char const *prompt, char c);
+extern int		sh_editreturn(char const *prompt);
+extern int		sh_editleft(char const *prompt);
+extern int		sh_editup(char const *prompt);
+extern int		sh_editdown(char const *prompt);
+extern int		sh_editright(char const *prompt);
+extern int		sh_edithome(char const *prompt);
+extern int		sh_editend(char const *prompt);
 extern t_bool	sh_getcaps(uint8_t id, char **ret);
 
 #endif

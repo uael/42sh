@@ -13,9 +13,11 @@
 #ifndef MSH_SHELL_H
 # define MSH_SHELL_H
 
-# include "tokenize.h"
+# include "lex.h"
+# include "env.h"
 
 extern t_bool	g_shinteract;
+extern t_bool	g_hastc;
 extern pid_t	g_shpgid;
 extern TTY		g_shmode;
 

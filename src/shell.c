@@ -11,10 +11,12 @@
 /* ************************************************************************** */
 
 #include <sys/signal.h>
+#include <term.h>
 
 #include "msh/shell.h"
 
 t_bool				g_shinteract = 0;
+t_bool				g_hastc = 0;
 pid_t				g_shpgid;
 TTY					g_shmode;
 static t_deq		g_stack_toks = { NULL, sizeof(t_tok), 0, 0, 0 };
@@ -23,6 +25,8 @@ static size_t		g_toks_max = 0;
 
 static inline void	sh_init(int fd)
 {
+	char	*term;
+
 	if (!(g_shinteract = (t_bool)isatty(fd)))
 		return ;
 	else
@@ -43,6 +47,9 @@ static inline void	sh_init(int fd)
 		}
 		tcsetpgrp(fd, g_shpgid);
 		tcgetattr(fd, &g_shmode);
+		if (!(term = sh_getenv("TERM")))
+			term = "dump";
+		g_hastc = (t_bool)(tgetent(NULL, term) == 1);
 	}
 }
 
@@ -64,7 +71,7 @@ inline int			sh_launch(int fd)
 	{
 		if (!ft_strcmp("exit\n", ln))
 			break ;
-		st = sh_tokenize(STDIN_FILENO, g_toks, ln);
+		st = sh_lex(STDIN_FILENO, g_toks, ln);
 		while (ft_deqsht(g_toks, tok))
 		{
 			ft_putf(1, "tok[id='%d',val[%d]='", tok->id, tok->len);

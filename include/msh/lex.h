@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   msh/tokenize.h                                     :+:      :+:    :+:   */
+/*   msh/lex.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MSH_TOKENIZE_H
-# define MSH_TOKENIZE_H
+#ifndef MSH_LEX_H
+# define MSH_LEX_H
 
 # include "read.h"
 
@@ -70,7 +70,13 @@ typedef struct	s_tok
 	uint8_t		id;
 }				t_tok;
 
-extern int		sh_tokenize(int fd, t_deq *toks, char *str);
 extern void		sh_tokdtor(t_tok *tok);
+
+extern int		sh_lex(int fd, t_deq *toks, char *ln);
+extern int		sh_lexop(int fd, t_tok *tok, char **it, char **ln);
+extern int		sh_lexquote(int fd, t_tok *tok, char **it, char **ln);
+extern int		sh_lexword(int fd, t_tok *tok, char **it, char **ln);
+extern int		sh_lexheredoc(int fd, t_tok *tok, char **it, char **ln);
+extern int		sh_lexheredoct(int fd, t_tok *tok, char **it, char **ln);
 
 #endif

@@ -23,14 +23,16 @@ LNK_PATH = ./ $(3TH_PATH)
 OBJ_NAME = $(SRC_NAME:.c=.o)
 3TH_NAME = ft ncurses
 SRC_NAME = \
-	edit.c edit/caps.c edit/ins.c edit/move.c edit/print.c \
+	edit.c edit/caps.c edit/ins.c edit/move.c edit/print.c edit/return.c \
 	env.c \
 	hist.c \
+	job.c job/control.c \
+	lex.c lex/heredoc.c lex/op.c lex/quote.c lex/word.c \
 	main.c \
+	proc.c \
 	read.c read/notty.c read/tty.c \
 	screen.c \
-	shell.c \
-	tokenize.c
+	shell.c
 
 SRC = $(addprefix $(SRC_PATH), $(SRC_NAME))
 OBJ = $(addprefix $(OBJ_PATH), $(OBJ_NAME))

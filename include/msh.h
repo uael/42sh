@@ -56,6 +56,6 @@
 # include "msh/read.h"
 # include "msh/screen.h"
 # include "msh/shell.h"
-# include "msh/tokenize.h"
+# include "msh/lex.h"
 
 #endif
