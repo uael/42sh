@@ -12,6 +12,16 @@
 
 #include "libft/hash.h"
 
+t_hasher		g_ihash = { (t_hashfn *)ft_ihash, (t_eqfn *)ft_ieq };
+t_hasher		g_uhash = { (t_hashfn *)ft_uhash, (t_eqfn *)ft_ueq };
+t_hasher		g_lhash = { (t_hashfn *)ft_lhash, (t_eqfn *)ft_leq };
+t_hasher		g_ulhash = { (t_hashfn *)ft_ulhash, (t_eqfn *)ft_uleq };
+t_hasher		g_llhash = { (t_hashfn *)ft_llhash, (t_eqfn *)ft_lleq };
+t_hasher		g_ullhash = { (t_hashfn *)ft_ullhash, (t_eqfn *)ft_ulleq };
+t_hasher		g_szhash = { (t_hashfn *)ft_szhash, (t_eqfn *)ft_szeq };
+t_hasher		g_uszhash = { (t_hashfn *)ft_uszhash, (t_eqfn *)ft_uszeq };
+t_hasher		g_strhash = { (t_hashfn *)ft_strhash, (t_eqfn *)ft_streq };
+
 inline uint32_t	ft_ihash(int i)
 {
 	return (IHASH(i));

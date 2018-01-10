@@ -36,6 +36,22 @@
 
 typedef uint32_t	(t_hashfn)(void *x);
 
+typedef struct		s_hasher
+{
+	t_hashfn		*hash;
+	t_eqfn			*eq;
+}					t_hasher;
+
+extern t_hasher		g_ihash;
+extern t_hasher		g_uhash;
+extern t_hasher		g_lhash;
+extern t_hasher		g_ulhash;
+extern t_hasher		g_llhash;
+extern t_hasher		g_ullhash;
+extern t_hasher		g_szhash;
+extern t_hasher		g_uszhash;
+extern t_hasher		g_strhash;
+
 extern uint32_t		ft_ihash(int i);
 extern uint32_t		ft_uhash(unsigned int u);
 extern uint32_t		ft_lhash(long l);
