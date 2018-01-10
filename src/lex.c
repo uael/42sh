@@ -37,7 +37,7 @@ static inline int	lex(int fd, t_tok *tok, char **it, char **ln)
 	if (ft_isdigit(**it))
 		ft_sdscpush((t_sds *)tok, *(*it)++);
 	if (sh_lexop(fd, tok, it, ln) && sh_lexword(fd, tok, it, ln))
-		return (ENO_THROW(WUT, EINVAL));
+		return (lex(fd, tok, it, ln));
 	return (YEP);
 }
 

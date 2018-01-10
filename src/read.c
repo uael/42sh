@@ -53,7 +53,7 @@ char			*sh_readln(int fd, char *prompt)
 		return (rd_finalize(NULL, 0));
 	if (!(ln = sh_editln(prompt, &len)) || !len)
 		return (rd_finalize(NULL, 0));
-	return (rd_finalize(sh_histadd(ln, len), 0));
+	return (rd_finalize(len == 1 && *ln == '\n' ? ln : sh_histadd(ln, len), 0));
 }
 
 char			*sh_readcat(int fd, char *prompt, char c, char **out)

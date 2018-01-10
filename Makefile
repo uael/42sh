@@ -27,7 +27,7 @@ SRC_NAME = \
 	env.c \
 	hist.c \
 	job.c job/control.c \
-	lex.c lex/heredoc.c lex/op.c lex/quote.c lex/word.c \
+	lex.c lex/heredoc.c lex/op.c lex/quote.c lex/var.c lex/word.c \
 	main.c \
 	proc.c \
 	read.c read/notty.c read/tty.c \

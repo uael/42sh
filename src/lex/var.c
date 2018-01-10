@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lex/word.c                                         :+:      :+:    :+:   */
+/*   lex/var.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -11,29 +11,36 @@
 /* ************************************************************************** */
 
 #include "msh/lex.h"
+#include "msh/var.h"
 
-inline int	sh_lexword(int fd, t_tok *tok, char **it, char **ln)
+inline int			sh_lexvar(int fd, t_tok *tok, char **it, char **ln)
 {
-	while (**it)
-		if (ft_isspace(**it) || ft_strchr("><&|!;(){}", **it))
+	char	brace;
+	t_sds	var;
+	char	*val;
+
+	if (**it != '$')
+		return (ENO_THROW(WUT, EINVAL));
+	ft_sdsctor(&var);
+	if (ft_isalpha(brace = *++*it) || brace == '_')
+		ft_sdscpush(&var, brace);
+	while (++*it)
+	{
+		if (!**it && (fd < 0 || !(*it = sh_readcat(fd, "> ", 0, ln))))
+			return (ENO_THROW(WUT, EINVAL));
+		if (!ft_isalnum(**it) && **it != '_')
+		{
+			if (brace == '{' && **it != '}')
+				return (WUT);
+			else if (brace == '{')
+				++*it;
 			break ;
-		else if (**it == '\'' || **it == '"')
-		{
-			if (sh_lexquote(fd, tok, it, ln) < 0)
-				return (WUT);
 		}
-		else if (**it == '\\' && *++*it == '\n' && !*++*it &&
-			(fd < 0 || !(*it = sh_readcat(fd, "> ", -2, NULL))))
-			return (WUT);
-		else if (**it == '$')
-		{
-			if (sh_lexvar(fd, tok, it, ln) < 0)
-				return (WUT);
-		}
-		else
-			ft_sdscpush((t_sds *)tok, *(*it)++);
-	if (!tok->len)
-		return (NOP);
-	tok->id = TOK_WORD;
+		ft_sdscpush(&var, **it);
+	}
+	if (var.len && (val = sh_varget(var.buf)))
+		ft_sdsapd((t_sds *)tok, val);
+	ft_sdsdtor(&var);
 	return (YEP);
 }
+

@@ -29,6 +29,11 @@ inline int	sh_lexquote(int fd, t_tok *tok, char **it, char **ln)
 			break ;
 		else if (**it == '\\')
 			++*it;
+		else if (**it == '$')
+		{
+			if (sh_lexvar(fd, tok, it, ln) < 0)
+				return (WUT);
+		}
 		else
 			ft_sdscpush((t_sds *)tok, *(*it)++);
 	return (YEP);
