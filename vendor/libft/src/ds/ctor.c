@@ -18,6 +18,14 @@ inline void		ft_deqctor(t_deq *self, size_t isz)
 	self->isz = isz;
 }
 
+inline void		ft_mapctor(t_map *map, t_hasher hasher, size_t ksz, size_t vsz)
+{
+	FT_INIT(map, t_map);
+	map->hasher = hasher;
+	map->ksz = ksz;
+	map->vsz = vsz;
+}
+
 inline void		ft_sdsctor(t_sds *self)
 {
 	FT_INIT(self, t_sds);

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   clear.c                                            :+:      :+:    :+:   */
+/*   get.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,38 +12,30 @@
 
 #include "libft/ds.h"
 
-inline void	ft_deqclear(t_deq *self, t_dtor idtor)
+t_bool	ft_mapget(t_map *self, void *key, uint32_t *out)
 {
-	char	*item;
+	uint32_t	i;
+	uint32_t	last;
+	uint32_t	mask;
+	uint32_t	step;
 
-	if (self->buf && idtor)
+	if (!self->cap)
+		return (0);
+	step = 0;
+	mask = self->cap - 1;
+	i = self->hasher.hash(key) & mask;
+	last = i;
+	while (!BUCKET_ISEMPTY(self->bucks, i) &&
+		(BUCKET_ISDEL(self->bucks, i) ||
+		!self->hasher.eq(*(void **)((char *)self->keys + (i * self->ksz)), key)))
 	{
-		item = ft_deqbeg(self) - self->isz;
-		while ((item += self->isz) != ft_deqend(self))
-			idtor(item);
-		self->len = self->cur;
+		i = (i + (++step)) & mask;
+		if (i == last)
+			return (0);
 	}
-}
-
-inline void	ft_mapclr(t_map *self)
-{
-	if (self->bucks)
-	{
-		ft_memset(self->bucks, BUCKET_EMPTY, self->cap);
-		self->len = 0;
-		self->occupieds = 0;
-	}
-}
-
-inline void	ft_vecclear(t_vec *self, t_dtor idtor)
-{
-	char	*item;
-
-	if (self->buf && idtor)
-	{
-		item = (char *) ft_vecbeg(self) - self->isz;
-		while ((item += self->isz) != (char *)ft_vecend(self))
-			idtor(item);
-		self->len = 0;
-	}
+	if (BUCKET_ISEITHER(self->bucks, i))
+		return (0);
+	if (out)
+		*out = i;
+	return (1);
 }
