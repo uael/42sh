@@ -31,6 +31,7 @@ SRC_NAME = \
 	ds/push.c ds/put.c ds/rem.c ds/sht.c ds/usht.c ds/mdtor.c \
 	ex/ex.c ex/ex_2.c \
 	fs/fs.c fs/fs_2.c fs/fs_3.c fs/fs_4.c \
+	hash/hash.c hash/hash_2.c \
 	int/len.c int/str.c \
 	io/fcntl.c io/ifs.c io/ofs.c io/padn.c io/putc.c io/putf.c io/putl.c \
 	io/putn.c io/puts.c \

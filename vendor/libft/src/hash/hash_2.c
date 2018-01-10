@@ -1,30 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libft.h                                            :+:      :+:    :+:   */
+/*   hash_2.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/09 07:00:16 by alucas-          ###   ########.fr       */
+/*   Created: 2017/11/07 09:52:33 by alucas-           #+#    #+#             */
+/*   Updated: 2017/11/18 09:54:36 by null             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFT_H
-# define LIBFT_H
+#include "libft/hash.h"
 
-# include "libft/buf.h"
-# include "libft/cty.h"
-# include "libft/ds.h"
-# include "libft/ex.h"
-# include "libft/fs.h"
-# include "libft/hash.h"
-# include "libft/int.h"
-# include "libft/io.h"
-# include "libft/lib.h"
-# include "libft/math.h"
-# include "libft/mem.h"
-# include "libft/str.h"
-# include "libft/tys.h"
+inline uint32_t	ft_ullhash(unsigned long long int ull)
+{
+	return (LLHASH(ull));
+}
 
-#endif
+inline uint32_t	ft_szhash(ssize_t sz)
+{
+	return (SZHASH(sz));
+}
+
+inline uint32_t	ft_uszhash(ssize_t usz)
+{
+	return (SZHASH(usz));
+}
+
+inline uint32_t	ft_strhash(char const *str)
+{
+	uint32_t h;
+
+	if ((h = (uint32_t)*str))
+		while (*++str)
+			h = (h << 5) - h + (uint32_t)*str;
+	return (h);
+}
