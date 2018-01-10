@@ -38,7 +38,7 @@ inline char		*sh_histcat(char const *ln, size_t len, char c, char **out)
 	histln = g_hist + g_hist_len - 1;
 	if (c < 0)
 	{
-		middle = histln->len - c;
+		middle = histln->len + c;
 		ft_sdsnpop(histln, (size_t)-c, NULL);
 	}
 	else if (c)
