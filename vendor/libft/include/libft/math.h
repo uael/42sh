@@ -62,6 +62,8 @@
 # define F64CMP(a, b) ((int8_t)(((a) > (b)) - ((a) < (b))))
 # define ADDRCMP(a, b) ((int8_t)((&(a) > &(b)) - (&(a) < &(b))))
 
+typedef t_bool	(t_eqfn)(void *a, void *b);
+
 extern int8_t	ft_i8max(int8_t a, int8_t b);
 extern int16_t	ft_i16max(int16_t a, int16_t b);
 extern int32_t	ft_i32max(int32_t a, int32_t b);
@@ -92,5 +94,15 @@ extern uint16_t	pow2_next16(uint16_t n);
 extern uint32_t	pow2_next32(uint32_t n);
 extern uint64_t	pow2_next64(uint64_t n);
 extern size_t	pow2_next(size_t n);
+
+extern t_bool	ft_ieq(int a, int b);
+extern t_bool	ft_ueq(unsigned int a, unsigned int b);
+extern t_bool	ft_leq(long a, long b);
+extern t_bool	ft_uleq(unsigned long a, unsigned long b);
+extern t_bool	ft_lleq(long long int a, long long int b);
+extern t_bool	ft_ulleq(unsigned long long int a, unsigned long long int b);
+extern t_bool	ft_szeq(ssize_t a, ssize_t b);
+extern t_bool	ft_uszeq(size_t a, size_t b);
+extern t_bool	ft_streq(char const *a, char const *b);
 
 #endif

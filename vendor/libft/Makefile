@@ -39,7 +39,7 @@ SRC_NAME = \
 	lib/strerr.c \
 	math/imax.c math/imin.c math/m4.c math/m4_mul.c math/m4_rot.c \
 	math/m4_trans.c math/pow.c math/pow2_next.c math/umax.c math/umin.c \
-	math/v3.c math/v3_2.c \
+	math/v3.c math/v3_2.c math/eq.c math/eq_2.c \
 	mem/alloc.c \
 	str/mem.c str/mem_2.c str/str.c str/str_2.c str/str_3.c str/str_4.c \
 	str/str_5.c

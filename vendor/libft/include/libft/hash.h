@@ -34,14 +34,16 @@
 #  define SZHASH(USZ) LLHASH(USZ)
 # endif
 
-extern uint32_t	ft_ihash(int i);
-extern uint32_t	ft_uhash(unsigned int u);
-extern uint32_t	ft_lhash(long l);
-extern uint32_t	ft_ulhash(unsigned long ul);
-extern uint32_t	ft_llhash(long long int ll);
-extern uint32_t	ft_ullhash(unsigned long long int ull);
-extern uint32_t	ft_szhash(ssize_t sz);
-extern uint32_t	ft_uszhash(ssize_t usz);
-extern uint32_t	ft_strhash(char const *str);
+typedef uint32_t	(t_hashfn)(void *x);
+
+extern uint32_t		ft_ihash(int i);
+extern uint32_t		ft_uhash(unsigned int u);
+extern uint32_t		ft_lhash(long l);
+extern uint32_t		ft_ulhash(unsigned long ul);
+extern uint32_t		ft_llhash(long long int ll);
+extern uint32_t		ft_ullhash(unsigned long long int ull);
+extern uint32_t		ft_szhash(ssize_t sz);
+extern uint32_t		ft_uszhash(ssize_t usz);
+extern uint32_t		ft_strhash(char const *str);
 
 #endif
