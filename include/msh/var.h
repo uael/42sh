@@ -13,7 +13,7 @@
 #ifndef MSH_VAR_H
 # define MSH_VAR_H
 
-# include <libft.h>
+# include "env.h"
 
 extern void		sh_scopepush(void);
 extern t_bool	sh_scopepop(void);

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "msh/env.h"
+#include "msh/var.h"
 
 static t_vec	g_scopes = { NULL, sizeof(t_map), 0, 0 };
 static t_map	*g_scope = NULL;
@@ -47,5 +47,5 @@ inline char		*sh_varget(char *var)
 
 	if (ft_mapget(g_scope, var, &it))
 		return (((char **)g_scope->vals)[it]);
-	return (NULL);
+	return (sh_getenv(var));
 }
