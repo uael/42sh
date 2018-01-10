@@ -14,6 +14,7 @@
 #include <term.h>
 
 #include "msh/shell.h"
+#include "msh/var.h"
 
 t_bool				g_shinteract = 0;
 t_bool				g_hastc = 0;
@@ -66,6 +67,7 @@ inline int			sh_launch(int fd)
 
 	st = EXIT_SUCCESS;
 	sh_init(fd);
+	sh_scopepush();
 	tok = alloca(sizeof(t_tok));
 	while ((ln = sh_readln(STDIN_FILENO, "$> ")))
 	{
@@ -80,6 +82,8 @@ inline int			sh_launch(int fd)
 		}
 		g_toks_max = ft_u64max(g_toks_max, g_toks->len);
 	}
+	while (sh_scopepop())
+		;
 	sh_finalize(fd);
 	return (st);
 }
