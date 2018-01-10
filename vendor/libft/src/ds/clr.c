@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   clear.c                                            :+:      :+:    :+:   */
+/*   clr.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,7 +12,7 @@
 
 #include "libft/ds.h"
 
-inline void	ft_deqclear(t_deq *self, t_dtor idtor)
+inline void	ft_deqclr(t_deq *self, t_dtor idtor)
 {
 	char	*item;
 
@@ -35,7 +35,17 @@ inline void	ft_mapclr(t_map *self)
 	}
 }
 
-inline void	ft_vecclear(t_vec *self, t_dtor idtor)
+inline void	ft_setclr(t_set *self)
+{
+	if (self->bucks)
+	{
+		ft_memset(self->bucks, BUCKET_EMPTY, self->cap);
+		self->len = 0;
+		self->occupieds = 0;
+	}
+}
+
+inline void	ft_vecclr(t_vec *self, t_dtor idtor)
 {
 	char	*item;
 

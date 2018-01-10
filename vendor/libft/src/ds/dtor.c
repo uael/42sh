@@ -56,6 +56,27 @@ void		ft_mapdtor(t_map *self, t_dtor kdtor, t_dtor vdtor)
     }
 }
 
+void		ft_setdtor(t_set *self, t_dtor kdtor)
+{
+	uint32_t	it;
+
+	if (self->bucks)
+	{
+		if (kdtor)
+		{
+			it = 0;
+			while (it < self->len)
+			{
+				if (BUCKET_ISPOPULATED(self->bucks, it))
+					kdtor(self->keys + (it * self->ksz));
+				++it;
+			}
+		}
+		free(self->bucks);
+		free(self->keys);
+    }
+}
+
 inline void	ft_sdsdtor(t_sds *self)
 {
 	if (self->buf)

@@ -53,6 +53,6 @@ extern void		ft_mapdtor(t_map *map, t_dtor kdtor, t_dtor vdtor);
 extern void		ft_mapclr(t_map *map);
 extern t_bool	ft_mapget(t_map *map, void *key, uint32_t *out);
 extern t_bool	ft_mapput(t_map *map, void *key, uint32_t *out);
-extern size_t	ft_mapresize(t_map *map, uint32_t sz);
+extern size_t	ft_maprsz(t_map *map, uint32_t sz);
 
 #endif

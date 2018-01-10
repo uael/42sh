@@ -25,11 +25,11 @@ OBJ_NAME = $(SRC_NAME:.c=.o)
 SRC_NAME = \
 	cty/cty.c cty/cty_2.c cty/cty_3.c \
 	ds/alloc.c ds/apd.c ds/at.c ds/aver.c ds/back.c ds/begin.c ds/clean.c \
-	ds/clear.c ds/cpush.c ds/cput.c ds/ctor.c ds/cusht.c ds/dtor.c ds/emp.c \
+	ds/clr.c ds/cpush.c ds/cput.c ds/ctor.c ds/cusht.c ds/dtor.c ds/emp.c \
 	ds/end.c ds/grow.c ds/len.c ds/mpush.c ds/mput.c ds/musht.c ds/npop.c \
 	ds/npush.c ds/nput.c ds/nrem.c ds/nsht.c ds/nusht.c ds/pop.c ds/prd.c \
-	ds/push.c ds/put.c ds/rem.c ds/sht.c ds/usht.c ds/mdtor.c ds/get.c \
-	ds/resize.c \
+	ds/push.c ds/put.c ds/rem.c ds/sht.c ds/usht.c ds/mdtor.c ds/map.c \
+	ds/map_2.c ds/set.c ds/set_2.c \
 	ex/ex.c ex/ex_2.c \
 	fs/fs.c fs/fs_2.c fs/fs_3.c fs/fs_4.c \
 	hash/hash.c hash/hash_2.c \

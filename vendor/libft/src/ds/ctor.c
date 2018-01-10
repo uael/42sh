@@ -31,6 +31,13 @@ inline void		ft_sdsctor(t_sds *self)
 	FT_INIT(self, t_sds);
 }
 
+inline void		ft_setctor(t_set *set, t_hasher hasher, size_t ksz)
+{
+	FT_INIT(set, t_set);
+	set->hasher = hasher;
+	set->ksz = ksz;
+}
+
 inline void		ft_vecctor(t_vec *self, size_t isz)
 {
 	FT_INIT(self, t_vec);
