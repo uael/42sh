@@ -30,14 +30,19 @@ inline char		*sh_readnotty(int fd)
 {
 	char		*ln;
 
-	if (fd <= 0 || fd > OPEN_MAX)
+	if (fd < 0 || fd > OPEN_MAX)
 	{
 		ENO_THROW(WUT, EINVAL);
 		return (NULL);
 	}
+	in[fd].ifd = fd;
 	if (rd[fd] > 0 && ft_ifsrd(in + fd, NULL, (size_t)rd[fd]) < 0)
 		return (NULL);
 	if ((rd[fd] = ft_ifschr(in + fd, 0, '\n', &ln)) > 0)
+	{
+		ln = (ft_memcpy(ft_malloc((size_t)rd[fd]), ln, (size_t)rd[fd]));
+		ln[rd[fd]] = '\0';
 		return (ln);
+	}
 	return (NULL);
 }

@@ -69,11 +69,11 @@ inline int			sh_launch(int fd)
 	sh_init(fd);
 	sh_scopepush();
 	tok = alloca(sizeof(t_tok));
-	while ((ln = sh_readln(STDIN_FILENO, "$> ")))
+	while ((ln = sh_readln(fd, "$> ")))
 	{
 		if (!ft_strcmp("exit\n", ln))
 			break ;
-		st = sh_lex(STDIN_FILENO, g_toks, ln);
+		st = sh_lex(fd, g_toks, ln);
 		while (ft_deqsht(g_toks, tok))
 		{
 			ft_putf(1, "tok[id='%d',val[%d]='", tok->id, tok->len);

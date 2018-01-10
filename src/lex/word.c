@@ -14,6 +14,9 @@
 
 inline int	sh_lexword(int fd, t_tok *tok, char **it, char **ln)
 {
+	char *beg;
+
+	beg = *it;
 	while (**it)
 		if (ft_isspace(**it) || ft_strchr("><&|!;(){}", **it))
 			break ;
@@ -23,7 +26,7 @@ inline int	sh_lexword(int fd, t_tok *tok, char **it, char **ln)
 				return (WUT);
 		}
 		else if (**it == '\\' && *++*it == '\n' && !*++*it &&
-			(fd < 0 || !(*it = sh_readcat(fd, "> ", -2, NULL))))
+			(fd < 0 || !(*it = sh_readcat(fd, "> ", -2, ln))))
 			return (WUT);
 		else if (**it == '$')
 		{
@@ -33,7 +36,7 @@ inline int	sh_lexword(int fd, t_tok *tok, char **it, char **ln)
 		else
 			ft_sdscpush((t_sds *)tok, *(*it)++);
 	if (!tok->len)
-		return (NOP);
+		return (beg != *it ? YEP : NOP);
 	tok->id = TOK_WORD;
 	return (YEP);
 }

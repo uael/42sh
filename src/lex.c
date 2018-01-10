@@ -21,14 +21,17 @@ inline void			sh_tokdtor(t_tok *tok)
 
 static inline int	lex(int fd, t_tok *tok, char **it, char **ln)
 {
+	int	st;
+
 	tok->len = 0;
 	while (**it == ' ' || **it == '\t')
 		++*it;
-	if (**it == '\n')
+	if (**it == '\n' || (**it == '\r' && *(*it + 1) == '\n'))
 	{
 		tok->id = TOK_EOL;
 		ft_sdscpush((t_sds *)tok, '\n');
-		++*it;
+		while (*++*it == '\n')
+			;
 		return (YEP);
 	}
 	if (**it == '\\' && *++*it == '\n' && !*++*it &&
@@ -36,9 +39,11 @@ static inline int	lex(int fd, t_tok *tok, char **it, char **ln)
 		return (WUT);
 	if (ft_isdigit(**it))
 		ft_sdscpush((t_sds *)tok, *(*it)++);
-	if (sh_lexop(fd, tok, it, ln) && sh_lexword(fd, tok, it, ln))
-		return (lex(fd, tok, it, ln));
-	return (YEP);
+	if ((st = sh_lexop(fd, tok, it, ln)) < 0)
+		return (WUT);
+	if (st && (st = sh_lexword(fd, tok, it, ln)) < 0)
+		return (WUT);
+	return st ? ENO_THROW(WUT, EINVAL) : YEP;
 }
 
 static inline int	reduce(int fd, t_deq *toks, char **it, char **ln)
@@ -74,18 +79,25 @@ int					sh_lex(int fd, t_deq *toks, char *ln)
 {
 	t_tok	*tok;
 	char	*beg;
+	int 	st;
 
 	tok = NULL;
 	toks->len = 0;
 	toks->cur = 0;
 	beg = ln;
-	while (*ln)
-	{
-		if (lex(fd, tok = ft_deqpush(toks), &ln, &beg))
-			return (WUT);
-		if (tok->id == TOK_EOL)
-			break ;
-	}
+	if (*ln)
+		while ((tok = ft_deqpush(toks)))
+		{
+			if (!*ln)
+			{
+				tok->id = TOK_END;
+				break ;
+			}
+			else if ((st = lex(fd, tok, &ln, &beg)) < 0)
+				return (WUT);
+			else if (st || tok->id == TOK_EOL)
+				break ;
+		}
 	if (tok)
 		return (reduce(fd, toks, &ln, &beg));
 	return (YEP);
