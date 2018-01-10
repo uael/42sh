@@ -15,9 +15,9 @@
 
 # include <libft.h>
 
-extern void		sh_varctor(t_map *vars);
-extern void		sh_vardtor(t_map *vars);
-extern void		sh_varset(t_map *vars, char *var, char *val);
-extern char		*sh_varget(t_map *vars, char *var);
+extern void		sh_scopepush(void);
+extern t_bool	sh_scopepop(void);
+extern void		sh_varset(char *var, char *val);
+extern char		*sh_varget(char *var);
 
 #endif

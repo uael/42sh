@@ -12,29 +12,40 @@
 
 #include "msh/env.h"
 
-inline void		sh_varctor(t_map *vars)
+static t_vec	g_scopes = { NULL, sizeof(t_map), 0, 0 };
+static t_map	*g_scope = NULL;
+
+inline void		sh_scopepush(void)
 {
-	ft_mapctor(vars, g_strhash, sizeof(char *), sizeof(char *));
+	g_scope = ft_vecpush(&g_scopes);
+	if (!g_scope->ksz)
+		ft_mapctor(g_scope, g_strhash, sizeof(char *), sizeof(char *));
 }
 
-inline void		sh_vardtor(t_map *vars)
+inline t_bool	sh_scopepop(void)
 {
-	ft_mapdtor(vars, (t_dtor)ft_pfree, (t_dtor)ft_pfree);
+	if (g_scope && ft_vecpop(&g_scopes, NULL))
+	{
+		ft_mapdtor(g_scope, (t_dtor)ft_pfree, (t_dtor)ft_pfree);
+		g_scope = ft_vecback(&g_scopes);
+		return (1);
+	}
+	return (0);
 }
 
-inline void		sh_varset(t_map *vars, char *var, char *val)
+inline void		sh_varset(char *var, char *val)
 {
 	uint32_t	it;
 
-	if (ft_mapget(vars, var, &it) || ft_mapput(vars, ft_strdup(var), &it))
-		((char **)vars->vals)[it] = ft_strdup(val);
+	if (ft_mapget(g_scope, var, &it) || ft_mapput(g_scope, ft_strdup(var), &it))
+		((char **)g_scope->vals)[it] = ft_strdup(val);
 }
 
-inline char		*sh_varget(t_map *vars, char *var)
+inline char		*sh_varget(char *var)
 {
 	uint32_t	it;
 
-	if (ft_mapget(vars, var, &it))
-		return (((char **)vars->vals)[it]);
+	if (ft_mapget(g_scope, var, &it))
+		return (((char **)g_scope->vals)[it]);
 	return (NULL);
 }
