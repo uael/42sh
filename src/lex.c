@@ -62,12 +62,6 @@ static inline int	reduce(int fd, t_deq *toks, char **it, char **ln)
 	return (YEP);
 }
 
-/*
-** TODO: parse heredoc once line is totaly parsed
-** to work, the current algo requires things that
-** the norme doesn't allow me to do..
-*/
-
 int					sh_lex(int fd, t_deq *toks, char *ln)
 {
 	t_tok	*tok;
