@@ -14,6 +14,7 @@
 #include <sys/signal.h>
 
 #include "msh/read.h"
+#include "msh/shell.h"
 
 t_rmode			g_mode;
 TTY				g_orig_mode;
@@ -38,6 +39,17 @@ void			sh_readfinalize(int fd)
 	if (isatty(fd))
 		return (sh_ttyfinalize(fd));
 	sh_nottyfinalize(fd);
+}
+
+void			sh_readexit(void)
+{
+	if (g_shfd >= 0)
+	{
+		sh_readfinalize(g_shfd);
+		if (isatty(g_shfd))
+			sh_ttyexit();
+		sh_nottyexit();
+	}
 }
 
 char			*sh_readln(int fd, char *prompt)

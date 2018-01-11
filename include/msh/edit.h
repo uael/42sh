@@ -60,6 +60,7 @@ extern uint8_t	g_edit_len;
 extern uint8_t	g_edit_idx;
 extern t_editln	*g_editln;
 
+extern void		sh_editexit(void);
 extern char		*sh_editln(char const *prompt, size_t *len);
 extern void		sh_editprint(char const *prompt);
 extern int		sh_editins(char const *prompt, char c);

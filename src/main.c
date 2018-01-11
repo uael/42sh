@@ -12,8 +12,6 @@
 
 #include "msh.h"
 
-static int	g_fd = -1;
-
 static int	exhdl(int rcode, void *arg)
 {
 	if (!errno)
@@ -24,8 +22,8 @@ static int	exhdl(int rcode, void *arg)
 		ft_putf(2, COLOR_BRED"21sh: "COLOR_RESET"%e\n", errno);
 	if (errno == ENOMEM || errno == EIO || errno == EINVAL || errno > ELAST)
 	{
-		if (g_fd >= 0)
-			sh_readfinalize(g_fd);
+		if (g_shfd >= 0)
+			sh_readfinalize(g_shfd);
 		exit(EXIT_FAILURE);
 	}
 	errno = 0;
@@ -40,15 +38,15 @@ int			main(int ac, char **av, char **envv)
 	ft_exbind(0, ft_exhdl(exhdl, NULL), NULL);
 	sh_envinit(envv);
 	if (ac == 1)
-		return (sh_exit(sh_launch(g_fd = STDIN_FILENO), NULL));
+		return (sh_exit(sh_run(g_shfd = STDIN_FILENO), NULL));
 	else
 		while (*++av)
 		{
 			ft_exbind(0, ft_exhdl(exhdl, *av), NULL);
-			if ((g_fd = open(*av, O_RDONLY, S_IRGRP | S_IRUSR)) < 0)
+			if ((g_shfd = open(*av, O_RDONLY, S_IRGRP | S_IRUSR)) < 0)
 				THROW(WUT);
 			else
-				st = sh_launch(g_fd);
+				st = sh_run(g_shfd);
 		}
 	return (sh_exit(st, NULL));
 }

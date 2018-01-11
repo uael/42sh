@@ -76,7 +76,18 @@ static t_editbind	g_inskeymap[] =
 	{0, NULL, NULL},
 };
 
-char	*sh_editln(char const *prompt, size_t *len)
+inline void		sh_editexit(void)
+{
+	sh_histexit();
+	g_edit_idx = 0;
+	while (g_edit_idx < g_edit_len)
+		ft_sdsdtor(&(g_edit + g_edit_idx++)->str);
+	g_edit_idx = 0;
+	g_edit_len = 0;
+	g_editln = 0;
+}
+
+char			*sh_editln(char const *prompt, size_t *len)
 {
 	ssize_t		rd;
 	char		key[6];

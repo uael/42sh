@@ -70,3 +70,13 @@ inline t_bool	sh_histcpy(uint8_t id, t_sds *dest)
 	}
 	return (1);
 }
+
+inline void		sh_histexit(void)
+{
+	uint8_t		i;
+
+	i = 0;
+	while (i < g_hist_len)
+		ft_sdsdtor(g_hist + i++);
+	g_hist_len = 0;
+}

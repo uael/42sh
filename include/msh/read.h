@@ -31,11 +31,14 @@ extern TTY		g_orig_mode;
 extern TTY		g_raw_mode;
 
 extern void		sh_readfinalize(int fd);
+extern void		sh_readexit(void);
 extern char		*sh_readln(int fd, char *prompt);
 extern char		*sh_readcat(int fd, char *prompt, char c, char **ln);
 extern char		*sh_readnotty(int fd);
 extern void		sh_ttyfinalize(int fd);
+extern void		sh_ttyexit(void);
 extern void		sh_nottyfinalize(int fd);
+extern void		sh_nottyexit(void);
 extern int		sh_rawmode(int fd);
 extern int		sh_offmode(int fd);
 extern int		sh_screenpos(int ifd, int ofd);

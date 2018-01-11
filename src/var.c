@@ -30,6 +30,7 @@ inline t_bool	sh_scopepop(void)
 		g_scope = ft_vecback(&g_scopes);
 		return (1);
 	}
+	ft_vecdtor(&g_scopes, NULL);
 	return (0);
 }
 

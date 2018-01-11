@@ -32,6 +32,12 @@ inline void		sh_ttyfinalize(int fd)
 	sh_offmode(fd);
 }
 
+inline void		sh_ttyexit(void)
+{
+	sh_editexit();
+	sh_ttyfinalize(STDIN_FILENO);
+}
+
 inline int		sh_rawmode(int fd)
 {
 	int st;

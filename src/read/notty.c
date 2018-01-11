@@ -18,12 +18,19 @@
 # define OPEN_MAX RLIMIT_NOFILE
 #endif
 
-static t_ifs	in[OPEN_MAX + 1] = { { 0, 0, 0, 0, { 0 } } };
-static ssize_t	rd[OPEN_MAX + 1] = { 0 };
+static t_ifs	g_in[OPEN_MAX + 1] = { { 0, 0, 0, 0, { 0 } } };
+static t_sds	g_ln = { NULL, 0, 0 };
+static ssize_t	g_rd[OPEN_MAX + 1] = { 0 };
+
+inline void		sh_nottyexit(void)
+{
+	ft_sdsdtor(&g_ln);
+}
 
 inline void		sh_nottyfinalize(int fd)
 {
-	ft_ifsclose(in + fd);
+	if (g_in[fd].ifd > 0)
+		ft_ifsclose(g_in + fd);
 }
 
 inline char		*sh_readnotty(int fd)
@@ -35,14 +42,14 @@ inline char		*sh_readnotty(int fd)
 		ENO_THROW(WUT, EINVAL);
 		return (NULL);
 	}
-	in[fd].ifd = fd;
-	if (rd[fd] > 0 && ft_ifsrd(in + fd, NULL, (size_t)rd[fd]) < 0)
+	g_in[fd].ifd = fd;
+	if (g_rd[fd] > 0 && ft_ifsrd(g_in + fd, NULL, (size_t)g_rd[fd]) < 0)
 		return (NULL);
-	if ((rd[fd] = ft_ifschr(in + fd, 0, '\n', &ln)) > 0)
+	if ((g_rd[fd] = ft_ifschr(g_in + fd, 0, '\n', &ln)) > 0)
 	{
-		ln = (ft_memcpy(ft_malloc((size_t)rd[fd]), ln, (size_t)rd[fd]));
-		ln[rd[fd]] = '\0';
-		return (ln);
+		g_ln.len = 0;
+		ft_sdsmpush(&g_ln, ln, (size_t)g_rd[fd]);
+		return (g_ln.buf);
 	}
 	return (NULL);
 }
