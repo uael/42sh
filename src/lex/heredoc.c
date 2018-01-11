@@ -21,7 +21,7 @@ inline int			sh_lexheredoc(int fd, t_tok *tok, char **it, char **ln)
 	eof = ft_memcpy(ft_malloc(eofl * sizeof(char)), tok->val, tok->len);
 	tok->len = 0;
 	while (1)
-		if (!**it && (fd < 0 || !(*it = rl_readcat(fd, "> ", 0, ln))))
+		if (!**it && (fd < 0 || !(*it = rl_catline(fd, "> ", 0, ln))))
 			return (ENO_THROW(WUT, EINVAL));
 		else if (*ft_sdscpush((t_sds *)tok, *(*it)++) == '\n' && tok->len >=
 			eofl + 2 && tok->val[tok->len - (eofl + 2)] == '\n' &&
@@ -44,7 +44,7 @@ inline int			sh_lexheredoct(int fd, t_tok *tok, char **it, char **ln)
 	tok->len = 0;
 	while (1)
 	{
-		if (!**it && (fd < 0 || !(*it = rl_readcat(fd, "> ", 0, ln))))
+		if (!**it && (fd < 0 || !(*it = rl_catline(fd, "> ", 0, ln))))
 			return (ENO_THROW(WUT, EINVAL));
 		if (*(*it - 1) == '\n')
 			while (**it == '\t')

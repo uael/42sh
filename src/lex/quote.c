@@ -18,7 +18,7 @@ inline int	sh_lexquote(int fd, t_tok *tok, char **it, char **ln)
 
 	quote = *(*it)++;
 	while (1)
-		if (!**it && (fd < 0 || !(*it = rl_readcat(fd, "> ", 0, ln))))
+		if (!**it && (fd < 0 || !(*it = rl_catline(fd, "> ", 0, ln))))
 			return (WUT);
 		else if (quote == '"' && *(*it - 1) == '\\')
 			ft_sdscpush((t_sds *)tok, ft_strchr("\\\n\"$", **it)

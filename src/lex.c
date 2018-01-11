@@ -28,7 +28,7 @@ static inline int	lex(int fd, t_tok *tok, char **it, char **ln)
 		return (YEP);
 	}
 	if (**it == '\\' && *++*it == '\n' && !*++*it &&
-		(fd < 0 || !(*it = rl_readcat(fd, "> ", -2, ln))))
+		(fd < 0 || !(*it = rl_catline(fd, "> ", -2, ln))))
 		return (WUT);
 	if (ft_isdigit(**it))
 		ft_sdscpush((t_sds *)tok, *(*it)++);

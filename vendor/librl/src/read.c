@@ -33,25 +33,25 @@ void			rd_sigwinch(int signo)
 	rl_screenget(g_screen, STDIN_FILENO, STDOUT_FILENO);
 }
 
-void			rl_readfinalize(int fd)
+void			rl_finalize(int fd)
 {
 	if (isatty(fd))
 		return (rl_ttyfinalize(fd));
 	rl_nottyfinalize(fd);
 }
 
-void			rl_readexit(int fd)
+void			rl_exit(int fd)
 {
 	if (fd >= 0)
 	{
-		rl_readfinalize(fd);
+		rl_finalize(fd);
 		if (isatty(fd))
 			rl_ttyexit();
 		rl_nottyexit();
 	}
 }
 
-char			*rl_readln(int fd, char *prompt)
+char			*rl_getline(int fd, char *prompt)
 {
 	char		*ln;
 	size_t		len;
@@ -67,7 +67,7 @@ char			*rl_readln(int fd, char *prompt)
 	return (rd_finalize(len == 1 && *ln == '\n' ? ln : rl_histadd(ln, len), 0));
 }
 
-char			*rl_readcat(int fd, char *prompt, char c, char **out)
+char			*rl_catline(int fd, char *prompt, char c, char **out)
 {
 	char		*ln;
 	size_t		len;

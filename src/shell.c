@@ -56,7 +56,7 @@ inline int			sh_run(int fd)
 	sh_init(fd);
 	sh_scopepush();
 	tok = alloca(sizeof(t_tok));
-	while ((ln = rl_readln(fd, "$> ")))
+	while ((ln = rl_getline(fd, "$> ")))
 	{
 		if (!ft_strcmp("exit\n", ln))
 			break ;
@@ -71,7 +71,7 @@ inline int			sh_run(int fd)
 	}
 	while (sh_scopepop())
 		;
-	rl_readfinalize(fd);
+	rl_finalize(fd);
 	return (st);
 }
 
@@ -80,7 +80,7 @@ int					sh_exit(int exitno, char const *fmt, ...)
 	va_list	ap;
 
 	sh_envexit();
-	rl_readexit(g_shfd);
+	rl_exit(g_shfd);
 	g_toks->len = g_toks_max;
 	g_toks->cur = 0;
 	ft_deqdtor(g_toks, (t_dtor)ft_sdsdtor);
