@@ -23,7 +23,7 @@
 
 /*
 ** TODO: hist load/save
-** TODO: autocomlete api
+** TODO: autocomplete api
 */
 
 extern int		rl_histload(char const *filename);
