@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "msh/edit.h"
+#include "edit.h"
 
 #define K_BACKSPACE "\x7f"
 #define K_DELETE "\x1b\x5b\x33\x7e"
@@ -48,9 +48,9 @@ t_editln			*g_editln;
 
 static t_editbind	g_inskeymap[] =
 {
-	{1, K_RETURN, sh_editreturn},
+	{1, K_RETURN, rl_editreturn},
 	/*{1, K_BACKSPACE, NULL},*/
-	{1, K_ENTER, sh_editreturn},
+	{1, K_ENTER, rl_editreturn},
 	/*{1, K_CTRL_A, NULL},
 	{1, K_CTRL_B, NULL},
 	{1, K_CTRL_D, NULL},
@@ -62,12 +62,12 @@ static t_editbind	g_inskeymap[] =
 	{1, K_CTRL_R, NULL},
 	{1, K_CTRL_T, NULL},
 	{1, K_CTRL_U, NULL},*/
-	{3, K_LEFT, sh_editleft},
-	{3, K_RGT, sh_editright},
-	{3, K_UP, sh_editup},
-	{3, K_DOWN, sh_editdown},
-	{3, K_HOME, sh_edithome},
-	{3, K_END, sh_editend},
+	{3, K_LEFT, rl_editleft},
+	{3, K_RGT, rl_editright},
+	{3, K_UP, rl_editup},
+	{3, K_DOWN, rl_editdown},
+	{3, K_HOME, rl_edithome},
+	{3, K_END, rl_editend},
 	/*{4, K_DELETE, NULL},
 	{6, K_CTRL_UP, NULL},
 	{6, K_CTRL_DOWN, NULL},
@@ -76,9 +76,9 @@ static t_editbind	g_inskeymap[] =
 	{0, NULL, NULL},
 };
 
-inline void		sh_editexit(void)
+inline void		rl_editexit(void)
 {
-	sh_histexit();
+	rl_histexit();
 	g_edit_idx = 0;
 	while (g_edit_idx < g_edit_len)
 		ft_sdsdtor(&(g_edit + g_edit_idx++)->str);
@@ -87,7 +87,7 @@ inline void		sh_editexit(void)
 	g_editln = 0;
 }
 
-char			*sh_editln(char const *prompt, size_t *len)
+char			*rl_editln(char const *prompt, size_t *len)
 {
 	ssize_t		rd;
 	char		key[6];
@@ -95,7 +95,7 @@ char			*sh_editln(char const *prompt, size_t *len)
 	t_editbind	*bind;
 
 	g_edit_len = 0;
-	while (sh_histcpy(g_edit_len, &g_edit[g_edit_len].str))
+	while (rl_histcpy(g_edit_len, &g_edit[g_edit_len].str))
 		++g_edit_len;
 	g_editln = g_edit + (g_edit_idx = g_edit_len++);
 	g_editln->str.len = 0;
@@ -111,7 +111,7 @@ char			*sh_editln(char const *prompt, size_t *len)
 		while (st == 2 && (++bind)->rd)
 			if (rd == bind->rd && !ft_memcmp(key, bind->key, (size_t)bind->rd))
 				st = bind->cb(prompt);
-		if (st == 1 || (rd == 1 && sh_editins(prompt, *key) == 1))
+		if (st == 1 || (rd == 1 && rl_editins(prompt, *key) == 1))
 			break ;
 	}
 	*len = g_editln->str.len;

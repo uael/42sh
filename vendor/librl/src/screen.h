@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   msh/shell.h                                        :+:      :+:    :+:   */
+/*   screen.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,18 +10,22 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MSH_SHELL_H
-# define MSH_SHELL_H
+#ifndef LIBRL_SCREEN_H
+# define LIBRL_SCREEN_H
 
-# include "lex.h"
-# include "env.h"
+# include "librl.h"
+# include <sys/ioctl.h>
 
-extern t_bool	g_shinteract;
-extern pid_t	g_shpgid;
-extern TTY		g_shmode;
-extern int		g_shfd;
+typedef struct	s_screen
+{
+	uint16_t	width;
+	uint16_t	cursor;
+}				t_screen;
 
-extern int		sh_run(int fd);
-extern int		sh_exit(int exitno, char const *fmt, ...);
+extern t_screen	*g_screen;
+
+extern int		rl_screenpos(int ifd, int ofd);
+extern int		rl_screenwidth(int ifd, int ofd);
+extern int		rl_screenget(t_screen *self, int ifd, int ofd);
 
 #endif

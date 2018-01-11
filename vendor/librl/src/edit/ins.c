@@ -10,11 +10,11 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "msh/edit.h"
+#include "../edit.h"
 
-inline int	sh_editins(char const *prompt, char c)
+inline int	rl_editins(char const *prompt, char c)
 {
 	ft_sdscput(&g_editln->str, g_editln->idx++, c);
-	sh_editprint(prompt);
+	rl_editprint(prompt);
 	return (YEP);
 }

@@ -12,13 +12,6 @@
 
 #include "msh/lex.h"
 
-inline void			sh_tokdtor(t_tok *tok)
-{
-	if (tok->val)
-		free(tok->val);
-	FT_INIT(tok, t_tok);
-}
-
 static inline int	lex(int fd, t_tok *tok, char **it, char **ln)
 {
 	int	st;
@@ -35,7 +28,7 @@ static inline int	lex(int fd, t_tok *tok, char **it, char **ln)
 		return (YEP);
 	}
 	if (**it == '\\' && *++*it == '\n' && !*++*it &&
-		(fd < 0 || !(*it = sh_readcat(fd, "> ", -2, ln))))
+		(fd < 0 || !(*it = rl_readcat(fd, "> ", -2, ln))))
 		return (WUT);
 	if (ft_isdigit(**it))
 		ft_sdscpush((t_sds *)tok, *(*it)++);

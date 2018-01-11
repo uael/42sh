@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   msh/edit.h                                         :+:      :+:    :+:   */
+/*   edit.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,18 +10,11 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MSH_EDIT_H
-# define MSH_EDIT_H
-
-# include <term.h>
-# include <termios.h>
+#ifndef LIBRL_EDIT_H
+# define LIBRL_EDIT_H
 
 # include "hist.h"
 # include "screen.h"
-
-# ifndef TTY
-#  define TTY struct termios
-# endif
 
 # define TC_GOTOUP(N) "\x1b[%dA", (N)
 # define TC_GOTODO(N) "\x1b[%dB", (N)
@@ -60,17 +53,16 @@ extern uint8_t	g_edit_len;
 extern uint8_t	g_edit_idx;
 extern t_editln	*g_editln;
 
-extern void		sh_editexit(void);
-extern char		*sh_editln(char const *prompt, size_t *len);
-extern void		sh_editprint(char const *prompt);
-extern int		sh_editins(char const *prompt, char c);
-extern int		sh_editreturn(char const *prompt);
-extern int		sh_editleft(char const *prompt);
-extern int		sh_editup(char const *prompt);
-extern int		sh_editdown(char const *prompt);
-extern int		sh_editright(char const *prompt);
-extern int		sh_edithome(char const *prompt);
-extern int		sh_editend(char const *prompt);
-extern t_bool	sh_getcaps(uint8_t id, char **ret);
+extern void		rl_editexit(void);
+extern char		*rl_editln(char const *prompt, size_t *len);
+extern void		rl_editprint(char const *prompt);
+extern int		rl_editins(char const *prompt, char c);
+extern int		rl_editreturn(char const *prompt);
+extern int		rl_editleft(char const *prompt);
+extern int		rl_editup(char const *prompt);
+extern int		rl_editdown(char const *prompt);
+extern int		rl_editright(char const *prompt);
+extern int		rl_edithome(char const *prompt);
+extern int		rl_editend(char const *prompt);
 
 #endif

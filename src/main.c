@@ -23,7 +23,7 @@ static int	exhdl(int rcode, void *arg)
 	if (errno == ENOMEM || errno == EIO || errno == EINVAL || errno > ELAST)
 	{
 		if (g_shfd >= 0)
-			sh_readfinalize(g_shfd);
+			rl_readexit(g_shfd);
 		exit(EXIT_FAILURE);
 	}
 	errno = 0;

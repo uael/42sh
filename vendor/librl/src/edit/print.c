@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "msh/edit.h"
+#include "../edit.h"
 
 static uint16_t	g_idx_col;
 static uint16_t	g_idx_up;
@@ -50,7 +50,7 @@ static void		rl_print(t_ofs *out, char const *str, uint16_t i, uint16_t *row)
 		g_idx_col = g_screen->cursor;
 }
 
-void			sh_editprint(char const *prompt)
+void			rl_editprint(char const *prompt)
 {
 	t_ofs		*out;
 	uint16_t	i;

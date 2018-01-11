@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "msh/edit.h"
+#include "../edit.h"
 
-inline int	sh_editreturn(char const *prompt)
+inline int	rl_editreturn(char const *prompt)
 {
 	(void)prompt;
 	ft_sdscpush(&g_editln->str, '\n');

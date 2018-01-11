@@ -13,8 +13,7 @@
 #include <signal.h>
 #include <sys/signal.h>
 
-#include "msh/read.h"
-#include "msh/shell.h"
+#include "read.h"
 
 t_rmode			g_mode;
 TTY				g_orig_mode;
@@ -24,62 +23,62 @@ static char		*rd_finalize(char *result, int eno)
 {
 	if (eno)
 		ENO_THROW(WUT, eno);
-	sh_offmode(STDIN_FILENO);
+	rl_offmode(STDIN_FILENO);
 	return (result);
 }
 
 void			rd_sigwinch(int signo)
 {
 	(void)signo;
-	sh_screenget(g_screen, STDIN_FILENO, STDOUT_FILENO);
+	rl_screenget(g_screen, STDIN_FILENO, STDOUT_FILENO);
 }
 
-void			sh_readfinalize(int fd)
+void			rl_readfinalize(int fd)
 {
 	if (isatty(fd))
-		return (sh_ttyfinalize(fd));
-	sh_nottyfinalize(fd);
+		return (rl_ttyfinalize(fd));
+	rl_nottyfinalize(fd);
 }
 
-void			sh_readexit(void)
+void			rl_readexit(int fd)
 {
-	if (g_shfd >= 0)
+	if (fd >= 0)
 	{
-		sh_readfinalize(g_shfd);
-		if (isatty(g_shfd))
-			sh_ttyexit();
-		sh_nottyexit();
+		rl_readfinalize(fd);
+		if (isatty(fd))
+			rl_ttyexit();
+		rl_nottyexit();
 	}
 }
 
-char			*sh_readln(int fd, char *prompt)
+char			*rl_readln(int fd, char *prompt)
 {
 	char		*ln;
 	size_t		len;
 
-	if (fd != 0 || !isatty(fd) || sh_rawmode(fd))
-		return (sh_readnotty(fd));
+	if (fd != 0 || !isatty(fd) || rl_rawmode(fd))
+		return (rl_readnotty(fd));
 	ft_write(STDIN_FILENO, prompt, ft_strlen(prompt));
 	signal(SIGWINCH, rd_sigwinch);
-	if (sh_screenget(g_screen, fd, STDOUT_FILENO) < 0)
+	if (rl_screenget(g_screen, fd, STDOUT_FILENO) < 0)
 		return (rd_finalize(NULL, 0));
-	if (!(ln = sh_editln(prompt, &len)) || !len)
+	if (!(ln = rl_editln(prompt, &len)) || !len)
 		return (rd_finalize(NULL, 0));
-	return (rd_finalize(len == 1 && *ln == '\n' ? ln : sh_histadd(ln, len), 0));
+	return (rd_finalize(len == 1 && *ln == '\n' ? ln : rl_histadd(ln, len), 0));
 }
 
-char			*sh_readcat(int fd, char *prompt, char c, char **out)
+char			*rl_readcat(int fd, char *prompt, char c, char **out)
 {
 	char		*ln;
 	size_t		len;
 
-	if (fd != 0 || !isatty(fd) || sh_rawmode(fd))
-		return (sh_readnotty(fd));
+	if (fd != 0 || !isatty(fd) || rl_rawmode(fd))
+		return (rl_readnotty(fd));
 	ft_write(STDIN_FILENO, prompt, ft_strlen(prompt));
 	signal(SIGWINCH, rd_sigwinch);
-	if (sh_screenget(g_screen, fd, STDOUT_FILENO) < 0)
+	if (rl_screenget(g_screen, fd, STDOUT_FILENO) < 0)
 		return (rd_finalize(NULL, 0));
-	if (!(ln = sh_editln(prompt, &len)) || !len)
+	if (!(ln = rl_editln(prompt, &len)) || !len)
 		return (rd_finalize(NULL, 0));
-	return (rd_finalize(sh_histcat(ln, len, c, out), 0));
+	return (rd_finalize(rl_histcat(ln, len, c, out), 0));
 }

@@ -26,7 +26,7 @@ inline int			sh_lexvar(int fd, t_tok *tok, char **it, char **ln)
 		ft_sdscpush(&var, brace);
 	while (++*it)
 	{
-		if (!**it && (fd < 0 || !(*it = sh_readcat(fd, "> ", 0, ln))))
+		if (!**it && (fd < 0 || !(*it = rl_readcat(fd, "> ", 0, ln))))
 			return (ENO_THROW(WUT, EINVAL));
 		if (!ft_isalnum(**it) && **it != '_')
 		{

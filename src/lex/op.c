@@ -22,7 +22,7 @@ static inline int	opmth(t_tok *tok, char **it, uint8_t len, uint8_t id)
 static inline int	opnext(int fd, char **it, char **ln)
 {
 	if (*++*it == '\\' && *++*it == '\n' && !*++*it &&
-		(fd < 0 || !(*it = sh_readcat(fd, "> ", -2, ln))))
+		(fd < 0 || !(*it = rl_readcat(fd, "> ", -2, ln))))
 		return (WUT);
 	return (YEP);
 }

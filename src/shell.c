@@ -17,7 +17,6 @@
 #include "msh/var.h"
 
 t_bool				g_shinteract = 0;
-t_bool				g_hastc = 0;
 pid_t				g_shpgid;
 TTY					g_shmode;
 int					g_shfd = -1;
@@ -57,7 +56,7 @@ inline int			sh_run(int fd)
 	sh_init(fd);
 	sh_scopepush();
 	tok = alloca(sizeof(t_tok));
-	while ((ln = sh_readln(fd, "$> ")))
+	while ((ln = rl_readln(fd, "$> ")))
 	{
 		if (!ft_strcmp("exit\n", ln))
 			break ;
@@ -72,7 +71,7 @@ inline int			sh_run(int fd)
 	}
 	while (sh_scopepop())
 		;
-	sh_readfinalize(fd);
+	rl_readfinalize(fd);
 	return (st);
 }
 
@@ -81,7 +80,7 @@ int					sh_exit(int exitno, char const *fmt, ...)
 	va_list	ap;
 
 	sh_envexit();
-	sh_readexit();
+	rl_readexit(g_shfd);
 	g_toks->len = g_toks_max;
 	g_toks->cur = 0;
 	ft_deqdtor(g_toks, (t_dtor)ft_sdsdtor);

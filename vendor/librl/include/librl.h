@@ -1,27 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   msh/shell.h                                        :+:      :+:    :+:   */
+/*   librl.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/06 12:00:10 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/09 07:00:16 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MSH_SHELL_H
-# define MSH_SHELL_H
+#ifndef LIBRL_H
+# define LIBRL_H
 
-# include "lex.h"
-# include "env.h"
+# include <libft.h>
+# include <term.h>
+# include <termios.h>
 
-extern t_bool	g_shinteract;
-extern pid_t	g_shpgid;
-extern TTY		g_shmode;
-extern int		g_shfd;
+# ifndef TTY
+#  define TTY struct termios
+# endif
 
-extern int		sh_run(int fd);
-extern int		sh_exit(int exitno, char const *fmt, ...);
+extern char		*rl_readln(int fd, char *prompt);
+extern char		*rl_readcat(int fd, char *prompt, char c, char **ln);
+extern void		rl_readfinalize(int fd);
+extern void		rl_readexit(int fd);
 
 #endif

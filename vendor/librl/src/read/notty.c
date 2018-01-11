@@ -12,7 +12,7 @@
 
 #include <sys/resource.h>
 
-#include "msh/read.h"
+#include "../read.h"
 
 #ifndef OPEN_MAX
 # define OPEN_MAX RLIMIT_NOFILE
@@ -22,18 +22,18 @@ static t_ifs	g_in[OPEN_MAX + 1] = { { 0, 0, 0, 0, { 0 } } };
 static t_sds	g_ln = { NULL, 0, 0 };
 static ssize_t	g_rd[OPEN_MAX + 1] = { 0 };
 
-inline void		sh_nottyexit(void)
+inline void		rl_nottyexit(void)
 {
 	ft_sdsdtor(&g_ln);
 }
 
-inline void		sh_nottyfinalize(int fd)
+inline void		rl_nottyfinalize(int fd)
 {
 	if (g_in[fd].ifd > 0)
 		ft_ifsclose(g_in + fd);
 }
 
-inline char		*sh_readnotty(int fd)
+inline char		*rl_readnotty(int fd)
 {
 	char		*ln;
 

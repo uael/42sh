@@ -10,12 +10,12 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "msh/hist.h"
+#include "hist.h"
 
 static t_sds	g_hist[HIST_MAX] = { { 0, 0, 0 } };
 static uint8_t	g_hist_len = 0;
 
-inline char		*sh_histadd(char const *ln, size_t len)
+inline char		*rl_histadd(char const *ln, size_t len)
 {
 	t_sds		*histln;
 
@@ -28,7 +28,7 @@ inline char		*sh_histadd(char const *ln, size_t len)
 	return (histln->buf);
 }
 
-inline char		*sh_histcat(char const *ln, size_t len, char c, char **out)
+inline char		*rl_histcat(char const *ln, size_t len, char c, char **out)
 {
 	t_sds		*histln;
 	size_t		middle;
@@ -55,7 +55,7 @@ inline char		*sh_histcat(char const *ln, size_t len, char c, char **out)
 	return (histln->buf + middle);
 }
 
-inline t_bool	sh_histcpy(uint8_t id, t_sds *dest)
+inline t_bool	rl_histcpy(uint8_t id, t_sds *dest)
 {
 	t_sds		*histln;
 
@@ -71,7 +71,7 @@ inline t_bool	sh_histcpy(uint8_t id, t_sds *dest)
 	return (1);
 }
 
-inline void		sh_histexit(void)
+inline void		rl_histexit(void)
 {
 	uint8_t		i;
 

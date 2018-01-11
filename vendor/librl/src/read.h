@@ -1,31 +1,41 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   msh/screen.h                                       :+:      :+:    :+:   */
+/*   read.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/06 12:00:10 by alucas-          ###   ########.fr       */
+/*   Updated: 2018/01/06 11:13:28 by cmalfroy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MSH_SCREEN_H
-# define MSH_SCREEN_H
+#ifndef LIBRL_READ_H
+# define LIBRL_READ_H
 
-# include <libft.h>
-# include <sys/ioctl.h>
+# include <signal.h>
 
-typedef struct	s_screen
+# include "edit.h"
+
+typedef enum	e_rmode
 {
-	uint16_t	width;
-	uint16_t	cursor;
-}				t_screen;
+	RL_NONE,
+	RL_OFF,
+	RL_INSERT,
+	RL_SEARCH,
+	RL_VISUAL
+}				t_rmode;
 
-extern t_screen	*g_screen;
+extern t_rmode	g_mode;
+extern TTY		g_orig_mode;
+extern TTY		g_raw_mode;
 
-extern int		sh_screenpos(int ifd, int ofd);
-extern int		sh_screenwidth(int ifd, int ofd);
-extern int		sh_screenget(t_screen *self, int ifd, int ofd);
+extern char		*rl_readnotty(int fd);
+extern void		rl_ttyfinalize(int fd);
+extern void		rl_ttyexit(void);
+extern void		rl_nottyfinalize(int fd);
+extern void		rl_nottyexit(void);
+extern int		rl_rawmode(int fd);
+extern int		rl_offmode(int fd);
 
 #endif

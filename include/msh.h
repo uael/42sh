@@ -48,14 +48,10 @@
 ** [ ] - &> redirection operator (BONUS)
 */
 
-# include "msh/edit.h"
 # include "msh/env.h"
-# include "msh/hist.h"
 # include "msh/job.h"
 # include "msh/lex.h"
 # include "msh/proc.h"
-# include "msh/read.h"
-# include "msh/screen.h"
 # include "msh/shell.h"
 # include "msh/var.h"
 

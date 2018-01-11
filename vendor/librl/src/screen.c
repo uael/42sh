@@ -10,12 +10,12 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "msh/screen.h"
+#include "screen.h"
 
 static t_screen	g_stack_screen;
 t_screen		*g_screen = &g_stack_screen;
 
-int				sh_screenpos(int ifd, int ofd)
+int				rl_screenpos(int ifd, int ofd)
 {
 	char	buf[32];
 	uint	i;
@@ -32,7 +32,7 @@ int				sh_screenpos(int ifd, int ofd)
 	return ((int)ft_atoi(ft_strchr(buf, ';') + 1));
 }
 
-int				sh_screenwidth(int ifd, int ofd)
+int				rl_screenwidth(int ifd, int ofd)
 {
 	struct winsize	ws;
 	int				start;
@@ -43,11 +43,11 @@ int				sh_screenwidth(int ifd, int ofd)
 		return (ws.ws_col);
 	else
 	{
-		if ((start = sh_screenpos(ifd, ofd)) == -1)
+		if ((start = rl_screenpos(ifd, ofd)) == -1)
 			return (WUT);
 		if (ft_write(ofd, "\x1b[999C", 6) != 6)
 			return (THROW(WUT));
-		if ((cols = sh_screenpos(ifd, ofd)) == -1)
+		if ((cols = rl_screenpos(ifd, ofd)) == -1)
 			return (WUT);
 		if (cols > start)
 		{
@@ -60,11 +60,11 @@ int				sh_screenwidth(int ifd, int ofd)
 	}
 }
 
-int				sh_screenget(t_screen *self, int ifd, int ofd)
+int				rl_screenget(t_screen *self, int ifd, int ofd)
 {
 	int	width;
 
-	if ((width = sh_screenwidth(ifd, ofd)) <= 0)
+	if ((width = rl_screenwidth(ifd, ofd)) <= 0)
 		return (WUT);
 	self->width = (uint16_t)width;
 	self->cursor = 0;

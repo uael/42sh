@@ -13,7 +13,7 @@
 #ifndef MSH_LEX_H
 # define MSH_LEX_H
 
-# include "read.h"
+# include <librl.h>
 
 enum			e_tok
 {
@@ -69,8 +69,6 @@ typedef struct	s_tok
 	size_t		len;
 	uint8_t		id;
 }				t_tok;
-
-extern void		sh_tokdtor(t_tok *tok);
 
 extern int		sh_lex(int fd, t_deq *toks, char *ln);
 extern int		sh_lexvar(int fd, t_tok *tok, char **it, char **ln);

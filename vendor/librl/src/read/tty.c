@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "msh/read.h"
+#include "../read.h"
 
 static void		rd_redirect(void)
 {
@@ -27,18 +27,18 @@ static void		rd_redirect(void)
 	close(fd);
 }
 
-inline void		sh_ttyfinalize(int fd)
+inline void		rl_ttyfinalize(int fd)
 {
-	sh_offmode(fd);
+	rl_offmode(fd);
 }
 
-inline void		sh_ttyexit(void)
+inline void		rl_ttyexit(void)
 {
-	sh_editexit();
-	sh_ttyfinalize(STDIN_FILENO);
+	rl_editexit();
+	rl_ttyfinalize(STDIN_FILENO);
 }
 
-inline int		sh_rawmode(int fd)
+inline int		rl_rawmode(int fd)
 {
 	int st;
 
@@ -54,7 +54,6 @@ inline int		sh_rawmode(int fd)
 		g_raw_mode.c_cflag |= (CS8);
 		g_raw_mode.c_cc[VMIN] = 1;
 		g_raw_mode.c_cc[VTIME] = 0;
-		g_mode = RL_OFF;
 	}
 	if (g_mode != RL_INSERT)
 	{
@@ -67,7 +66,7 @@ inline int		sh_rawmode(int fd)
 	return (YEP);
 }
 
-inline int		sh_offmode(int fd)
+inline int		rl_offmode(int fd)
 {
 	int st;
 

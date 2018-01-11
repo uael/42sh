@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   msh/hist.h                                         :+:      :+:    :+:   */
+/*   hist.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,23 +10,23 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MSH_HIST_H
-# define MSH_HIST_H
+#ifndef LIBRL_HIST_H
+# define LIBRL_HIST_H
 
-# include <libft.h>
+# include "librl.h"
 
 # define HIST_MAX (100)
 
-extern void		sh_histexit(void);
-extern char		*sh_histadd(char const *ln, size_t len);
-extern char		*sh_histcat(char const *ln, size_t len, char c, char **out);
-extern t_bool	sh_histcpy(uint8_t id, t_sds *dest);
+extern void		rl_histexit(void);
+extern char		*rl_histadd(char const *ln, size_t len);
+extern char		*rl_histcat(char const *ln, size_t len, char c, char **out);
+extern t_bool	rl_histcpy(uint8_t id, t_sds *dest);
 
 /*
 ** TODO load/save
 */
 
-extern int		sh_histload(char const *filename);
-extern int		sh_histsave(char const *filename);
+extern int		rl_histload(char const *filename);
+extern int		rl_histsave(char const *filename);
 
 #endif
