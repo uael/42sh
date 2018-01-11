@@ -32,9 +32,9 @@ inline void		rl_ttyfinalize(int fd)
 	rl_offmode(fd);
 }
 
-inline void		rl_ttyexit(void)
+inline void		rl_ttydtor(void)
 {
-	rl_editexit();
+	rl_editdtor();
 	rl_ttyfinalize(STDIN_FILENO);
 }
 
@@ -70,7 +70,7 @@ inline int		rl_offmode(int fd)
 {
 	int st;
 
-	if (g_mode != RL_OFF)
+	if (g_mode != RL_OFF && g_mode != RL_NONE)
 	{
 		if ((st = tcsetattr(fd, TCSADRAIN, &g_orig_mode)) == -1 && errno == EIO)
 			rd_redirect();

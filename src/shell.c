@@ -79,8 +79,10 @@ int					sh_exit(int exitno, char const *fmt, ...)
 {
 	va_list	ap;
 
-	sh_envexit();
-	rl_exit(g_shfd);
+	if (g_shfd >= 0)
+		rl_finalize(g_shfd);
+	rl_dtor();
+	sh_envdtor();
 	g_toks->len = g_toks_max;
 	g_toks->cur = 0;
 	ft_deqdtor(g_toks, (t_dtor)ft_sdsdtor);

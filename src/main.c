@@ -21,11 +21,7 @@ static int	exhdl(int rcode, void *arg)
 	else
 		ft_putf(2, COLOR_BRED"21sh: "COLOR_RESET"%e\n", errno);
 	if (errno == ENOMEM || errno == EIO || errno == EINVAL || errno > ELAST)
-	{
-		if (g_shfd >= 0)
-			rl_exit(g_shfd);
-		exit(EXIT_FAILURE);
-	}
+		sh_exit(EXIT_FAILURE, NULL);
 	errno = 0;
 	return (rcode);
 }

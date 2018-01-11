@@ -15,7 +15,7 @@
 
 #include "read.h"
 
-t_rmode			g_mode;
+t_rmode			g_mode = RL_NONE;
 TTY				g_orig_mode;
 TTY				g_raw_mode;
 
@@ -40,15 +40,10 @@ void			rl_finalize(int fd)
 	rl_nottyfinalize(fd);
 }
 
-void			rl_exit(int fd)
+void			rl_dtor(void)
 {
-	if (fd >= 0)
-	{
-		rl_finalize(fd);
-		if (isatty(fd))
-			rl_ttyexit();
-		rl_nottyexit();
-	}
+	rl_ttydtor();
+	rl_nottydtor();
 }
 
 char			*rl_getline(int fd, char *prompt)

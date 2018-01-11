@@ -17,7 +17,7 @@
 
 extern char		**g_env;
 
-extern void		sh_envexit(void);
+extern void		sh_envdtor(void);
 extern void		sh_envinit(char **envv);
 extern char		*sh_getenv(char *var);
 extern void		sh_setenv(char *var, char *val);

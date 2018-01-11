@@ -76,7 +76,7 @@ static t_editbind	g_inskeymap[] =
 	{0, NULL, NULL},
 };
 
-inline void		rl_editexit(void)
+inline void		rl_editdtor(void)
 {
 	rl_histexit();
 	g_edit_idx = 0;

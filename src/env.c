@@ -16,7 +16,7 @@ char			**g_env = NULL;
 static t_vec	g_venv_stack = { 0, sizeof(char *), 0, 0 };
 static t_vec	*g_venv = &g_venv_stack;
 
-inline void		sh_envexit(void)
+inline void		sh_envdtor(void)
 {
 	ft_vecdtor(g_venv, (t_dtor)ft_pfree);
 }

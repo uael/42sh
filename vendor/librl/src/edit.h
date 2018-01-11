@@ -53,7 +53,7 @@ extern uint8_t	g_edit_len;
 extern uint8_t	g_edit_idx;
 extern t_editln	*g_editln;
 
-extern void		rl_editexit(void);
+extern void		rl_editdtor(void);
 extern char		*rl_editln(char const *prompt, size_t *len);
 extern void		rl_editprint(char const *prompt);
 extern int		rl_editins(char const *prompt, char c);

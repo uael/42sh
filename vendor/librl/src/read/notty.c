@@ -22,7 +22,7 @@ static t_ifs	g_in[OPEN_MAX + 1] = { { 0, 0, 0, 0, { 0 } } };
 static t_sds	g_ln = { NULL, 0, 0 };
 static ssize_t	g_rd[OPEN_MAX + 1] = { 0 };
 
-inline void		rl_nottyexit(void)
+inline void		rl_nottydtor(void)
 {
 	ft_sdsdtor(&g_ln);
 }

@@ -32,9 +32,9 @@ extern TTY		g_raw_mode;
 
 extern char		*rl_readnotty(int fd);
 extern void		rl_ttyfinalize(int fd);
-extern void		rl_ttyexit(void);
+extern void		rl_ttydtor(void);
 extern void		rl_nottyfinalize(int fd);
-extern void		rl_nottyexit(void);
+extern void		rl_nottydtor(void);
 extern int		rl_rawmode(int fd);
 extern int		rl_offmode(int fd);
 
