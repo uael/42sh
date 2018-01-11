@@ -60,13 +60,13 @@ inline int			sh_run(int fd)
 	{
 		if (!ft_strcmp("exit\n", ln))
 			break ;
-		st = sh_lex(fd, g_toks, ln);
-		while (ft_deqsht(g_toks, tok))
-		{
-			ft_putf(1, "tok[id='%d',val[%d]='", tok->id, tok->len);
-			ft_write(1, tok->val, tok->len);
-			ft_puts(1, "']\n");
-		}
+		if (!(st = sh_lex(fd, g_toks, ln)))
+			while (ft_deqsht(g_toks, tok))
+			{
+				ft_putf(1, "tok[id='%d',val[%d]='", tok->id, tok->len);
+				ft_write(1, tok->val, tok->len);
+				ft_puts(1, "']\n");
+			}
 		g_toks_max = ft_u64max(g_toks_max, g_toks->len);
 	}
 	while (sh_scopepop())

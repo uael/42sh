@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "msh/lex.h"
+#include "msh/err.h"
 
 static inline int	lex(int fd, t_tok *tok, char **it, char **ln)
 {
@@ -29,14 +30,16 @@ static inline int	lex(int fd, t_tok *tok, char **it, char **ln)
 	}
 	if (**it == '\\' && *++*it == '\n' && !*++*it &&
 		(fd < 0 || !(*it = rl_catline(fd, "> ", -2, ln))))
-		return (WUT);
+		return (sh_errparse(*ln, *it, "Unexpected end of file after '\\'"));
 	if (ft_isdigit(**it))
 		ft_sdscpush((t_sds *)tok, *(*it)++);
 	if ((st = sh_lexop(fd, tok, it, ln)) < 0)
 		return (WUT);
 	if (st && (st = sh_lexword(fd, tok, it, ln)) < 0)
 		return (WUT);
-	return st ? ENO_THROW(WUT, EINVAL) : YEP;
+	if (st)
+		return (sh_errparse(*ln, *it, "Unexpected token '%c'", **it));
+	return (YEP);
 }
 
 static inline int	reduce(int fd, t_deq *toks, char **it, char **ln)
@@ -57,6 +60,10 @@ static inline int	reduce(int fd, t_deq *toks, char **it, char **ln)
 			if (prev->id == TOK_HEREDOCT && sh_lexheredoct(fd, tok, it, ln))
 				return (WUT);
 		}
+		else if (prev && prev->id == TOK_HEREDOC)
+			return (sh_errparse(*ln, *it, "Expected word after heredoc '<<'"));
+		else if (prev && prev->id == TOK_HEREDOCT)
+			return (sh_errparse(*ln, *it, "Expected word after heredoc '<<-'"));
 		prev = tok;
 	}
 	return (YEP);
@@ -72,6 +79,7 @@ int					sh_lex(int fd, t_deq *toks, char *ln)
 	toks->len = 0;
 	toks->cur = 0;
 	beg = ln;
+	st = 0;
 	if (*ln)
 		while ((tok = ft_deqpush(toks)))
 		{
@@ -85,7 +93,7 @@ int					sh_lex(int fd, t_deq *toks, char *ln)
 			else if (st || tok->id == TOK_EOL)
 				break ;
 		}
-	if (tok)
+	if (!st && tok)
 		return (reduce(fd, toks, &ln, &beg));
 	return (YEP);
 }

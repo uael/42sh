@@ -24,6 +24,7 @@ OBJ_NAME = $(SRC_NAME:.c=.o)
 3TH_NAME = ft rl
 SRC_NAME = \
 	env.c \
+	err.c \
 	job.c job/control.c \
 	lex.c lex/heredoc.c lex/op.c lex/quote.c lex/var.c lex/word.c \
 	main.c \

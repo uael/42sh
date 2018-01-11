@@ -49,6 +49,7 @@
 */
 
 # include "msh/env.h"
+# include "msh/err.h"
 # include "msh/job.h"
 # include "msh/lex.h"
 # include "msh/proc.h"
