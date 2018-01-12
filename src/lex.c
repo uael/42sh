@@ -136,7 +136,7 @@ int					sh_lex(int fd, t_deq *toks, char *ln)
 	if (*ln)
 		while ((tok = ft_deqpush(toks)))
 		{
-			tok->pos = (uint16_t)(ln - beg);
+			tok->pos = (uint16_t)(ln - beg + 1);
 			if (!*ln)
 			{
 				tok->id = TOK_END;
@@ -146,7 +146,6 @@ int					sh_lex(int fd, t_deq *toks, char *ln)
 				return (WUT);
 			else if (st || tok->id == TOK_EOL)
 				break ;
-			tok->pos += tok->len;
 		}
 	return (tok ? reduce(fd, toks, &ln, &beg) : YEP);
 }

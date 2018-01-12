@@ -15,7 +15,7 @@
 static t_ofs	g_cerr_stack = { STDERR_FILENO, 0, { 0 } };
 static t_ofs	*g_cerr = &g_cerr_stack;
 
-int		sh_synerr(char const *ln, char const *it, char const *fmt, ...)
+int				sh_synerr(char const *ln, char const *it, char const *fmt, ...)
 {
 	va_list	ap;
 
