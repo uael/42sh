@@ -56,23 +56,27 @@ inline int			sh_run(int fd)
 	sh_init(fd);
 	sh_scopepush();
 	tok = alloca(sizeof(t_tok));
-	while ((ln = rl_getline(fd, "$> ")))
+	while ((ln = rl_getline(fd, "$> ")) > (char *)0)
 	{
 		if (!ft_strcmp("exit\n", ln))
 			break ;
 		if (!(st = sh_lex(fd, g_toks, ln)))
+		{
 			while (ft_deqsht(g_toks, tok))
 			{
 				ft_putf(1, "tok[id='%d',val[%d]='", tok->id, tok->len);
 				ft_write(1, tok->val, tok->len);
 				ft_puts(1, "']\n");
 			}
-		g_toks_max = ft_u64max(g_toks_max, g_toks->len);
+			g_toks_max = ft_u64max(g_toks_max, g_toks->len);
+		}
+		else if (fd > 0)
+			break ;
 	}
 	while (sh_scopepop())
 		;
 	rl_finalize(fd);
-	return (st);
+	return (ln < (char *)0 ? WUT : st);
 }
 
 int					sh_exit(int exitno, char const *fmt, ...)
@@ -92,5 +96,5 @@ int					sh_exit(int exitno, char const *fmt, ...)
 		ft_vputf(2, fmt, ap);
 		va_end(ap);
 	}
-	exit(exitno);
+	exit(exitno == WUT ? EXIT_FAILURE : exitno);
 }

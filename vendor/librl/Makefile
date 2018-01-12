@@ -21,7 +21,7 @@ INC_PATH = ./include/ $(addprefix $(3TH_PATH), include/)
 LNK_PATH = ./ $(3TH_PATH)
 
 OBJ_NAME = $(SRC_NAME:.c=.o)
-3TH_NAME = ft
+3TH_NAME =
 SRC_NAME = \
 	edit.c edit/ins.c edit/move.c edit/print.c edit/return.c \
 	hist.c \
@@ -39,8 +39,7 @@ LIB = $(NAME)
 all: $(EXE) $(LIB)
 
 $(LIB): 3th $(OBJ)
-	@ar -rc tmp.$(NAME) $(OBJ)
-	@ar -rcsT $(NAME) tmp.$(NAME) ../libft/libft.a
+	@ar -rc $(NAME) $(OBJ)
 	@ranlib $(NAME)
 	@printf  "%-25s\033[32m[✔]\033[0m\n" "$(NAME): lib"
 

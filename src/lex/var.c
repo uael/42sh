@@ -13,6 +13,11 @@
 #include "msh/lex.h"
 #include "msh/var.h"
 
+/*
+** TODO(uael): use your brain to find a proper and working algo, this one is
+** shity and make me sick
+*/
+
 inline int			sh_lexvar(int fd, t_tok *tok, char **it, char **ln)
 {
 	char	brace;
@@ -20,27 +25,27 @@ inline int			sh_lexvar(int fd, t_tok *tok, char **it, char **ln)
 	char	*val;
 
 	if (**it != '$')
-		return (ENO_THROW(WUT, EINVAL));
+		return (sh_synerr(*ln, *it, "Expected token '$'"));
 	ft_sdsctor(&var);
 	if (ft_isalpha(brace = *++*it) || brace == '_')
 		ft_sdscpush(&var, brace);
 	while (++*it)
 	{
 		if (!**it && (fd < 0 || !(*it = rl_catline(fd, "> ", 0, ln))))
-			return (ENO_THROW(WUT, EINVAL));
+			return (*it < (char *)0 ? WUT : sh_synerr(*ln, *it, "Unexpected "
+				"EOF while looking for matching `}'"));
 		if (!ft_isalnum(**it) && **it != '_')
 		{
 			if (brace == '{' && **it != '}')
-				return (WUT);
+				return (sh_synerr(*ln, *it, "Expected letter or '}' got `%c'",
+					**it));
 			else if (brace == '{')
 				++*it;
 			break ;
 		}
 		ft_sdscpush(&var, **it);
 	}
-	if (var.len && (val = sh_varget(var.buf)))
-		ft_sdsapd((t_sds *)tok, val);
+	ft_sdsapd((t_sds *)tok, var.len && (val = sh_varget(var.buf)) ? val : "");
 	ft_sdsdtor(&var);
 	return (YEP);
 }
-

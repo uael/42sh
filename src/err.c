@@ -15,11 +15,11 @@
 static t_ofs	g_cerr_stack = { STDERR_FILENO, 0, { 0 } };
 static t_ofs	*g_cerr = &g_cerr_stack;
 
-int		sh_errparse(char const *ln, char const *it, char const *fmt, ...)
+int		sh_synerr(char const *ln, char const *it, char const *fmt, ...)
 {
 	va_list	ap;
 
-	ft_ofswrf(g_cerr, COLOR_BRED"21sh: "COLOR_RESET"parse error: ");
+	ft_ofswrf(g_cerr, COLOR_BRED"21sh: "COLOR_RESET);
 	va_start(ap, fmt);
 	ft_ofsvwrf(g_cerr, fmt, ap);
 	va_end(ap);
@@ -27,13 +27,12 @@ int		sh_errparse(char const *ln, char const *it, char const *fmt, ...)
 	if (ln)
 	{
 		ft_ofswrs(g_cerr, ln);
-		if (it)
-		{
-			while (++ln < it)
-				ft_ofswrc(g_cerr, ' ');
-			ft_ofswrs(g_cerr, COLOR_BRED"^"COLOR_RESET"\n");
-		}
+		if (!it)
+			it = ft_strchr(ln, 0);
+		while (++ln < it)
+			ft_ofswrc(g_cerr, ' ');
+		ft_ofswrs(g_cerr, COLOR_BRED"^"COLOR_RESET"\n");
 	}
 	ft_ofsflush(g_cerr);
-	return (NOP);
+	return (WUT);
 }

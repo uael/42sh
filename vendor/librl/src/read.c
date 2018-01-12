@@ -19,14 +19,6 @@ t_rmode			g_mode = RL_NONE;
 TTY				g_orig_mode;
 TTY				g_raw_mode;
 
-static char		*rd_finalize(char *result, int eno)
-{
-	if (eno)
-		ENO_THROW(WUT, eno);
-	rl_offmode(STDIN_FILENO);
-	return (result);
-}
-
 void			rd_sigwinch(int signo)
 {
 	(void)signo;
@@ -56,10 +48,11 @@ char			*rl_getline(int fd, char *prompt)
 	ft_write(STDIN_FILENO, prompt, ft_strlen(prompt));
 	signal(SIGWINCH, rd_sigwinch);
 	if (rl_screenget(g_screen, fd, STDOUT_FILENO) < 0)
-		return (rd_finalize(NULL, 0));
-	if (!(ln = rl_editln(prompt, &len)) || !len)
-		return (rd_finalize(NULL, 0));
-	return (rd_finalize(len == 1 && *ln == '\n' ? ln : rl_histadd(ln, len), 0));
+		ln = (char *)-1;
+	else if ((ln = rl_editln(prompt, &len)) > (char *)0 && len > 1)
+		ln = rl_histadd(ln, len);
+	rl_offmode(fd);
+	return (ln);
 }
 
 char			*rl_catline(int fd, char *prompt, char c, char **out)
@@ -72,8 +65,9 @@ char			*rl_catline(int fd, char *prompt, char c, char **out)
 	ft_write(STDIN_FILENO, prompt, ft_strlen(prompt));
 	signal(SIGWINCH, rd_sigwinch);
 	if (rl_screenget(g_screen, fd, STDOUT_FILENO) < 0)
-		return (rd_finalize(NULL, 0));
-	if (!(ln = rl_editln(prompt, &len)) || !len)
-		return (rd_finalize(NULL, 0));
-	return (rd_finalize(rl_histcat(ln, len, c, out), 0));
+		ln = (char *)-1;
+	else if ((ln = rl_editln(prompt, &len)) > (char *)0 && len > 1)
+		ln = rl_histcat(ln, len, c, out);
+	rl_offmode(fd);
+	return (ln);
 }

@@ -27,7 +27,7 @@ inline int	sh_lexword(int fd, t_tok *tok, char **it, char **ln)
 		}
 		else if (**it == '\\' && *++*it == '\n' && !*++*it &&
 			(fd < 0 || !(*it = rl_catline(fd, "> ", -2, ln))))
-			return (WUT);
+			return (*it < (char *)0 ? WUT : NOP);
 		else if (**it == '$')
 		{
 			if (sh_lexvar(fd, tok, it, ln) < 0)
@@ -35,8 +35,8 @@ inline int	sh_lexword(int fd, t_tok *tok, char **it, char **ln)
 		}
 		else
 			ft_sdscpush((t_sds *)tok, *(*it)++);
-	if (!tok->len)
-		return (beg != *it ? YEP : NOP);
+	if (beg == *it)
+		return (NOP);
 	tok->id = TOK_WORD;
 	return (YEP);
 }

@@ -25,5 +25,6 @@ extern int	ft_iscntrl(int c);
 
 extern int	ft_tolower(int c);
 extern int	ft_toupper(int c);
+extern char	*ft_toprint(int c, char *buf);
 
 #endif

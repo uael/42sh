@@ -14,6 +14,7 @@
 # define MSH_LEX_H
 
 # include <librl.h>
+# include "err.h"
 
 enum			e_tok
 {
@@ -45,7 +46,6 @@ enum			e_tok
 	TOK_UNTIL,
 	TOK_WHILE,
 	TOK_WORD,
-	TOK_SKIP,
 	TOK_NOT = '!',
 	TOK_AMP = '&',
 	TOK_LPAR = '(',
@@ -67,8 +67,11 @@ typedef struct	s_tok
 	char		*val;
 	size_t		cap;
 	size_t		len;
+	uint16_t	pos;
 	uint8_t		id;
 }				t_tok;
+
+extern char		*sh_tokidstr(uint8_t id);
 
 extern int		sh_lex(int fd, t_deq *toks, char *ln);
 extern int		sh_lexvar(int fd, t_tok *tok, char **it, char **ln);

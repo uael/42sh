@@ -21,7 +21,7 @@ INC_PATH = ./include/
 LNK_PATH = ./ $(3TH_PATH)
 
 OBJ_NAME = $(SRC_NAME:.c=.o)
-3TH_NAME = ft rl
+3TH_NAME = rl ft
 SRC_NAME = \
 	env.c \
 	err.c \

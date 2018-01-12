@@ -16,10 +16,12 @@ inline int	sh_lexquote(int fd, t_tok *tok, char **it, char **ln)
 {
 	char quote;
 
-	quote = *(*it)++;
+	if ((quote = *(*it)++) != '\'' && quote != '"')
+		return (sh_synerr(*ln, *it, "Expected token ''' or '\"'"));
 	while (1)
 		if (!**it && (fd < 0 || !(*it = rl_catline(fd, "> ", 0, ln))))
-			return (WUT);
+			return (*it < (char *)0 ? WUT : sh_synerr(*ln, *it, "Unexpected "
+				"EOF while looking for matching `%c'", quote));
 		else if (quote == '"' && *(*it - 1) == '\\')
 			ft_sdscpush((t_sds *)tok, ft_strchr("\\\n\"$", **it)
 				? *(*it)++ : (char)'\\');
@@ -31,7 +33,7 @@ inline int	sh_lexquote(int fd, t_tok *tok, char **it, char **ln)
 			++*it;
 		else if (**it == '$')
 		{
-			if (sh_lexvar(fd, tok, it, ln) < 0)
+			if (sh_lexvar(fd, tok, it, ln))
 				return (WUT);
 		}
 		else

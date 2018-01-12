@@ -10,8 +10,64 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdio.h>
+
 #include "msh/lex.h"
-#include "msh/err.h"
+
+static char		*g_tokidsstr[] =
+{
+	[TOK_END] = "<EOF>",
+	[TOK_HEREDOC] = "<<",
+	[TOK_HEREDOCT] = "<<-",
+	[TOK_RAOUT] = ">>",
+	[TOK_LAMP] = "<&",
+	[TOK_RAMP] = ">&",
+	[TOK_CMP] = "<>",
+	[TOK_EOL] = "<newline>",
+	[TOK_RPOUT] = ">|",
+	[TOK_AMPR] = "&>",
+	[TOK_LAND] = "&&",
+	[TOK_LOR] = "||",
+	[TOK_CASE] = "case",
+	[TOK_DO] = "do",
+	[TOK_DONE] = "done",
+	[TOK_ELIF] = "elif",
+	[TOK_ELSE] = "else",
+	[TOK_FUNCTION] = "function",
+	[TOK_FOR] = "for",
+	[TOK_FI] = "fi",
+	[TOK_IF] = "if",
+	[TOK_IN] = "in",
+	[TOK_ESAC] = "esac",
+	[TOK_SELECT] = "select",
+	[TOK_THEN] = "then",
+	[TOK_UNTIL] = "until",
+	[TOK_WHILE] = "while",
+	[TOK_WORD] = "<word>",
+	[TOK_NOT] = "!",
+	[TOK_AMP] = "&",
+	[TOK_LPAR] = "(",
+	[TOK_RPAR] = ")",
+	[TOK_HYPEN] = "-",
+	[TOK_SEMICOLON] = ";",
+	[TOK_RIN] = "<",
+	[TOK_ASSIGN] = "=",
+	[TOK_ROUT] = ">",
+	[TOK_LBRACKET] = "[",
+	[TOK_RBRACKET] = "]",
+	[TOK_LCURLY] = "{",
+	[TOK_PIPE] = "|",
+	[TOK_RCURLY] = "}",	
+};
+
+inline char			*sh_tokidstr(uint8_t id)
+{
+	char *ret;
+
+	if (id > TOK_RCURLY)
+		return ("<unknown>");
+	return ((ret = g_tokidsstr[id]) ? ret : "<unknown>");
+}
 
 static inline int	lex(int fd, t_tok *tok, char **it, char **ln)
 {
@@ -30,16 +86,14 @@ static inline int	lex(int fd, t_tok *tok, char **it, char **ln)
 	}
 	if (**it == '\\' && *++*it == '\n' && !*++*it &&
 		(fd < 0 || !(*it = rl_catline(fd, "> ", -2, ln))))
-		return (sh_errparse(*ln, *it, "Unexpected end of file after '\\'"));
+		return (*it < (char *)0 ? WUT : NOP);
 	if (ft_isdigit(**it))
 		ft_sdscpush((t_sds *)tok, *(*it)++);
 	if ((st = sh_lexop(fd, tok, it, ln)) < 0)
 		return (WUT);
 	if (st && (st = sh_lexword(fd, tok, it, ln)) < 0)
 		return (WUT);
-	if (st)
-		return (sh_errparse(*ln, *it, "Unexpected token '%c'", **it));
-	return (YEP);
+	return (st ? sh_synerr(*ln, *it, "Unexpected token '%c'", **it) : YEP);
 }
 
 static inline int	reduce(int fd, t_deq *toks, char **it, char **ln)
@@ -60,10 +114,10 @@ static inline int	reduce(int fd, t_deq *toks, char **it, char **ln)
 			if (prev->id == TOK_HEREDOCT && sh_lexheredoct(fd, tok, it, ln))
 				return (WUT);
 		}
-		else if (prev && prev->id == TOK_HEREDOC)
-			return (sh_errparse(*ln, *it, "Expected word after heredoc '<<'"));
-		else if (prev && prev->id == TOK_HEREDOCT)
-			return (sh_errparse(*ln, *it, "Expected word after heredoc '<<-'"));
+		else if (prev && (prev->id == TOK_HEREDOC || prev->id == TOK_HEREDOCT))
+			return (sh_synerr(*ln, *ln + tok->pos, "Expected '%s' after "
+				"heredoc '%s' got '%s'", sh_tokidstr(TOK_WORD),
+				sh_tokidstr(prev->id), sh_tokidstr(tok->id)));
 		prev = tok;
 	}
 	return (YEP);
@@ -79,10 +133,10 @@ int					sh_lex(int fd, t_deq *toks, char *ln)
 	toks->len = 0;
 	toks->cur = 0;
 	beg = ln;
-	st = 0;
 	if (*ln)
 		while ((tok = ft_deqpush(toks)))
 		{
+			tok->pos = (uint16_t)(ln - beg);
 			if (!*ln)
 			{
 				tok->id = TOK_END;
@@ -92,8 +146,7 @@ int					sh_lex(int fd, t_deq *toks, char *ln)
 				return (WUT);
 			else if (st || tok->id == TOK_EOL)
 				break ;
+			tok->pos += tok->len;
 		}
-	if (!st && tok)
-		return (reduce(fd, toks, &ln, &beg));
-	return (YEP);
+	return (tok ? reduce(fd, toks, &ln, &beg) : YEP);
 }
