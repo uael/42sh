@@ -114,6 +114,8 @@ char			*rl_editln(char const *prompt, size_t *len)
 		if (st == 1 || (rd == 1 && rl_editins(prompt, *key) == 1))
 			break ;
 	}
+	if (rd < 0)
+		return ((char *)-1);
 	if ((*len = g_editln->str.len))
 		return (g_editln->str.buf);
 	return (NULL);

@@ -44,12 +44,14 @@ inline char		*rl_readnotty(int fd)
 	}
 	g_in[fd].ifd = fd;
 	if (g_rd[fd] > 0 && ft_ifsrd(g_in + fd, NULL, (size_t)g_rd[fd]) < 0)
-		return (NULL);
+		return ((char *)-1);
 	if ((g_rd[fd] = ft_ifschr(g_in + fd, 0, '\n', &ln)) > 0)
 	{
 		g_ln.len = 0;
 		ft_sdsmpush(&g_ln, ln, (size_t)g_rd[fd]);
 		return (g_ln.buf);
 	}
+	if (g_rd[fd] < 0)
+		return ((char *)-1);
 	return (NULL);
 }
