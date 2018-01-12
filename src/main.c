@@ -16,6 +16,8 @@ static int	exhdl(int rcode, void *arg)
 {
 	if (!errno)
 		return (rcode);
+	if (errno == EIO)
+		sh_exit(EXIT_FAILURE, NULL);
 	if (arg)
 		sh_err("%s: %e\n", arg, errno);
 	else
