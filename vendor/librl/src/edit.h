@@ -37,6 +37,7 @@ typedef struct	s_editln
 	size_t		idx;
 	uint16_t	row;
 	uint16_t	rows;
+	t_vec		cols;
 }				t_editln;
 
 typedef int	(t_editcb)(char const *prompt);
@@ -59,9 +60,13 @@ extern void		rl_editprint(char const *prompt);
 extern int		rl_editins(char const *prompt, char c);
 extern int		rl_editreturn(char const *prompt);
 extern int		rl_editleft(char const *prompt);
+extern int		rl_editright(char const *prompt);
 extern int		rl_editup(char const *prompt);
 extern int		rl_editdown(char const *prompt);
-extern int		rl_editright(char const *prompt);
+extern int		rl_editctrlleft(char const *prompt);
+extern int		rl_editctrlright(char const *prompt);
+extern int		rl_editctrlup(char const *prompt);
+extern int		rl_editctrldown(char const *prompt);
 extern int		rl_edithome(char const *prompt);
 extern int		rl_editend(char const *prompt);
 

@@ -15,10 +15,12 @@
 static t_ofs	g_cerr_stack = { STDERR_FILENO, 0, { 0 } };
 static t_ofs	*g_cerr = &g_cerr_stack;
 
-inline int	sh_verr(char const *fmt, va_list ap)
+int			sh_verr(char const *fmt, va_list ap)
 {
 	ft_ofswrf(g_cerr, COLOR_BRED"ush: "COLOR_RESET);
 	ft_ofsvwrf(g_cerr, fmt, ap);
+	ft_ofsflush(g_cerr);
+	return (WUT);
 }
 
 int			sh_err(char const *fmt, ...)
@@ -28,7 +30,6 @@ int			sh_err(char const *fmt, ...)
 	va_start(ap, fmt);
 	sh_verr(fmt, ap);
 	va_end(ap);
-	ft_ofsflush(g_cerr);
 	return (WUT);
 }
 

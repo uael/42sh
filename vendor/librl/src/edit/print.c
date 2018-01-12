@@ -31,6 +31,7 @@ static void		rl_print(t_ofs *out, char const *str, uint16_t i, uint16_t *row)
 				++g_idx_up;
 			ft_ofswrc(out, '\n');
 			++*row;
+			*(uint16_t *)ft_vecpush(&g_editln->cols) = g_screen->cursor;
 			if (*str == '\n')
 			{
 				if (c++ == i)
@@ -43,8 +44,11 @@ static void		rl_print(t_ofs *out, char const *str, uint16_t i, uint16_t *row)
 		}
 		if (c++ == i)
 			g_idx_col = g_screen->cursor;
+		if (*str == '\t')
+			g_screen->cursor += (8 - (g_screen->cursor % 8));
+		else
+			++g_screen->cursor;
 		ft_ofswrc(out, (unsigned char)*str++);
-		++g_screen->cursor;
 	}
 	if (c == i)
 		g_idx_col = g_screen->cursor;
@@ -64,8 +68,10 @@ void			rl_editprint(char const *prompt)
 	ft_ofswrs(out, TC_CL);
 	g_editln->rows = 1;
 	g_screen->cursor = 0;
+	g_editln->cols.len = 0;
 	rl_print(out, prompt, 0, &g_editln->rows);
 	rl_print(out, g_editln->str.buf, (uint16_t)g_editln->idx, &g_editln->rows);
+	*(uint16_t *)ft_vecpush(&g_editln->cols) = g_screen->cursor;
 	if (g_idx_up)
 		ft_ofswrf(out, TC_GOTOUP(g_idx_up));
 	g_editln->row = g_editln->rows - g_idx_up;
