@@ -46,7 +46,7 @@ int			sh_synerr(char const *ln, char const *it, char const *fmt, ...)
 		ft_ofswrs(g_cerr, ln);
 		if (!it)
 			it = ft_strchr(ln, 0);
-		while (++ln < it)
+		while (++ln <= it)
 			ft_ofswrc(g_cerr, ' ');
 		ft_ofswrs(g_cerr, COLOR_BRED"^"COLOR_RESET"\n");
 	}

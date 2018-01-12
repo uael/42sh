@@ -136,7 +136,7 @@ int					sh_lex(int fd, t_deq *toks, char *ln)
 	if (*ln)
 		while ((tok = ft_deqpush(toks)))
 		{
-			tok->pos = (uint16_t)(ln - beg + 1);
+			tok->pos = (uint16_t)(ln - beg);
 			if (!*ln)
 			{
 				tok->id = TOK_END;
