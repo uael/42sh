@@ -15,6 +15,7 @@
 
 # include <libft.h>
 
+extern int	sh_err(char const *fmt, ...);
 extern int	sh_synerr(char const *ln, char const *it, char const *fmt, ...);
 
 #endif

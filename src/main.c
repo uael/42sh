@@ -17,9 +17,9 @@ static int	exhdl(int rcode, void *arg)
 	if (!errno)
 		return (rcode);
 	if (arg)
-		ft_putf(2, COLOR_BRED"21sh: "COLOR_RESET"%s: %e\n", arg, errno);
+		sh_err("%s: %e\n", arg, errno);
 	else
-		ft_putf(2, COLOR_BRED"21sh: "COLOR_RESET"%e\n", errno);
+		sh_err("%e\n", errno);
 	if (errno == ENOMEM || errno == EIO || errno == EINVAL || errno > ELAST)
 		sh_exit(EXIT_FAILURE, NULL);
 	errno = 0;

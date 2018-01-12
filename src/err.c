@@ -15,13 +15,30 @@
 static t_ofs	g_cerr_stack = { STDERR_FILENO, 0, { 0 } };
 static t_ofs	*g_cerr = &g_cerr_stack;
 
-int				sh_synerr(char const *ln, char const *it, char const *fmt, ...)
+static inline void	sh_verr(char const *fmt, va_list ap)
+{
+	ft_ofswrf(g_cerr, COLOR_BRED"21sh: "COLOR_RESET);
+	ft_ofsvwrf(g_cerr, fmt, ap);
+}
+
+int					sh_err(char const *fmt, ...)
 {
 	va_list	ap;
 
-	ft_ofswrf(g_cerr, COLOR_BRED"21sh: "COLOR_RESET);
 	va_start(ap, fmt);
-	ft_ofsvwrf(g_cerr, fmt, ap);
+	sh_verr(fmt, ap);
+	va_end(ap);
+	ft_ofsflush(g_cerr);
+	return (WUT);
+}
+
+int					sh_synerr(char const *ln, char const *it,
+							  char const *fmt, ...)
+{
+	va_list	ap;
+
+	va_start(ap, fmt);
+	sh_verr(fmt, ap);
 	va_end(ap);
 	ft_ofswrc(g_cerr, '\n');
 	if (ln)
