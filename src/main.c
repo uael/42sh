@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "msh.h"
+#include "ush.h"
 
 static int	exhdl(int rcode, void *arg)
 {

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "msh/lex.h"
+#include "ush/lex.h"
 
 inline int	sh_lexquote(int fd, t_tok *tok, char **it, char **ln)
 {

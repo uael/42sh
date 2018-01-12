@@ -10,18 +10,18 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "msh/env.h"
+#include "ush/env.h"
 
 static t_ofs	g_cerr_stack = { STDERR_FILENO, 0, { 0 } };
 static t_ofs	*g_cerr = &g_cerr_stack;
 
-static inline void	sh_verr(char const *fmt, va_list ap)
+inline int	sh_verr(char const *fmt, va_list ap)
 {
-	ft_ofswrf(g_cerr, COLOR_BRED"21sh: "COLOR_RESET);
+	ft_ofswrf(g_cerr, COLOR_BRED"ush: "COLOR_RESET);
 	ft_ofsvwrf(g_cerr, fmt, ap);
 }
 
-int					sh_err(char const *fmt, ...)
+int			sh_err(char const *fmt, ...)
 {
 	va_list	ap;
 
@@ -32,8 +32,7 @@ int					sh_err(char const *fmt, ...)
 	return (WUT);
 }
 
-int					sh_synerr(char const *ln, char const *it,
-							  char const *fmt, ...)
+int			sh_synerr(char const *ln, char const *it, char const *fmt, ...)
 {
 	va_list	ap;
 

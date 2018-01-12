@@ -13,7 +13,7 @@
 #include <wait.h>
 #include <stdio.h>
 
-#include "msh/job.h"
+#include "ush/job.h"
 
 void	sh_jobwait(t_job *j)
 {

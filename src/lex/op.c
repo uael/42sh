@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "msh/lex.h"
+#include "ush/lex.h"
 
 static inline int	opm(t_tok *tok, char **it, uint8_t len, uint8_t id)
 {

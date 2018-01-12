@@ -12,7 +12,7 @@
 
 #include <stdio.h>
 
-#include "msh/lex.h"
+#include "ush/lex.h"
 
 static char		*g_tokidsstr[] =
 {

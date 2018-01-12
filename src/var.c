@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "msh/var.h"
+#include "ush/var.h"
 
 static t_vec	g_scopes = { NULL, sizeof(t_map), 0, 0 };
 static t_map	*g_scope = NULL;

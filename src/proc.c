@@ -13,8 +13,8 @@
 #include <wait.h>
 #include <stdio.h>
 
-#include "msh/proc.h"
-#include "msh/job.h"
+#include "ush/proc.h"
+#include "ush/job.h"
 
 void	sh_proclaunch(t_proc *p, pid_t pgid, int *io, int fg)
 {

@@ -16,8 +16,8 @@ set(CMAKE_C_FLAGS "")
 set(CMAKE_C_FLAGS_DEBUG "")
 set(CMAKE_C_FLAGS_RELEASE "")
 
-set(21sh_HDR ${21sh_INC_DIR}/msh.h)
-file(GLOB_RECURSE 21sh_HDRS ${21sh_HDRS} ${21sh_INC_DIR}/msh/*.h)
+set(21sh_HDR ${21sh_INC_DIR}/ush.h)
+file(GLOB_RECURSE 21sh_HDRS ${21sh_HDRS} ${21sh_INC_DIR}/ush/*.h)
 file(GLOB_RECURSE 21sh_SRCS ${21sh_SRCS} ${21sh_SRC_DIR}/*.c)
 file(GLOB_RECURSE 21sh_SRCS ${21sh_SRCS} ${21sh_SRC_DIR}/*.h)
 

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   msh/env.h                                          :+:      :+:    :+:   */
+/*   ush/var.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,16 +10,14 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MSH_ENV_H
-# define MSH_ENV_H
+#ifndef USH_VAR_H
+# define USH_VAR_H
 
-# include <libft.h>
+# include "env.h"
 
-extern char		**g_env;
-
-extern void		sh_envdtor(void);
-extern void		sh_envinit(char **envv);
-extern char		*sh_getenv(char *var);
-extern void		sh_setenv(char *var, char *val);
+extern void		sh_scopepush(void);
+extern t_bool	sh_scopepop(void);
+extern void		sh_varset(char *var, char *val);
+extern char		*sh_varget(char *var);
 
 #endif

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "msh/env.h"
+#include "ush/env.h"
 
 char			**g_env = NULL;
 static t_vec	g_venv_stack = { 0, sizeof(char *), 0, 0 };

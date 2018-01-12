@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   msh/proc.h                                         :+:      :+:    :+:   */
+/*   ush/shell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,23 +10,18 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MSH_PROC_H
-# define MSH_PROC_H
+#ifndef USH_SHELL_H
+# define USH_SHELL_H
 
-# include "shell.h"
+# include "lex.h"
+# include "env.h"
 
-typedef struct	s_proc
-{
-	struct s_proc	*next;
-	char			**argv;
-	pid_t			pid;
-	t_bool			completed;
-	t_bool			stopped;
-	int				status;
-}				t_proc;
+extern t_bool	g_shinteract;
+extern pid_t	g_shpgid;
+extern TTY		g_shmode;
+extern int		g_shfd;
 
-extern void		sh_proclaunch(t_proc *p, pid_t pgid, int *io, int fg);
-extern int		sh_procmark(pid_t pid, int status);
-extern void		sh_procupdate(void);
+extern int		sh_run(int fd);
+extern int		sh_exit(int exitno, char const *fmt, ...);
 
 #endif

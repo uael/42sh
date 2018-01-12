@@ -1,21 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   msh/err.h                                          :+:      :+:    :+:   */
+/*   ush.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/06 12:00:10 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/11/23 17:28:28 by null             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MSH_ERR_H
-# define MSH_ERR_H
+#ifndef USH_H
+# define USH_H
 
-# include <libft.h>
-
-extern int	sh_err(char const *fmt, ...);
-extern int	sh_synerr(char const *ln, char const *it, char const *fmt, ...);
+# include "ush/env.h"
+# include "ush/err.h"
+# include "ush/job.h"
+# include "ush/lex.h"
+# include "ush/proc.h"
+# include "ush/shell.h"
+# include "ush/var.h"
 
 #endif

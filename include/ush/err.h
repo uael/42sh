@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   msh/job.h                                          :+:      :+:    :+:   */
+/*   ush/err.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,33 +10,13 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MSH_JOB_H
-# define MSH_JOB_H
+#ifndef USH_ERR_H
+# define USH_ERR_H
 
-# include "proc.h"
+# include <libft.h>
 
-typedef struct	s_job
-{
-	struct s_job	*next;
-	char			*command;
-	t_proc			*prochead;
-	pid_t			pgid;
-	t_bool			notified;
-	TTY				tmodes;
-	int				io[3];
-}				t_job;
-
-extern t_job	*g_jobhead;
-
-extern t_job	*sh_jobfind(pid_t pgid);
-extern int		sh_jobstopped(t_job *j);
-extern int		sh_jobcompleted(t_job *j);
-extern void		sh_joblaunch(t_job *j, int fg);
-extern void		sh_jobdebug(t_job *j, const char *status);
-extern void		sh_jobwait(t_job *j);
-extern void		sh_jobnotify(void);
-extern void		sh_jobfg(t_job *j, int cont);
-extern void		sh_jobbg(t_job *j, int cont);
-extern void		sh_jobcontinue(t_job *j, int fg);
+extern int	sh_verr(char const *fmt, va_list ap);
+extern int	sh_err(char const *fmt, ...);
+extern int	sh_synerr(char const *ln, char const *it, char const *fmt, ...);
 
 #endif

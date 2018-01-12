@@ -13,13 +13,14 @@
 #include <sys/signal.h>
 #include <term.h>
 
-#include "msh/shell.h"
-#include "msh/var.h"
+#include "ush/shell.h"
+#include "ush/var.h"
 
 t_bool				g_shinteract = 0;
 pid_t				g_shpgid;
 TTY					g_shmode;
 int					g_shfd = -1;
+
 static t_deq		g_stack_toks = { NULL, sizeof(t_tok), 0, 0, 0 };
 static t_deq		*g_toks = &g_stack_toks;
 static size_t		g_toks_max = 0;
@@ -38,10 +39,8 @@ static inline void	sh_init(int fd)
 	signal(SIGCHLD, SIG_IGN);
 	g_shpgid = getpid();
 	if (setpgid(g_shpgid, g_shpgid) < 0)
-	{
-		ft_putl(2, "21sh: Couldn't put the shell in its own process group");
-		exit(EXIT_FAILURE);
-	}
+		sh_exit(EXIT_FAILURE, "Couldn't put the shell in its own process "
+			"group");
 	tcsetpgrp(fd, g_shpgid);
 	tcgetattr(fd, &g_shmode);
 }
@@ -93,7 +92,7 @@ int					sh_exit(int exitno, char const *fmt, ...)
 	if (fmt)
 	{
 		va_start(ap, fmt);
-		ft_vputf(2, fmt, ap);
+		sh_verr(fmt, ap);
 		va_end(ap);
 	}
 	exit(exitno == WUT ? EXIT_FAILURE : exitno);

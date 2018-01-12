@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "msh/lex.h"
-#include "msh/var.h"
+#include "ush/lex.h"
+#include "ush/var.h"
 
 /*
 ** TODO(uael): use your brain to find a proper and working algo, this one is
