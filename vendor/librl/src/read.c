@@ -66,7 +66,7 @@ char			*rl_catline(int fd, char *prompt, char c, char **out)
 	signal(SIGWINCH, rd_sigwinch);
 	if (rl_screenget(g_screen, fd, STDOUT_FILENO) < 0)
 		ln = (char *)-1;
-	else if ((ln = rl_editln(prompt, &len)) > (char *)0 && len > 1)
+	else if ((ln = rl_editln(prompt, &len)) > (char *)0)
 		ln = rl_histcat(ln, len, c, out);
 	rl_offmode(fd);
 	return (ln);

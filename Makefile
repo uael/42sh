@@ -12,7 +12,7 @@
 
 NAME = 21sh
 CC = gcc
-CFLAGS = -Werror -Wextra -Wall -O2 -DDEBUG
+CFLAGS = -Werror -Wextra -Wall -O2
 
 SRC_PATH = ./src/
 OBJ_PATH = ./obj/
