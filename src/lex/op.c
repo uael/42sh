@@ -6,90 +6,84 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/13 08:28:05 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/13 08:23:58 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "msh.h"
+#include "ush/lex.h"
 
-static inline int		lex_op_match(t_lexer *lex, t_tok *tok, size_t n, int *m)
+static inline int	opm(t_tok *tok, char **it, uint8_t len, uint8_t id)
 {
-	ssize_t sz;
-
-	tok->id = (uint8_t)m[0];
-	if (m[1])
-		ft_tokv_init_i32(tok->val, m[1] - '0');
-	else
-		tok->val = NULL;
-	if ((sz = ft_lexer_next(lex, NULL, m[1] ? n + 1 : n)) <= 0)
-		return (sz < 0 ? WUT : NOP);
+	tok->id = id;
+	ft_sdsmpush((t_sds *)tok, *it - len, len);
 	return (YEP);
 }
 
-static inline int		lex_op_3(t_lexer *lex, t_tok *tok, char *b)
+static inline int	opnext(int fd, char **it, char **ln)
 {
-	char d;
-
-	d = ft_isdigit(*b) ? *b++ : (char)'\0';
-	if (b[0] == '<' && b[1] == '<' && b[2] == '-')
-		return (lex_op_match(lex, tok, 3, (int[2]){SH_TOK_HEREDOCT, d}));
-	return (NOP);
+	if (*++*it == '\\' && *++*it == '\n' && !*++*it &&
+		(fd < 0 || !(*it = rl_catline(fd, "> ", -2, ln))))
+		return (*it < (char *)0 ? WUT : NOP);
+	return (YEP);
 }
 
-static inline int		lex_op_2(t_lexer *lex, t_tok *tok, char *b)
+static inline int	opright(int fd, t_tok *tok, char **it, char **ln)
 {
-	char d;
-
-	d = ft_isdigit(*b) ? *b++ : (char)'\0';
-	if (b[0] == '>' && b[1] == '>')
-		return (lex_op_match(lex, tok, 2, (int[2]){SH_TOK_RAOUT, d}));
-	if (b[0] == '&' && b[1] == '>')
-		return (lex_op_match(lex, tok, 2, (int[2]){SH_TOK_AMPR, d}));
-	if (b[0] == '>' && b[1] == '&')
-		return (lex_op_match(lex, tok, 2, (int[2]){SH_TOK_RAMP, d}));
-	if (b[0] == '>' && b[1] == '|')
-		return (lex_op_match(lex, tok, 2, (int[2]){SH_TOK_RPOUT, d}));
-	if (b[0] == '|' && b[1] == '|')
-		return (lex_op_match(lex, tok, 2, (int[2]){SH_TOK_LOR, d}));
-	if (b[0] == '<' && b[1] == '>')
-		return (lex_op_match(lex, tok, 2, (int[2]){SH_TOK_CMP, d}));
-	if (b[0] == '<' && b[1] == '<')
-		return (lex_op_match(lex, tok, 2, (int[2]){SH_TOK_HEREDOC, d}));
-	if (b[0] == '<' && b[1] == '&')
-		return (lex_op_match(lex, tok, 2, (int[2]){SH_TOK_LAMP, d}));
-	if (b[0] == '&' && b[1] == '&')
-		return (lex_op_match(lex, tok, 2, (int[2]){SH_TOK_LAND, d}));
-	return (NOP);
+	if (opnext(fd, it, ln))
+		return (WUT);
+	if (**it == '>' && ++*it)
+		return (opm(tok, it, 2, TOK_RAOUT));
+	if (**it == '&' && ++*it)
+		return (opm(tok, it, 2, TOK_RAMP));
+	if (**it == '|' && ++*it)
+		return (opm(tok, it, 2, TOK_RPOUT));
+	return (opm(tok, it, 1, '>'));
 }
 
-static inline int		lex_op_1(t_lexer *lex, t_tok *tok, char *b)
+static inline int	opleft(int fd, t_tok *tok, char **it, char **ln)
 {
-	char d;
-
-	d = ft_isdigit(*b) ? *b++ : (char)'\0';
-	if (b[0] == '>' || b[0] == '<')
-		return (lex_op_match(lex, tok, 1, (int[2]){b[0], d}));
-	return (NOP);
+	if (opnext(fd, it, ln))
+		return (WUT);
+	if (**it == '<')
+	{
+		if (opnext(fd, it, ln))
+			return (WUT);
+		if (**it == '-' && ++*it)
+			return (opm(tok, it, 3, TOK_HEREDOCT));
+		return (opm(tok, it, 2, TOK_HEREDOC));
+	}
+	if (**it == '>' && ++*it)
+		return (opm(tok, it, 2, TOK_CMP));
+	if (**it == '&' && ++*it)
+		return (opm(tok, it, 2, TOK_LAMP));
+	return (opm(tok, it, 1, '<'));
 }
 
-inline int				sh_lex_op(t_lexer *lex, t_tok *tok, char peek)
+inline int			sh_lexop(int fd, t_tok *tok, char **it, char **ln)
 {
-	char	b[4];
-	size_t	n;
-	int		st;
-
-	n = 0;
-	b[n] = peek;
-	while (++n < 4 && b[n - 1] && b[n - 1] != '\n')
-		if ((st = ft_lexer_peek(lex, b + n, n)) < 0)
-			return (st);
-		else if (st)
-			break ;
-	if (n >= 3 && (st = lex_op_3(lex, tok, b)) <= 0)
-		return (st);
-	if (n >= 2 && (st = lex_op_2(lex, tok, b)) <= 0)
-		return (st);
-	if (n >= 1 && (st = lex_op_1(lex, tok, b)) <= 0)
-		return (st);
-	return (NOP);
+	if (**it == '>')
+		return (opright(fd, tok, it, ln));
+	if (**it == '<')
+		return (opleft(fd, tok, it, ln));
+	if (tok->len)
+		return (NOP);
+	if (**it == '&')
+	{
+		if (opnext(fd, it, ln))
+			return (WUT);
+		if (**it == '&' && ++*it)
+			return (opm(tok, it, 2, TOK_LAND));
+		if (**it == '>' && ++*it)
+			return (opm(tok, it, 2, TOK_AMPR));
+		return (opm(tok, it, 1, '&'));
+	}
+	if (**it == '|')
+	{
+		if (opnext(fd, it, ln))
+			return (WUT);
+		if (**it == '|' && ++*it)
+			return (opm(tok, it, 2, TOK_LOR));
+		return (opm(tok, it, 1, '|'));
+	}
+	return (ft_strchr("!;(){}", **it) ? opm(tok, it, 1, (uint8_t)*(*it)++) : 1);
 }
