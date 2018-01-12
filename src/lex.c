@@ -57,7 +57,7 @@ static char		*g_tokidsstr[] =
 	[TOK_RBRACKET] = "]",
 	[TOK_LCURLY] = "{",
 	[TOK_PIPE] = "|",
-	[TOK_RCURLY] = "}",	
+	[TOK_RCURLY] = "}"
 };
 
 inline char			*sh_tokidstr(uint8_t id)

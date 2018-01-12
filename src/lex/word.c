@@ -12,6 +12,10 @@
 
 #include "msh/lex.h"
 
+/*
+** TODO: lex identifiers
+*/
+
 inline int	sh_lexword(int fd, t_tok *tok, char **it, char **ln)
 {
 	char *beg;
