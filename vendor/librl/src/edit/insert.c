@@ -12,9 +12,29 @@
 
 #include "../edit.h"
 
-inline int	rl_editins(char const *prompt, char c)
+inline int	rl_editinsert(char const *prompt, char c)
 {
 	ft_sdscput(&g_editln->str, g_editln->idx++, c);
 	rl_editprint(prompt);
+	return (YEP);
+}
+
+inline int	rl_editdelete(char const *prompt)
+{
+	if (g_editln->idx && g_editln->idx < g_editln->str.len)
+	{
+		ft_sdsrem(&g_editln->str, g_editln->idx, NULL);
+		rl_editprint(prompt);
+	}
+	return (YEP);
+}
+
+inline int	rl_editbackspace(char const *prompt)
+{
+	if (g_editln->idx && g_editln->str.len)
+	{
+		ft_sdsrem(&g_editln->str, --g_editln->idx, NULL);
+		rl_editprint(prompt);
+	}
 	return (YEP);
 }

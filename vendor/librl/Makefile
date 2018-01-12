@@ -23,7 +23,7 @@ LNK_PATH = ./ $(3TH_PATH)
 OBJ_NAME = $(SRC_NAME:.c=.o)
 3TH_NAME =
 SRC_NAME = \
-	edit.c edit/ctrlmove.c edit/hist.c edit/ins.c edit/move.c edit/print.c \
+	edit.c edit/ctrlmove.c edit/hist.c edit/insert.c edit/move.c edit/print.c \
 	edit/return.c \
 	hist.c \
 	read.c read/notty.c read/tty.c \

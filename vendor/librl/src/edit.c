@@ -52,7 +52,7 @@ t_editln			*g_editln;
 static t_editbind	g_inskeymap[] =
 {
 	{1, K_RETURN, rl_editreturn},
-	/*{1, K_BACKSPACE, NULL},*/
+	{1, K_BACKSPACE, rl_editbackspace},
 	{1, K_ENTER, rl_editreturn},
 	/*{1, K_CTRL_A, NULL},
 	{1, K_CTRL_B, NULL},
@@ -71,7 +71,7 @@ static t_editbind	g_inskeymap[] =
 	{3, K_DOWN, rl_editdown},
 	{3, K_HOME, rl_edithome},
 	{3, K_END, rl_editend},
-	/*{4, K_DELETE, NULL},*/
+	{4, K_DELETE, rl_editdelete},
 	{6, K_CTRL_UP, rl_editctrlup},
 	{6, K_CTRL_DOWN, rl_editctrldown},
 	{6, K_CTRL_RIGHT, rl_editctrlright},
@@ -125,8 +125,10 @@ char				*rl_editln(char const *prompt, size_t *len)
 		while (st == 2 && (++bind)->rd <= rd)
 			if (rd == bind->rd && !ft_memcmp(key, bind->key, (size_t)bind->rd))
 				st = bind->cb(prompt);
-		if (st == 1 || (rd == 1 && rl_editins(prompt, *key) == 1))
+		if (st == 1)
 			break ;
+		if (rd == 1 && ft_isascii(*key) && !ft_iscntrl(*key))
+			rl_editinsert(prompt, *key);
 	}
 	if (rd < 0)
 		return ((char *)-1);
