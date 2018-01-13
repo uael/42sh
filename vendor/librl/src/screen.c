@@ -67,6 +67,6 @@ int				rl_screenget(t_screen *self, int ifd, int ofd)
 	if ((width = rl_screenwidth(ifd, ofd)) <= 0)
 		return (WUT);
 	self->width = (uint16_t)width;
-	self->cursor = 0;
+	self->col = 0;
 	return (YEP);
 }

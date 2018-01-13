@@ -20,7 +20,7 @@
 typedef struct	s_screen
 {
 	uint16_t	width;
-	uint16_t	cursor;
+	uint16_t	col;
 }				t_screen;
 
 extern t_screen	*g_screen;

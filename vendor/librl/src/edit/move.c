@@ -22,7 +22,7 @@ inline int	rl_editleft(char const *prompt)
 		if (g_editln->str.buf[--g_editln->idx] != '\n')
 		{
 			ft_puts(STDOUT_FILENO, TC_BA);
-			--g_screen->cursor;
+			--g_screen->col;
 		}
 		else
 		{
@@ -31,7 +31,7 @@ inline int	rl_editleft(char const *prompt)
 				(size_t)(g_editln->row - 1));
 			ft_puts(STDOUT_FILENO, TC_UP);
 			ft_putf(STDOUT_FILENO, TC_GOTOCH(ch));
-			g_screen->cursor = ch;
+			g_screen->col = ch;
 		}
 	}
 	return (YEP);
@@ -43,17 +43,17 @@ inline int	rl_editright(char const *prompt)
 	if (g_editln->idx != g_editln->str.len)
 	{
 		if (g_editln->str.buf[++g_editln->idx - 1] != '\n' &&
-			g_screen->cursor + 1 < g_screen->width)
+			g_screen->col + 1 < g_screen->width)
 		{
 			ft_puts(STDOUT_FILENO, TC_FO);
-			++g_screen->cursor;
+			++g_screen->col;
 		}
 		else
 		{
 			++g_editln->row;
 			ft_puts(STDOUT_FILENO, TC_DO);
 			ft_putc(STDOUT_FILENO, TC_GOTOCH0());
-			g_screen->cursor = 0;
+			g_screen->col = 0;
 		}
 	}
 	return (YEP);

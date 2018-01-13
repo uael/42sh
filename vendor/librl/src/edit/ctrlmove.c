@@ -55,7 +55,7 @@ inline int	rl_editctrlup(char const *prompt)
 	if (g_editln->row <= 1)
 		return (YEP);
 	plen = ft_strlen(prompt);
-	if ((g_editln->row - 1) == 1 && (g_screen->cursor < plen))
+	if ((g_editln->row - 1) == 1 && (g_screen->col < plen))
 		g_editln->idx = 0;
 	else
 	{
@@ -65,11 +65,11 @@ inline int	rl_editctrlup(char const *prompt)
 		while (g_editln->idx &&
 			g_editln->str.buf[g_editln->idx - 1] != '\n')
 			--g_editln->idx;
-		cur = g_screen->cursor;
-		g_screen->cursor = (uint16_t)((g_editln->row - 1) == 1 ? plen : 0);
-		while (g_screen->cursor < cur && g_screen->cursor < c)
-			g_screen->cursor += (g_editln->str.buf[g_editln->idx++] == '\t' ?
-				(8 - (g_screen->cursor % 8)) : 1);
+		cur = g_screen->col;
+		g_screen->col = (uint16_t)((g_editln->row - 1) == 1 ? plen : 0);
+		while (g_screen->col < cur && g_screen->col < c)
+			g_screen->col += (g_editln->str.buf[g_editln->idx++] == '\t' ?
+				(8 - (g_screen->col % 8)) : 1);
 	}
 	rl_editprint(prompt);
 	return (YEP);
@@ -86,11 +86,11 @@ inline int	rl_editctrldown(char const *prompt)
 	while (g_editln->str.buf[g_editln->idx] != '\n')
 		++g_editln->idx;
 	++g_editln->idx;
-	cur = g_screen->cursor;
-	g_screen->cursor = 0;
-	while (g_screen->cursor < cur && g_screen->cursor < c)
-		g_screen->cursor += (g_editln->str.buf[g_editln->idx++] == '\t' ?
-			(8 - (g_screen->cursor % 8)) : 1);
+	cur = g_screen->col;
+	g_screen->col = 0;
+	while (g_screen->col < cur && g_screen->col < c)
+		g_screen->col += (g_editln->str.buf[g_editln->idx++] == '\t' ?
+			(8 - (g_screen->col % 8)) : 1);
 	rl_editprint(prompt);
 	return (YEP);
 }
