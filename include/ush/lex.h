@@ -73,7 +73,8 @@ typedef struct	s_tok
 
 extern char		*sh_tokidstr(uint8_t id);
 
-extern int		sh_lex(int fd, t_deq *toks, char *ln);
+extern int		sh_lex(int fd, t_deq *toks, char **it, char **ln);
+extern int		sh_lexnext(int fd, t_deq *toks, char **ln);
 extern int		sh_lexvar(int fd, t_tok *tok, char **it, char **ln);
 extern int		sh_lexop(int fd, t_tok *tok, char **it, char **ln);
 extern int		sh_lexquote(int fd, t_tok *tok, char **it, char **ln);

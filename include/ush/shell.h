@@ -20,8 +20,10 @@ extern t_bool	g_shinteract;
 extern pid_t	g_shpgid;
 extern TTY		g_shmode;
 extern int		g_shfd;
+extern int		g_shstatus;
 
 extern int		sh_run(int fd);
+extern int		sh_eval(int fd, t_deq *toks, char **ln, t_bool scope);
 extern int		sh_exit(int exitno, char const *fmt, ...);
 
 #endif

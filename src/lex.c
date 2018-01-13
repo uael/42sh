@@ -123,29 +123,41 @@ static inline int	reduce(int fd, t_deq *toks, char **it, char **ln)
 	return (YEP);
 }
 
-int					sh_lex(int fd, t_deq *toks, char *ln)
+int					sh_lex(int fd, t_deq *toks, char **it, char **ln)
 {
 	t_tok	*tok;
-	char	*beg;
 	int 	st;
 
-	tok = NULL;
-	toks->len = 0;
-	toks->cur = 0;
-	beg = ln;
-	if (*ln)
-		while ((tok = ft_deqpush(toks)))
+	if (!**it)
+		return (NOP);
+	if (!ln)
+		ln = it;
+	while ((tok = ft_deqpush(toks)))
+	{
+		tok->pos = (uint16_t)(*it - *ln);
+		if (!**it)
 		{
-			tok->pos = (uint16_t)(ln - beg);
-			if (!*ln)
-			{
-				tok->id = TOK_END;
-				break ;
-			}
-			else if ((st = lex(fd, tok, &ln, &beg)) < 0)
-				return (WUT);
-			else if (st || tok->id == TOK_EOL)
-				break ;
+			tok->id = TOK_END;
+			break ;
 		}
-	return (tok ? reduce(fd, toks, &ln, &beg) : YEP);
+		else if ((st = lex(fd, tok, it, ln)) < 0)
+			return (WUT);
+		else if (st || tok->id == TOK_EOL)
+			break ;
+	}
+	return (tok ? reduce(fd, toks, it, ln) : YEP);
+}
+
+int					sh_lexnext(int fd, t_deq *toks, char **ln)
+{
+	char	*it;
+	int		st;
+
+	if (fd < 0)
+		return (NOP);
+	st = 0;
+	if ((it = rl_catline(fd, "> ", ';', ln)) > (char *)0)
+		while (!(st = sh_lex(fd, toks, &it, ln)))
+			;
+	return (!st && it < (char *)0 ? WUT : st);
 }

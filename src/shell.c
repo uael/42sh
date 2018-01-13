@@ -20,6 +20,7 @@ t_bool				g_shinteract = 0;
 pid_t				g_shpgid;
 TTY					g_shmode;
 int					g_shfd = -1;
+int					g_shstatus = 0;
 
 static t_deq		g_stack_toks = { NULL, sizeof(t_tok), 0, 0, 0 };
 static t_deq		*g_toks = &g_stack_toks;
@@ -45,37 +46,53 @@ static inline void	sh_init(int fd)
 	tcgetattr(fd, &g_shmode);
 }
 
+inline int			sh_eval(int fd, t_deq *toks, char **ln, t_bool scope)
+{
+	t_tok	*tok;
+
+	(void)fd;
+	(void)ln;
+	if (scope)
+		sh_scopepush();
+	tok = alloca(sizeof(t_tok));
+	while (ft_deqsht(toks, tok))
+	{
+		ft_putf(1, "tok[id='%d',val[%d]='", tok->id, tok->len);
+		ft_write(1, tok->val, tok->len);
+		ft_puts(1, "']\n");
+	}
+	if (scope)
+		sh_scopepop();
+	return (YEP);
+}
+
 inline int			sh_run(int fd)
 {
 	char	*ln;
+	char	*it;
 	int		st;
-	t_tok	*tok;
 
 	st = EXIT_SUCCESS;
 	sh_init(fd);
 	sh_scopepush();
-	tok = alloca(sizeof(t_tok));
 	while ((ln = rl_getline(fd, "$> ")) > (char *)0)
 	{
 		if (!ft_strcmp("exit\n", ln))
 			break ;
-		if (!(st = sh_lex(fd, g_toks, ln)))
-		{
-			while (ft_deqsht(g_toks, tok))
-			{
-				ft_putf(1, "tok[id='%d',val[%d]='", tok->id, tok->len);
-				ft_write(1, tok->val, tok->len);
-				ft_puts(1, "']\n");
-			}
-			g_toks_max = ft_u64max(g_toks_max, g_toks->len);
-		}
-		else if (fd > 0)
+		it = ln;
+		g_toks->len = 0;
+		g_toks->cur = 0;
+		while (!(st = sh_lex(fd, g_toks, &it, &ln)))
+			g_shstatus = sh_eval(fd, g_toks, &ln, 0);
+		if (fd > 0)
 			break ;
 	}
 	while (sh_scopepop())
 		;
 	rl_finalize(fd);
-	return (ln < (char *)0 ? WUT : st);
+	if (ln < (char *)0 || st < 0)
+		g_shstatus = EXIT_FAILURE;
+	return (g_shstatus);
 }
 
 int					sh_exit(int exitno, char const *fmt, ...)
