@@ -18,10 +18,14 @@
 
 # define TC_GOTOUP(N) "\x1b[%dA", (N)
 # define TC_GOTODO(N) "\x1b[%dB", (N)
+# define TC_GOTOFO(N) "\x1b[%dC", (N)
+# define TC_GOTOBA(N) "\x1b[%dD", (N)
 # define TC_GOTOCH(N) "\r\x1b[%dC", (N)
 # define TC_GOTOCH0() '\r'
 # define TC_UP "\x1b[1A"
 # define TC_DO "\x1b[1B"
+# define TC_FO "\x1b[1C"
+# define TC_BA "\x1b[1D"
 # define TC_CL "\r\x1b[0K"
 # define TC_MR "\x1b[7m"
 # define TC_ME "\x1b[m"
