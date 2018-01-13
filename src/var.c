@@ -17,9 +17,24 @@ static t_map	*g_scope = NULL;
 
 inline void		sh_scopepush(void)
 {
-	g_scope = ft_vecpush(&g_scopes);
-	if (!g_scope->ksz)
-		ft_mapctor(g_scope, g_strhash, sizeof(char *), sizeof(char *));
+	t_map		*scope;
+	uint32_t	it;
+	uint32_t	put;
+
+	scope = ft_vecpush(&g_scopes);
+	if (!scope->ksz)
+		ft_mapctor(scope, g_strhash, sizeof(char *), sizeof(char *));
+	it = 0;
+	if (g_scope)
+		while (it < g_scope->len)
+		{
+			if (BUCKET_ISPOPULATED(g_scope->bucks, it) &&
+				ft_mapput(scope, ((char **)g_scope->keys)[it], &put))
+				((char **)scope->vals)[put] =
+					ft_strdup(((char **)g_scope->vals)[it]);
+			++it;
+		}
+	g_scope = scope;
 }
 
 inline t_bool	sh_scopepop(void)
