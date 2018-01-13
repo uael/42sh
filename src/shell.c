@@ -46,13 +46,13 @@ static inline void	sh_init(int fd)
 	tcgetattr(fd, &g_shmode);
 }
 
-inline int			sh_eval(int fd, t_deq *toks, char **ln, t_bool scope)
+inline int			sh_eval(int fd, t_deq *toks, char **ln)
 {
 	t_tok	*tok;
 
 	(void)fd;
 	(void)ln;
-	if (scope)
+	if (fd < 0)
 		sh_scopepush();
 	tok = alloca(sizeof(t_tok));
 	while (ft_deqsht(toks, tok))
@@ -61,7 +61,7 @@ inline int			sh_eval(int fd, t_deq *toks, char **ln, t_bool scope)
 		ft_write(1, tok->val, tok->len);
 		ft_puts(1, "']\n");
 	}
-	if (scope)
+	if (fd < 0)
 		sh_scopepop();
 	return (YEP);
 }
@@ -83,7 +83,7 @@ inline int			sh_run(int fd)
 		g_toks->len = 0;
 		g_toks->cur = 0;
 		while (!(st = sh_lex(fd, g_toks, &it, &ln)))
-			g_shstatus = sh_eval(fd, g_toks, &ln, 0);
+			g_shstatus = sh_eval(fd, g_toks, &ln);
 		if (fd > 0)
 			break ;
 	}
