@@ -11,11 +11,15 @@
 /* ************************************************************************** */
 
 #include "edit.h"
+#include "visual.h"
+#include "read.h"
 
+#define K_ESC "\x1b"
 #define K_BACKSPACE "\x7f"
 #define K_DELETE "\x1b\x5b\x33\x7e"
 #define K_CTRL_A "\x1"
 #define K_CTRL_B "\x2"
+#define K_CTRL_C "\x3"
 #define K_CTRL_D "\x4"
 #define K_CTRL_E "\x5"
 #define K_CTRL_F "\x6"
@@ -29,6 +33,7 @@
 #define K_CTRL_R "\x12"
 #define K_CTRL_T "\x14"
 #define K_CTRL_U "\x15"
+#define K_CTRL_V "\x16"
 #define K_UP "\x1b\x5b\x41"
 #define K_DOWN "\x1b\x5b\x42"
 #define K_RGT "\x1b\x5b\x43"
@@ -43,32 +48,67 @@
 
 t_editln			g_edit[HIST_MAX + 1] =
 {
-	{ { 0, 0, 0 }, 0, 0, 0, { NULL, sizeof(uint16_t), 0, 0 } }
+	{ { 0, 0, 0 }, 0, 0, 0, 0, { NULL, sizeof(uint16_t), 0, 0 } }
 };
 uint8_t				g_edit_len = 0;
 uint8_t				g_edit_idx = 0;
 t_editln			*g_editln;
 
+static inline int	resetmode(char const *prompt)
+{
+	if (g_mode != RL_INSERT)
+	{
+		g_mode = RL_INSERT;
+		rl_editprint(prompt);
+	}
+	return (YEP);
+}
+
 static t_editbind	g_inskeymap[] =
 {
+	{1, K_ESC, resetmode},
 	{1, K_RETURN, rl_editreturn},
 	{1, K_BACKSPACE, rl_editbackspace},
 	{1, K_ENTER, rl_editreturn},
-	/*{1, K_CTRL_A, NULL},
-	{1, K_CTRL_B, NULL},
-	{1, K_CTRL_D, NULL},
-	{1, K_CTRL_E, NULL},
+	/*{1, K_CTRL_A, NULL},*/
+	{1, K_CTRL_B, rl_editbackspace},
+	{1, K_CTRL_D, rl_editdelete},
+	/*{1, K_CTRL_E, NULL},
 	{1, K_CTRL_F, NULL},
 	{1, K_CTRL_H, NULL},
-	{1, K_TAB, NULL},
-	{1, K_CTRL_P, NULL},
-	{1, K_CTRL_R, NULL},
-	{1, K_CTRL_T, NULL},
-	{1, K_CTRL_U, NULL},*/
+	{1, K_TAB, NULL},*/
+	{1, K_CTRL_P, rl_visualpaste},
+	/*{1, K_CTRL_R, NULL},
+	{1, K_CTRL_T, NULL},*/
+	{1, K_CTRL_V, rl_visualtoggle},
+	{1, K_CTRL_Y, rl_visualyank},
 	{3, K_LEFT, rl_editleft},
 	{3, K_RGT, rl_editright},
 	{3, K_UP, rl_editup},
 	{3, K_DOWN, rl_editdown},
+	{3, K_HOME, rl_edithome},
+	{3, K_END, rl_editend},
+	{4, K_DELETE, rl_editdelete},
+	{6, K_CTRL_UP, rl_editctrlup},
+	{6, K_CTRL_DOWN, rl_editctrldown},
+	{6, K_CTRL_RIGHT, rl_editctrlright},
+	{6, K_CTRL_LEFT, rl_editctrlleft},
+	{0, NULL, NULL},
+};
+
+static t_editbind	g_viskeymap[] =
+{
+	{1, K_ESC, resetmode},
+	{1, K_RETURN, rl_editreturn},
+	{1, K_BACKSPACE, rl_editbackspace},
+	{1, K_ENTER, rl_editreturn},
+	{1, K_CTRL_B, rl_editbackspace},
+	{1, K_CTRL_D, rl_visualdelete},
+	{1, K_CTRL_P, rl_visualpaste},
+	{1, K_CTRL_V, rl_visualtoggle},
+	{1, K_CTRL_Y, rl_visualyank},
+	{3, K_LEFT, rl_editleft},
+	{3, K_RGT, rl_editright},
 	{3, K_HOME, rl_edithome},
 	{3, K_END, rl_editend},
 	{4, K_DELETE, rl_editdelete},
@@ -110,6 +150,13 @@ static inline void	prepare(void)
 	g_editln->rows = 0;
 }
 
+static t_editbind	*keymap(void)
+{
+	if (g_mode == RL_VISUAL)
+		return (g_viskeymap);
+	return (g_inskeymap);
+}
+
 char				*rl_editln(char const *prompt, size_t *len)
 {
 	ssize_t		rd;
@@ -121,13 +168,13 @@ char				*rl_editln(char const *prompt, size_t *len)
 	while ((rd = ft_read(STDIN_FILENO, key, 6)) > 0)
 	{
 		st = 2;
-		bind = g_inskeymap - 1;
+		bind = keymap() - 1;
 		while (st == 2 && (++bind)->rd <= rd)
 			if (rd == bind->rd && !ft_memcmp(key, bind->key, (size_t)bind->rd))
 				st = bind->cb(prompt);
 		if (st == 1)
 			break ;
-		if (rd == 1 && ft_isascii(*key) && !ft_iscntrl(*key))
+		if (st == 2 && rd == 1 && ft_isascii(*key) && !ft_iscntrl(*key))
 			rl_editinsert(prompt, *key);
 	}
 	if (rd < 0)

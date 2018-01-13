@@ -23,6 +23,8 @@
 # define TC_UP "\x1b[1A"
 # define TC_DO "\x1b[1B"
 # define TC_CL "\r\x1b[0K"
+# define TC_MR "\x1b[7m"
+# define TC_ME "\x1b[m"
 
 # define CAPS_U7 0
 # define CAPS_CM 1
@@ -34,7 +36,8 @@
 typedef struct	s_editln
 {
 	t_sds		str;
-	size_t		idx;
+	uint16_t	idx;
+	uint16_t	vidx;
 	uint16_t	row;
 	uint16_t	rows;
 	t_vec		cols;

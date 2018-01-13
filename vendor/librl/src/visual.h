@@ -1,32 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   screen.h                                           :+:      :+:    :+:   */
+/*   visual.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/06 12:00:10 by alucas-          ###   ########.fr       */
+/*   Updated: 2018/01/06 11:13:28 by cmalfroy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBRL_SCREEN_H
-# define LIBRL_SCREEN_H
+#ifndef LIBRL_VISUAL_H
+# define LIBRL_VISUAL_H
 
-# include "librl.h"
+# include "edit.h"
 
-# include <sys/ioctl.h>
-
-typedef struct	s_screen
-{
-	uint16_t	width;
-	uint16_t	cursor;
-}				t_screen;
-
-extern t_screen	*g_screen;
-
-extern int		rl_screenpos(int ifd, int ofd);
-extern int		rl_screenwidth(int ifd, int ofd);
-extern int		rl_screenget(t_screen *self, int ifd, int ofd);
+extern void		rl_visualdtor(void);
+extern int		rl_visualtoggle(char const *prompt);
+extern int		rl_visualyank(char const *prompt);
+extern int		rl_visualdelete(char const *prompt);
+extern int		rl_visualpaste(char const *prompt);
 
 #endif

@@ -27,7 +27,8 @@ SRC_NAME = \
 	edit/return.c \
 	hist.c \
 	read.c read/notty.c read/tty.c \
-	screen.c
+	screen.c \
+	visual.c
 
 SRC = $(addprefix $(SRC_PATH), $(SRC_NAME))
 OBJ = $(addprefix $(OBJ_PATH), $(OBJ_NAME))
