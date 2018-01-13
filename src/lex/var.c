@@ -32,7 +32,7 @@ inline int			sh_lexvar(int fd, t_tok *tok, char **it, char **ln)
 	while (++*it)
 	{
 		if (!**it && (fd < 0 || !(*it = rl_catline(fd, "> ", 0, ln))))
-			return (*it < (char *)0 ? WUT : sh_synerr(*ln, *it, "Unexpected "
+			return (*it == (char *)-1 ? WUT : sh_synerr(*ln, *it, "Unexpected "
 				"EOF while looking for matching `}'"));
 		if (!ft_isalnum(**it) && **it != '_')
 		{

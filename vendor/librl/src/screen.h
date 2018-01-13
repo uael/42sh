@@ -19,14 +19,16 @@
 
 typedef struct	s_screen
 {
+	uint16_t	height;
 	uint16_t	width;
+	uint16_t	row;
 	uint16_t	col;
 }				t_screen;
 
 extern t_screen	*g_screen;
 
-extern int		rl_screenpos(int ifd, int ofd);
-extern int		rl_screenwidth(int ifd, int ofd);
-extern int		rl_screenget(t_screen *self, int ifd, int ofd);
+extern int		rl_screenpos(uint16_t *row, uint16_t *col);
+extern int		rl_screensize(uint16_t *row, uint16_t *col);
+extern int		rl_screenget(t_screen *self);
 
 #endif

@@ -58,7 +58,7 @@ inline int				sh_lexword(int fd, t_tok *tok, char **it, char **ln)
 		}
 		else if (**it == '\\' && *++*it == '\n' && !*++*it &&
 			(fd < 0 || !(*it = rl_catline(fd, "> ", -2, ln))))
-			return (*it < (char *)0 ? WUT : NOP);
+			return (*it == (char *)-1 ? WUT : NOP);
 		else if (**it == '$')
 		{
 			if (sh_lexvar(fd, tok, it, ln) < 0)

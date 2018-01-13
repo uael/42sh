@@ -15,58 +15,49 @@
 static t_screen	g_stack_screen;
 t_screen		*g_screen = &g_stack_screen;
 
-int				rl_screenpos(int ifd, int ofd)
+int				rl_screenpos(uint16_t *row, uint16_t *col)
 {
 	char	buf[32];
-	uint	i;
+	int		i;
+	ssize_t	rd;
 
-	i = 0;
-	if (ft_write(ofd, "\x1b[6n", 4) != 4)
+	i = -1;
+	if (ft_write(STDOUT_FILENO, "\x1b[6n", 4) != 4)
 		return (THROW(WUT));
-	while (++i < sizeof(buf))
-		if (ft_read(ifd, buf + i - 1, 1) != 1 || buf[i] == 'R')
+	rd = 0;
+	while ((size_t)(++i + 1) < sizeof(buf))
+		if ((rd = ft_read(STDIN_FILENO, buf + i, 1)) != 1 || buf[i] == 'R')
 			break;
-	buf[i] = '\0';
-	if (buf[0] != 27 || buf[1] != '[')
+	if (rd < 0)
 		return (WUT);
-	return ((int)ft_atoi(ft_strchr(buf, ';') + 1));
+	buf[i + 1] = '\0';
+	if (buf[0] != '\x1b' || buf[1] != '[' || buf[i] != 'R')
+		return (WUT);
+	if (row)
+		*row = (uint16_t)ft_atoi(buf + 2);
+	if (col)
+		*col = (uint16_t)ft_atoi(ft_strchr(buf, ';') + 1);
+	return (YEP);
 }
 
-int				rl_screenwidth(int ifd, int ofd)
+int				rl_screensize(uint16_t *h, uint16_t *w)
 {
 	struct winsize	ws;
-	int				start;
-	int				cols;
-	char			seq[32];
 
-	if (ioctl(1, TIOCGWINSZ, &ws) != -1 && ws.ws_col != 0)
-		return (ws.ws_col);
-	else
-	{
-		if ((start = rl_screenpos(ifd, ofd)) == -1)
-			return (WUT);
-		if (ft_write(ofd, "\x1b[999C", 6) != 6)
-			return (THROW(WUT));
-		if ((cols = rl_screenpos(ifd, ofd)) == -1)
-			return (WUT);
-		if (cols > start)
-		{
-			ft_memcpy(seq, "\x1b[", sizeof("\x1b["));
-			seq[ft_intstr(seq + sizeof("\x1b["), cols - start, 10)] = '\0';
-			if (ft_write(ofd, ft_strcat(seq, "D"), ft_strlen(seq)) < 0)
-				return ((int16_t)THROW(WUT));
-		}
-		return (cols);
-	}
+	if (ioctl(1, TIOCGWINSZ, &ws))
+		return (THROW(WUT));
+	if (h)
+		*h = ws.ws_row;
+	if (w)
+		*w = ws.ws_col;
+	return (YEP);
 }
 
-int				rl_screenget(t_screen *self, int ifd, int ofd)
+int				rl_screenget(t_screen *self)
 {
-	int	width;
-
-	if ((width = rl_screenwidth(ifd, ofd)) <= 0)
+	if (rl_screensize(&self->height, &self->width))
 		return (WUT);
-	self->width = (uint16_t)width;
-	self->col = 0;
+	if (rl_screenpos(&self->row, &self->col))
+		return (WUT);
 	return (YEP);
 }

@@ -86,7 +86,7 @@ static inline int	lex(int fd, t_tok *tok, char **it, char **ln)
 	}
 	if (**it == '\\' && *++*it == '\n' && !*++*it &&
 		(fd < 0 || !(*it = rl_catline(fd, "> ", -2, ln))))
-		return (*it < (char *)0 ? WUT : NOP);
+		return (*it == (char *)-1 ? WUT : NOP);
 	if (ft_isdigit(**it))
 		ft_sdscpush((t_sds *)tok, *(*it)++);
 	if ((st = sh_lexop(fd, tok, it, ln)) < 0)
@@ -156,8 +156,8 @@ int					sh_lexnext(int fd, t_deq *toks, char **ln)
 	if (fd < 0)
 		return (NOP);
 	st = 0;
-	if ((it = rl_catline(fd, "> ", ';', ln)) > (char *)0)
+	if ((it = rl_catline(fd, "> ", ';', ln)) && it != (char *)-1)
 		while (!(st = sh_lex(fd, toks, &it, ln)))
 			;
-	return (!st && it < (char *)0 ? WUT : st);
+	return (!st && it == (char *)-1 ? WUT : st);
 }
