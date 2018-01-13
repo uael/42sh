@@ -20,22 +20,19 @@
 # define TC_GOTODO(N) "\x1b[%dB", (N)
 # define TC_GOTOFO(N) "\x1b[%dC", (N)
 # define TC_GOTOBA(N) "\x1b[%dD", (N)
+# define TC_GOTOSU(N) "\x1b[%dS", (N)
+# define TC_GOTOSD(N) "\x1b[%dT", (N)
 # define TC_GOTOCH(N) "\r\x1b[%dC", (N)
-# define TC_GOTOCH0() '\r'
+# define TC_GOTOCH0 "\r"
 # define TC_UP "\x1b[1A"
 # define TC_DO "\x1b[1B"
 # define TC_FO "\x1b[1C"
 # define TC_BA "\x1b[1D"
+# define TC_SU "\x1b[1S"
+# define TC_SD "\x1b[1T"
 # define TC_CL "\r\x1b[0K"
 # define TC_MR "\x1b[7m"
 # define TC_ME "\x1b[m"
-
-# define CAPS_U7 0
-# define CAPS_CM 1
-# define CAPS_LE 2
-# define CAPS_ND 3
-# define CAPS_CD 4
-# define CAPS_CE 5
 
 typedef struct	s_editln
 {

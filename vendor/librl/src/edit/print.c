@@ -113,7 +113,7 @@ void			rl_editprint(char const *prompt)
 	if (g_screen->col != g_idx_col)
 	{
 		if (!g_idx_col)
-			ft_ofswrc(out, TC_GOTOCH0());
+			ft_ofswrs(out, TC_GOTOCH0);
 		else
 			ft_ofswrf(out, TC_GOTOCH(g_idx_col));
 		g_screen->col = g_idx_col;

@@ -52,7 +52,7 @@ inline int	rl_editright(char const *prompt)
 		{
 			++g_editln->row;
 			ft_puts(STDOUT_FILENO, TC_DO);
-			ft_putc(STDOUT_FILENO, TC_GOTOCH0());
+			ft_puts(STDOUT_FILENO, TC_GOTOCH0);
 			g_screen->col = 0;
 		}
 	}
