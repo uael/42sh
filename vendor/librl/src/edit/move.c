@@ -12,10 +12,6 @@
 
 #include "../edit.h"
 
-/*
-** TODO: handle margin when LE available
-*/
-
 inline int	rl_editleft(char const *prompt)
 {
 	uint16_t ch;
@@ -40,10 +36,6 @@ inline int	rl_editleft(char const *prompt)
 	}
 	return (YEP);
 }
-
-/*
-** TODO: handle margin when ND available
-*/
 
 inline int	rl_editright(char const *prompt)
 {
