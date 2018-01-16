@@ -23,7 +23,7 @@
 # define TC_GOTOSU(N) "\x1b[%dS", (N)
 # define TC_GOTOSD(N) "\x1b[%dT", (N)
 # define TC_GOTOCH(N) "\r\x1b[%dC", (N)
-# define TC_GOTOCH0 "\r"
+# define TC_CH "\r"
 # define TC_UP "\x1b[1A"
 # define TC_DO "\x1b[1B"
 # define TC_FO "\x1b[1C"
@@ -33,6 +33,7 @@
 # define TC_CL "\r\x1b[0K"
 # define TC_MR "\x1b[7m"
 # define TC_ME "\x1b[m"
+# define TC_CL_UP TC_CL TC_UP
 
 typedef struct	s_editln
 {
