@@ -192,29 +192,30 @@ int					rl_editln(char const *prompt, size_t *sz, char **ln,
 	t_editbind	*bind;
 
 	prepare(cat);
-	while ((rd = ft_read(STDIN_FILENO, key, 1)) > 0)
-	{
-		if (ft_iscntrl(*key) || !ft_isascii(*key))
+	while (1)
+		if ((rd = ft_read(STDIN_FILENO, key, 1)) < 0)
+			return (WUT);
+		else if (rd)
 		{
-			if (*key == *K_ESC)
+			if (ft_iscntrl(*key) || !ft_isascii(*key))
 			{
-				if ((rd = ft_read(STDIN_FILENO, key + 1, 5)) < 0)
+				if (*key == *K_ESC)
+				{
+					if ((rd = ft_read(STDIN_FILENO, key + 1, 5)) < 0)
+						return (WUT);
+					++rd;
+				}
+				st = 2;
+				bind = keymap() - 1;
+				while (st == 2 && (++bind)->rd <= rd && bind->rd)
+					if (rd == bind->rd && !ft_memcmp(key, bind->key, (size_t)bind->rd))
+						st = bind->cb(prompt);
+				if (st == 1)
 					break ;
-				++rd;
 			}
-			st = 2;
-			bind = keymap() - 1;
-			while (st == 2 && (++bind)->rd <= rd && bind->rd)
-				if (rd == bind->rd && !ft_memcmp(key, bind->key, (size_t)bind->rd))
-					st = bind->cb(prompt);
-			if (st == 1)
+			else if (rl_editinsert(prompt, *key))
 				break ;
 		}
-		else if (rl_editinsert(prompt, *key))
-			break ;
-	}
-	if (rd < 0)
-		return (WUT);
 	if ((*sz = g_eln->str.len))
 	{
 		*ln = g_eln->str.buf;

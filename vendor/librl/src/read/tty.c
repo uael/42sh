@@ -54,7 +54,7 @@ inline int		rl_rawmode(int fd)
 		g_raw_mode.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON | OPOST);
 		g_raw_mode.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
 		g_raw_mode.c_cflag |= (CS8);
-		g_raw_mode.c_cc[VMIN] = 1;
+		g_raw_mode.c_cc[VMIN] = 0;
 		g_raw_mode.c_cc[VTIME] = 0;
 	}
 	if (g_mode != RL_INSERT)
