@@ -57,7 +57,6 @@ extern uint8_t	g_edit_len;
 extern uint8_t	g_edit_idx;
 extern t_editln	*g_eln;
 extern t_bool	g_edit_cat;
-extern t_sds	g_edit_swap;
 
 extern void		rl_editdtor(void);
 extern void		rl_editlnupdate(t_editln *ln);
