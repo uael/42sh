@@ -18,16 +18,19 @@ t_screen		*g_screen = &g_stack_screen;
 int				rl_screenpos(uint16_t *row, uint16_t *col)
 {
 	char	buf[32];
-	int		i;
+	size_t	i;
 	ssize_t	rd;
 
-	i = -1;
+	i = 0;
 	if (ft_write(STDOUT_FILENO, "\x1b[6n", 4) != 4)
 		return (THROW(WUT));
 	rd = 0;
-	while ((size_t)(++i + 1) < sizeof(buf))
+	while (i < 64)
+	{
 		if ((rd = ft_read(STDIN_FILENO, buf + i, 1)) != 1 || buf[i] == 'R')
 			break;
+		++i;
+	}
 	if (rd < 0)
 		return (WUT);
 	buf[i + 1] = '\0';

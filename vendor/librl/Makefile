@@ -12,7 +12,7 @@
 
 NAME = librl.a
 CC = gcc
-CFLAGS = -Werror -Wextra -Wall -O2
+CFLAGS = -Werror -Wextra -Wall -g2 -DDEBUG -fsanitize=address
 
 SRC_PATH = ./src/
 OBJ_PATH = ./obj/
@@ -24,7 +24,7 @@ OBJ_NAME = $(SRC_NAME:.c=.o)
 3TH_NAME =
 SRC_NAME = \
 	edit.c edit/ctrlmove.c edit/hist.c edit/insert.c edit/move.c edit/print.c \
-	edit/return.c \
+	edit/return.c edit/ln.c \
 	hist.c \
 	read.c read/notty.c read/tty.c \
 	screen.c \

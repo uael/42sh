@@ -37,11 +37,10 @@
 typedef struct	s_editln
 {
 	t_sds		str;
-	uint16_t	idx;
-	uint16_t	vidx;
+	size_t		idx;
+	size_t		vidx;
 	uint16_t	row;
-	uint16_t	rows;
-	t_vec		cols;
+	t_vec		rows;
 }				t_editln;
 
 typedef int	(t_editcb)(char const *prompt);
@@ -56,12 +55,15 @@ typedef struct	s_editbind
 extern t_editln	g_edit[HIST_MAX + 1];
 extern uint8_t	g_edit_len;
 extern uint8_t	g_edit_idx;
-extern t_editln	*g_editln;
+extern t_editln	*g_eln;
+extern t_bool	g_edit_cat;
+extern t_sds	g_edit_swap;
 
 extern void		rl_editdtor(void);
-extern char		*rl_editln(char const *prompt, size_t *len);
+extern void		rl_editlnupdate(t_editln *ln);
+extern char		*rl_editln(char const *prompt, size_t *len, t_bool cat);
 extern void		rl_editprint(char const *prompt);
-extern int		rl_editinsert(char const *prompt, char c);
+extern int		rl_editappend(char const *prompt, char *s, size_t sz);
 extern int		rl_editdelete(char const *prompt);
 extern int		rl_editbackspace(char const *prompt);
 extern int		rl_editreturn(char const *prompt);

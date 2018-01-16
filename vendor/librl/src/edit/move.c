@@ -14,10 +14,9 @@
 
 inline int	rl_editleft(char const *prompt)
 {
-	(void)prompt;
-	if (g_editln->idx)
+	if (g_eln->idx)
 	{
-		--g_editln->idx;
+		--g_eln->idx;
 		rl_editprint(prompt);
 	}
 	return (YEP);
@@ -25,10 +24,9 @@ inline int	rl_editleft(char const *prompt)
 
 inline int	rl_editright(char const *prompt)
 {
-	(void)prompt;
-	if (g_editln->idx != g_editln->str.len)
+	if (g_eln->idx != g_eln->str.len)
 	{
-		++g_editln->idx;
+		++g_eln->idx;
 		rl_editprint(prompt);
 	}
 	return (YEP);
@@ -36,9 +34,9 @@ inline int	rl_editright(char const *prompt)
 
 inline int	rl_edithome(char const *prompt)
 {
-	if (g_editln->idx)
+	if (g_eln->idx)
 	{
-		g_editln->idx = 0;
+		g_eln->idx = 0;
 		rl_editprint(prompt);
 	}
 	return (YEP);
@@ -46,9 +44,9 @@ inline int	rl_edithome(char const *prompt)
 
 inline int	rl_editend(char const *prompt)
 {
-	if (g_editln->idx != g_editln->str.len)
+	if (g_eln->idx != g_eln->str.len)
 	{
-		g_editln->idx = (uint16_t)g_editln->str.len;
+		g_eln->idx = (uint16_t)g_eln->str.len;
 		rl_editprint(prompt);
 	}
 	return (YEP);

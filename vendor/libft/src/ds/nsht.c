@@ -42,6 +42,7 @@ inline size_t	ft_sdsnsht(t_sds *self, size_t n, char *out)
 		ft_memcpy(out, it, n * sizeof(char));
 	if (self->len -= n)
 		ft_memmove(it, it + n, (self->len + 1) * sizeof(char));
+	self->buf[self->len] = '\0';
 	return (n);
 }
 

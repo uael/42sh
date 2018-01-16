@@ -12,18 +12,34 @@
 
 #include "../edit.h"
 
-inline int	rl_editinsert(char const *prompt, char c)
+
+inline int	rl_editappend(char const *prompt, char *s, size_t sz)
 {
-	ft_sdscput(&g_editln->str, g_editln->idx++, c);
+	char *eol;
+
+	if ((eol = ft_strnchr(s, '\n', sz)) ||
+		(eol = ft_strnchr(s, '\r', sz)))
+	{
+		ft_sdsmput(&g_eln->str, g_eln->idx, s, eol - s);
+		g_eln->idx += eol - s;
+		rl_editprint(prompt);
+		if (*eol == '\r' && *(eol + 1) == '\n')
+			++eol;
+		if ((size_t)(++eol - s) < sz)
+			ft_sdsmpush(&g_edit_swap, eol, sz - (eol - s));
+		return (rl_editreturn(prompt));
+	}
+	ft_sdsmput(&g_eln->str, g_eln->idx, s, sz);
+	g_eln->idx += sz;
 	rl_editprint(prompt);
 	return (YEP);
 }
 
 inline int	rl_editdelete(char const *prompt)
 {
-	if (g_editln->idx && g_editln->idx < g_editln->str.len)
+	if (g_eln->idx < g_eln->str.len)
 	{
-		ft_sdsrem(&g_editln->str, g_editln->idx, NULL);
+		ft_sdsrem(&g_eln->str, g_eln->idx, NULL);
 		rl_editprint(prompt);
 	}
 	return (YEP);
@@ -31,10 +47,10 @@ inline int	rl_editdelete(char const *prompt)
 
 inline int	rl_editbackspace(char const *prompt)
 {
-	if (g_editln->idx && g_editln->str.len)
-	{
-		ft_sdsrem(&g_editln->str, --g_editln->idx, NULL);
-		rl_editprint(prompt);
-	}
-	return (YEP);
+if (g_eln->idx && g_eln->str.len)
+{
+ft_sdsrem(&g_eln->str, --g_eln->idx, NULL);
+rl_editprint(prompt);
+}
+return (YEP);
 }

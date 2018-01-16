@@ -10,20 +10,21 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdio.h>
 #include "../edit.h"
 
 inline int	rl_editctrlleft(char const *prompt)
 {
 	size_t	idx;
 
-	idx = g_editln->idx;
-	while (g_editln->idx > 0 &&
-		ft_isspace(g_editln->str.buf[g_editln->idx - 1]))
-		--g_editln->idx;
-	while (g_editln->idx > 0 &&
-		!ft_isspace(g_editln->str.buf[g_editln->idx - 1]))
-		--g_editln->idx;
-	if (g_editln->idx != idx)
+	idx = g_eln->idx;
+	while (g_eln->idx > 0 &&
+		ft_isspace(g_eln->str.buf[g_eln->idx - 1]))
+		--g_eln->idx;
+	while (g_eln->idx > 0 &&
+		!ft_isspace(g_eln->str.buf[g_eln->idx - 1]))
+		--g_eln->idx;
+	if (g_eln->idx != idx)
 		rl_editprint(prompt);
 	return (YEP);
 }
@@ -32,44 +33,37 @@ inline int	rl_editctrlright(char const *prompt)
 {
 	size_t	idx;
 
-	idx = g_editln->idx;
-	while (g_editln->idx < g_editln->str.len &&
-		!ft_isspace(g_editln->str.buf[g_editln->idx + 1]))
-		++g_editln->idx;
-	while (g_editln->idx < g_editln->str.len &&
-		ft_isspace(g_editln->str.buf[g_editln->idx + 1]))
-		++g_editln->idx;
-	if (g_editln->idx < g_editln->str.len)
-		++g_editln->idx;
-	if (g_editln->idx != idx)
+	idx = g_eln->idx;
+	while (g_eln->idx < g_eln->str.len &&
+		!ft_isspace(g_eln->str.buf[g_eln->idx + 1]))
+		++g_eln->idx;
+	while (g_eln->idx < g_eln->str.len &&
+		ft_isspace(g_eln->str.buf[g_eln->idx + 1]))
+		++g_eln->idx;
+	if (g_eln->idx < g_eln->str.len)
+		++g_eln->idx;
+	if (g_eln->idx != idx)
 		rl_editprint(prompt);
 	return (YEP);
 }
 
 inline int	rl_editctrlup(char const *prompt)
 {
-	size_t		plen;
-	uint16_t	c;
-	uint16_t	cur;
+	char		*row;
+	char		*pos;
+	char		*pre;
 
-	if (g_editln->row <= 1)
+	if (g_eln->row <= 1)
 		return (YEP);
-	plen = ft_strlen(prompt);
-	if ((g_editln->row - 1) == 1 && (g_screen->col < plen))
-		g_editln->idx = 0;
-	else
+	row = *(char **)ft_vecat(&g_eln->rows, (size_t)(g_eln->row - 2));
+	pre = *(char **)ft_vecat(&g_eln->rows, (size_t)(g_eln->row - 1));
+	pos = ft_sdsat(&g_eln->str, g_eln->idx);
+	g_eln->idx = (uint16_t)(row - ft_sdsbeg(&g_eln->str));
+	while (pos > pre && g_eln->str.buf[g_eln->idx] != '\n' &&
+		g_eln->idx < g_eln->str.len)
 	{
-		c = *(uint16_t *)ft_vecat(&g_editln->cols, (size_t)(g_editln->row - 2));
-		while (g_editln->str.buf[--g_editln->idx] != '\n')
-			;
-		while (g_editln->idx &&
-			g_editln->str.buf[g_editln->idx - 1] != '\n')
-			--g_editln->idx;
-		cur = g_screen->col;
-		g_screen->col = (uint16_t)((g_editln->row - 1) == 1 ? plen : 0);
-		while (g_screen->col < cur && g_screen->col < c)
-			g_screen->col += (g_editln->str.buf[g_editln->idx++] == '\t' ?
-				(8 - (g_screen->col % 8)) : 1);
+		++g_eln->idx;
+		--pos;
 	}
 	rl_editprint(prompt);
 	return (YEP);
@@ -77,20 +71,22 @@ inline int	rl_editctrlup(char const *prompt)
 
 inline int	rl_editctrldown(char const *prompt)
 {
-	uint16_t	c;
-	uint16_t	cur;
+	char		*row;
+	char		*pos;
+	char		*pre;
 
-	if (g_editln->row == g_editln->rows)
+	if (g_eln->row == g_eln->rows.len)
 		return (YEP);
-	c = *(uint16_t *)ft_vecat(&g_editln->cols, (size_t)(g_editln->row));
-	while (g_editln->str.buf[g_editln->idx] != '\n')
-		++g_editln->idx;
-	++g_editln->idx;
-	cur = g_screen->col;
-	g_screen->col = 0;
-	while (g_screen->col < cur && g_screen->col < c)
-		g_screen->col += (g_editln->str.buf[g_editln->idx++] == '\t' ?
-			(8 - (g_screen->col % 8)) : 1);
+	row = *(char **)ft_vecat(&g_eln->rows, (size_t)(g_eln->row));
+	pre = *(char **)ft_vecat(&g_eln->rows, (size_t)(g_eln->row - 1));
+	pos = ft_sdsat(&g_eln->str, g_eln->idx);
+	g_eln->idx = (uint16_t)(row - ft_sdsbeg(&g_eln->str));
+	while (pos > pre && g_eln->str.buf[g_eln->idx] != '\n' &&
+		g_eln->idx < g_eln->str.len)
+	{
+		++g_eln->idx;
+		--pos;
+	}
 	rl_editprint(prompt);
 	return (YEP);
 }

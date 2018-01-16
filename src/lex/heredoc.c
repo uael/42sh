@@ -22,8 +22,10 @@ inline int			sh_lexheredoc(int fd, t_tok *tok, char **it, char **ln)
 	tok->len = 0;
 	while (1)
 		if (!**it && (fd < 0 || !(*it = rl_catline(fd, "> ", 0, ln))))
-			return (*it == (char *)-1 ? WUT : sh_synerr(*ln, *it, "Unexpected "
+			return (sh_synerr(*ln, *it, "Unexpected "
 				"EOF while looking for heredoc delimiter `%s'", eof));
+		else if (*it == (char *)-1)
+			return (WUT);
 		else if (*ft_sdscpush((t_sds *)tok, *(*it)++) == '\n' && tok->len >=
 			eofl + 2 && tok->val[tok->len - (eofl + 2)] == '\n' &&
 			!ft_strncmp(tok->val + tok->len - (eofl + 1), eof, eofl))

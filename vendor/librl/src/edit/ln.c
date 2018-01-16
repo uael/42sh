@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   edit/hist.c                                        :+:      :+:    :+:   */
+/*   edit/ln.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,32 +12,17 @@
 
 #include "../edit.h"
 
-inline int	rl_editup(char const *prompt)
+inline void		rl_editlnupdate(t_editln *ln)
 {
-	if (g_edit_idx)
-	{
-		if (g_edit_cat && g_edit_idx == g_edit_len - 1)
-			--g_edit_idx;
-		g_eln = g_edit + --g_edit_idx;
-		g_eln->idx = (uint16_t)g_eln->str.len;
-		g_eln->row = (g_eln + 1)->row;
-		g_eln->rows.len = (g_eln + 1)->rows.len;
-		rl_editprint(prompt);
-	}
-	return (YEP);
-}
+	char *beg;
+	char *eol;
 
-inline int	rl_editdown(char const *prompt)
-{
-	if (g_edit_idx + 1 < g_edit_len)
+	ln->rows.len = 0;
+	beg = ln->str.buf;
+	while ((eol = ft_strchr(beg, '\n')))
 	{
-		if (g_edit_cat && g_edit_idx + 2 == g_edit_len - 1)
-			++g_edit_idx;
-		g_eln = g_edit + ++g_edit_idx;
-		g_eln->idx = (uint16_t)g_eln->str.len;
-		g_eln->row = (g_eln - 1)->row;
-		g_eln->rows.len = (g_eln - 1)->rows.len;
-		rl_editprint(prompt);
+		*(char **)ft_vecpush(&ln->rows) = beg;
+		beg = eol + 1;
 	}
-	return (YEP);
+	*(char **)ft_vecpush(&ln->rows) = beg;
 }
