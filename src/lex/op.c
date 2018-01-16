@@ -21,9 +21,11 @@ static inline int	opm(t_tok *tok, char **it, uint8_t len, uint8_t id)
 
 static inline int	opnext(int fd, char **it, char **ln)
 {
+	int	st;
+
 	if (*++*it == '\\' && *++*it == '\n' && !*++*it &&
-		(fd < 0 || !(*it = rl_catline(fd, "> ", -2, ln))))
-		return (*it == (char *)-1 ? WUT : NOP);
+		(st = fd < 0 ? NOP : rl_catline(fd, -2, ln, it)))
+		return (st);
 	return (YEP);
 }
 

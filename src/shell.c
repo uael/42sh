@@ -73,10 +73,9 @@ inline int			sh_run(int fd)
 	char	*it;
 	int		st;
 
-	st = EXIT_SUCCESS;
 	sh_init(fd);
 	sh_scopepush();
-	while ((ln = rl_getline(fd, "$> ")) && ln != (char *)-1)
+	while (!(st = rl_getline(fd, "$> ", &ln)))
 	{
 		if (!ft_strcmp("exit\n", ln))
 			break ;
@@ -91,7 +90,7 @@ inline int			sh_run(int fd)
 	while (sh_scopepop())
 		;
 	rl_finalize(fd);
-	if (ln == (char *)-1 || st < 0)
+	if (st < 0)
 		g_shstatus = EXIT_FAILURE;
 	return (g_shstatus);
 }

@@ -33,25 +33,23 @@ inline void		rl_nottyfinalize(int fd)
 		ft_ifsclose(g_in + fd);
 }
 
-inline char		*rl_readnotty(int fd)
+inline int		rl_readnotty(int fd, char **ln)
 {
-	char		*ln;
+	char		*buf;
 
 	if (fd < 0 || fd > OPEN_MAX)
-	{
-		ENO_THROW(WUT, EINVAL);
-		return (NULL);
-	}
+		return (ENO_THROW(WUT, EINVAL));
 	g_in[fd].ifd = fd;
 	if (g_rd[fd] > 0 && ft_ifsrd(g_in + fd, NULL, (size_t)g_rd[fd]) < 0)
-		return ((char *)-1);
-	if ((g_rd[fd] = ft_ifschr(g_in + fd, 0, '\n', &ln)) > 0)
+		return (WUT);
+	if ((g_rd[fd] = ft_ifschr(g_in + fd, 0, '\n', &buf)) > 0)
 	{
 		g_ln.len = 0;
-		ft_sdsmpush(&g_ln, ln, (size_t)g_rd[fd]);
-		return (g_ln.buf);
+		ft_sdsmpush(&g_ln, buf, (size_t)g_rd[fd]);
+		*ln  = g_ln.buf;
+		return (YEP);
 	}
 	if (g_rd[fd] < 0)
-		return ((char *)-1);
-	return (NULL);
+		return (WUT);
+	return (NOP);
 }

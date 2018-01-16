@@ -45,7 +45,8 @@ static inline uint8_t	wordid(char const *s, size_t l)
 
 inline int				sh_lexword(int fd, t_tok *tok, char **it, char **ln)
 {
-	char *beg;
+	char	*beg;
+	int		st;
 
 	beg = *it;
 	while (**it)
@@ -57,8 +58,8 @@ inline int				sh_lexword(int fd, t_tok *tok, char **it, char **ln)
 				return (WUT);
 		}
 		else if (**it == '\\' && *++*it == '\n' && !*++*it &&
-			(fd < 0 || !(*it = rl_catline(fd, "> ", -2, ln))))
-			return (*it == (char *)-1 ? WUT : NOP);
+			(st = fd < 0 ? NOP : rl_catline(fd, -2, ln, it)))
+			return (st);
 		else if (**it == '$')
 		{
 			if (sh_lexvar(fd, tok, it, ln) < 0)

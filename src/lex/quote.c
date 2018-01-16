@@ -14,13 +14,14 @@
 
 inline int	sh_lexquote(int fd, t_tok *tok, char **it, char **ln)
 {
-	char quote;
+	char	quote;
+	int		st;
 
 	if ((quote = *(*it)++) != '\'' && quote != '"')
 		return (sh_synerr(*ln, *it, "Expected token ''' or '\"'"));
 	while (1)
-		if (!**it && (fd < 0 || !(*it = rl_catline(fd, "> ", 0, ln))))
-			return (*it == (char *)-1 ? WUT : sh_synerr(*ln, *it, "Unexpected "
+		if (!**it && (st = fd < 0 ? NOP : rl_catline(fd, 0, ln, it)))
+			return (st < 0 ? WUT : sh_synerr(*ln, *it, "Unexpected "
 				"EOF while looking for matching `%c'", quote));
 		else if (quote == '"' && *(*it - 1) == '\\')
 			ft_sdscpush((t_sds *)tok, ft_strchr("\\\n\"$", **it)

@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <signal.h>
 #include <sys/signal.h>
 
 #include "read.h"
@@ -38,36 +37,38 @@ void			rl_dtor(void)
 	rl_nottydtor();
 }
 
-char			*rl_getline(int fd, char *prompt)
+int				rl_getline(int fd, char *prompt, char **ln)
 {
-	char		*ln;
+	char		*buf;
 	size_t		len;
+	int			st;
 
 	if (fd != 0 || !isatty(fd) || rl_rawmode(fd))
-		return (rl_readnotty(fd));
+		return (rl_readnotty(fd, ln));
 	ft_write(STDIN_FILENO, prompt, ft_strlen(prompt));
 	signal(SIGWINCH, rd_sigwinch);
 	if (!g_edit_swap.len && rl_screenget(g_screen) < 0)
-		ln = (char *)-1;
-	else if ((ln = rl_editln(prompt, &len, 0)) && ln != (char *)-1 && len > 1)
-		ln = rl_histadd(ln, len);
+		st = WUT;
+	else if (!(st = rl_editln(prompt, &len, &buf, 0)) && len > 1)
+		*ln = rl_histadd(buf, len);
 	rl_offmode(fd);
-	return (ln);
+	return (st);
 }
 
-char			*rl_catline(int fd, char *prompt, char c, char **out)
+int				rl_catline(int fd, char c, char **ln, char **it)
 {
-	char		*ln;
+	char		*buf;
 	size_t		len;
+	int			st;
 
 	if (fd != 0 || !isatty(fd) || rl_rawmode(fd))
-		return (rl_readnotty(fd));
-	ft_write(STDIN_FILENO, prompt, ft_strlen(prompt));
+		return (rl_readnotty(fd, it));
+	ft_write(STDIN_FILENO, "> ", 2);
 	signal(SIGWINCH, rd_sigwinch);
 	if (!g_edit_swap.len && rl_screenget(g_screen) < 0)
-		ln = (char *)-1;
-	else if ((ln = rl_editln(prompt, &len, 1)) != (char *)-1)
-		ln = rl_histcat(ln, len, c, out);
+		st = WUT;
+	else if (!(st = rl_editln("> ", &len, &buf, 1)) && len > 1)
+		*it = rl_histcat(buf, len, c, ln);
 	rl_offmode(fd);
-	return (ln);
+	return (st);
 }

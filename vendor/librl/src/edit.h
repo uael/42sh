@@ -61,7 +61,7 @@ extern t_sds	g_edit_swap;
 
 extern void		rl_editdtor(void);
 extern void		rl_editlnupdate(t_editln *ln);
-extern char		*rl_editln(char const *prompt, size_t *len, t_bool cat);
+extern int		rl_editln(char const *prompt, size_t *sz, char **l,	t_bool cat);
 extern void		rl_editprint(char const *prompt);
 extern int		rl_editappend(char const *prompt, char *s, size_t sz);
 extern int		rl_editdelete(char const *prompt);

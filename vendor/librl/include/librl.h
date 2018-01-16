@@ -30,8 +30,8 @@ extern int		rl_histload(char const *filename);
 extern int		rl_histsave(char const *filename);
 extern char		*rl_histadd(char const *ln, size_t len);
 
-extern char		*rl_getline(int fd, char *prompt);
-extern char		*rl_catline(int fd, char *prompt, char c, char **ln);
+extern int		rl_getline(int fd, char *prompt, char **ln);
+extern int		rl_catline(int fd, char c, char **ln, char **it);
 extern void		rl_finalize(int fd);
 extern void		rl_dtor(void);
 

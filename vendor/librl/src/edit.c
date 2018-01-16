@@ -186,7 +186,8 @@ static t_editbind	*keymap(void)
 	return (g_inskeymap);
 }
 
-char				*rl_editln(char const *prompt, size_t *len, t_bool cat)
+int					rl_editln(char const *prompt, size_t *sz, char **ln,
+							  t_bool cat)
 {
 	ssize_t		rd;
 	char		key[7];
@@ -200,9 +201,12 @@ char				*rl_editln(char const *prompt, size_t *len, t_bool cat)
 		g_edit_swap.len = 0;
 		if (rl_editappend(prompt, g_edit_swap.buf, (size_t)rd))
 		{
-			if ((*len = g_eln->str.len))
-				return (g_eln->str.buf);
-			return (NULL);
+			if ((*sz = g_eln->str.len))
+			{
+				*ln = g_eln->str.buf;
+				return (YEP);
+			}
+			return (NOP);
 		}
 	}
 	while ((rd = ft_read(STDIN_FILENO, key, 6)) > 0)
@@ -219,8 +223,11 @@ char				*rl_editln(char const *prompt, size_t *len, t_bool cat)
 				break ;
 	}
 	if (rd < 0)
-		return ((char *)-1);
-	if ((*len = g_eln->str.len))
-		return (g_eln->str.buf);
-	return (NULL);
+		return (WUT);
+	if ((*sz = g_eln->str.len))
+	{
+		*ln = g_eln->str.buf;
+		return (YEP);
+	}
+	return (NOP);
 }

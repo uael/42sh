@@ -23,6 +23,7 @@ inline int			sh_lexvar(int fd, t_tok *tok, char **it, char **ln)
 	char	brace;
 	t_sds	var;
 	char	*val;
+	int		st;
 
 	if (**it != '$')
 		return (sh_synerr(*ln, *it, "Expected token '$'"));
@@ -31,8 +32,8 @@ inline int			sh_lexvar(int fd, t_tok *tok, char **it, char **ln)
 		ft_sdscpush(&var, brace);
 	while (++*it)
 	{
-		if (!**it && (fd < 0 || !(*it = rl_catline(fd, "> ", 0, ln))))
-			return (*it == (char *)-1 ? WUT : sh_synerr(*ln, *it, "Unexpected "
+		if (!**it && (st = fd < 0 ? NOP : rl_catline(fd, 0, ln, it)))
+			return (st < 0 ? WUT : sh_synerr(*ln, *it, "Unexpected "
 				"EOF while looking for matching `}'"));
 		if (!ft_isalnum(**it) && **it != '_')
 		{
