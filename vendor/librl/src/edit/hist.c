@@ -12,7 +12,7 @@
 
 #include "../edit.h"
 
-inline int	rl_editup(char const *prompt)
+inline int	rl_editup(void)
 {
 	if (g_edit_idx)
 	{
@@ -22,12 +22,12 @@ inline int	rl_editup(char const *prompt)
 		g_eln->idx = (uint16_t)g_eln->str.len;
 		g_eln->row = (g_eln + 1)->row;
 		g_eln->rows.len = (g_eln + 1)->rows.len;
-		rl_editprint(prompt);
+		rl_editprint();
 	}
 	return (YEP);
 }
 
-inline int	rl_editdown(char const *prompt)
+inline int	rl_editdown(void)
 {
 	if (g_edit_idx + 1 < g_edit_len)
 	{
@@ -37,7 +37,7 @@ inline int	rl_editdown(char const *prompt)
 		g_eln->idx = (uint16_t)g_eln->str.len;
 		g_eln->row = (g_eln - 1)->row;
 		g_eln->rows.len = (g_eln - 1)->rows.len;
-		rl_editprint(prompt);
+		rl_editprint();
 	}
 	return (YEP);
 }

@@ -16,9 +16,9 @@
 # include "edit.h"
 
 extern void		rl_visualdtor(void);
-extern int		rl_visualtoggle(char const *prompt);
-extern int		rl_visualyank(char const *prompt);
-extern int		rl_visualdelete(char const *prompt);
-extern int		rl_visualpaste(char const *prompt);
+extern int		rl_visualtoggle(void);
+extern int		rl_visualyank(void);
+extern int		rl_visualdelete(void);
+extern int		rl_visualpaste(void);
 
 #endif

@@ -44,7 +44,7 @@ typedef struct	s_editln
 	t_vec		rows;
 }				t_editln;
 
-typedef int	(t_editcb)(char const *prompt);
+typedef int	(t_editcb)(void);
 
 typedef struct	s_editbind
 {
@@ -58,24 +58,25 @@ extern uint8_t	g_edit_len;
 extern uint8_t	g_edit_idx;
 extern t_editln	*g_eln;
 extern t_bool	g_edit_cat;
+extern char		*g_edit_prompt;
 
 extern void		rl_editdtor(void);
 extern void		rl_editlnupdate(t_editln *ln);
 extern int		rl_editln(char const *prompt, size_t *sz, char **l, t_bool cat);
-extern void		rl_editprint(char const *prompt);
-extern int		rl_editinsert(char const *prompt, char c);
-extern int		rl_editdelete(char const *prompt);
-extern int		rl_editbackspace(char const *prompt);
-extern int		rl_editreturn(char const *prompt);
-extern int		rl_editleft(char const *prompt);
-extern int		rl_editright(char const *prompt);
-extern int		rl_editup(char const *prompt);
-extern int		rl_editdown(char const *prompt);
-extern int		rl_editctrlleft(char const *prompt);
-extern int		rl_editctrlright(char const *prompt);
-extern int		rl_editctrlup(char const *prompt);
-extern int		rl_editctrldown(char const *prompt);
-extern int		rl_edithome(char const *prompt);
-extern int		rl_editend(char const *prompt);
+extern void		rl_editprint(void);
+extern int		rl_editinsert(char c);
+extern int		rl_editdelete(void);
+extern int		rl_editbackspace(void);
+extern int		rl_editreturn(void);
+extern int		rl_editleft(void);
+extern int		rl_editright(void);
+extern int		rl_editup(void);
+extern int		rl_editdown(void);
+extern int		rl_editctrlleft(void);
+extern int		rl_editctrlright(void);
+extern int		rl_editctrlup(void);
+extern int		rl_editctrldown(void);
+extern int		rl_edithome(void);
+extern int		rl_editend(void);
 
 #endif

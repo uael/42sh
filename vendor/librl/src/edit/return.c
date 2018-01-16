@@ -12,9 +12,8 @@
 
 #include "../edit.h"
 
-inline int	rl_editreturn(char const *prompt)
+inline int	rl_editreturn(void)
 {
-	(void)prompt;
 	ft_sdscpush(&g_eln->str, '\n');
 	ft_write(STDOUT_FILENO, "\n", 1);
 	return (NOP);

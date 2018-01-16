@@ -13,7 +13,7 @@
 #include <stdio.h>
 #include "../edit.h"
 
-inline int	rl_editctrlleft(char const *prompt)
+inline int	rl_editctrlleft(void)
 {
 	size_t	idx;
 
@@ -25,11 +25,11 @@ inline int	rl_editctrlleft(char const *prompt)
 		!ft_isspace(g_eln->str.buf[g_eln->idx - 1]))
 		--g_eln->idx;
 	if (g_eln->idx != idx)
-		rl_editprint(prompt);
+		rl_editprint();
 	return (YEP);
 }
 
-inline int	rl_editctrlright(char const *prompt)
+inline int	rl_editctrlright(void)
 {
 	size_t	idx;
 
@@ -43,11 +43,11 @@ inline int	rl_editctrlright(char const *prompt)
 	if (g_eln->idx < g_eln->str.len)
 		++g_eln->idx;
 	if (g_eln->idx != idx)
-		rl_editprint(prompt);
+		rl_editprint();
 	return (YEP);
 }
 
-inline int	rl_editctrlup(char const *prompt)
+inline int	rl_editctrlup(void)
 {
 	char		*row;
 	char		*pos;
@@ -65,11 +65,11 @@ inline int	rl_editctrlup(char const *prompt)
 		++g_eln->idx;
 		--pos;
 	}
-	rl_editprint(prompt);
+	rl_editprint();
 	return (YEP);
 }
 
-inline int	rl_editctrldown(char const *prompt)
+inline int	rl_editctrldown(void)
 {
 	char		*row;
 	char		*pos;
@@ -87,6 +87,6 @@ inline int	rl_editctrldown(char const *prompt)
 		++g_eln->idx;
 		--pos;
 	}
-	rl_editprint(prompt);
+	rl_editprint();
 	return (YEP);
 }

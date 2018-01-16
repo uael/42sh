@@ -12,42 +12,42 @@
 
 #include "../edit.h"
 
-inline int	rl_editleft(char const *prompt)
+inline int	rl_editleft(void)
 {
 	if (g_eln->idx)
 	{
 		--g_eln->idx;
-		rl_editprint(prompt);
+		rl_editprint();
 	}
 	return (YEP);
 }
 
-inline int	rl_editright(char const *prompt)
+inline int	rl_editright(void)
 {
 	if (g_eln->idx != g_eln->str.len)
 	{
 		++g_eln->idx;
-		rl_editprint(prompt);
+		rl_editprint();
 	}
 	return (YEP);
 }
 
-inline int	rl_edithome(char const *prompt)
+inline int	rl_edithome(void)
 {
 	if (g_eln->idx)
 	{
 		g_eln->idx = 0;
-		rl_editprint(prompt);
+		rl_editprint();
 	}
 	return (YEP);
 }
 
-inline int	rl_editend(char const *prompt)
+inline int	rl_editend(void)
 {
 	if (g_eln->idx != g_eln->str.len)
 	{
 		g_eln->idx = (uint16_t)g_eln->str.len;
-		rl_editprint(prompt);
+		rl_editprint();
 	}
 	return (YEP);
 }

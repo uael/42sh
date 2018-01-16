@@ -12,31 +12,31 @@
 
 #include "../edit.h"
 
-inline int	rl_editinsert(char const *prompt, char c)
+inline int	rl_editinsert(char c)
 {
 	if (c == '\n' || c == '\r')
-		return (rl_editreturn(prompt));
+		return (rl_editreturn());
 	ft_sdscput(&g_eln->str, g_eln->idx++, c);
-	rl_editprint(prompt);
+	rl_editprint();
 	return (YEP);
 }
 
-inline int	rl_editdelete(char const *prompt)
+inline int	rl_editdelete(void)
 {
 	if (g_eln->idx < g_eln->str.len)
 	{
 		ft_sdsrem(&g_eln->str, g_eln->idx, NULL);
-		rl_editprint(prompt);
+		rl_editprint();
 	}
 	return (YEP);
 }
 
-inline int	rl_editbackspace(char const *prompt)
+inline int	rl_editbackspace(void)
 {
 	if (g_eln->idx && g_eln->str.len)
 	{
 		ft_sdsrem(&g_eln->str, --g_eln->idx, NULL);
-		rl_editprint(prompt);
+		rl_editprint();
 	}
 	return (YEP);
 }

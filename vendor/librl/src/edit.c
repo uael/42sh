@@ -63,13 +63,14 @@ uint8_t				g_edit_len = 0;
 uint8_t				g_edit_idx = 0;
 t_editln			*g_eln;
 t_bool				g_edit_cat = 0;
+char				*g_edit_prompt = 0;
 
-static inline int	resetmode(char const *prompt)
+static inline int	resetmode(void)
 {
 	if (g_mode != RL_INSERT)
 	{
 		g_mode = RL_INSERT;
-		rl_editprint(prompt);
+		rl_editprint();
 	}
 	return (YEP);
 }
@@ -170,7 +171,7 @@ static inline void	prepare(t_bool cat)
 	g_edit_cat = cat;
 }
 
-static inline int	keymap(char const *prompt, char *key, ssize_t rd)
+static inline int	keymap(char *key, ssize_t rd)
 {
 	int			st;
 	t_editbind	*bind;
@@ -185,8 +186,8 @@ static inline int	keymap(char const *prompt, char *key, ssize_t rd)
 	bind = (g_mode == RL_VISUAL ? g_viskeymap : g_inskeymap) - 1;
 	while (st == 2 && (++bind)->rd <= rd && bind->rd)
 		if (rd == bind->rd && !ft_memcmp(key, bind->key, (size_t)bind->rd))
-			st = bind->cb(prompt);
-	return (st);
+			st = bind->cb();
+	return (st == 2 ? YEP : st);
 }
 
 int					rl_editln(char const *p, size_t *sz, char **ln, t_bool cat)
@@ -195,6 +196,7 @@ int					rl_editln(char const *p, size_t *sz, char **ln, t_bool cat)
 	char		key[7];
 	int			st;
 
+	g_edit_prompt = (char *)p;
 	prepare(cat);
 	st = YEP;
 	while (1)
@@ -204,15 +206,15 @@ int					rl_editln(char const *p, size_t *sz, char **ln, t_bool cat)
 			continue ;
 		else if (ft_iscntrl(*key) || !ft_isascii(*key))
 		{
-			if ((st = keymap(p, key, rd)))
+			if ((st = keymap(key, rd)))
 				break ;
 		}
-		else if (rl_editinsert(p, *key))
+		else if (rl_editinsert(*key))
 			break ;
-	if (!st && (*sz = g_eln->str.len))
+	if (st >= 0)
 	{
+		*sz = g_eln->str.len;
 		*ln = g_eln->str.buf;
-		return (YEP);
 	}
-	return (st);
+	return (st < 0 ? WUT : YEP);
 }

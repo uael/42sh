@@ -84,12 +84,14 @@ static inline void		println(size_t i, uint16_t plen)
 	}
 }
 
-static inline uint16_t	printprompt(char const *prompt)
+static inline uint16_t	printprompt(void)
 {
-	uint16_t i;
+	uint16_t	i;
+	char		*p;
 
 	i = 0;
-	while (*prompt)
+	p = g_edit_prompt;
+	while (*p)
 	{
 		if (g_screen->col + 1 == g_screen->width)
 		{
@@ -98,13 +100,13 @@ static inline uint16_t	printprompt(char const *prompt)
 			g_screen->col = 0;
 			break ;
 		}
-		g_screen->col += *prompt == '\t' ? (8 - (g_screen->col % 8)) : 1;
-		ft_ofswrc(g_out, (unsigned char)*prompt++);
+		g_screen->col += *p == '\t' ? (8 - (g_screen->col % 8)) : 1;
+		ft_ofswrc(g_out, (unsigned char)*p++);
 	}
 	return (i);
 }
 
-void					rl_editprint(char const *prompt)
+inline void				rl_editprint(void)
 {
 	uint16_t i;
 
@@ -117,7 +119,7 @@ void					rl_editprint(char const *prompt)
 	g_screen->col = 0;
 	g_idx_up = 0;
 	rl_editlnupdate(g_eln);
-	println(printprompt(prompt), g_screen->col);
+	println(printprompt(), g_screen->col);
 	if (g_idx_up)
 		ft_ofswrf(g_out, TC_GOTOUP(g_idx_up));
 	g_eln->row = (uint16_t)(g_eln->rows.len - g_idx_up);

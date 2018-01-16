@@ -21,12 +21,12 @@ inline void		rl_visualdtor(void)
 	ft_sdsdtor(g_clipboard);
 }
 
-inline int		rl_visualtoggle(char const *prompt)
+inline int		rl_visualtoggle(void)
 {
 	if (g_mode == RL_VISUAL)
 	{
 		g_mode = RL_INSERT;
-		rl_editprint(prompt);
+		rl_editprint();
 	}
 	else
 	{
@@ -36,7 +36,7 @@ inline int		rl_visualtoggle(char const *prompt)
 	return (YEP);
 }
 
-inline int		rl_visualyank(char const *prompt)
+inline int		rl_visualyank(void)
 {
 	size_t	i;
 
@@ -49,7 +49,7 @@ inline int		rl_visualyank(char const *prompt)
 		ft_sdsmpush(g_clipboard, ft_sdsat(&g_eln->str, g_eln->idx),
 			i - g_eln->idx + 1);
 		g_eln->idx = g_eln->vidx;
-		rl_visualtoggle(prompt);
+		rl_visualtoggle();
 	}
 	else if (g_mode == RL_VISUAL && g_eln->vidx < g_eln->idx)
 	{
@@ -58,12 +58,12 @@ inline int		rl_visualyank(char const *prompt)
 		ft_sdsmpush(g_clipboard, ft_sdsat(&g_eln->str, g_eln->vidx),
 			i - g_eln->vidx + 1);
 		g_eln->vidx = g_eln->idx;
-		rl_visualtoggle(prompt);
+		rl_visualtoggle();
 	}
 	return (YEP);
 }
 
-inline int		rl_visualdelete(char const *prompt)
+inline int		rl_visualdelete(void)
 {
 	size_t	i;
 
@@ -75,7 +75,7 @@ inline int		rl_visualdelete(char const *prompt)
 			i - g_eln->idx + 1);
 		ft_sdsnrem(&g_eln->str, g_eln->idx, i - g_eln->idx + 1, NULL);
 		g_eln->vidx = g_eln->idx;
-		rl_visualtoggle(prompt);
+		rl_visualtoggle();
 	}
 	else if (g_eln->vidx < g_eln->idx)
 	{
@@ -85,19 +85,19 @@ inline int		rl_visualdelete(char const *prompt)
 			i - g_eln->vidx + 1);
 		ft_sdsnrem(&g_eln->str, g_eln->vidx, i - g_eln->vidx + 1, NULL);
 		g_eln->idx = g_eln->vidx;
-		rl_visualtoggle(prompt);
+		rl_visualtoggle();
 	}
 	return (YEP);
 }
 
-inline int		rl_visualpaste(char const *prompt)
+inline int		rl_visualpaste(void)
 {
 	if (g_clipboard->len)
 	{
 		ft_sdsmput(&g_eln->str, g_eln->idx, g_clipboard->buf,
 			g_clipboard->len);
 		g_eln->idx += g_clipboard->len;
-		rl_editprint(prompt);
+		rl_editprint();
 	}
 	return (YEP);
 }
