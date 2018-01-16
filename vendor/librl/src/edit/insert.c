@@ -33,10 +33,10 @@ inline int	rl_editdelete(char const *prompt)
 
 inline int	rl_editbackspace(char const *prompt)
 {
-if (g_eln->idx && g_eln->str.len)
-{
-ft_sdsrem(&g_eln->str, --g_eln->idx, NULL);
-rl_editprint(prompt);
-}
-return (YEP);
+	if (g_eln->idx && g_eln->str.len)
+	{
+		ft_sdsrem(&g_eln->str, --g_eln->idx, NULL);
+		rl_editprint(prompt);
+	}
+	return (YEP);
 }
