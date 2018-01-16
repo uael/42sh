@@ -63,7 +63,6 @@ uint8_t				g_edit_len = 0;
 uint8_t				g_edit_idx = 0;
 t_editln			*g_eln;
 t_bool				g_edit_cat = 0;
-t_sds				g_edit_swap = { NULL, 0, 0 };
 
 static inline int	resetmode(char const *prompt)
 {
