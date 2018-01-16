@@ -141,7 +141,7 @@ static t_editbind	g_viskeymap[] =
 
 inline void			rl_editdtor(void)
 {
-	rl_histexit();
+	rl_histdtor();
 	g_edit_idx = 0;
 	while (g_edit_idx < g_edit_len)
 	{

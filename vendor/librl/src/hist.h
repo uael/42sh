@@ -17,7 +17,7 @@
 
 # define HIST_MAX (100)
 
-extern void		rl_histexit(void);
+extern void		rl_histdtor(void);
 extern char		*rl_histcat(char const *ln, size_t len, char c, char **out);
 extern t_bool	rl_histcpy(uint8_t id, t_sds *dest);
 

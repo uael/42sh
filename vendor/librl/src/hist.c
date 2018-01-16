@@ -71,7 +71,7 @@ inline t_bool	rl_histcpy(uint8_t id, t_sds *dest)
 	return (1);
 }
 
-inline void		rl_histexit(void)
+inline void		rl_histdtor(void)
 {
 	uint8_t		i;
 
