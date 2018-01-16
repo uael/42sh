@@ -35,7 +35,7 @@ inline void		rl_nottyfinalize(int fd)
 
 inline int		rl_readnotty(int fd, char **ln)
 {
-	char		*buf;
+	char *buf;
 
 	if (fd < 0 || fd > OPEN_MAX)
 		return (ENO_THROW(WUT, EINVAL));

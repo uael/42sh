@@ -17,7 +17,7 @@ t_screen		*g_screen = &g_stack_screen;
 
 int				rl_screensize(uint16_t *h, uint16_t *w)
 {
-	struct winsize	ws;
+	struct winsize ws;
 
 	if (ioctl(1, TIOCGWINSZ, &ws))
 		return (THROW(WUT));

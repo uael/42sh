@@ -38,7 +38,7 @@ inline int		rl_visualtoggle(void)
 
 inline int		rl_visualyank(void)
 {
-	size_t	i;
+	size_t i;
 
 	if (g_mode == RL_INSERT && g_eln->idx < g_eln->str.len)
 		ft_sdscpush(g_clipboard, *ft_sdsat(&g_eln->str, g_eln->idx));
@@ -65,7 +65,7 @@ inline int		rl_visualyank(void)
 
 inline int		rl_visualdelete(void)
 {
-	size_t	i;
+	size_t i;
 
 	if (g_eln->vidx > g_eln->idx)
 	{

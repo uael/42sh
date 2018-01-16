@@ -10,12 +10,11 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
 #include "../edit.h"
 
 inline int	rl_editctrlleft(void)
 {
-	size_t	idx;
+	size_t idx;
 
 	idx = g_eln->idx;
 	while (g_eln->idx > 0 &&
@@ -31,7 +30,7 @@ inline int	rl_editctrlleft(void)
 
 inline int	rl_editctrlright(void)
 {
-	size_t	idx;
+	size_t idx;
 
 	idx = g_eln->idx;
 	while (g_eln->idx < g_eln->str.len &&
@@ -49,9 +48,9 @@ inline int	rl_editctrlright(void)
 
 inline int	rl_editctrlup(void)
 {
-	char		*row;
-	char		*pos;
-	char		*pre;
+	char *row;
+	char *pos;
+	char *pre;
 
 	if (g_eln->row <= 1)
 		return (YEP);
@@ -71,9 +70,9 @@ inline int	rl_editctrlup(void)
 
 inline int	rl_editctrldown(void)
 {
-	char		*row;
-	char		*pos;
-	char		*pre;
+	char *row;
+	char *pos;
+	char *pre;
 
 	if (g_eln->row == g_eln->rows.len)
 		return (YEP);

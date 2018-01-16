@@ -17,7 +17,7 @@ static uint8_t	g_hist_len = 0;
 
 inline char		*rl_histadd(char const *ln, size_t len)
 {
-	t_sds		*histln;
+	t_sds *histln;
 
 	if (g_hist_len && !ft_strcmp(g_hist[g_hist_len - 1].buf, ln))
 		return (g_hist[g_hist_len - 1].buf);
@@ -57,7 +57,7 @@ inline char		*rl_histcat(char const *ln, size_t len, char c, char **out)
 
 inline t_bool	rl_histcpy(uint8_t id, t_sds *dest)
 {
-	t_sds		*histln;
+	t_sds *histln;
 
 	if (id >= g_hist_len)
 		return (0);
@@ -73,7 +73,7 @@ inline t_bool	rl_histcpy(uint8_t id, t_sds *dest)
 
 inline void		rl_histdtor(void)
 {
-	uint8_t		i;
+	uint8_t i;
 
 	i = 0;
 	while (i < g_hist_len)
