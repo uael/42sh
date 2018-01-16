@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <wait.h>
 #include <stdio.h>
+#include <sys/wait.h>
 
 #include "ush/proc.h"
 #include "ush/job.h"
