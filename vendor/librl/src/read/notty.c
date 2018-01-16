@@ -46,7 +46,7 @@ inline int		rl_readnotty(int fd, char **ln)
 	{
 		g_ln.len = 0;
 		ft_sdsmpush(&g_ln, buf, (size_t)g_rd[fd]);
-		*ln  = g_ln.buf;
+		*ln = g_ln.buf;
 		return (YEP);
 	}
 	if (g_rd[fd] < 0)

@@ -80,16 +80,9 @@ static t_editbind	g_inskeymap[] =
 	{1, K_RETURN, rl_editreturn},
 	{1, K_BACKSPACE, rl_editbackspace},
 	{1, K_ENTER, rl_editreturn},
-	/*{1, K_CTRL_A, NULL},*/
 	{1, K_CTRL_B, rl_editbackspace},
 	{1, K_CTRL_D, rl_editdelete},
-	/*{1, K_CTRL_E, NULL},
-	{1, K_CTRL_F, NULL},
-	{1, K_CTRL_H, NULL},
-	{1, K_TAB, NULL},*/
 	{1, K_CTRL_P, rl_visualpaste},
-	/*{1, K_CTRL_R, NULL},
-	{1, K_CTRL_T, NULL},*/
 	{1, K_CTRL_V, rl_visualtoggle},
 	{1, K_CTRL_Y, rl_visualyank},
 	{3, K_LEFT, rl_editleft},
@@ -165,7 +158,8 @@ static inline void	prepare(t_bool cat)
 	g_edit_len = 0;
 	while (rl_histcpy(g_edit_len, &g_edit[g_edit_len].str))
 		++g_edit_len;
-	g_eln = g_edit + (g_edit_idx = g_edit_len++);
+	g_eln = g_edit +
+		(g_edit_idx = g_edit_len++);
 	g_eln->str.len = 0;
 	ft_sdsgrow(&g_eln->str, 64);
 	*g_eln->str.buf = '\0';
@@ -176,50 +170,49 @@ static inline void	prepare(t_bool cat)
 	g_edit_cat = cat;
 }
 
-static t_editbind	*keymap(void)
+static inline int	keymap(char const *prompt, char *key, ssize_t rd)
 {
-	if (g_mode == RL_VISUAL)
-		return (g_viskeymap);
-	return (g_inskeymap);
+	int			st;
+	t_editbind	*bind;
+
+	if (*key == *K_ESC)
+	{
+		if ((rd = ft_read(STDIN_FILENO, key + 1, 5)) < 0)
+			return (WUT);
+		++rd;
+	}
+	st = 2;
+	bind = (g_mode == RL_VISUAL ? g_viskeymap : g_inskeymap) - 1;
+	while (st == 2 && (++bind)->rd <= rd && bind->rd)
+		if (rd == bind->rd && !ft_memcmp(key, bind->key, (size_t)bind->rd))
+			st = bind->cb(prompt);
+	return (st);
 }
 
-int					rl_editln(char const *prompt, size_t *sz, char **ln,
-							  t_bool cat)
+int					rl_editln(char const *p, size_t *sz, char **ln, t_bool cat)
 {
 	ssize_t		rd;
 	char		key[7];
 	int			st;
-	t_editbind	*bind;
 
 	prepare(cat);
+	st = YEP;
 	while (1)
 		if ((rd = ft_read(STDIN_FILENO, key, 1)) < 0)
 			return (WUT);
-		else if (rd)
+		else if (!rd)
+			continue ;
+		else if (ft_iscntrl(*key) || !ft_isascii(*key))
 		{
-			if (ft_iscntrl(*key) || !ft_isascii(*key))
-			{
-				if (*key == *K_ESC)
-				{
-					if ((rd = ft_read(STDIN_FILENO, key + 1, 5)) < 0)
-						return (WUT);
-					++rd;
-				}
-				st = 2;
-				bind = keymap() - 1;
-				while (st == 2 && (++bind)->rd <= rd && bind->rd)
-					if (rd == bind->rd && !ft_memcmp(key, bind->key, (size_t)bind->rd))
-						st = bind->cb(prompt);
-				if (st == 1)
-					break ;
-			}
-			else if (rl_editinsert(prompt, *key))
+			if ((st = keymap(p, key, rd)))
 				break ;
 		}
-	if ((*sz = g_eln->str.len))
+		else if (rl_editinsert(p, *key))
+			break ;
+	if (!st && (*sz = g_eln->str.len))
 	{
 		*ln = g_eln->str.buf;
 		return (YEP);
 	}
-	return (NOP);
+	return (st);
 }
