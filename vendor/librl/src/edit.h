@@ -63,7 +63,7 @@ extern void		rl_editdtor(void);
 extern void		rl_editlnupdate(t_editln *ln);
 extern int		rl_editln(char const *prompt, size_t *sz, char **l,	t_bool cat);
 extern void		rl_editprint(char const *prompt);
-extern int		rl_editappend(char const *prompt, char *s, size_t sz);
+extern int		rl_editinsert(char const *prompt, char c);
 extern int		rl_editdelete(char const *prompt);
 extern int		rl_editbackspace(char const *prompt);
 extern int		rl_editreturn(char const *prompt);

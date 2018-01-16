@@ -78,7 +78,6 @@ static inline int	resetmode(char const *prompt)
 static t_editbind	g_inskeymap[] =
 {
 	{1, K_ESC, resetmode},
-	{1, "\n", rl_editreturn},
 	{1, K_RETURN, rl_editreturn},
 	{1, K_BACKSPACE, rl_editbackspace},
 	{1, K_ENTER, rl_editreturn},
@@ -119,7 +118,6 @@ static t_editbind	g_inskeymap[] =
 static t_editbind	g_viskeymap[] =
 {
 	{1, K_ESC, resetmode},
-	{1, "\n", rl_editreturn},
 	{1, K_RETURN, rl_editreturn},
 	{1, K_BACKSPACE, rl_editbackspace},
 	{1, K_ENTER, rl_editreturn},
@@ -195,32 +193,26 @@ int					rl_editln(char const *prompt, size_t *sz, char **ln,
 	t_editbind	*bind;
 
 	prepare(cat);
-	if ((rd = g_edit_swap.len))
+	while ((rd = ft_read(STDIN_FILENO, key, 1)) > 0)
 	{
-		ft_putf(2, "-- %s --", g_edit_swap.buf);
-		g_edit_swap.len = 0;
-		if (rl_editappend(prompt, g_edit_swap.buf, (size_t)rd))
+		if (ft_iscntrl(*key) || !ft_isascii(*key))
 		{
-			if ((*sz = g_eln->str.len))
+			if (*key == *K_ESC)
 			{
-				*ln = g_eln->str.buf;
-				return (YEP);
+				if ((rd = ft_read(STDIN_FILENO, key + 1, 5)) < 0)
+					break ;
+				++rd;
 			}
-			return (NOP);
-		}
-	}
-	while ((rd = ft_read(STDIN_FILENO, key, 6)) > 0)
-	{
-		st = 2;
-		bind = keymap() - 1;
-		while (st == 2 && (++bind)->rd <= rd && bind->rd)
-			if (rd == bind->rd && !ft_memcmp(key, bind->key, (size_t)bind->rd))
-				st = bind->cb(prompt);
-		if (st == 1)
-			break ;
-		if (st == 2 && ft_isascii(*key) && !ft_iscntrl(*key))
-			if (rl_editappend(prompt, key, (size_t)rd))
+			st = 2;
+			bind = keymap() - 1;
+			while (st == 2 && (++bind)->rd <= rd && bind->rd)
+				if (rd == bind->rd && !ft_memcmp(key, bind->key, (size_t)bind->rd))
+					st = bind->cb(prompt);
+			if (st == 1)
 				break ;
+		}
+		else if (rl_editinsert(prompt, *key))
+			break ;
 	}
 	if (rd < 0)
 		return (WUT);

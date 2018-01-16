@@ -12,25 +12,11 @@
 
 #include "../edit.h"
 
-
-inline int	rl_editappend(char const *prompt, char *s, size_t sz)
+inline int	rl_editinsert(char const *prompt, char c)
 {
-	char *eol;
-
-	if ((eol = ft_strnchr(s, '\n', sz)) ||
-		(eol = ft_strnchr(s, '\r', sz)))
-	{
-		ft_sdsmput(&g_eln->str, g_eln->idx, s, eol - s);
-		g_eln->idx += eol - s;
-		rl_editprint(prompt);
-		if (*eol == '\r' && *(eol + 1) == '\n')
-			++eol;
-		if ((size_t)(++eol - s) < sz)
-			ft_sdsmpush(&g_edit_swap, eol, sz - (eol - s));
+	if (c == '\n' || c == '\r')
 		return (rl_editreturn(prompt));
-	}
-	ft_sdsmput(&g_eln->str, g_eln->idx, s, sz);
-	g_eln->idx += sz;
+	ft_sdscput(&g_eln->str, g_eln->idx++, c);
 	rl_editprint(prompt);
 	return (YEP);
 }

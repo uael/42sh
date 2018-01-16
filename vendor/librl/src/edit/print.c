@@ -53,7 +53,7 @@ static inline int		doprint(t_ofs *out, char const *row, char const *pos,
 		ft_ofswrc(out, (unsigned char)*row++);
 	}
 	onprint(out, row, pos);
-	return (1);
+	return (0);
 }
 
 static inline void		println(t_ofs *out, size_t i, uint16_t plen)
@@ -78,7 +78,7 @@ static inline void		println(t_ofs *out, size_t i, uint16_t plen)
 		}
 		else if (eol - row > g_screen->width - plen - 1)
 			eol = row + (g_screen->width - plen - 1);
-		if (++i + doprint(out, row, pos, eol) < g_eln->rows.len)
+		if ((++i + doprint(out, row, pos, eol)) < g_eln->rows.len)
 			ft_ofswrc(out, '\n');
 		plen = 0;
 	}

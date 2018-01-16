@@ -19,7 +19,7 @@ inline char		*rl_histadd(char const *ln, size_t len)
 {
 	t_sds		*histln;
 
-	if (g_hist_len && !ft_strncmp(g_hist[g_hist_len - 1].buf, ln, len))
+	if (g_hist_len && !ft_strcmp(g_hist[g_hist_len - 1].buf, ln))
 		return (g_hist[g_hist_len - 1].buf);
 	histln = g_hist + g_hist_len++;
 	histln->len = 0;
