@@ -10,13 +10,4 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef USH_BI_H
-# define USH_BI_H
-
-# include <libft.h>
-
-# define IS_QUOTE(x) (x == '"' || x == '\'')
-
-int         bi_echo(char **argv);
-
-#endif
+#include "ush/bi.h"
