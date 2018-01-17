@@ -99,8 +99,7 @@ void				sh_proclaunch(t_proc *proc, t_job *job, int fg)
 		proc->u.fn(avcount(proc->argv), proc->argv, job->envv);
 	else if (proc->kind == PROC_EXE)
 	{
-		execve(proc->u.exe, proc->argv, job->envv);
+		execve(proc->argv[0], proc->argv, job->envv);
 		sh_exit(THROW(WUT), NULL);
 	}
-
 }

@@ -26,13 +26,16 @@ typedef struct	s_job
 	TTY			tmodes;
 	int			io[3];
 	t_redirs	redirs;
+	t_bool		bang;
+	t_bool		bg;
+	t_bool		and;
+	t_bool		or;
 }				t_job;
 
 extern void		sh_jobdtor(t_job *job);
 extern int		sh_jobstopped(t_job *j);
 extern int		sh_jobcompleted(t_job *j);
 extern void		sh_joblaunch(t_job *job, int fg);
-extern void		sh_jobdebug(t_job *j, const char *status);
 extern void		sh_jobwait(t_job *j);
 extern void		sh_jobfg(t_job *j, int cont);
 extern void		sh_jobbg(t_job *j, int cont);

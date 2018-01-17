@@ -14,6 +14,5 @@
 
 inline void		sh_procdtor(t_proc *proc)
 {
-	while (*proc->argv)
-		free(*proc->argv++);
+	(void)proc;
 }

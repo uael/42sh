@@ -1,25 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ush/err.h                                          :+:      :+:    :+:   */
+/*   ush/tok.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/06 12:00:10 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/11/23 17:28:28 by null             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef USH_ERR_H
-# define USH_ERR_H
+#ifndef USH_TOK_H
+# define USH_TOK_H
 
-# include <libft.h>
+# include "lex.h"
 
-struct s_tok;
-
-extern int	sh_verr(char const *fmt, va_list ap);
-extern int	sh_err(char const *fmt, ...);
-extern int	sh_synerr(char const *ln, char const *it, char const *fmt, ...);
-extern void	*sh_parseerr(char const *ln, struct s_tok *t, char const *fmt, ...);
+extern t_tok	*sh_tokpeek(t_deq *toks);
+extern t_tok	*sh_toknext(t_deq *toks);
 
 #endif

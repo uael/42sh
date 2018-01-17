@@ -1,18 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   job/debug.c                                        :+:      :+:    :+:   */
+/*   tok.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/13 08:23:58 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/13 08:28:05 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ush/job.h"
+#include "ush/tok.h"
 
-inline void		sh_jobdebug(t_job *j, const char *status)
+inline t_tok	*sh_tokpeek(t_deq *toks)
 {
-	sh_err("%ld (%s): %s\n", (long) j->pgid, status, j->command);
+	if (ft_deqlen(toks))
+		return (ft_deqbeg(toks));
+	return (NULL);
+}
+
+inline t_tok	*sh_toknext(t_deq *toks)
+{
+	ft_deqsht(toks, NULL);
+	return (sh_tokpeek(toks));
 }

@@ -27,7 +27,7 @@ static inline void	jobfork(t_job *job, t_proc *proc, t_bool piped, int fg)
 {
 	pid_t	pid;
 
-	if ((!piped && proc->kind == PROC_FN) || (pid = fork()))
+	if ((!piped && proc->kind == PROC_FN) || !(pid = fork()))
 		sh_proclaunch(proc, job, fg);
 	else if (pid < 0)
 		sh_exit(THROW(WUT), NULL);
@@ -64,7 +64,6 @@ void				sh_joblaunch(t_job *job, int fg)
 			close(io[STDOUT_FILENO]);
 		io[STDIN_FILENO] = fds[0];
 	}
-	sh_jobdebug(job, "launched");
 	if (!g_shinteract)
 		sh_jobwait(job);
 	else if (fg)

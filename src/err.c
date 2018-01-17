@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "ush/env.h"
+#include "ush/lex.h"
 
 static t_ofs	g_cerr_stack = { STDERR_FILENO, 0, { 0 } };
 static t_ofs	*g_cerr = &g_cerr_stack;
@@ -52,4 +53,28 @@ int			sh_synerr(char const *ln, char const *it, char const *fmt, ...)
 	}
 	ft_ofsflush(g_cerr);
 	return (WUT);
+}
+
+void		*sh_parseerr(char const *ln, t_tok *tok, char const *fmt, ...)
+{
+	va_list	ap;
+	char	*it;
+
+	va_start(ap, fmt);
+	sh_verr(fmt, ap);
+	va_end(ap);
+	ft_ofswrc(g_cerr, '\n');
+	if (ln)
+	{
+		ft_ofswrs(g_cerr, ln);
+		if (!tok)
+			it = ft_strchr(ln, 0);
+		else
+			it = (char *)(ln + tok->pos);
+		while (++ln <= it)
+			ft_ofswrc(g_cerr, ' ');
+		ft_ofswrs(g_cerr, COLOR_BRED"^"COLOR_RESET"\n");
+	}
+	ft_ofsflush(g_cerr);
+	return (NULL);
 }

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pool/mark.c                                        :+:      :+:    :+:   */
+/*   parse/pipeline.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,24 +10,30 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ush/pool.h"
+#include "ush/parse.h"
 
-inline void		sh_poolnotify(void)
+#define CMD "Unexpected token `%s'"
+
+inline t_job	*sh_parsepipeline(int fd, t_deq *toks, char **ln)
 {
-	size_t	i;
+	t_tok	*tok;
 	t_job	*job;
-	pid_t	pid;
-	int		status;
 
-	if (!g_pool)
-		return ;
-	pid = waitpid(WAIT_ANY, &status, WUNTRACED | WNOHANG);
-	while (!sh_poolmark(pid, status))
-		pid = waitpid(WAIT_ANY, &status, WUNTRACED | WNOHANG);
-	i = 0;
-	while (i < g_pool->len)
-		if (sh_jobcompleted(job = g_pool->jobs + i++))
-			ft_vecrem((t_vec *)g_pool, i - 1, NULL);
-		else if (sh_jobstopped(job) && !job->notified)
-			job->notified = 1;
+	ft_vecgrow((t_vec *)g_pool, 1);
+	job = ft_vecend((t_vec *)g_pool); //todo: ctor
+	ft_vecctor((t_vec *)&job->pipeline, sizeof(t_proc));
+	if (!sh_parsecommand(job, fd, toks, ln))
+		return (NULL);
+	while (1)
+		if (sh_tokpeek(toks)->id == TOK_PIPE)
+		{
+			while ((tok = sh_toknext(toks)))
+				if (tok->id != TOK_EOL)
+					break ;
+			job->and = 1;
+			if (!sh_parsecommand(job, fd, toks, ln))
+				return (sh_parseerr(*ln, tok, CMD, sh_tokidstr(TOK_PIPE)));
+		}
+		else
+			return (ft_vecpush((t_vec *)g_pool));
 }

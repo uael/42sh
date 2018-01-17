@@ -15,6 +15,7 @@
 
 #include "ush/shell.h"
 #include "ush/pool.h"
+#include "ush/parse.h"
 #include "ush/var.h"
 
 t_bool				g_shinteract = 0;
@@ -49,22 +50,12 @@ static inline void	sh_init(int fd)
 
 inline int			sh_eval(int fd, t_deq *toks, char **ln)
 {
-	t_tok	*tok;
-
-	(void)fd;
-	(void)ln;
 	if (fd < 0)
 	{
 		sh_varscope();
 		sh_poolscope();
 	}
-	tok = alloca(sizeof(t_tok));
-	while (ft_deqsht(toks, tok))
-	{
-		ft_putf(1, "tok[id='%d',val[%d]='", tok->id, tok->len);
-		ft_write(1, tok->val, tok->len);
-		ft_puts(1, "']\n");
-	}
+	sh_parse(fd, toks, ln);
 	if (fd < 0)
 	{
 		sh_varunscope();

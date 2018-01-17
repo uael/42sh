@@ -1,25 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ush/err.h                                          :+:      :+:    :+:   */
+/*   ush/parse.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/06 12:00:10 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/11/23 17:28:28 by null             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef USH_ERR_H
-# define USH_ERR_H
+#ifndef USH_PARSE_H
+# define USH_PARSE_H
 
-# include <libft.h>
+# include "shell.h"
+# include "pool.h"
+# include "tok.h"
 
-struct s_tok;
-
-extern int	sh_verr(char const *fmt, va_list ap);
-extern int	sh_err(char const *fmt, ...);
-extern int	sh_synerr(char const *ln, char const *it, char const *fmt, ...);
-extern void	*sh_parseerr(char const *ln, struct s_tok *t, char const *fmt, ...);
+extern int		sh_parse(int fd, t_deq *toks, char **ln);
+extern t_job	*sh_parselist(int fd, t_deq *toks, char **ln);
+extern t_job	*sh_parseandor(int fd, t_deq *toks, char **ln);
+extern t_job	*sh_parsepipeline(int fd, t_deq *toks, char **ln);
+extern t_bool	sh_parsecommand(t_job *job, int fd, t_deq *toks, char **ln);
 
 #endif
