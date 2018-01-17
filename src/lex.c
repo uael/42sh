@@ -10,8 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
-
 #include "ush/lex.h"
 
 static char		*g_tokidsstr[] =
@@ -74,7 +72,7 @@ static inline int	lex(int fd, t_tok *tok, char **it, char **ln)
 	int	st;
 
 	tok->len = 0;
-	while (**it == ' ' || **it == '\t')
+	while (ft_strchr(sh_varifs(), **it))
 		++*it;
 	if (**it == '\n' || (**it == '\r' && *(*it + 1) == '\n'))
 	{

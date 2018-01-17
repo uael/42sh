@@ -30,7 +30,7 @@ SRC_NAME = \
 	main.c \
 	proc.c \
 	shell.c \
-	var.c
+	var.c var/ifs.c
 
 SRC = $(addprefix $(SRC_PATH), $(SRC_NAME))
 OBJ = $(addprefix $(OBJ_PATH), $(OBJ_NAME))
