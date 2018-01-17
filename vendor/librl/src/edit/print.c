@@ -34,7 +34,7 @@ static inline void		onprint(t_ofs *out, char const *row, char const *pos)
 			else if (pos < vis)
 				ft_ofswrs(out, TC_MR);
 		}
-		if (row == vis)
+		else if (row == vis)
 		{
 			if (vis > pos)
 				ft_ofswrs(out, TC_ME);
