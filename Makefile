@@ -31,7 +31,8 @@ SRC_NAME = \
 	proc.c \
 	shell.c \
 	var.c \
-	bi/bi_echo.c
+	bi/bi_echo.c bi/bi_env.c bi/bi_cd.c bi/bi_unsetenv.c bi/bi_exit.c \
+	bi/bi_export.c bi/bi_set.c bi/bi_cd.c
 
 SRC = $(addprefix $(SRC_PATH), $(SRC_NAME))
 OBJ = $(addprefix $(OBJ_PATH), $(OBJ_NAME))

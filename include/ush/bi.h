@@ -15,8 +15,14 @@
 
 # include <libft.h>
 
-# define IS_QUOTE(x) (x == '"' || x == '\'')
-
-int         bi_echo(char **argv);
+extern int  sh_biecho(int ac, char **argv, char **env);
+extern int  sh_biexit(int ac, char **av, char **env);
+extern int  sh_biunsetenv(int ac, char **av, char **env);
+extern int  sh_bienv(int ac, char **av, char **env);
+extern int  sh_bisetenv(int ac, char **av, char **env);
+extern int  sh_bicd(int ac, char **av, char **env);
+extern int  sh_biset(int ac, char **av, char **env);
+extern int  sh_biunset(int ac, char **av, char **env);
+extern int  sh_biexport(int ac, char **av, char **env);
 
 #endif
