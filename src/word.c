@@ -1,25 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ush.h                                              :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/23 17:28:28 by null             ###   ########.fr       */
+/*   Updated: 2017/12/11 13:31:59 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef USH_H
-# define USH_H
+#include "ush/word.h"
 
-# include "ush/env.h"
-# include "ush/err.h"
-# include "ush/job.h"
-# include "ush/lex.h"
-# include "ush/proc.h"
-# include "ush/shell.h"
-# include "ush/var.h"
-# include "ush/word.h"
+/*
+** TODO: Handle pathname expansion
+**
+*/
 
-#endif
+inline void		sh_wordexpand(t_sds *word)
+{
+	(void)word;
+}

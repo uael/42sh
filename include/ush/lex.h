@@ -16,6 +16,7 @@
 # include <librl.h>
 # include "err.h"
 # include "var.h"
+# include "word.h"
 
 enum			e_tok
 {

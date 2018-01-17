@@ -1,25 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ush.h                                              :+:      :+:    :+:   */
+/*   ush/word.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/23 17:28:28 by null             ###   ########.fr       */
+/*   Updated: 2017/12/06 12:00:10 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef USH_H
-# define USH_H
+#ifndef USH_WORD_H
+# define USH_WORD_H
 
-# include "ush/env.h"
-# include "ush/err.h"
-# include "ush/job.h"
-# include "ush/lex.h"
-# include "ush/proc.h"
-# include "ush/shell.h"
-# include "ush/var.h"
-# include "ush/word.h"
+# include "var.h"
+
+extern void		sh_wordexpand(t_sds *word);
 
 #endif
