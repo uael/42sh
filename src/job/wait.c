@@ -1,27 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ush/var.h                                          :+:      :+:    :+:   */
+/*   job/wait.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/06 12:00:10 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/13 08:23:58 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef USH_VAR_H
-# define USH_VAR_H
+#include <sys/wait.h>
 
-# include "env.h"
+#include "ush/job.h"
+#include "ush/pool.h"
 
-# define SH_IFS " \t"
+inline void		sh_jobwait(t_job *j)
+{
+	int		status;
+	pid_t	pid;
 
-extern void		sh_varscope(void);
-extern t_bool	sh_varunscope(void);
-extern void		sh_varset(char *var, char *val);
-extern char		*sh_varget(char *var);
-
-extern char		*sh_varifs(void);
-
-#endif
+	pid = waitpid(WAIT_ANY, &status, WUNTRACED);
+	while (!sh_poolmark(pid, status) && !sh_jobstopped(j)
+		&& !sh_jobcompleted(j))
+		pid = waitpid(WAIT_ANY, &status, WUNTRACED);
+}

@@ -25,10 +25,12 @@ OBJ_NAME = $(SRC_NAME:.c=.o)
 SRC_NAME = \
 	env.c \
 	err.c \
-	job.c job/control.c \
+	job.c job/bg.c job/cont.c job/debug.c job/fg.c job/launch.c job/state.c \
+	job/wait.c \
 	lex.c lex/heredoc.c lex/op.c lex/quote.c lex/var.c lex/word.c \
 	main.c \
-	proc.c \
+	pool.c pool/mark.c pool/notify.c \
+	proc.c proc/launch.c proc/mark.c \
 	shell.c \
 	var.c var/ifs.c \
 	word.c

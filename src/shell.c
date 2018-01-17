@@ -11,10 +11,10 @@
 /* ************************************************************************** */
 
 #include <signal.h>
-#include <sys/signal.h>
 #include <term.h>
 
 #include "ush/shell.h"
+#include "ush/pool.h"
 #include "ush/var.h"
 
 t_bool				g_shinteract = 0;
@@ -54,7 +54,10 @@ inline int			sh_eval(int fd, t_deq *toks, char **ln)
 	(void)fd;
 	(void)ln;
 	if (fd < 0)
-		sh_scopepush();
+	{
+		sh_varscope();
+		sh_poolscope();
+	}
 	tok = alloca(sizeof(t_tok));
 	while (ft_deqsht(toks, tok))
 	{
@@ -63,7 +66,10 @@ inline int			sh_eval(int fd, t_deq *toks, char **ln)
 		ft_puts(1, "']\n");
 	}
 	if (fd < 0)
-		sh_scopepop();
+	{
+		sh_varunscope();
+		sh_poolunscope();
+	}
 	return (YEP);
 }
 
@@ -74,7 +80,8 @@ inline int			sh_run(int fd)
 	int		st;
 
 	sh_init(fd);
-	sh_scopepush();
+	sh_varscope();
+	sh_poolscope();
 	while (!(st = rl_getline(fd, "$> ", &ln)))
 	{
 		if (!ft_strcmp("exit\n", ln))
@@ -87,7 +94,9 @@ inline int			sh_run(int fd)
 		if (fd > 0)
 			break ;
 	}
-	while (sh_scopepop())
+	while (sh_varunscope())
+		;
+	while (sh_poolunscope())
 		;
 	rl_finalize(fd);
 	if (st < 0)

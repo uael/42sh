@@ -1,27 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ush/var.h                                          :+:      :+:    :+:   */
+/*   proc/mark.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/06 12:00:10 by alucas-          ###   ########.fr       */
+/*   Updated: 2018/01/06 11:10:01 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef USH_VAR_H
-# define USH_VAR_H
+#include "ush/proc.h"
 
-# include "env.h"
-
-# define SH_IFS " \t"
-
-extern void		sh_varscope(void);
-extern t_bool	sh_varunscope(void);
-extern void		sh_varset(char *var, char *val);
-extern char		*sh_varget(char *var);
-
-extern char		*sh_varifs(void);
-
-#endif
+inline int		sh_procmark(t_proc *proc, int status)
+{
+	proc->status = status;
+	if (WIFSTOPPED(proc->status))
+		proc->state = PROC_STOPPED;
+	else
+	{
+		proc->state = PROC_COMPLETED;
+		if (WIFSIGNALED (status))
+			sh_err("%d: Terminated by signal %d.\n",
+				(int)proc->pid, WTERMSIG (proc->status));
+	}
+	return (YEP);
+}

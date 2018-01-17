@@ -13,20 +13,31 @@
 #ifndef USH_PROC_H
 # define USH_PROC_H
 
-# include "shell.h"
+# include "proc/state.h"
+# include "proc/kind.h"
+
+struct s_job;
 
 typedef struct	s_proc
 {
-	struct s_proc	*next;
-	char			**argv;
-	pid_t			pid;
-	t_bool			completed;
-	t_bool			stopped;
-	int				status;
+	pid_t		pid;
+	t_procst	state;
+	t_prockd	kind;
+	int			status;
+	char		**argv;
+	t_procu		u;
 }				t_proc;
 
-extern void		sh_proclaunch(t_proc *p, pid_t pgid, int *io, int fg);
-extern int		sh_procmark(pid_t pid, int status);
-extern void		sh_procupdate(void);
+typedef struct	s_procs
+{
+	t_proc		*buf;
+	size_t		isz;
+	size_t		cap;
+	size_t		len;
+}				t_procs;
+
+extern void		sh_procdtor(t_proc *proc);
+extern void		sh_proclaunch(t_proc *proc, struct s_job *job, int fg);
+extern int		sh_procmark(t_proc *proc, int status);
 
 #endif

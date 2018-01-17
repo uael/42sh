@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ush/var.h                                          :+:      :+:    :+:   */
+/*   ush/proc/state.h                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,18 +10,17 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef USH_VAR_H
-# define USH_VAR_H
+#ifndef USH_PROC_STATE_H
+# define USH_PROC_STATE_H
 
-# include "env.h"
+# include "../shell.h"
 
-# define SH_IFS " \t"
-
-extern void		sh_varscope(void);
-extern t_bool	sh_varunscope(void);
-extern void		sh_varset(char *var, char *val);
-extern char		*sh_varget(char *var);
-
-extern char		*sh_varifs(void);
+typedef enum	e_procst
+{
+	PROC_COMPLETED,
+	PROC_STOPPED,
+	PROC_RUNNING,
+	PROC_CONTINUED
+}				t_procst;
 
 #endif

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ush/var.h                                          :+:      :+:    :+:   */
+/*   ush/pool.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,18 +10,25 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef USH_VAR_H
-# define USH_VAR_H
+#ifndef USH_POOL_H
+# define USH_POOL_H
 
-# include "env.h"
+# include "job.h"
 
-# define SH_IFS " \t"
+typedef struct	s_pool
+{
+	t_job		*jobs;
+	size_t		isz;
+	size_t		cap;
+	size_t		len;
+}				t_pool;
 
-extern void		sh_varscope(void);
-extern t_bool	sh_varunscope(void);
-extern void		sh_varset(char *var, char *val);
-extern char		*sh_varget(char *var);
+extern t_pool	*g_pool;
 
-extern char		*sh_varifs(void);
+extern void		sh_poolscope(void);
+extern t_bool	sh_poolunscope(void);
+extern t_job	*sh_poolfind(pid_t pgid);
+extern int		sh_poolmark(pid_t pid, int status);
+extern void		sh_poolnotify(void);
 
 #endif

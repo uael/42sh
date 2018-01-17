@@ -1,27 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ush/var.h                                          :+:      :+:    :+:   */
+/*   job/debug.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/06 12:00:10 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/13 08:23:58 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef USH_VAR_H
-# define USH_VAR_H
+#include "ush/job.h"
 
-# include "env.h"
-
-# define SH_IFS " \t"
-
-extern void		sh_varscope(void);
-extern t_bool	sh_varunscope(void);
-extern void		sh_varset(char *var, char *val);
-extern char		*sh_varget(char *var);
-
-extern char		*sh_varifs(void);
-
-#endif
+inline void		sh_jobdebug(t_job *j, const char *status)
+{
+	sh_err("%ld (%s): %s\n", (long) j->pgid, status, j->command);
+}

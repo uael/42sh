@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ush/var.h                                          :+:      :+:    :+:   */
+/*   ush/redir.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,18 +10,24 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef USH_VAR_H
-# define USH_VAR_H
+#ifndef USH_REDIR_H
+# define USH_REDIR_H
 
+# include "lex.h"
 # include "env.h"
 
-# define SH_IFS " \t"
+typedef struct	s_redir
+{
+	int 		from;
+	int			to;
+}				t_redir;
 
-extern void		sh_varscope(void);
-extern t_bool	sh_varunscope(void);
-extern void		sh_varset(char *var, char *val);
-extern char		*sh_varget(char *var);
-
-extern char		*sh_varifs(void);
+typedef struct	s_redirs
+{
+	t_redir		*buf;
+	size_t		isz;
+	size_t		cap;
+	size_t		len;
+}				t_redirs;
 
 #endif

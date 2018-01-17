@@ -1,27 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ush/var.h                                          :+:      :+:    :+:   */
+/*   job/state.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/06 12:00:10 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/13 08:23:58 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef USH_VAR_H
-# define USH_VAR_H
+#include "ush/job.h"
 
-# include "env.h"
+int		sh_jobstopped(t_job *j)
+{
+	t_proc *p;
+	size_t i;
 
-# define SH_IFS " \t"
+	i = 0;
+	while (i < j->pipeline.len)
+		if ((p = j->pipeline.buf + i++)->state != PROC_COMPLETED &&
+			p->state != PROC_STOPPED)
+			return (0);
+	return (1);
+}
 
-extern void		sh_varscope(void);
-extern t_bool	sh_varunscope(void);
-extern void		sh_varset(char *var, char *val);
-extern char		*sh_varget(char *var);
+int		sh_jobcompleted(t_job *j)
+{
+	size_t i;
 
-extern char		*sh_varifs(void);
-
-#endif
+	i = 0;
+	while (i < j->pipeline.len)
+		if ((j->pipeline.buf + i++)->state != PROC_COMPLETED)
+			return (0);
+	return (1);
+}

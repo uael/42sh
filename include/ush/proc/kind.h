@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ush/var.h                                          :+:      :+:    :+:   */
+/*   ush/proc/kind.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,18 +10,23 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef USH_VAR_H
-# define USH_VAR_H
+#ifndef USH_PROC_KIND_H
+# define USH_PROC_KIND_H
 
-# include "env.h"
+# include "../shell.h"
 
-# define SH_IFS " \t"
+typedef enum	e_prockd
+{
+	PROC_EXE,
+	PROC_FN
+}				t_prockd;
 
-extern void		sh_varscope(void);
-extern t_bool	sh_varunscope(void);
-extern void		sh_varset(char *var, char *val);
-extern char		*sh_varget(char *var);
+typedef int		(t_procfn)(int ac, char **av, char **envv);
 
-extern char		*sh_varifs(void);
+typedef union	u_procu
+{
+	char		*exe;
+	t_procfn	*fn;
+}				t_procu;
 
 #endif
