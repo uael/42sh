@@ -16,6 +16,7 @@
 # include "librl.h"
 
 # define HIST_MAX (100)
+# define HIST_DELTA (5)
 
 extern void		rl_histdtor(void);
 extern char		*rl_histcat(char const *ln, size_t len, char c, char **out);

@@ -21,6 +21,11 @@ inline char		*rl_histadd(char const *ln, size_t len)
 
 	if (g_hist_len && !ft_strcmp(g_hist[g_hist_len - 1].buf, ln))
 		return (g_hist[g_hist_len - 1].buf);
+	if (g_hist_len == HIST_MAX)
+	{
+		ft_memmove(g_hist, g_hist + HIST_DELTA, HIST_DELTA * sizeof(t_sds));
+		g_hist_len -= HIST_DELTA;
+	}
 	histln = g_hist + g_hist_len++;
 	histln->len = 0;
 	if (len)
