@@ -43,7 +43,8 @@ SRC_NAME = \
 	math/v3.c math/v3_2.c math/eq.c math/eq_2.c \
 	mem/alloc.c \
 	str/mem.c str/mem_2.c str/str.c str/str_2.c str/str_3.c str/str_4.c \
-	str/str_5.c
+	str/str_5.c \
+	get_opt/get_opt_long.c get_opt/get_opt_longlong.c \
 
 SRC = $(addprefix $(SRC_PATH), $(SRC_NAME))
 OBJ = $(addprefix $(OBJ_PATH), $(OBJ_NAME))

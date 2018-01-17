@@ -20,5 +20,6 @@
 # include "ush/proc.h"
 # include "ush/shell.h"
 # include "ush/var.h"
+# include "ush/bi.h"
 
 #endif
