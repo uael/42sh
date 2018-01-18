@@ -45,5 +45,6 @@ extern void		sh_jobwait(t_job *job);
 extern void		sh_jobfg(t_job *j, int cont);
 extern void		sh_jobbg(t_job *j, int cont);
 extern void		sh_jobcont(t_job *j, int fg);
+extern void		sh_jobdebug(t_job *job);
 
 #endif

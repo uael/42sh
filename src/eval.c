@@ -12,7 +12,7 @@
 
 #include "ush/eval.h"
 
-static int		parseeol(t_deq *toks, char **ln)
+static int			parseeol(t_deq *toks, char **ln)
 {
 	t_tok *tok;
 
@@ -27,7 +27,7 @@ static int		parseeol(t_deq *toks, char **ln)
 	return (YEP);
 }
 
-inline int		evalfinalize(int ret, int fd)
+static inline int	evalfinalize(int ret, int fd)
 {
 	if (fd < 0)
 	{
@@ -37,7 +37,7 @@ inline int		evalfinalize(int ret, int fd)
 	return (ret);
 }
 
-inline int		sh_eval(int fd, t_deq *toks, char **ln)
+inline int			sh_eval(int fd, t_deq *toks, char **ln)
 {
 	t_tok	*tok;
 

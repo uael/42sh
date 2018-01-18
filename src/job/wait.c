@@ -19,8 +19,12 @@ inline void		sh_jobwait(t_job *job)
 	int		status;
 	pid_t	pid;
 
-	pid = waitpid(WAIT_ANY, &status, WUNTRACED);
+	while ((pid = waitpid(WAIT_ANY, &status, WUNTRACED)) < 0)
+		if (errno != EINTR)
+			break ;
 	while (!sh_jobmark(job, pid, status) && !sh_jobstopped(job)
 		&& !sh_jobcompleted(job))
-		pid = waitpid(WAIT_ANY, &status, WUNTRACED);
+		while ((pid = waitpid(WAIT_ANY, &status, WUNTRACED)) < 0)
+			if (errno != EINTR)
+				break ;
 }

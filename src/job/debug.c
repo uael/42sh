@@ -1,34 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ush/pool.h                                         :+:      :+:    :+:   */
+/*   job/wait.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/06 12:00:10 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/13 08:23:58 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef USH_POOL_H
-# define USH_POOL_H
+#include "ush/job.h"
+#include "ush/pool.h"
 
-# include "job.h"
-
-typedef struct	s_pool
+static char		*g_strst[] =
 {
-	t_job		jobs[CHILD_MAX];
-	size_t		len;
-}				t_pool;
+	[PROC_RUNNING] = "running\t",
+	[PROC_STOPPED] = "suspended\t",
+	[PROC_CONTINUED] = "continued\t",
+	[PROC_TERMINATED] = "terminated\t",
+	[PROC_COMPLETED] = "done\t\t"
+};
 
-extern t_pool	*g_pool;
-extern size_t	g_scopelvl;
+inline void		sh_jobdebug(t_job *job)
+{
+	size_t i;
+	t_proc *proc;
 
-extern void		sh_poolscope(void);
-extern t_bool	sh_poolunscope(void);
-extern t_job	*sh_poolpush(t_job *job);
-extern t_job	*sh_poolfind(pid_t pgid);
-extern int		sh_poolmark(pid_t pid, int status);
-extern void		sh_poolnotify(void);
-
-#endif
+	ft_putf(STDOUT_FILENO, "[%d]  + ", g_scopelvl);
+	i = 0;
+	while (i < job->processes.len)
+	{
+		proc = job->processes.buf + i++;
+		if (i != 1)
+			ft_putf(STDOUT_FILENO, "       ");
+		ft_putf(STDOUT_FILENO, "%d %s\n", proc->pid, g_strst[proc->state]);
+	}
+}
