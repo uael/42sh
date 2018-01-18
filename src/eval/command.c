@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "ush/eval.h"
+#include "ush/bi.h"
 
 static t_bool	isname(char *word)
 {
@@ -59,5 +60,15 @@ inline int		sh_evalcommand(t_job *job, int fd, t_deq *toks, char **ln)
 	sh_procctor(proc);
 	proc->argv = av.buf;
 	proc->envv = g_env;
+	if (!ft_strcmp(proc->argv[0], "cd"))
+	{
+		proc->u.fn = sh_bicd;
+		proc->kind = PROC_FN;
+	}
+	else if (!ft_strcmp(proc->argv[0], "echo"))
+	{
+		proc->u.fn = sh_biecho;
+		proc->kind = PROC_FN;
+	}
 	return (YEP);
 }

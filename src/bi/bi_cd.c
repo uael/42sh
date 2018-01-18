@@ -13,7 +13,7 @@
 #include <sys/stat.h>
 #include <limits.h>
 
-#include "ush/bi.h"
+#include "ush.h"
 
 #define N_CD COLOR_RED COLOR_BOLD "cd: " COLOR_RESET
 
@@ -47,7 +47,7 @@ static int		cd_test(char *path)
 	return (YEP);
 }
 
-static int		cd_chdir(char *path, char **env, int ac, char **av)
+static int		cd_chdir(char *path)
 {
 	int	st;
 
@@ -57,17 +57,17 @@ static int		cd_chdir(char *path, char **env, int ac, char **av)
 		free(path);
 		return (st);
 	}
-	sh_bisetenv(ac, av, env);
+	sh_setenv("PWD", path);
 	free(path);
 	return (YEP);
 }
 
-inline int		sh_bi_cd(int ac, char **av, char **env)
+inline int		sh_bicd(int ac, char **av, char **env)
 {
     char	buf[PATH_MAX + 1];
 	char	*path;
 	char	*pwd;
-
+    
     if (ac > 3)
 		return (ft_retf(NOP, N_CD"%e\n", E2BIG));
 	if (ac == 3 && ft_strcmp("-P", av[1]) != 0)
@@ -77,11 +77,11 @@ inline int		sh_bi_cd(int ac, char **av, char **env)
 	if (cd_test(path))
 		return (NOP);
 	if ((pwd = ft_getenv(env, "PWD")))
-		sh_bisetenv(ac, av, env);
+		sh_setenv("OLDPWD", pwd);
 	if (ft_pathabs(path, buf, ac != 3 && pwd ? pwd : NULL))
 	{
 		free(path);
 		path = ft_strdup(buf);
 	}
-	return (cd_chdir(path, env, ac, av));
+	return (cd_chdir(path));
 }
