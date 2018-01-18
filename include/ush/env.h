@@ -21,5 +21,6 @@ extern void		sh_envdtor(void);
 extern void		sh_envinit(char **envv);
 extern char		*sh_getenv(char *var);
 extern void		sh_setenv(char *var, char *val);
+t_bool			sh_unsetenv(char *var, t_bool m);
 
 #endif
