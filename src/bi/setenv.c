@@ -1,4 +1,4 @@
-/* ************************************************************************** */
+ /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   ush/env.h                                          :+:      :+:    :+:   */
@@ -10,20 +10,22 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef USH_BI_H
-# define USH_BI_H
+#include "ush.h"
 
-# include <libft.h>
+#define M_SYNER "Syntax error"
+#define M_ENOID "not an identifier"
+#define N_EXPORT COLOR_RED COLOR_BOLD "export: " COLOR_RESET
 
-extern int  sh_biecho(int ac, char **argv, char **env);
-extern int  sh_biexit(int ac, char **av, char **env);
-extern int  sh_biunsetenv(int ac, char **av, char **env);
-extern int  sh_bienv(int ac, char **av, char **env);
-extern int  sh_bisetenv(int ac, char **av, char **env);
-extern int  sh_bicd(int ac, char **av, char **env);
-inline int	sh_bisetenv(int ac, char **av, char **env);
-extern int  sh_biset(int ac, char **av, char **env);
-extern int  sh_biunset(int ac, char **av, char **env);
-extern int  sh_biexport(int ac, char **av, char **env);
-
-#endif
+inline int	sh_bisetenv(int ac, char **av, char **env)
+{
+	//if (ac == 1)
+		//return (sh_bi_env(sh, ac, av, out));
+	if (ac < 2 || ac > 3 || !av[1] ||
+		ft_strchr(av[1], '=') ||
+		(ac == 3 && ft_strchr(av[2], '=')))
+		return (retf(NOP, N_EXPORT"%s\n", M_SYNER));
+	if (!ft_isalpha(*av[1]))
+		return (retf(NOP, N_EXPORT"%s: %s\n", av[1], M_ENOID));
+	sh_setenv(av[1], ac == 3 ? av[2] : 0);
+	return (YEP);
+}
