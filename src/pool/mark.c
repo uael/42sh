@@ -28,12 +28,11 @@ inline int		sh_poolmark(pid_t pid, int status)
 		{
 			j = 0;
 			job = g_pool->jobs + i++;
-			while (j < job->pipeline.len)
-				if ((proc = job->pipeline.buf + j++)->pid == pid)
+			while (j < job->processes.len)
+				if ((proc = job->processes.buf + j++)->pid == pid)
 					return (sh_procmark(proc, status));
 		}
-		sh_err("No child process %d.\n", pid);
-		return (WUT);
+		return (NOP);
 	}
 	return ((pid == 0 || errno == ECHILD) ? WUT : THROW(WUT));
 }

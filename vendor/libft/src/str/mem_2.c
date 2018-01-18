@@ -40,3 +40,8 @@ inline void	*ft_memset(void *b, int c, size_t len)
 		*(uint8_t *)b++ = (uint8_t)c;
 	return (r);
 }
+
+inline void	*ft_memdup(void const *src, size_t n)
+{
+	return (ft_memcpy(ft_malloc(n), src, n));
+}

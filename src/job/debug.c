@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   job/debug.c                                        :+:      :+:    :+:   */
+/*   job/wait.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -11,8 +11,29 @@
 /* ************************************************************************** */
 
 #include "ush/job.h"
+#include "ush/pool.h"
 
-inline void		sh_jobdebug(t_job *j, const char *status)
+static char		*g_strst[] =
 {
-	sh_err("%ld (%s): %s\n", (long) j->pgid, status, j->command);
+	[PROC_RUNNING] = "running\t",
+	[PROC_STOPPED] = "suspended\t",
+	[PROC_CONTINUED] = "continued\t",
+	[PROC_TERMINATED] = "terminated\t",
+	[PROC_COMPLETED] = "done\t\t"
+};
+
+inline void		sh_jobdebug(t_job *job)
+{
+	size_t i;
+	t_proc *proc;
+
+	ft_putf(STDOUT_FILENO, "[%d]  + ", g_scopelvl);
+	i = 0;
+	while (i < job->processes.len)
+	{
+		proc = job->processes.buf + i++;
+		if (i != 1)
+			ft_putf(STDOUT_FILENO, "       ");
+		ft_putf(STDOUT_FILENO, "%d %s\n", proc->pid, g_strst[proc->state]);
+	}
 }

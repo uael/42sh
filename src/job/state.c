@@ -18,8 +18,8 @@ int		sh_jobstopped(t_job *j)
 	size_t i;
 
 	i = 0;
-	while (i < j->pipeline.len)
-		if ((p = j->pipeline.buf + i++)->state != PROC_COMPLETED &&
+	while (i < j->processes.len)
+		if ((p = j->processes.buf + i++)->state != PROC_COMPLETED &&
 			p->state != PROC_STOPPED)
 			return (0);
 	return (1);
@@ -30,8 +30,8 @@ int		sh_jobcompleted(t_job *j)
 	size_t i;
 
 	i = 0;
-	while (i < j->pipeline.len)
-		if ((j->pipeline.buf + i++)->state != PROC_COMPLETED)
+	while (i < j->processes.len)
+		if ((j->processes.buf + i++)->state != PROC_COMPLETED)
 			return (0);
 	return (1);
 }

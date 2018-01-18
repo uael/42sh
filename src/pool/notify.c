@@ -18,22 +18,39 @@ inline void		sh_poolnotify(void)
 	t_job	*job;
 	pid_t	pid;
 	int		status;
+	t_bool	print;
 
 	if (!g_pool)
 		return ;
-	pid = waitpid(WAIT_ANY, &status, WUNTRACED | WNOHANG);
+	while ((pid = waitpid(WAIT_ANY, &status, WUNTRACED | WNOHANG)) < 0)
+		if (errno != EINTR)
+			break ;
 	while (!sh_poolmark(pid, status))
-		pid = waitpid(WAIT_ANY, &status, WUNTRACED | WNOHANG);
+		while ((pid = waitpid(WAIT_ANY, &status, WUNTRACED | WNOHANG)) < 0)
+			if (errno != EINTR)
+				break ;
 	i = 0;
+	print = 0;
 	while (i < g_pool->len)
 		if (sh_jobcompleted(job = g_pool->jobs + i++))
 		{
-			sh_jobdebug(job, "completed");
-			ft_vecrem((t_vec *)g_pool, i - 1, NULL);
+			if (!print)
+				ft_putf(1, "\n");
+			print = 1;
+			sh_jobdebug(job);
+			sh_jobdtor(job);
+			if (--i != --g_pool->len)
+				ft_memmove(g_pool->jobs + i, g_pool->jobs + i + 1,
+					sizeof(t_job) * (g_pool->len - i));
 		}
 		else if (sh_jobstopped(job) && !job->notified)
 		{
-			sh_jobdebug(job, "stopped");
+			if (!print)
+				ft_putf(1, "\n");
+			print = 1;
+			sh_jobdebug(job);
 			job->notified = 1;
 		}
+	if (print)
+		rl_reprint();
 }

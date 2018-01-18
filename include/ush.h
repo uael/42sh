@@ -17,10 +17,12 @@
 # include "ush/err.h"
 # include "ush/job.h"
 # include "ush/lex.h"
+# include "ush/eval.h"
 # include "ush/pool.h"
 # include "ush/proc.h"
 # include "ush/redir.h"
 # include "ush/shell.h"
+# include "ush/tok.h"
 # include "ush/var.h"
 # include "ush/word.h"
 

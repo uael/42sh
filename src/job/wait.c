@@ -13,15 +13,18 @@
 #include <sys/wait.h>
 
 #include "ush/job.h"
-#include "ush/pool.h"
 
-inline void		sh_jobwait(t_job *j)
+inline void		sh_jobwait(t_job *job)
 {
 	int		status;
 	pid_t	pid;
 
-	pid = waitpid(WAIT_ANY, &status, WUNTRACED);
-	while (!sh_poolmark(pid, status) && !sh_jobstopped(j)
-		&& !sh_jobcompleted(j))
-		pid = waitpid(WAIT_ANY, &status, WUNTRACED);
+	while ((pid = waitpid(WAIT_ANY, &status, WUNTRACED)) < 0)
+		if (errno != EINTR)
+			break ;
+	while (!sh_jobmark(job, pid, status) && !sh_jobstopped(job)
+		&& !sh_jobcompleted(job))
+		while ((pid = waitpid(WAIT_ANY, &status, WUNTRACED)) < 0)
+			if (errno != EINTR)
+				break ;
 }

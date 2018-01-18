@@ -15,8 +15,7 @@
 
 # include "proc/state.h"
 # include "proc/kind.h"
-
-struct s_job;
+# include "redir.h"
 
 typedef struct	s_proc
 {
@@ -25,6 +24,9 @@ typedef struct	s_proc
 	t_prockd	kind;
 	int			status;
 	char		**argv;
+	char		**envv;
+	int			io[3];
+	t_redirs	redirs;
 	t_procu		u;
 }				t_proc;
 
@@ -36,8 +38,9 @@ typedef struct	s_procs
 	size_t		len;
 }				t_procs;
 
+extern void		sh_procctor(t_proc *proc);
 extern void		sh_procdtor(t_proc *proc);
-extern void		sh_proclaunch(t_proc *proc, struct s_job *job, int fg);
+extern void		sh_proclaunch(t_proc *proc, pid_t pgid, int fg);
 extern int		sh_procmark(t_proc *proc, int status);
 
 #endif

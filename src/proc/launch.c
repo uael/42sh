@@ -13,14 +13,12 @@
 #include "ush/proc.h"
 #include "ush/job.h"
 
-static inline void	procfg(t_job *job, int fg)
+static inline void	procfg(pid_t pgid, int fg)
 {
 	pid_t pid;
-	pid_t pgid;
 
 	if (g_shinteract)
 	{
-		pgid = job->pgid;
 		pid = getpid();
 		if (pgid == 0) pgid = pid;
 		setpgid(pid, pgid);
@@ -35,11 +33,11 @@ static inline void	procfg(t_job *job, int fg)
 	}
 }
 
-static inline int	porcio(t_job *job)
+static inline int	porcio(t_proc *proc)
 {
 	int io[3];
 
-	ft_memcpy(io, job->io, 3 * sizeof(int));
+	ft_memcpy(io, proc->io, 3 * sizeof(int));
 	if (io[STDIN_FILENO] >= 0 && io[STDIN_FILENO] != STDIN_FILENO)
 	{
 		if (dup2(io[STDIN_FILENO], STDIN_FILENO) < 0 ||
@@ -61,15 +59,15 @@ static inline int	porcio(t_job *job)
 	return (YEP);
 }
 
-static inline void	procredir(t_job *job)
+static inline void	procredir(t_proc *proc)
 {
 	size_t	i;
 	t_redir	*redir;
 
 	i = 0;
-	while (i < job->redirs.len)
+	while (i < proc->redirs.len)
 	{
-		redir = job->redirs.buf + i;
+		redir = proc->redirs.buf + i;
 		if (redir->to < 0)
 			close(redir->from);
 		else if (dup2(redir->to, redir->from) < 0 || close(redir->to))
@@ -89,18 +87,17 @@ static inline int	avcount(char **av)
 	return ((int)(av - beg));
 }
 
-void				sh_proclaunch(t_proc *proc, t_job *job, int fg)
+void				sh_proclaunch(t_proc *proc, pid_t pgid, int fg)
 {
-	procfg(job, fg);
-	if (porcio(job))
+	procfg(pgid, fg);
+	if (porcio(proc))
 		return ;
-	procredir(job);
+	procredir(proc);
 	if (proc->kind == PROC_FN)
-		proc->u.fn(avcount(proc->argv), proc->argv, job->envv);
+		proc->u.fn(avcount(proc->argv), proc->argv, proc->envv);
 	else if (proc->kind == PROC_EXE)
 	{
-		execve(proc->u.exe, proc->argv, job->envv);
+		execve(proc->argv[0], proc->argv, proc->envv);
 		sh_exit(THROW(WUT), NULL);
 	}
-
 }

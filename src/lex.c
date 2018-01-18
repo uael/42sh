@@ -67,6 +67,17 @@ inline char			*sh_tokidstr(uint8_t id)
 	return ((ret = g_tokidsstr[id]) ? ret : "<unknown>");
 }
 
+inline char			*sh_tokstr(t_tok *tok)
+{
+	char *ret;
+
+	if (!tok)
+		return (g_tokidsstr[TOK_END]);
+	if (tok->id > TOK_RCURLY)
+		return ("<unknown>");
+	return ((ret = g_tokidsstr[tok->id]) ? ret : "<unknown>");
+}
+
 static inline int	lex(int fd, t_tok *tok, char **it, char **ln)
 {
 	int	st;
@@ -74,6 +85,7 @@ static inline int	lex(int fd, t_tok *tok, char **it, char **ln)
 	tok->len = 0;
 	while (ft_strchr(sh_varifs(), **it))
 		++*it;
+	tok->pos = (uint16_t)(*it - *ln);
 	if (**it == '\n' || (**it == '\r' && *(*it + 1) == '\n'))
 	{
 		tok->id = TOK_EOL;
@@ -91,7 +103,7 @@ static inline int	lex(int fd, t_tok *tok, char **it, char **ln)
 		return (WUT);
 	if (st && (st = sh_lexword(fd, tok, it, ln)) < 0)
 		return (WUT);
-	return (st ? sh_synerr(*ln, *it, "Unexpected token '%c'", **it) : YEP);
+	return (st ? sh_synerr(*ln, *it, "1: Unexpected token `%c'", **it) : YEP);
 }
 
 static inline int	reduce(int fd, t_deq *toks, char **it, char **ln)
@@ -113,8 +125,8 @@ static inline int	reduce(int fd, t_deq *toks, char **it, char **ln)
 				return (WUT);
 		}
 		else if (prev && (prev->id == TOK_HEREDOC || prev->id == TOK_HEREDOCT))
-			return (sh_synerr(*ln, *ln + tok->pos, "Expected '%s' after "
-				"heredoc '%s' got '%s'", sh_tokidstr(TOK_WORD),
+			return (sh_synerr(*ln, *ln + tok->pos, "Expected `%s' after "
+				"heredoc `%s' got `%s'", sh_tokidstr(TOK_WORD),
 				sh_tokidstr(prev->id), sh_tokidstr(tok->id)));
 		prev = tok;
 	}
@@ -132,7 +144,6 @@ int					sh_lex(int fd, t_deq *toks, char **it, char **ln)
 		ln = it;
 	while ((tok = ft_deqpush(toks)))
 	{
-		tok->pos = (uint16_t)(*it - *ln);
 		if (!**it)
 		{
 			tok->id = TOK_END;

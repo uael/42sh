@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   job.c                                              :+:      :+:    :+:   */
+/*   eval/processes.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,18 +10,25 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ush/job.h"
+#include "ush/eval.h"
 
-inline void		sh_jobctor(t_job *job)
+inline int		sh_evalpipeline(t_job *job, int fd, t_deq *toks, char **ln)
 {
-	ft_memset(job, 0, sizeof(t_job));
-	ft_vecctor((t_vec *)&job->processes, sizeof(t_proc));
-	job->io[STDIN_FILENO] = STDIN_FILENO;
-	job->io[STDOUT_FILENO] = STDOUT_FILENO;
-	job->io[STDERR_FILENO] = STDERR_FILENO;
-}
+	t_tok	*tok;
+	t_tok	*eol;
 
-inline void		sh_jobdtor(t_job *job)
-{
-	(void)job;
+	if (sh_evalcommand(job, fd, toks, ln))
+		return (NOP);
+	while (1)
+		if ((tok = sh_tokpeek(toks))->id == TOK_PIPE)
+		{
+			while ((eol = sh_toknext(toks)))
+				if (eol->id != TOK_EOL)
+					break ;
+			if (sh_evalcommand(job, fd, toks, ln))
+				return (sh_parseerr(*ln, tok, "Unfinished pipeline sequence "
+					"near `%s'", sh_tokstr(tok)));
+		}
+		else
+			return (YEP);
 }

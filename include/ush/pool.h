@@ -17,16 +17,16 @@
 
 typedef struct	s_pool
 {
-	t_job		*jobs;
-	size_t		isz;
-	size_t		cap;
+	t_job		jobs[CHILD_MAX];
 	size_t		len;
 }				t_pool;
 
 extern t_pool	*g_pool;
+extern size_t	g_scopelvl;
 
 extern void		sh_poolscope(void);
 extern t_bool	sh_poolunscope(void);
+extern t_job	*sh_poolpush(t_job *job);
 extern t_job	*sh_poolfind(pid_t pgid);
 extern int		sh_poolmark(pid_t pid, int status);
 extern void		sh_poolnotify(void);
