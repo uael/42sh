@@ -19,7 +19,7 @@
 inline int	sh_bisetenv(int ac, char **av, char **env)
 {
 	//if (ac == 1)
-		//return (sh_bi_env(sh, ac, av, out));
+		//return (sh_bienv(sh, ac, av, out));
 	if (ac < 2 || ac > 3 || !av[1] ||
 		ft_strchr(av[1], '=') ||
 		(ac == 3 && ft_strchr(av[2], '=')))
