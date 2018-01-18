@@ -23,16 +23,21 @@ LNK_PATH = ./ $(3TH_PATH)
 OBJ_NAME = $(SRC_NAME:.c=.o)
 3TH_NAME = rl ft
 SRC_NAME = \
-	env.c \
-	err.c \
-	job.c job/control.c \
-	lex.c lex/heredoc.c lex/op.c lex/quote.c lex/var.c lex/word.c \
-	main.c \
-	proc.c \
-	shell.c \
-	var.c \
 	bi/bi_echo.c bi/bi_env.c bi/bi_cd.c bi/bi_unsetenv.c bi/bi_exit.c \
 	bi/bi_export.c bi/bi_set.c bi/bi_cd.c
+	env.c \
+	err.c \
+	eval.c eval/andor.c eval/command.c eval/list.c eval/pipeline.c \
+	job.c job/bg.c job/cont.c job/debug.c job/fg.c job/mark.c job/launch.c \
+	job/state.c job/wait.c \
+	lex.c lex/heredoc.c lex/op.c lex/quote.c lex/var.c lex/word.c \
+	main.c \
+	pool.c pool/mark.c pool/notify.c \
+	proc.c proc/launch.c proc/mark.c \
+	shell.c \
+	tok.c \
+	var.c var/ifs.c \
+	word.c
 
 SRC = $(addprefix $(SRC_PATH), $(SRC_NAME))
 OBJ = $(addprefix $(OBJ_PATH), $(OBJ_NAME))

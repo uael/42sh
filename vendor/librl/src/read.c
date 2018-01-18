@@ -76,3 +76,13 @@ int				rl_catline(int fd, char c, char **ln, char **it)
 	rl_offmode(fd);
 	return (st);
 }
+
+inline int		rl_reprint(void)
+{
+	if (g_mode == RL_INSERT)
+	{
+		rl_editprint();
+		return (YEP);
+	}
+	return (NOP);
+}

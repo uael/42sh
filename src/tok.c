@@ -1,27 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   job.c                                              :+:      :+:    :+:   */
+/*   tok.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2018/01/06 11:10:01 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/13 08:28:05 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ush/job.h"
+#include "ush/tok.h"
 
-inline void		sh_jobctor(t_job *job)
+inline t_tok	*sh_tokpeek(t_deq *toks)
 {
-	ft_memset(job, 0, sizeof(t_job));
-	ft_vecctor((t_vec *)&job->processes, sizeof(t_proc));
-	job->io[STDIN_FILENO] = STDIN_FILENO;
-	job->io[STDOUT_FILENO] = STDOUT_FILENO;
-	job->io[STDERR_FILENO] = STDERR_FILENO;
+	if (ft_deqlen(toks))
+		return (ft_deqbeg(toks));
+	return (NULL);
 }
 
-inline void		sh_jobdtor(t_job *job)
+inline t_tok	*sh_toknext(t_deq *toks)
 {
-	(void)job;
+	ft_deqsht(toks, NULL);
+	return (sh_tokpeek(toks));
 }

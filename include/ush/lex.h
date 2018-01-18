@@ -15,6 +15,8 @@
 
 # include <librl.h>
 # include "err.h"
+# include "var.h"
+# include "word.h"
 
 enum			e_tok
 {
@@ -72,6 +74,7 @@ typedef struct	s_tok
 }				t_tok;
 
 extern char		*sh_tokidstr(uint8_t id);
+extern char		*sh_tokstr(t_tok *tok);
 
 extern int		sh_lex(int fd, t_deq *toks, char **it, char **ln);
 extern int		sh_lexnext(int fd, t_deq *toks, char **ln);

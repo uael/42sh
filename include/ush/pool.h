@@ -1,27 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   job.c                                              :+:      :+:    :+:   */
+/*   ush/pool.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2018/01/06 11:10:01 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/06 12:00:10 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ush/job.h"
+#ifndef USH_POOL_H
+# define USH_POOL_H
 
-inline void		sh_jobctor(t_job *job)
-{
-	ft_memset(job, 0, sizeof(t_job));
-	ft_vecctor((t_vec *)&job->processes, sizeof(t_proc));
-	job->io[STDIN_FILENO] = STDIN_FILENO;
-	job->io[STDOUT_FILENO] = STDOUT_FILENO;
-	job->io[STDERR_FILENO] = STDERR_FILENO;
-}
+# include "job.h"
 
-inline void		sh_jobdtor(t_job *job)
+typedef struct	s_pool
 {
-	(void)job;
-}
+	t_job		jobs[CHILD_MAX];
+	size_t		len;
+}				t_pool;
+
+extern t_pool	*g_pool;
+extern size_t	g_scopelvl;
+
+extern void		sh_poolscope(void);
+extern t_bool	sh_poolunscope(void);
+extern t_job	*sh_poolpush(t_job *job);
+extern t_job	*sh_poolfind(pid_t pgid);
+extern int		sh_poolmark(pid_t pid, int status);
+extern void		sh_poolnotify(void);
+
+#endif

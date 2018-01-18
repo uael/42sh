@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   job.c                                              :+:      :+:    :+:   */
+/*   proc/mark.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,18 +10,19 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ush/job.h"
+#include "ush/proc.h"
 
-inline void		sh_jobctor(t_job *job)
+inline int		sh_procmark(t_proc *proc, int status)
 {
-	ft_memset(job, 0, sizeof(t_job));
-	ft_vecctor((t_vec *)&job->processes, sizeof(t_proc));
-	job->io[STDIN_FILENO] = STDIN_FILENO;
-	job->io[STDOUT_FILENO] = STDOUT_FILENO;
-	job->io[STDERR_FILENO] = STDERR_FILENO;
-}
-
-inline void		sh_jobdtor(t_job *job)
-{
-	(void)job;
+	proc->status = status;
+	if (WIFSTOPPED(proc->status))
+		proc->state = PROC_STOPPED;
+	else
+	{
+		proc->state = PROC_COMPLETED;
+		if (WIFSIGNALED (status))
+			sh_err("%d: Terminated by signal %d.\n",
+				(int)proc->pid, WTERMSIG (proc->status));
+	}
+	return (YEP);
 }

@@ -13,13 +13,18 @@
 #ifndef USH_H
 # define USH_H
 
+# include "ush/bi.h"
 # include "ush/env.h"
 # include "ush/err.h"
 # include "ush/job.h"
 # include "ush/lex.h"
+# include "ush/eval.h"
+# include "ush/pool.h"
 # include "ush/proc.h"
+# include "ush/redir.h"
 # include "ush/shell.h"
+# include "ush/tok.h"
 # include "ush/var.h"
-# include "ush/bi.h"
+# include "ush/word.h"
 
 #endif
