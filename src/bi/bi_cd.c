@@ -37,13 +37,13 @@ static int		cd_test(char *path)
 	struct stat	s;
 
 	if (!*path || lstat(path, &s) != 0)
-		return (ft_putf(1, N_CD"%s: %e\n", path, errno));
+		return (ft_retf(NOP, N_CD"%s: %e\n", path, errno));
 	if (!S_ISDIR(s.st_mode) && !S_ISLNK(s.st_mode))
-		return (ft_putf(1, N_CD"%s: %e\n", path, ENOTDIR));
+		return (ft_retf(NOP, N_CD"%s: %e\n", path, ENOTDIR));
 	if (!S_ISLNK(s.st_mode) && access(path, R_OK) != 0)
-		return (ft_putf(1, N_CD"%s: %e\n", path, errno));
+		return (ft_retf(NOP, N_CD"%s: %e\n", path, errno));
 	if (access(path, X_OK) != 0)
-		return (ft_putf(1, N_CD"%s: %e\n", path, errno));
+		return (ft_retf(NOP, N_CD"%s: %e\n", path, errno));
 	return (YEP);
 }
 
@@ -53,7 +53,7 @@ static int		cd_chdir(char *path, char **env, int ac, char **av)
 
 	if (chdir(path))
 	{
-		st = ft_putf(1, N_CD"%s: %e\n", path, errno);
+		st = ft_retf(NOP, N_CD"%s: %e\n", path, errno);
 		free(path);
 		return (st);
 	}
@@ -69,11 +69,11 @@ inline int		sh_bi_cd(int ac, char **av, char **env)
 	char	*pwd;
 
     if (ac > 3)
-		return (ft_putf(1, N_CD"%e\n", E2BIG));
+		return (ft_retf(NOP, N_CD"%e\n", E2BIG));
 	if (ac == 3 && ft_strcmp("-P", av[1]) != 0)
-		return (ft_putf(1, N_CD"%e '%s'\n", EINVAL, av[1]));
+		return (ft_retf(NOP, N_CD"%e '%s'\n", EINVAL, av[1]));
 	if (!(path = cd_path(ac, av, env, (t_bool)(ac == 3))))
-		return (ft_putf(1, N_CD"%s\n", "Environ is empty"));
+		return (ft_retf(NOP, N_CD"%s\n", "Environ is empty"));
 	if (cd_test(path))
 		return (NOP);
 	if ((pwd = ft_getenv(env, "PWD")))
