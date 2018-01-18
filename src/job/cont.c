@@ -17,8 +17,8 @@ inline void		sh_jobcont(t_job *j, int fg)
 	size_t i;
 
 	i = 0;
-	while (i < j->pipeline.len)
-		(j->pipeline.buf + i++)->state = PROC_CONTINUED;
+	while (i < j->processes.len)
+		(j->processes.buf + i++)->state = PROC_CONTINUED;
 	j->notified = 0;
 	if (fg)
 		sh_jobfg(j, 1);

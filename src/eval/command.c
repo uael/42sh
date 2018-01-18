@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse/command.c                                    :+:      :+:    :+:   */
+/*   eval/command.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ush/parse.h"
+#include "ush/eval.h"
 
 static t_bool	isname(char *word)
 {
@@ -26,7 +26,7 @@ static t_bool	isname(char *word)
 	return (1);
 }
 
-inline t_bool	sh_parsecommand(t_job *job, int fd, t_deq *toks, char **ln)
+inline int		sh_evalcommand(t_job *job, int fd, t_deq *toks, char **ln)
 {
 	t_proc	*proc;
 	t_tok	*tok;
@@ -35,14 +35,8 @@ inline t_bool	sh_parsecommand(t_job *job, int fd, t_deq *toks, char **ln)
 
 	(void)fd;
 	(void)ln;
-	ft_vecgrow((t_vec *)&job->pipeline, 1);
-	proc = ft_vecend((t_vec *)&job->pipeline); //todo: ctor
-	job->io[0] = 0;
-	job->io[1] = 1;
-	job->io[2] = 2;
-	job->envv = g_env;
 	if (!(tok = sh_tokpeek(toks)) || tok->id != TOK_WORD)
-		return (0);
+		return (NOP);
 	while ((assign = ft_strchr(tok->val, '=')))
 		if (assign == tok->val)
 			ft_sdssht((t_sds *)tok, NULL);
@@ -50,8 +44,9 @@ inline t_bool	sh_parsecommand(t_job *job, int fd, t_deq *toks, char **ln)
 		{
 			*assign = '\0';
 			sh_varset(tok->val, assign + 1);
+			g_shstatus = 0;
 			if (!(tok = sh_toknext(toks)) || tok->id != TOK_WORD)
-				return (1);
+				return (YEP);
 		}
 	ft_vecctor(&av, sizeof(char *));
 	while (tok->id == TOK_WORD)
@@ -60,7 +55,9 @@ inline t_bool	sh_parsecommand(t_job *job, int fd, t_deq *toks, char **ln)
 		tok = sh_toknext(toks);
 	}
 	*(char **)ft_vecpush(&av) = NULL;
+	proc = ft_vecpush((t_vec *)&job->processes);
+	sh_procctor(proc);
 	proc->argv = av.buf;
-	ft_vecpush((t_vec *)&job->pipeline);
-	return (1);
+	proc->envv = g_env;
+	return (YEP);
 }

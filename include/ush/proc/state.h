@@ -17,6 +17,7 @@
 
 typedef enum	e_procst
 {
+	PROC_NEW,
 	PROC_COMPLETED,
 	PROC_STOPPED,
 	PROC_RUNNING,

@@ -19,8 +19,6 @@ t_pool			*g_pool = NULL;
 inline void		sh_poolscope(void)
 {
 	g_pool = ft_vecpush(g_pools);
-	if (!g_pool->isz)
-		ft_vecctor((t_vec *)g_pool, sizeof(t_job));
 }
 
 /*
@@ -30,13 +28,20 @@ inline void		sh_poolscope(void)
 inline t_bool	sh_poolunscope(void)
 {
 	if (g_pool && ft_vecpop(g_pools, NULL))
-	{
-		ft_vecdtor((t_vec *)g_pool, (t_dtor)sh_jobdtor);
-		g_pool = ft_vecback(g_pools);
 		return (1);
-	}
 	ft_vecdtor(g_pools, NULL);
 	return (0);
+}
+
+inline t_job	*sh_poolpush(t_job *job)
+{
+	t_job *new;
+
+	if (g_pool->len == CHILD_MAX)
+		return (NULL);
+	new = ft_memcpy(g_pool->jobs + g_pool->len++, job, sizeof(t_job));
+	sh_joblaunch(new, 0);
+	return (new);
 }
 
 inline t_job	*sh_poolfind(pid_t pgid)

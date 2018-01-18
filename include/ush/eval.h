@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ush/parse.h                                        :+:      :+:    :+:   */
+/*   ush/eval.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,17 +10,17 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef USH_PARSE_H
-# define USH_PARSE_H
+#ifndef USH_EVAL_H
+# define USH_EVAL_H
 
 # include "shell.h"
 # include "pool.h"
 # include "tok.h"
 
 extern int		sh_parse(int fd, t_deq *toks, char **ln);
-extern t_job	*sh_parselist(int fd, t_deq *toks, char **ln);
-extern t_job	*sh_parseandor(int fd, t_deq *toks, char **ln);
-extern t_job	*sh_parsepipeline(int fd, t_deq *toks, char **ln);
-extern t_bool	sh_parsecommand(t_job *job, int fd, t_deq *toks, char **ln);
+extern int		sh_evallist(int fd, t_deq *toks, char **ln);
+extern int		sh_evalandor(t_job *job, int fd, t_deq *toks, char **ln);
+extern int		sh_evalpipeline(t_job *job, int fd, t_deq *toks, char **ln);
+extern int		sh_evalcommand(t_job *job, int fd, t_deq *toks, char **ln);
 
 #endif

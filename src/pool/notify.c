@@ -27,7 +27,12 @@ inline void		sh_poolnotify(void)
 	i = 0;
 	while (i < g_pool->len)
 		if (sh_jobcompleted(job = g_pool->jobs + i++))
-			ft_vecrem((t_vec *)g_pool, i - 1, NULL);
+		{
+			ft_putf(STDOUT_FILENO, "[1]\t+ %d done", job->pgid);
+			if (i != g_pool->len--)
+				ft_memmove(g_pool->jobs + i - 1, g_pool->jobs + i,
+					sizeof(t_job));
+		}
 		else if (sh_jobstopped(job) && !job->notified)
 			job->notified = 1;
 }

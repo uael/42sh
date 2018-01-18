@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse/pipeline.c                                   :+:      :+:    :+:   */
+/*   eval/processes.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,30 +10,25 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ush/parse.h"
+#include "ush/eval.h"
 
-#define CMD "Unexpected token `%s'"
-
-inline t_job	*sh_parsepipeline(int fd, t_deq *toks, char **ln)
+inline int		sh_evalpipeline(t_job *job, int fd, t_deq *toks, char **ln)
 {
 	t_tok	*tok;
-	t_job	*job;
+	t_tok	*eol;
 
-	ft_vecgrow((t_vec *)g_pool, 1);
-	job = ft_vecend((t_vec *)g_pool); //todo: ctor
-	ft_vecctor((t_vec *)&job->pipeline, sizeof(t_proc));
-	if (!sh_parsecommand(job, fd, toks, ln))
-		return (NULL);
+	if (sh_evalcommand(job, fd, toks, ln))
+		return (NOP);
 	while (1)
-		if (sh_tokpeek(toks)->id == TOK_PIPE)
+		if ((tok = sh_tokpeek(toks))->id == TOK_PIPE)
 		{
-			while ((tok = sh_toknext(toks)))
-				if (tok->id != TOK_EOL)
+			while ((eol = sh_toknext(toks)))
+				if (eol->id != TOK_EOL)
 					break ;
-			job->and = 1;
-			if (!sh_parsecommand(job, fd, toks, ln))
-				return (sh_parseerr(*ln, tok, CMD, sh_tokidstr(TOK_PIPE)));
+			if (sh_evalcommand(job, fd, toks, ln))
+				return (sh_parseerr(*ln, tok, "Unfinished pipeline sequence "
+					"near `%s'", sh_tokstr(tok)));
 		}
 		else
-			return (ft_vecpush((t_vec *)g_pool));
+			return (YEP);
 }

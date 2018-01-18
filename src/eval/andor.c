@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse/andor.c                                      :+:      :+:    :+:   */
+/*   eval/andor.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,39 +10,42 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ush/parse.h"
+#include "ush/eval.h"
 
-#define PIPELINE "Expected <pipeline> got `%s'"
-
-inline t_job	*sh_parseandor(int fd, t_deq *toks, char **ln)
+inline int		sh_evalandor(t_job *job, int fd, t_deq *toks, char **ln)
 {
-	t_tok	*tok;
-	t_job	*job;
-	t_job	*next;
+	t_tok *tok;
+	t_job right;
 
-	if (!(job = sh_parsepipeline(fd, toks, ln)))
-		return (NULL);
+	if (sh_evalpipeline(job, fd, toks, ln))
+		return (NOP);
 	while (1)
 		if ((tok = sh_tokpeek(toks))->id == TOK_LAND)
 		{
 			while ((tok = sh_toknext(toks)))
 				if (tok->id != TOK_EOL)
 					break ;
-			job->and = 1;
-			if (!(next = sh_parsepipeline(fd, toks, ln)))
-				return (sh_parseerr(*ln, tok, PIPELINE, sh_tokstr(tok)));
-			job = next;
+			sh_jobctor(&right);
+			if (sh_evalpipeline(&right, fd, toks, ln))
+				return (sh_parseerr(*ln, tok, "Expected <pipeline> got `%s'",
+					sh_tokstr(tok)));
+			job->andor = ANDOR_AND;
+			job->next = ft_memdup(&right, sizeof(t_job));
+			job = job->next;
 		}
 		else if (tok->id == TOK_LOR)
 		{
 			while ((tok = sh_toknext(toks)))
 				if (tok->id != TOK_EOL)
 					break ;
-			job->or = 1;
-			if (!(next = sh_parsepipeline(fd, toks, ln)))
-				return (sh_parseerr(*ln, tok, PIPELINE, sh_tokstr(tok)));
-			job = next;
+			sh_jobctor(&right);
+			if (sh_evalpipeline(&right, fd, toks, ln))
+				return (sh_parseerr(*ln, tok, "Expected <pipeline> got `%s'",
+					sh_tokstr(tok)));
+			job->andor = ANDOR_OR;
+			job->next = ft_memdup(&right, sizeof(t_job));
+			job = job->next;
 		}
 		else
-			return (job);
+			return (YEP);
 }

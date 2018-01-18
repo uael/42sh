@@ -17,7 +17,7 @@
 # include "ush/err.h"
 # include "ush/job.h"
 # include "ush/lex.h"
-# include "ush/parse.h"
+# include "ush/eval.h"
 # include "ush/pool.h"
 # include "ush/proc.h"
 # include "ush/redir.h"

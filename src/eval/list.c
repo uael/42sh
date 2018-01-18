@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse/list.c                                       :+:      :+:    :+:   */
+/*   eval/list.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,39 +10,41 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ush/parse.h"
+#include "ush/eval.h"
 
-#define ANDOR "Expected <and_or> got `%s'"
-
-inline t_job	*sh_parselist(int fd, t_deq *toks, char **ln)
+inline int		sh_evallist(int fd, t_deq *toks, char **ln)
 {
-	t_tok	*tok;
-	t_job	*job;
-	t_job	*next;
+	t_tok *tok;
+	t_job job;
 
-	if (!(job = sh_parseandor(fd, toks, ln)))
-		return (NULL);
+	sh_jobctor(&job);
+	if (sh_evalandor(&job, fd, toks, ln))
+		return (NOP);
 	while (1)
 		if ((tok = sh_tokpeek(toks))->id == TOK_AMP)
 		{
-			tok = sh_toknext(toks);
-			job->bg = 1;
-			sh_joblaunch(job, 0);
-			if (!(next = sh_parseandor(fd, toks, ln)))
-				return (sh_parseerr(*ln, tok, ANDOR, sh_tokidstr(tok->id)));
-			job = next;
+			sh_toknext(toks);
+			sh_poolpush(&job);
+			sh_jobctor(&job);
+			if (sh_evalandor(&job, fd, toks, ln))
+				return (YEP);
 		}
 		else if (tok->id == TOK_SEMICOLON)
 		{
-			tok = sh_toknext(toks);
-			sh_joblaunch(job, 1);
-			if (!(next = sh_parseandor(fd, toks, ln)))
-				return (sh_parseerr(*ln, tok, ANDOR, sh_tokidstr(tok->id)));
-			job = next;
+			sh_toknext(toks);
+			sh_joblaunch(&job, 1);
+			g_shstatus = job.processes.len ?
+				job.processes.buf[job.processes.len - 1].status : 0;
+			job.processes.len = 0;
+			if (sh_evalandor(&job, fd, toks, ln))
+				return (YEP);
 		}
 		else
 		{
-			sh_joblaunch(job, 1);
-			return (job);
+			sh_joblaunch(&job, 1);
+			g_shstatus = job.processes.len ?
+				job.processes.buf[job.processes.len - 1].status : 0;
+			sh_jobdtor(&job);
+			return (YEP);
 		}
 }

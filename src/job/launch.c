@@ -15,7 +15,7 @@
 
 static inline void	jobpipe(t_job *job, size_t i, int *fds, int *io)
 {
-	if (i < job->pipeline.len)
+	if (i < job->processes.len)
 	{
 		if (pipe(fds) < 0)
 			sh_exit(THROW(WUT), NULL);
@@ -23,12 +23,15 @@ static inline void	jobpipe(t_job *job, size_t i, int *fds, int *io)
 	}
 }
 
-static inline void	jobfork(t_job *job, t_proc *proc, t_bool piped, int fg)
+static inline int	jobfork(t_job *job, t_proc *proc, t_bool piped, int fg)
 {
 	pid_t	pid;
 
 	if ((!piped && proc->kind == PROC_FN) || !(pid = fork()))
-		sh_proclaunch(proc, job, fg);
+	{
+		sh_proclaunch(proc, job->pgid, fg);
+		return (NOP);
+	}
 	else if (pid < 0)
 		sh_exit(THROW(WUT), NULL);
 	else
@@ -41,7 +44,7 @@ static inline void	jobfork(t_job *job, t_proc *proc, t_bool piped, int fg)
 			setpgid(pid, job->pgid);
 		}
 	}
-
+	return (YEP);
 }
 
 void				sh_joblaunch(t_job *job, int fg)
@@ -51,13 +54,14 @@ void				sh_joblaunch(t_job *job, int fg)
 	int		fds[2];
 	int		io[3];
 
-	ft_memcpy(io, job->io, 3 * sizeof(int));
 	i = 0;
-	while (i < job->pipeline.len)
+	ft_memcpy(io, job->io, 3 * sizeof(int));
+	while (i < job->processes.len)
 	{
-		proc = job->pipeline.buf + i++;
+		proc = job->processes.buf + i++;
 		jobpipe(job, i, fds, io);
-		jobfork(job, proc, (t_bool)(i < job->pipeline.len), fg);
+		if (jobfork(job, proc, (t_bool)(i < job->processes.len), fg))
+			return ;
 		if (io[STDIN_FILENO] != job->io[STDIN_FILENO])
 			close(io[STDIN_FILENO]);
 		if (io[STDOUT_FILENO] != job->io[STDOUT_FILENO])

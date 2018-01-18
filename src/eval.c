@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse.c                                            :+:      :+:    :+:   */
+/*   eval.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ush/parse.h"
+#include "ush/eval.h"
 
 static int		parseeol(t_deq *toks, char **ln)
 {
@@ -22,31 +22,40 @@ static int		parseeol(t_deq *toks, char **ln)
 		else if (tok->id == TOK_END)
 			return (YEP);
 		else
-			return (sh_synerr(*ln, *ln + tok->pos, "Unexpected token `%s'",
+			return (sh_synerr(*ln, *ln + tok->pos, "2: Unexpected token `%s'",
 				sh_tokidstr(tok->id)));
 	return (YEP);
 }
 
-inline int		sh_parse(int fd, t_deq *toks, char **ln)
+inline int		evalfinalize(int ret, int fd)
 {
-	t_job	*job;
+	if (fd < 0)
+	{
+		sh_varunscope();
+		sh_poolunscope();
+	}
+	return (ret);
+}
+
+inline int		sh_eval(int fd, t_deq *toks, char **ln)
+{
 	t_tok	*tok;
 
-	if (!(job = sh_parselist(fd, toks, ln)))
-		return (NOP);
+	if (fd < 0)
+	{
+		sh_varscope();
+		sh_poolscope();
+	}
+	if (sh_evallist(fd, toks, ln))
+		return (evalfinalize(NOP, fd));
 	if (!(tok = sh_tokpeek(toks)))
-		return (YEP);
+		return (evalfinalize(YEP, fd));
 	if (tok->id == TOK_SEMICOLON)
 		sh_toknext(toks);
-	else if (tok->id == TOK_AMP)
-	{
-		sh_toknext(toks);
-		job->bg = 1;
-	}
 	else if (tok->id == TOK_END)
-		return (YEP);
+		return (evalfinalize(YEP, fd));
 	else if (tok->id != TOK_EOL)
-		return (sh_synerr(*ln, *ln + tok->pos, "Unexpected token `%s'",
-			sh_tokidstr(tok->id)));
-	return (parseeol(toks, ln));
+		return (evalfinalize(sh_synerr(*ln, *ln + tok->pos,
+			"3: Unexpected token `%s'", sh_tokidstr(tok->id)), fd));
+	return (evalfinalize(parseeol(toks, ln), fd));
 }

@@ -85,6 +85,7 @@ static inline int	lex(int fd, t_tok *tok, char **it, char **ln)
 	tok->len = 0;
 	while (ft_strchr(sh_varifs(), **it))
 		++*it;
+	tok->pos = (uint16_t)(*it - *ln);
 	if (**it == '\n' || (**it == '\r' && *(*it + 1) == '\n'))
 	{
 		tok->id = TOK_EOL;
@@ -102,7 +103,7 @@ static inline int	lex(int fd, t_tok *tok, char **it, char **ln)
 		return (WUT);
 	if (st && (st = sh_lexword(fd, tok, it, ln)) < 0)
 		return (WUT);
-	return (st ? sh_synerr(*ln, *it, "Unexpected token `%c'", **it) : YEP);
+	return (st ? sh_synerr(*ln, *it, "1: Unexpected token `%c'", **it) : YEP);
 }
 
 static inline int	reduce(int fd, t_deq *toks, char **it, char **ln)
@@ -143,7 +144,6 @@ int					sh_lex(int fd, t_deq *toks, char **it, char **ln)
 		ln = it;
 	while ((tok = ft_deqpush(toks)))
 	{
-		tok->pos = (uint16_t)(*it - *ln);
 		if (!**it)
 		{
 			tok->id = TOK_END;

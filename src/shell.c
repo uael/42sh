@@ -15,7 +15,7 @@
 
 #include "ush/shell.h"
 #include "ush/pool.h"
-#include "ush/parse.h"
+#include "ush/eval.h"
 #include "ush/var.h"
 
 t_bool				g_shinteract = 0;
@@ -28,6 +28,12 @@ static t_deq		g_stack_toks = { NULL, sizeof(t_tok), 0, 0, 0 };
 static t_deq		*g_toks = &g_stack_toks;
 static size_t		g_toks_max = 0;
 
+static void			sigchld(int signo)
+{
+	(void)signo;
+	sh_poolnotify();
+}
+
 static inline void	sh_init(int fd)
 {
 	if (!(g_shinteract = (t_bool)isatty(fd)))
@@ -39,29 +45,13 @@ static inline void	sh_init(int fd)
 	signal(SIGTSTP, SIG_IGN);
 	signal(SIGTTIN, SIG_IGN);
 	signal(SIGTTOU, SIG_IGN);
-	signal(SIGCHLD, SIG_IGN);
+	signal(SIGCHLD, sigchld);
 	g_shpgid = getpid();
 	if (setpgid(g_shpgid, g_shpgid) < 0)
 		sh_exit(EXIT_FAILURE, "Couldn't put the shell in its own process "
 			"group");
 	tcsetpgrp(fd, g_shpgid);
 	tcgetattr(fd, &g_shmode);
-}
-
-inline int			sh_eval(int fd, t_deq *toks, char **ln)
-{
-	if (fd < 0)
-	{
-		sh_varscope();
-		sh_poolscope();
-	}
-	sh_parse(fd, toks, ln);
-	if (fd < 0)
-	{
-		sh_varunscope();
-		sh_poolunscope();
-	}
-	return (YEP);
 }
 
 inline int			sh_run(int fd)
@@ -81,7 +71,7 @@ inline int			sh_run(int fd)
 		g_toks->len = 0;
 		g_toks->cur = 0;
 		while (!(st = sh_lex(fd, g_toks, &it, &ln)))
-			g_shstatus = sh_eval(fd, g_toks, &ln);
+			sh_eval(fd, g_toks, &ln);
 		if (fd > 0)
 			break ;
 	}
