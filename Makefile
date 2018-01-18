@@ -23,6 +23,8 @@ LNK_PATH = ./ $(3TH_PATH)
 OBJ_NAME = $(SRC_NAME:.c=.o)
 3TH_NAME = rl ft
 SRC_NAME = \
+	bi/bi_echo.c bi/bi_env.c bi/bi_cd.c bi/bi_unsetenv.c bi/bi_exit.c \
+	bi/bi_export.c bi/bi_set.c bi/bi_cd.c
 	env.c \
 	err.c \
 	eval.c eval/andor.c eval/command.c eval/list.c eval/pipeline.c \

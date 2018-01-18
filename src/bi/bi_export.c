@@ -1,30 +1,13 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ush.h                                              :+:      :+:    :+:   */
+/*   ush/env.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/23 17:28:28 by null             ###   ########.fr       */
+/*   Created: 2017/11/07 09:52:30 by cmalfroy          #+#    #+#             */
+/*   Updated: 2017/12/06 12:00:10 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef USH_H
-# define USH_H
-
-# include "ush/bi.h"
-# include "ush/env.h"
-# include "ush/err.h"
-# include "ush/job.h"
-# include "ush/lex.h"
-# include "ush/eval.h"
-# include "ush/pool.h"
-# include "ush/proc.h"
-# include "ush/redir.h"
-# include "ush/shell.h"
-# include "ush/tok.h"
-# include "ush/var.h"
-# include "ush/word.h"
-
-#endif
+#include "ush/bi.h"

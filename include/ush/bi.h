@@ -5,22 +5,24 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
+/*   Created: 2017/11/07 09:52:30 by cmalfroy          #+#    #+#             */
 /*   Updated: 2017/12/06 12:00:10 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef USH_ENV_H
-# define USH_ENV_H
+#ifndef USH_BI_H
+# define USH_BI_H
 
 # include <libft.h>
 
-extern char		**g_env;
-
-extern void		sh_envdtor(void);
-extern void		sh_envinit(char **envv);
-extern char		*sh_getenv(char *var);
-extern void		sh_setenv(char *var, char *val);
-t_bool			sh_unsetenv(char *var, t_bool m);
+extern int  sh_biecho(int ac, char **argv, char **env);
+extern int  sh_biexit(int ac, char **av, char **env);
+extern int  sh_biunsetenv(int ac, char **av, char **env);
+extern int  sh_bienv(int ac, char **av, char **env);
+extern int  sh_bisetenv(int ac, char **av, char **env);
+extern int  sh_bicd(int ac, char **av, char **env);
+extern int  sh_biset(int ac, char **av, char **env);
+extern int  sh_biunset(int ac, char **av, char **env);
+extern int  sh_biexport(int ac, char **av, char **env);
 
 #endif
