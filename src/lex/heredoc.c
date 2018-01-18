@@ -12,6 +12,12 @@
 
 #include "ush/lex.h"
 
+/*
+** TODO: Fixes empty heredoc
+** cat <<EOL
+** EOL
+*/
+
 inline int			sh_lexheredoc(int fd, t_tok *tok, char **it, char **ln)
 {
 	char	*eof;

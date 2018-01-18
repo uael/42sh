@@ -1,27 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   job.c                                              :+:      :+:    :+:   */
+/*   ush/redir.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2018/01/06 11:10:01 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/06 12:00:10 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ush/job.h"
+#ifndef USH_REDIR_H
+# define USH_REDIR_H
 
-inline void		sh_jobctor(t_job *job)
-{
-	ft_memset(job, 0, sizeof(t_job));
-	ft_vecctor((t_vec *)&job->processes, sizeof(t_proc));
-	job->io[STDIN_FILENO] = STDIN_FILENO;
-	job->io[STDOUT_FILENO] = STDOUT_FILENO;
-	job->io[STDERR_FILENO] = STDERR_FILENO;
-}
+# include "lex.h"
+# include "env.h"
 
-inline void		sh_jobdtor(t_job *job)
+typedef struct	s_redir
 {
-	(void)job;
-}
+	int 		from;
+	int			to;
+}				t_redir;
+
+typedef struct	s_redirs
+{
+	t_redir		*buf;
+	size_t		isz;
+	size_t		cap;
+	size_t		len;
+}				t_redirs;
+
+#endif

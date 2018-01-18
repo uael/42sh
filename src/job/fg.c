@@ -1,27 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   job.c                                              :+:      :+:    :+:   */
+/*   job/fg.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2018/01/06 11:10:01 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/13 08:23:58 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <signal.h>
+
 #include "ush/job.h"
 
-inline void		sh_jobctor(t_job *job)
+inline void		sh_jobfg(t_job *j, int cont)
 {
-	ft_memset(job, 0, sizeof(t_job));
-	ft_vecctor((t_vec *)&job->processes, sizeof(t_proc));
-	job->io[STDIN_FILENO] = STDIN_FILENO;
-	job->io[STDOUT_FILENO] = STDOUT_FILENO;
-	job->io[STDERR_FILENO] = STDERR_FILENO;
-}
-
-inline void		sh_jobdtor(t_job *job)
-{
-	(void)job;
+	tcsetpgrp(STDIN_FILENO, j->pgid);
+	if (cont)
+	{
+		tcsetattr(STDIN_FILENO, TCSADRAIN, &j->tmodes);
+		if (kill(-j->pgid, SIGCONT) < 0)
+			sh_err("kill (SIGCONT): %e\n", errno);
+	}
+	sh_jobwait(j);
+	tcsetpgrp(STDIN_FILENO, g_shpgid);
+	tcgetattr(STDIN_FILENO, &j->tmodes);
+	tcsetattr(STDIN_FILENO, TCSADRAIN, &g_shmode);
 }

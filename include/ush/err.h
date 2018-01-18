@@ -15,8 +15,11 @@
 
 # include <libft.h>
 
+struct s_tok;
+
 extern int	sh_verr(char const *fmt, va_list ap);
 extern int	sh_err(char const *fmt, ...);
 extern int	sh_synerr(char const *ln, char const *it, char const *fmt, ...);
+extern int	sh_parseerr(char const *ln, struct s_tok *t, char const *fmt, ...);
 
 #endif

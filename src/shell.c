@@ -11,10 +11,11 @@
 /* ************************************************************************** */
 
 #include <signal.h>
-#include <sys/signal.h>
 #include <term.h>
 
 #include "ush/shell.h"
+#include "ush/pool.h"
+#include "ush/eval.h"
 #include "ush/var.h"
 
 t_bool				g_shinteract = 0;
@@ -27,6 +28,12 @@ static t_deq		g_stack_toks = { NULL, sizeof(t_tok), 0, 0, 0 };
 static t_deq		*g_toks = &g_stack_toks;
 static size_t		g_toks_max = 0;
 
+static void			sigchld(int signo)
+{
+	(void)signo;
+	sh_poolnotify();
+}
+
 static inline void	sh_init(int fd)
 {
 	if (!(g_shinteract = (t_bool)isatty(fd)))
@@ -38,33 +45,13 @@ static inline void	sh_init(int fd)
 	signal(SIGTSTP, SIG_IGN);
 	signal(SIGTTIN, SIG_IGN);
 	signal(SIGTTOU, SIG_IGN);
-	signal(SIGCHLD, SIG_IGN);
+	signal(SIGCHLD, sigchld);
 	g_shpgid = getpid();
 	if (setpgid(g_shpgid, g_shpgid) < 0)
 		sh_exit(EXIT_FAILURE, "Couldn't put the shell in its own process "
 			"group");
 	tcsetpgrp(fd, g_shpgid);
 	tcgetattr(fd, &g_shmode);
-}
-
-inline int			sh_eval(int fd, t_deq *toks, char **ln)
-{
-	t_tok	*tok;
-
-	(void)fd;
-	(void)ln;
-	if (fd < 0)
-		sh_scopepush();
-	tok = alloca(sizeof(t_tok));
-	while (ft_deqsht(toks, tok))
-	{
-		ft_putf(1, "tok[id='%d',val[%d]='", tok->id, tok->len);
-		ft_write(1, tok->val, tok->len);
-		ft_puts(1, "']\n");
-	}
-	if (fd < 0)
-		sh_scopepop();
-	return (YEP);
 }
 
 inline int			sh_run(int fd)
@@ -74,7 +61,8 @@ inline int			sh_run(int fd)
 	int		st;
 
 	sh_init(fd);
-	sh_scopepush();
+	sh_varscope();
+	sh_poolscope();
 	while (!(st = rl_getline(fd, "$> ", &ln)))
 	{
 		if (!ft_strcmp("exit\n", ln))
@@ -83,11 +71,13 @@ inline int			sh_run(int fd)
 		g_toks->len = 0;
 		g_toks->cur = 0;
 		while (!(st = sh_lex(fd, g_toks, &it, &ln)))
-			g_shstatus = sh_eval(fd, g_toks, &ln);
+			sh_eval(fd, g_toks, &ln);
 		if (fd > 0)
 			break ;
 	}
-	while (sh_scopepop())
+	while (sh_varunscope())
+		;
+	while (sh_poolunscope())
 		;
 	rl_finalize(fd);
 	if (st < 0)

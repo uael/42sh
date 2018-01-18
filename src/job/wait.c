@@ -1,27 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   job.c                                              :+:      :+:    :+:   */
+/*   job/wait.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2018/01/06 11:10:01 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/13 08:23:58 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <sys/wait.h>
+
 #include "ush/job.h"
 
-inline void		sh_jobctor(t_job *job)
+inline void		sh_jobwait(t_job *job)
 {
-	ft_memset(job, 0, sizeof(t_job));
-	ft_vecctor((t_vec *)&job->processes, sizeof(t_proc));
-	job->io[STDIN_FILENO] = STDIN_FILENO;
-	job->io[STDOUT_FILENO] = STDOUT_FILENO;
-	job->io[STDERR_FILENO] = STDERR_FILENO;
-}
+	int		status;
+	pid_t	pid;
 
-inline void		sh_jobdtor(t_job *job)
-{
-	(void)job;
+	while ((pid = waitpid(WAIT_ANY, &status, WUNTRACED)) < 0)
+		if (errno != EINTR)
+			break ;
+	while (!sh_jobmark(job, pid, status) && !sh_jobstopped(job)
+		&& !sh_jobcompleted(job))
+		while ((pid = waitpid(WAIT_ANY, &status, WUNTRACED)) < 0)
+			if (errno != EINTR)
+				break ;
 }

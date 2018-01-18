@@ -15,7 +15,7 @@
 static t_vec	g_scopes = { NULL, sizeof(t_map), 0, 0 };
 static t_map	*g_scope = NULL;
 
-inline void		sh_scopepush(void)
+inline void		sh_varscope(void)
 {
 	t_map		*scope;
 	uint32_t	it;
@@ -37,7 +37,7 @@ inline void		sh_scopepush(void)
 	g_scope = scope;
 }
 
-inline t_bool	sh_scopepop(void)
+inline t_bool	sh_varunscope(void)
 {
 	if (g_scope && ft_vecpop(&g_scopes, NULL))
 	{
