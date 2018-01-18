@@ -74,4 +74,10 @@ void				sh_joblaunch(t_job *job, int fg)
 		sh_jobfg(job, 0);
 	else
 		sh_jobbg(job, 0);
+	if (!g_shinteract || fg)
+	{
+		if ((job->andor == ANDOR_OR && !job->status) ||
+			(job->andor == ANDOR_AND && job->status))
+			sh_joblaunch(job->next, fg);
+	}
 }

@@ -26,6 +26,7 @@ typedef enum	e_andor
 typedef struct	s_jb
 {
 	struct s_jb	*next;
+	int			status;
 	t_andor		andor;
 	pid_t		pgid;
 	char		*command;
