@@ -12,6 +12,13 @@
 
 #include "ush/eval.h"
 
+static t_map		g_binaries_stack =
+{
+	0, 0, 0, 0, NULL, { (t_hashfn *)ft_strhash, (t_eqfn *)ft_streq },
+	sizeof(char *), sizeof(char *), NULL, NULL
+};
+t_map				*g_binaries = &g_binaries_stack;
+
 static int			parseeol(t_deq *toks, char **ln)
 {
 	t_tok *tok;

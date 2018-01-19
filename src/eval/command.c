@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "ush/eval.h"
-#include "ush/bi.h"
 
 static t_bool	isname(char *word)
 {
@@ -29,10 +28,11 @@ static t_bool	isname(char *word)
 
 inline int		sh_evalcommand(t_job *job, int fd, t_deq *toks, char **ln)
 {
-	t_proc	*proc;
 	t_tok	*tok;
 	char	*assign;
 	t_vec	av;
+	int		st;
+	t_proc	proc;
 
 	(void)fd;
 	(void)ln;
@@ -54,26 +54,24 @@ inline int		sh_evalcommand(t_job *job, int fd, t_deq *toks, char **ln)
 		}
 		else
 			break ;
+	if ((st = sh_procctor(&proc, "PATH", tok->val, g_env)))
+	{
+		g_shstatus = st;
+		if (st == PROC_NORIGHTS)
+			return (sh_parseerr(*ln, tok, "%s: permission denied", tok->val));
+		return (sh_parseerr(*ln, tok, "%s: Command not found", tok->val));
+	}
 	ft_vecctor(&av, sizeof(char *));
+	*(char **)ft_vecpush(&av) = proc.kind == PROC_FN ? ft_strdup(tok->val) :
+		proc.u.exe;
+	tok = sh_toknext(toks);
 	while (tok->id == TOK_WORD)
 	{
-		*(char **)ft_vecpush(&av) = tok->val;
+		*(char **)ft_vecpush(&av) = ft_strdup(tok->val);
 		tok = sh_toknext(toks);
 	}
 	*(char **)ft_vecpush(&av) = NULL;
-	proc = ft_vecpush((t_vec *)&job->processes);
-	sh_procctor(proc);
-	proc->argv = av.buf;
-	proc->envv = g_env;
-	if (!ft_strcmp(proc->argv[0], "cd"))
-	{
-		proc->u.fn = sh_bicd;
-		proc->kind = PROC_FN;
-	}
-	else if (!ft_strcmp(proc->argv[0], "echo"))
-	{
-		proc->u.fn = sh_biecho;
-		proc->kind = PROC_FN;
-	}
+	proc.argv = av.buf;
+	ft_veccpush((t_vec *)&job->processes, &proc);
 	return (YEP);
 }
