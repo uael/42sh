@@ -133,26 +133,59 @@ static inline int	reduce(int fd, t_deq *toks, char **it, char **ln)
 	return (YEP);
 }
 
+char				bracket(char b)
+{
+	if (b == '[')
+		return ']';
+	if (b == '{')
+		return '}';
+	if (b == '(')
+		return ')';
+	return (0);
+}
+
 int					sh_lex(int fd, t_deq *toks, char **it, char **ln)
 {
 	t_tok	*tok;
 	int 	st;
+	char	stack[1000];
+	size_t	i;
 
 	if (!**it)
 		return (NOP);
 	if (!ln)
 		ln = it;
+	i = 0;
 	while ((tok = ft_deqpush(toks)))
 	{
+		ft_sdsgrow((t_sds *)tok, 1);
+		*tok->val = '\0';
 		if (!**it)
 		{
-			tok->id = TOK_END;
-			break ;
+			if (!i)
+			{
+				tok->id = TOK_END;
+				break ;
+			}
+			if ((st = fd < 0 ? NOP : rl_catline(fd, -1, ln, it)))
+				return (st);
 		}
-		else if ((st = lex(fd, tok, it, ln)) < 0)
-			return (WUT);
-		else if (st || tok->id == TOK_EOL)
+		if ((st = lex(fd, tok, it, ln)))
+			return (st);
+		if (!i && tok->id == TOK_EOL)
 			break ;
+		if (ft_strchr("({[", tok->id))
+			stack[i++] = bracket(tok->id);
+		else if (i && tok->id == stack[i - 1])
+			--i;
+		else if (ft_strchr(")}]", tok->id) && (!i || tok->id != stack[i - 1]))
+		{
+			if (i)
+				return (sh_synerr(*ln, *ln + tok->pos, "Unexpected token `%c' "
+					"while looking for matching `%c'", tok->id, stack[i - 1]));
+			return (sh_synerr(*ln, *ln + tok->pos, "Unexpected closing "
+				"bracket `%c'", tok->id));
+		}
 	}
 	return (tok ? reduce(fd, toks, it, ln) : YEP);
 }

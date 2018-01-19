@@ -23,7 +23,7 @@ static int		exetest(char *exe)
 	if (!*exe || lstat(exe, &s) < 0)
 		return (PROC_NOTFOUND);
 	if (!(s.st_mode & (S_IFREG | S_IXUSR)))
-		return (PROC_NORIGHTS);
+		return (PROC_NOTFOUND);
 	if (access(exe, X_OK) != 0)
 		return (PROC_NORIGHTS);
 	return (YEP);
@@ -36,9 +36,11 @@ static int		exelookup(char **env, char *exe, char *path, char *buf)
 	size_t		len;
 	uint32_t	i;
 	int			st;
+	int			rights;
 
-	if (!(st = exetest(ft_strcpy(buf, exe))) || st == PROC_NORIGHTS)
+	if (!(st = exetest(ft_strcpy(buf, exe))))
 		return (st);
+	rights = st == PROC_NORIGHTS;
 	if (!(beg = ft_getenv(env, path)))
 		return (exetest(ft_strcat(ft_strcpy(buf, "/bin/"), exe)));
 	if (ft_mapget(g_binaries, exe, &i))
@@ -62,7 +64,7 @@ static int		exelookup(char **env, char *exe, char *path, char *buf)
 			break ;
 		beg = sep + 1;
 	}
-	return (PROC_NOTFOUND);
+	return (rights ? PROC_NORIGHTS : PROC_NOTFOUND);
 }
 
 inline int		sh_procfn(t_proc *proc, t_procfn *fn, char **envv)
