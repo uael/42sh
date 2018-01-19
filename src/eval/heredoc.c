@@ -34,13 +34,21 @@ inline int			sh_evalheredoc(t_job *job, int fd, t_deq *toks, char **ln)
 	tok = sh_toknext(toks);
 	i = job->processes.len - 1;
 	proc = ft_vecat((t_vec *)&job->processes, i);
-	sh_procfn(&out, ouput, NULL);
 	if (ft_isdigit(*op->val))
 		proc->src[STDIN_FILENO] = *op->val - '0';
-	out.argv = ft_malloc(2 * sizeof(char **));
-	out.argv[0] = ft_strdup(tok->val);
-	out.argv[1] = NULL;
-	ft_veccput((t_vec *)&job->processes, i, &out);
+	if (i > 0 && job->processes.buf[i - 1].u.fn == ouput)
+	{
+		free(job->processes.buf[i - 1].argv[0]);
+		job->processes.buf[i - 1].argv[0] = ft_strdup(tok->val);
+	}
+	else
+	{
+		sh_procfn(&out, ouput, NULL);
+		out.argv = ft_malloc(2 * sizeof(char **));
+		out.argv[0] = ft_strdup(tok->val);
+		out.argv[1] = NULL;
+		ft_veccput((t_vec *)&job->processes, i, &out);
+	}
 	sh_toknext(toks);
 	return (YEP);
 }
