@@ -12,7 +12,42 @@
 
 #include "ush/eval.h"
 
-inline int		sh_evallist(int fd, t_deq *toks, char **ln)
+static inline int	onsemicolon(t_job *job, int fd, t_deq *toks, char **ln)
+{
+	sh_toknext(toks);
+	g_shstatus = sh_joblaunch(job, 1);
+	job->processes.len = 0;
+	if (sh_evalandor(job, fd, toks, ln))
+	{
+		sh_jobdtor(job);
+		return (NOP);
+	}
+	return (YEP);
+}
+
+static inline int	onamp(t_job *job, int fd, t_deq *toks, char **ln)
+{
+	if (!g_shinteract)
+		return (onsemicolon(job, fd, toks, ln));
+	sh_toknext(toks);
+	sh_poolpush(job);
+	sh_jobctor(job);
+	if (sh_evalandor(job, fd, toks, ln))
+	{
+		sh_jobdtor(job);
+		return (NOP);
+	}
+	return (YEP);
+}
+
+static inline int	oneof(t_job *job)
+{
+	g_shstatus = sh_joblaunch(job, 1);
+	sh_jobdtor(job);
+	return (YEP);
+}
+
+inline int			sh_evallist(int fd, t_deq *toks, char **ln)
 {
 	t_tok *tok;
 	t_job job;
@@ -23,27 +58,18 @@ inline int		sh_evallist(int fd, t_deq *toks, char **ln)
 	while (1)
 		if ((tok = sh_tokpeek(toks))->id == TOK_AMP)
 		{
-			sh_toknext(toks);
-			sh_poolpush(&job);
-			sh_jobctor(&job);
-			if (sh_evalandor(&job, fd, toks, ln))
+			if (onamp(&job, fd, toks, ln))
 				return (YEP);
 		}
 		else if (tok->id == TOK_SEMICOLON)
 		{
-			sh_toknext(toks);
-			sh_joblaunch(&job, 1);
-			g_shstatus = job.processes.len ?
-				job.processes.buf[job.processes.len - 1].status : 0;
-			job.processes.len = 0;
-			if (sh_evalandor(&job, fd, toks, ln))
+			if (onsemicolon(&job, fd, toks, ln))
 				return (YEP);
 		}
+		else if (tok->id == TOK_END || tok->id == TOK_EOL)
+			return (oneof(&job));
 		else
 		{
-			sh_joblaunch(&job, 1);
-			g_shstatus = job.processes.len ?
-				job.processes.buf[job.processes.len - 1].status : 0;
 			sh_jobdtor(&job);
 			return (YEP);
 		}

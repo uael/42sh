@@ -18,16 +18,7 @@ inline void		sh_jobwait(t_job *job)
 {
 	int		status;
 	pid_t	pid;
-	size_t	i;
-	t_bool	child;
 
-	i = 0;
-	child = 0;
-	while (i < job->processes.len)
-		if (job->processes.buf[i++].pid > 0)
-			child = 1;
-	if (!child)
-		return ;
 	while ((pid = waitpid(WAIT_ANY, &status, WUNTRACED)) < 0)
 		if (errno != EINTR)
 			break ;
