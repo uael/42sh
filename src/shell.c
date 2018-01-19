@@ -70,7 +70,11 @@ inline int			sh_run(int fd)
 		g_toks->len = 0;
 		g_toks->cur = 0;
 		while (!(st = sh_lex(fd, g_toks, &it, &ln)))
+		{
 			sh_eval(fd, g_toks, &ln);
+			g_toks->len = 0;
+			g_toks->cur = 0;
+		}
 		if (st < 0)
 			break ;
 	}
