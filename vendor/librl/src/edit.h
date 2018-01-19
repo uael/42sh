@@ -36,6 +36,8 @@
 # define TC_ME "\x1b[m"
 # define TC_CL_UP TC_CL TC_UP
 
+# define RL_EXIT 3
+
 typedef struct	s_editln
 {
 	t_sds		str;

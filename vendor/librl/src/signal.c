@@ -14,16 +14,20 @@
 
 inline int	rl_signalc(void)
 {
-    while (g_eln->idx && g_eln->str.len)
-    {
-        ft_sdsrem(&g_eln->str, --g_eln->idx, NULL);
-    }
-    ft_write(STDOUT_FILENO, "\n", 1);
+    g_eln->idx = 0;
+    g_eln->str.len = 0;
+    *g_eln->str.buf = '\0';
+    ft_write(STDOUT_FILENO, "^C\n", 3);
     rl_editprint();
     return (YEP);
 }
 
 inline int	rl_signald(void)
 {
-    return 1;
+    if (g_eln->str.len)
+        return (YEP);
+    ft_sdsmpush(&g_eln->str, "exit", 4);
+    rl_editprint();
+    ft_write(STDOUT_FILENO, "\n", 1);
+    return (RL_EXIT);
 }

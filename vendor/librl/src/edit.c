@@ -82,12 +82,11 @@ static t_editbind	g_inskeymap[] =
 	{1, K_BACKSPACE, rl_editbackspace},
 	{1, K_ENTER, rl_editreturn},
 	{1, K_CTRL_B, rl_editbackspace},
-	{1, K_CTRL_D, rl_editdelete},
+    {1, K_CTRL_C, rl_signalc},
+	{1, K_CTRL_D, rl_signald},
 	{1, K_CTRL_P, rl_visualpaste},
 	{1, K_CTRL_V, rl_visualtoggle},
 	{1, K_CTRL_Y, rl_visualyank},
-	{1, K_CTRL_C, rl_signalc},
-	{1, K_CTRL_D, rl_signald},
 	{3, K_LEFT, rl_editleft},
 	{3, K_RGT, rl_editright},
 	{3, K_UP, rl_editup},
@@ -117,12 +116,11 @@ static t_editbind	g_viskeymap[] =
 	{1, K_BACKSPACE, rl_editbackspace},
 	{1, K_ENTER, rl_editreturn},
 	{1, K_CTRL_B, rl_editbackspace},
-	{1, K_CTRL_D, rl_visualdelete},
+    {1, K_CTRL_C, rl_signalc},
+	{1, K_CTRL_D, rl_signald},
 	{1, K_CTRL_P, rl_visualpaste},
 	{1, K_CTRL_V, rl_visualtoggle},
 	{1, K_CTRL_Y, rl_visualyank},
-	{1, K_CTRL_C, rl_signalc},
-	{1, K_CTRL_D, rl_signald},
 	{3, K_LEFT, rl_editleft},
 	{3, K_RGT, rl_editright},
 	{3, K_HOME, rl_edithome},
@@ -220,5 +218,5 @@ int					rl_editln(char const *p, size_t *sz, char **ln, t_bool cat)
 		*sz = g_eln->str.len;
 		*ln = g_eln->str.buf;
 	}
-	return (st < 0 ? WUT : YEP);
+	return (st < 0 || st == RL_EXIT ? WUT : YEP);
 }
