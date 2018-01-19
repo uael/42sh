@@ -5,22 +5,35 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
+/*   Created: 2017/11/07 09:52:30 by cmalfroy          #+#    #+#             */
 /*   Updated: 2017/12/06 12:00:10 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef USH_ENV_H
-# define USH_ENV_H
+#include "ush/bi.h"
 
-# include <libft.h>
+inline int	sh_biecho(int ac, char **argv, char **env)
+{
+	int i;
+	int n_flag;
 
-extern char		**g_env;
-
-extern void		sh_envdtor(void);
-extern void		sh_envinit(char **envv);
-extern char		*sh_getenv(char *var);
-extern void		sh_setenv(char *var, char *val);
-t_bool			sh_unsetenv(char *var, t_bool m);
-
-#endif
+	(void)env;
+	n_flag = 0;
+	if (!argv[1])
+	{
+		ft_write(1, "\n", 1);
+		return (EXIT_SUCCESS);
+	}
+	else if (argv[1][0] == '-' && argv[1][1] == 'n' && argv[1][2] == '\0')
+		n_flag = 1;
+	i = 0;
+	if (n_flag)
+		++i;
+	while (++i < ac)
+	{
+		ft_puts(1, argv[i]);
+		if (!argv[i + 1] && !n_flag)
+			ft_putc(1, '\n');
+	}
+	return (EXIT_SUCCESS);
+}

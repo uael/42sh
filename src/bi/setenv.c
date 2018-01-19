@@ -1,26 +1,31 @@
-/* ************************************************************************** */
+ /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   ush/env.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
+/*   Created: 2017/11/07 09:52:30 by cmalfroy          #+#    #+#             */
 /*   Updated: 2017/12/06 12:00:10 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef USH_ENV_H
-# define USH_ENV_H
+#include "ush.h"
 
-# include <libft.h>
+#define M_SYNER "Syntax error"
+#define M_ENOID "not an identifier"
+#define N_EXPORT COLOR_RED COLOR_BOLD "export: " COLOR_RESET
 
-extern char		**g_env;
-
-extern void		sh_envdtor(void);
-extern void		sh_envinit(char **envv);
-extern char		*sh_getenv(char *var);
-extern void		sh_setenv(char *var, char *val);
-t_bool			sh_unsetenv(char *var, t_bool m);
-
-#endif
+inline int	sh_bisetenv(int ac, char **av, char **env)
+{
+	//if (ac == 1)
+		//return (sh_bienv(sh, ac, av, out));
+	if (ac < 2 || ac > 3 || !av[1] ||
+		ft_strchr(av[1], '=') ||
+		(ac == 3 && ft_strchr(av[2], '=')))
+		return (retf(NOP, N_EXPORT"%s\n", M_SYNER));
+	if (!ft_isalpha(*av[1]))
+		return (retf(NOP, N_EXPORT"%s: %s\n", av[1], M_ENOID));
+	sh_setenv(av[1], ac == 3 ? av[2] : 0);
+	return (YEP);
+}

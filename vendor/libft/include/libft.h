@@ -26,5 +26,6 @@
 # include "libft/mem.h"
 # include "libft/str.h"
 # include "libft/tys.h"
+# include "libft/getopt.h"
 
 #endif

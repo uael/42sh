@@ -87,9 +87,10 @@ static inline int	avcount(char **av)
 	return ((int)(av - beg));
 }
 
-void				sh_proclaunch(t_proc *proc, pid_t pgid, int fg)
+void				sh_proclaunch(t_proc *proc, pid_t pgid, int fg, t_bool owned)
 {
-	procfg(pgid, fg);
+	if (owned)
+		procfg(pgid, fg);
 	if (porcio(proc))
 		return ;
 	procredir(proc);
