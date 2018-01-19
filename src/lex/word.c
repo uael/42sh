@@ -69,6 +69,7 @@ inline int				sh_lexword(int fd, t_tok *tok, char **it, char **ln)
 			ft_sdscpush((t_sds *)tok, *(*it)++);
 	if (!tok->len && beg == *it)
 		return (NOP);
+	ft_sdsgrow((t_sds *)tok, 1);
 	if ((tok->id = wordid(tok->val, tok->len)) == TOK_WORD)
 		sh_wordexpand((t_sds *)tok);
 	return (YEP);
