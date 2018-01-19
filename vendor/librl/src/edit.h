@@ -15,6 +15,7 @@
 
 # include "hist.h"
 # include "screen.h"
+# include "signal.h"
 
 # define TC_GOTOUP(N) "\x1b[%dA", (N)
 # define TC_GOTODO(N) "\x1b[%dB", (N)
