@@ -12,6 +12,13 @@
 
 #include "ush/eval.h"
 
+static t_map		g_binaries_stack =
+{
+	0, 0, 0, 0, NULL, { (t_hashfn *)ft_strhash, (t_eqfn *)ft_streq },
+	sizeof(char *), sizeof(char *), NULL, NULL
+};
+t_map				*g_binaries = &g_binaries_stack;
+
 static int			parseeol(t_deq *toks, char **ln)
 {
 	t_tok *tok;
@@ -27,12 +34,26 @@ static int			parseeol(t_deq *toks, char **ln)
 	return (YEP);
 }
 
-static inline int	evalfinalize(int ret, int fd)
+static inline int	evalfinalize(int ret, t_deq *toks, int fd)
 {
+	t_tok	*tok;
+
 	if (fd < 0)
 	{
 		sh_varunscope();
 		sh_poolunscope();
+	}
+	if (ret == NOP)
+	{
+		tok = sh_tokpeek(toks);
+		while (tok)
+			if (tok->id != TOK_EOL && tok->id != TOK_END)
+				tok = sh_toknext(toks);
+			else
+			{
+				sh_toknext(toks);
+				break ;
+			}
 	}
 	return (ret);
 }
@@ -47,15 +68,15 @@ inline int			sh_eval(int fd, t_deq *toks, char **ln)
 		sh_poolscope();
 	}
 	if (sh_evallist(fd, toks, ln))
-		return (evalfinalize(NOP, fd));
+		return (evalfinalize(NOP, toks, fd));
 	if (!(tok = sh_tokpeek(toks)))
-		return (evalfinalize(YEP, fd));
+		return (evalfinalize(YEP, toks, fd));
 	if (tok->id == TOK_SEMICOLON)
 		sh_toknext(toks);
 	else if (tok->id == TOK_END)
-		return (evalfinalize(YEP, fd));
+		return (evalfinalize(YEP, toks, fd));
 	else if (tok->id != TOK_EOL)
 		return (evalfinalize(sh_synerr(*ln, *ln + tok->pos,
-			"3: Unexpected token `%s'", sh_tokidstr(tok->id)), fd));
-	return (evalfinalize(parseeol(toks, ln), fd));
+			"3: Unexpected token `%s'", sh_tokidstr(tok->id)), toks, fd));
+	return (evalfinalize(parseeol(toks, ln), toks, fd));
 }

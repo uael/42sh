@@ -83,7 +83,7 @@ void			sh_setenv(char *var, char *val)
 			ft_pfree((void **)it);
 			break ;
 		}
-	if (!it || *it)
+	if (!it || !*it)
 		it = ft_vecpush(g_venv);
 	*it = ft_malloc((ft_strlen(var) + (val ? ft_strlen(val) : 0) + 2) *
 		sizeof(char));

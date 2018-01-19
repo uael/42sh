@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   eval/command.c                                     :+:      :+:    :+:   */
+/*   eval/argv.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "ush/eval.h"
-#include "ush/bi.h"
 
 static t_bool	isname(char *word)
 {
@@ -27,17 +26,14 @@ static t_bool	isname(char *word)
 	return (1);
 }
 
-inline int		sh_evalcommand(t_job *job, int fd, t_deq *toks, char **ln)
+inline int		sh_evalassign(t_deq *toks)
 {
-	t_proc	*proc;
 	t_tok	*tok;
 	char	*assign;
-	t_vec	av;
+	int		st;
 
-	(void)fd;
-	(void)ln;
-	if (!(tok = sh_tokpeek(toks)) || tok->id != TOK_WORD)
-		return (NOP);
+	st = NOP;
+	tok = sh_tokpeek(toks);
 	while ((assign = ft_strchr(tok->val, '=')))
 		if (assign == tok->val)
 		{
@@ -46,34 +42,14 @@ inline int		sh_evalcommand(t_job *job, int fd, t_deq *toks, char **ln)
 		}
 		else if (isname(tok->val))
 		{
+			st = YEP;
 			*assign = '\0';
 			sh_varset(tok->val, assign + 1);
 			g_shstatus = 0;
 			if (!(tok = sh_toknext(toks)) || tok->id != TOK_WORD)
-				return (YEP);
+				break ;
 		}
 		else
 			break ;
-	ft_vecctor(&av, sizeof(char *));
-	while (tok->id == TOK_WORD)
-	{
-		*(char **)ft_vecpush(&av) = tok->val;
-		tok = sh_toknext(toks);
-	}
-	*(char **)ft_vecpush(&av) = NULL;
-	proc = ft_vecpush((t_vec *)&job->processes);
-	sh_procctor(proc);
-	proc->argv = av.buf;
-	proc->envv = g_env;
-	if (!ft_strcmp(proc->argv[0], "cd"))
-	{
-		proc->u.fn = sh_bicd;
-		proc->kind = PROC_FN;
-	}
-	else if (!ft_strcmp(proc->argv[0], "echo"))
-	{
-		proc->u.fn = sh_biecho;
-		proc->kind = PROC_FN;
-	}
-	return (YEP);
+	return (st);
 }

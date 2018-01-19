@@ -17,7 +17,7 @@ inline int		sh_evalpipeline(t_job *job, int fd, t_deq *toks, char **ln)
 	t_tok	*tok;
 	t_tok	*eol;
 
-	if (sh_evalcommand(job, fd, toks, ln))
+	if (sh_evalcmd(job, fd, toks, ln))
 		return (NOP);
 	while (1)
 		if ((tok = sh_tokpeek(toks))->id == TOK_PIPE)
@@ -25,7 +25,7 @@ inline int		sh_evalpipeline(t_job *job, int fd, t_deq *toks, char **ln)
 			while ((eol = sh_toknext(toks)))
 				if (eol->id != TOK_EOL)
 					break ;
-			if (sh_evalcommand(job, fd, toks, ln))
+			if (sh_evalcmd(job, fd, toks, ln))
 				return (sh_parseerr(*ln, tok, "Unfinished pipeline sequence "
 					"near `%s'", sh_tokstr(tok)));
 		}

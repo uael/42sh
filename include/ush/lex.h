@@ -64,6 +64,10 @@ enum			e_tok
 	TOK_RCURLY = '}',
 };
 
+# define TOK_ISREDIR_1(ID) ((ID)==TOK_RIN||(ID)==TOK_ROUT)
+# define TOK_ISREDIR_2(ID) ((ID)!=TOK_EOL&&((ID)>=TOK_HEREDOC&&(ID)<=TOK_AMPR))
+# define TOK_ISREDIR(ID) (TOK_ISREDIR_1(ID)||TOK_ISREDIR_2(ID))
+
 typedef struct	s_tok
 {
 	char		*val;

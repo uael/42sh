@@ -17,6 +17,9 @@
 # include "proc/kind.h"
 # include "redir.h"
 
+#define PROC_NOTFOUND 127
+#define PROC_NORIGHTS 126
+
 typedef struct	s_proc
 {
 	pid_t		pid;
@@ -25,7 +28,8 @@ typedef struct	s_proc
 	int			status;
 	char		**argv;
 	char		**envv;
-	int			io[3];
+	int			scope[3];
+	int			src[3];
 	t_redirs	redirs;
 	t_procu		u;
 }				t_proc;
@@ -38,9 +42,10 @@ typedef struct	s_procs
 	size_t		len;
 }				t_procs;
 
-extern void		sh_procctor(t_proc *proc);
+extern int		sh_procctor(t_proc *proc, char *path, char *exe, char **envv);
+extern int		sh_procfn(t_proc *proc, t_procfn *fn, char **envv);
 extern void		sh_procdtor(t_proc *proc);
-extern int		sh_proclaunch(t_proc *proc, pid_t pgid, int fg);
+extern int		sh_proclaunch(t_proc *proc, pid_t pgid, int *io, int fg);
 extern int		sh_procmark(t_proc *proc, int status);
 
 #endif

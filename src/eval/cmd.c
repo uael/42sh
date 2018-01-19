@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   job.c                                              :+:      :+:    :+:   */
+/*   eval/command.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,15 +10,16 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ush/job.h"
+#include "ush/eval.h"
 
-inline void		sh_jobctor(t_job *job)
+inline int		sh_evalcmd(t_job *job, int fd, t_deq *toks, char **ln)
 {
-	ft_memset(job, 0, sizeof(t_job));
-	ft_vecctor((t_vec *)&job->processes, sizeof(t_proc));
-}
+	t_tok	*tok;
 
-inline void		sh_jobdtor(t_job *job)
-{
-	(void)job;
+	if (!(tok = sh_tokpeek(toks)))
+		return (NOP);
+	if ((tok->id == TOK_WORD || TOK_ISREDIR(tok->id)) &&
+		!sh_evalsimple(job, fd, toks, ln))
+		return (YEP);
+	return (NOP);
 }

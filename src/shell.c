@@ -36,9 +36,10 @@ static void			sigchld(int signo)
 
 static inline void	sh_init(int fd)
 {
+	g_shpgid = getpgrp();
 	if (!(g_shinteract = (t_bool)isatty(fd)))
 		return ;
-	while (tcgetpgrp(fd) != (g_shpgid = getpgrp()))
+	while (tcgetpgrp(fd) != g_shpgid)
 		kill(-g_shpgid, SIGTTIN);
 	signal(SIGINT, SIG_IGN);
 	signal(SIGQUIT, SIG_IGN);
@@ -65,14 +66,12 @@ inline int			sh_run(int fd)
 	sh_poolscope();
 	while (!(st = rl_getline(fd, "$> ", &ln)))
 	{
-		if (!ft_strcmp("exit\n", ln))
-			break ;
 		it = ln;
 		g_toks->len = 0;
 		g_toks->cur = 0;
 		while (!(st = sh_lex(fd, g_toks, &it, &ln)))
 			sh_eval(fd, g_toks, &ln);
-		if (fd > 0)
+		if (st < 0)
 			break ;
 	}
 	while (sh_varunscope())
@@ -102,5 +101,7 @@ int					sh_exit(int exitno, char const *fmt, ...)
 		sh_verr(fmt, ap);
 		va_end(ap);
 	}
+	if (exitno > 255)
+		exit(EXIT_FAILURE);
 	exit(exitno == WUT ? EXIT_FAILURE : exitno);
 }

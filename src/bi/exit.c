@@ -15,8 +15,7 @@
 #define M_NREQ "Numeric argument required"
 #define N_EXIT COLOR_RED COLOR_BOLD "exit: " COLOR_RESET
 
-
-inline int	sh_bi_exit(int ac, char **av, char **env)
+inline int	sh_biexit(int ac, char **av, char **env)
 {
     size_t	i;
 	size_t	j;
@@ -39,5 +38,5 @@ inline int	sh_bi_exit(int ac, char **av, char **env)
 	c = (int)ft_atoi(a);
 	if (ft_intlen(c, 10) != ft_strlen(a))
 		return (sh_exit(128, NULL));
-	return (sh_exit(c > 255 || c < 0 ? 255 : 0, NULL));
+	return (sh_exit(c > 255 || c < 0 ? 255 : c, NULL));
 }

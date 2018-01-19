@@ -23,10 +23,13 @@ LNK_PATH = ./ $(3TH_PATH)
 OBJ_NAME = $(SRC_NAME:.c=.o)
 3TH_NAME = rl ft
 SRC_NAME = \
-	bi/echo.c bi/env.c bi/cd.c bi/unsetenv.c bi/exit.c bi/export.c bi/set.c \
+	bi/cd.c bi/echo.c bi/env.c bi/exit.c bi/export.c bi/set.c bi/setenv.c \
+	bi/unset.c bi/unsetenv.c \
 	env.c \
 	err.c \
-	eval.c eval/andor.c eval/command.c eval/list.c eval/pipeline.c \
+	eval.c eval/andor.c eval/argv.c eval/assign.c eval/cmd.c eval/cmp.c \
+	eval/heredoc.c eval/lamp.c eval/list.c eval/pipeline.c eval/ramp.c \
+	eval/raout.c eval/redir.c eval/rin.c eval/rout.c eval/simple.c \
 	job.c job/bg.c job/cont.c job/debug.c job/fg.c job/mark.c job/launch.c \
 	job/state.c job/wait.c \
 	lex.c lex/heredoc.c lex/op.c lex/quote.c lex/var.c lex/word.c \

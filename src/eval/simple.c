@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   job.c                                              :+:      :+:    :+:   */
+/*   eval/simple.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,15 +10,28 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ush/job.h"
+#include "ush/eval.h"
 
-inline void		sh_jobctor(t_job *job)
+inline int		sh_evalsimple(t_job *job, int fd, t_deq *toks, char **ln)
 {
-	ft_memset(job, 0, sizeof(t_job));
-	ft_vecctor((t_vec *)&job->processes, sizeof(t_proc));
-}
+	t_tok	*tok;
+	int		st;
 
-inline void		sh_jobdtor(t_job *job)
-{
-	(void)job;
+	st = NOP;
+	if ((tok = sh_tokpeek(toks))->id == TOK_WORD)
+	{
+		if (ft_strchr(tok->val, '='))
+			st = sh_evalassign(toks);
+		else if ((st = sh_evalargv(job, fd, toks, ln)))
+			return (NOP);
+	}
+	while ((tok = sh_tokpeek(toks)))
+		if (TOK_ISREDIR(tok->id))
+		{
+			if ((st = sh_evalredir(job, fd, toks, ln)))
+				return (NOP);
+		}
+		else
+			return (st);
+	return (st);
 }

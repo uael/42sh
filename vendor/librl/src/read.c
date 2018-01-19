@@ -47,7 +47,7 @@ int				rl_getline(int fd, char *prompt, char **ln)
 
 	if (fd != 0 || !isatty(fd) || rl_rawmode(fd))
 		return (rl_readnotty(fd, ln));
-	ft_write(STDIN_FILENO, prompt, ft_strlen(prompt));
+	ft_write(STDOUT_FILENO, prompt, ft_strlen(prompt));
 	signal(SIGWINCH, rd_sigwinch);
 	if (!g_screen_init && rl_screenget(g_screen) < 0)
 		st = WUT;
@@ -66,7 +66,7 @@ int				rl_catline(int fd, char c, char **ln, char **it)
 
 	if (fd != 0 || !isatty(fd) || rl_rawmode(fd))
 		return (rl_readnotty(fd, it));
-	ft_write(STDIN_FILENO, "> ", 2);
+	ft_write(STDOUT_FILENO, "> ", 2);
 	signal(SIGWINCH, rd_sigwinch);
 	if (!g_screen_init && rl_screenget(g_screen) < 0)
 		st = WUT;
