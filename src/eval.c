@@ -34,12 +34,26 @@ static int			parseeol(t_deq *toks, char **ln)
 	return (YEP);
 }
 
-static inline int	evalfinalize(int ret, int fd)
+static inline int	evalfinalize(int ret, t_deq *toks, int fd)
 {
+	t_tok	*tok;
+
 	if (fd < 0)
 	{
 		sh_varunscope();
 		sh_poolunscope();
+	}
+	if (ret == NOP)
+	{
+		tok = sh_tokpeek(toks);
+		while (tok)
+			if (tok->id != TOK_EOL && tok->id != TOK_END)
+				tok = sh_toknext(toks);
+			else
+			{
+				sh_toknext(toks);
+				break ;
+			}
 	}
 	return (ret);
 }
