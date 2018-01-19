@@ -11,16 +11,15 @@
 /* ************************************************************************** */
 
 #include "ush/proc.h"
-#include "ush/job.h"
 
-static inline void	procfg(pid_t pgid, int fg)
+static inline pid_t	procfg(pid_t pgid, int fg)
 {
 	pid_t pid;
 
-	if (g_shinteract)
+	if ((pid = getpid()) != g_shpgid && g_shinteract)
 	{
-		pid = getpid();
-		if (pgid == 0) pgid = pid;
+		if (pgid == 0)
+			pgid = pid;
 		setpgid(pid, pgid);
 		if (fg)
 			tcsetpgrp(STDIN_FILENO, pgid);
@@ -31,6 +30,7 @@ static inline void	procfg(pid_t pgid, int fg)
 		signal(SIGTTOU, SIG_DFL);
 		signal(SIGCHLD, SIG_DFL);
 	}
+	return (pid);
 }
 
 static inline int	porcio(t_proc *proc)
@@ -87,18 +87,24 @@ static inline int	avcount(char **av)
 	return ((int)(av - beg));
 }
 
-void				sh_proclaunch(t_proc *proc, pid_t pgid, int fg, t_bool owned)
+int					sh_proclaunch(t_proc *proc, pid_t pgid, int fg)
 {
-	if (owned)
-		procfg(pgid, fg);
+	pid_t pid;
+
+	pid = procfg(pgid, fg);
 	if (porcio(proc))
-		return ;
+		return (NOP);
 	procredir(proc);
 	if (proc->kind == PROC_FN)
-		proc->u.fn(avcount(proc->argv), proc->argv, proc->envv);
+	{
+		proc->status = proc->u.fn(avcount(proc->argv), proc->argv, proc->envv);
+		if (pid > 0 && pid != g_shpgid)
+			exit(proc->status);
+	}
 	else if (proc->kind == PROC_EXE)
 	{
 		execve(proc->argv[0], proc->argv, proc->envv);
-		sh_exit(THROW(WUT), NULL);
+		return (sh_exit(THROW(WUT), NULL));
 	}
+	return (YEP);
 }

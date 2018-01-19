@@ -14,8 +14,9 @@
 
 #include "ush/job.h"
 
-inline void		sh_jobbg(t_job *j, int cont)
+inline void		sh_jobbg(t_job *job, int cont)
 {
-	if (cont && kill(-j->pgid, SIGCONT) < 0)
+	job->status = 0;
+	if (cont && kill(-job->pgid, SIGCONT) < 0)
 		sh_err("kill (SIGCONT): %e\n", errno);
 }

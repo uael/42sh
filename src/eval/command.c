@@ -15,12 +15,12 @@
 
 static t_bool	isname(char *word)
 {
-	if (!ft_isalpha(*word) || *word != '_')
+	if (!ft_isalpha(*word) && *word != '_')
 		return (0);
 	++word;
 	while (*word != '=')
 	{
-		if (!ft_isalnum(*word) || *word != '_')
+		if (!ft_isalnum(*word) && *word != '_')
 			return (0);
 		++word;
 	}
@@ -40,7 +40,10 @@ inline int		sh_evalcommand(t_job *job, int fd, t_deq *toks, char **ln)
 		return (NOP);
 	while ((assign = ft_strchr(tok->val, '=')))
 		if (assign == tok->val)
+		{
 			ft_sdssht((t_sds *)tok, NULL);
+			break ;
+		}
 		else if (isname(tok->val))
 		{
 			*assign = '\0';
@@ -49,6 +52,8 @@ inline int		sh_evalcommand(t_job *job, int fd, t_deq *toks, char **ln)
 			if (!(tok = sh_toknext(toks)) || tok->id != TOK_WORD)
 				return (YEP);
 		}
+		else
+			break ;
 	ft_vecctor(&av, sizeof(char *));
 	while (tok->id == TOK_WORD)
 	{

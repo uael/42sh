@@ -48,7 +48,7 @@ inline t_job	*sh_poolpush(t_job *job)
 	if (g_pool->len == CHILD_MAX)
 		return (NULL);
 	new = ft_memcpy(g_pool->jobs + g_pool->len++, job, sizeof(t_job));
-	sh_joblaunch(new, 0);
+	g_shstatus = sh_joblaunch(new, 0);
 	ft_putf(STDOUT_FILENO, "[%d] ", g_pools->len);
 	i = 0;
 	while (i < job->processes.len)

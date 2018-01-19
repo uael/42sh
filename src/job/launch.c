@@ -21,18 +21,16 @@ static inline void	jobpipe(t_job *job, size_t i, int *fds, int *io)
 			sh_exit(THROW(WUT), NULL);
 		io[STDOUT_FILENO] = fds[1];
 	}
+	else
+		io[STDOUT_FILENO] = job->io[STDOUT_FILENO];
 }
 
 static inline int	jobfork(t_job *job, t_proc *proc, t_bool piped, int fg)
 {
 	pid_t	pid;
 
-	pid = 1;
 	if ((!piped && proc->kind == PROC_FN) || !(pid = fork()))
-	{
-		sh_proclaunch(proc, job->pgid, fg, (t_bool)(pid == 0));
-		return (pid == 1 ? YEP : NOP);
-	}
+		return (sh_proclaunch(proc, job->pgid, fg));
 	else if (pid < 0)
 		sh_exit(THROW(WUT), NULL);
 	else
@@ -48,32 +46,29 @@ static inline int	jobfork(t_job *job, t_proc *proc, t_bool piped, int fg)
 	return (YEP);
 }
 
-void				sh_joblaunch(t_job *job, int fg)
+int				sh_joblaunch(t_job *job, int fg)
 {
 	size_t	i;
 	t_proc	*proc;
-	t_bool	child;
 	int		fds[2];
 	int		io[3];
 
 	i = 0;
-	child = 0;
 	ft_memcpy(io, job->io, 3 * sizeof(int));
 	while (i < job->processes.len)
 	{
 		proc = job->processes.buf + i++;
 		jobpipe(job, i, fds, io);
-		if (jobfork(job, proc, (t_bool)(i < job->processes.len), fg))
-			return ;
-		if (proc->pid > 0)
-			child = 1;
+		ft_memcpy(proc->io, io, 3 * sizeof(int));
+		if (jobfork(job, proc, (t_bool)(job->processes.len > 1), fg))
+			return (job->status = 1);
 		if (io[STDIN_FILENO] != job->io[STDIN_FILENO])
 			close(io[STDIN_FILENO]);
 		if (io[STDOUT_FILENO] != job->io[STDOUT_FILENO])
 			close(io[STDOUT_FILENO]);
 		io[STDIN_FILENO] = fds[0];
 	}
-	if (child)
+	if (job->processes.buf->pid)
 	{
 		if (!g_shinteract)
 			sh_jobwait(job);
@@ -83,10 +78,8 @@ void				sh_joblaunch(t_job *job, int fg)
 			sh_jobbg(job, 0);
 
 	}
-	if (!g_shinteract || fg)
-	{
-		if ((job->andor == ANDOR_OR && !job->status) ||
-			(job->andor == ANDOR_AND && job->status))
-			sh_joblaunch(job->next, fg);
-	}
+	if (!(!g_shinteract || fg) || !((job->andor == ANDOR_OR && !job->status) ||
+		(job->andor == ANDOR_AND && job->status)))
+		return (job->status);
+	return (sh_joblaunch(job->next, fg));
 }
