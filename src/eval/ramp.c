@@ -31,8 +31,6 @@ inline int			sh_evalramp(t_job *job, int fd, t_deq *toks, char **ln)
 		redir.from = STDOUT_FILENO;
 	if (ft_strcmp(tok->val, "-") == 0)
 		redir.to = -1;
-	if (ft_strcmp(tok->val, "-") == 0)
-		redir.to = -1;
 	else if (ft_isdigit(*tok->val) && ft_strlen(tok->val) == 1)
 		redir.to = *tok->val - '0';
 	else
