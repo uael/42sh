@@ -69,8 +69,7 @@ static int			ft_getopt_(char **nextchar, char **av,
 	return (*(*nextchar)++);
 }
 
-int					ft_getopt_long(int ac, char **av,
-		char *optstr, t_opt *lopt)
+int					ft_lgetopt(int ac, char **av, char *optstr, t_opt *lopt)
 {
 	static char			*nextchar;
 	static char			*pname;
@@ -84,9 +83,8 @@ int					ft_getopt_long(int ac, char **av,
 		OPT_ISEND(av[g_optind]))
 		return (ft_opt_end(&nextchar));
 	else if (*nextchar == 0 && OPT_ISLONG(av[g_optind]))
-		return (ft_getopt_long_long(
-					ft_opt_getstruct_long(av[g_optind] + 2, lopt, pname),
-					av, pname));
+		return (ft_llgetopt(
+			ft_opt_getstruct_long(av[g_optind] + 2, lopt, pname), av, pname));
 	else if (*nextchar == 0 && OPT_ISOPT(av[g_optind]))
 		nextchar = av[g_optind++] + 1;
 	else if (*nextchar == 0)
