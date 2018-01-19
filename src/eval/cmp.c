@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   eval/raout.c                                       :+:      :+:    :+:   */
+/*   eval/cmp.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,7 +12,7 @@
 
 #include "ush/eval.h"
 
-inline int		sh_evalraout(t_job *job, int fd, t_deq *toks, char **ln)
+inline int			sh_evalcmp(t_job *job, int fd, t_deq *toks, char **ln)
 {
 	t_tok	*tok;
 	t_proc	*proc;
@@ -30,8 +30,8 @@ inline int		sh_evalraout(t_job *job, int fd, t_deq *toks, char **ln)
 		if (ft_isdigit(*op->val))
 			redir.from = *op->val - '0';
 		else
-			redir.from = STDOUT_FILENO;
-		if ((redir.to = open(tok->val, O_WRONLY | O_APPEND, 0644)) < 0)
+			redir.from = STDIN_FILENO;
+		if ((redir.to = open(tok->val, O_RDWR | O_CREAT, 0644)) < 0)
 			return (sh_parseerr(*ln, tok, "%s: %e", tok->val, errno));
 		ft_veccpush((t_vec *)&proc->redirs, &redir);
 		tok = sh_toknext(toks);

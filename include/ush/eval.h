@@ -32,7 +32,10 @@ extern int		sh_evalargv(t_job *job, int fd, t_deq *toks, char **ln);
 extern int		sh_evalredir(t_job *job, int fd, t_deq *toks, char **ln);
 extern int		sh_evalrin(t_job *job, int fd, t_deq *toks, char **ln);
 extern int		sh_evalrout(t_job *job, int fd, t_deq *toks, char **ln);
+extern int		sh_evalcmp(t_job *job, int fd, t_deq *toks, char **ln);
 extern int		sh_evalraout(t_job *job, int fd, t_deq *toks, char **ln);
 extern int		sh_evalheredoc(t_job *job, int fd, t_deq *toks, char **ln);
+extern int		sh_evallamp(t_job *job, int fd, t_deq *toks, char **ln);
+extern int		sh_evalramp(t_job *job, int fd, t_deq *toks, char **ln);
 
 #endif

@@ -31,7 +31,7 @@ inline int		sh_evalrin(t_job *job, int fd, t_deq *toks, char **ln)
 			redir.from = *op->val - '0';
 		else
 			redir.from = STDIN_FILENO;
-		if ((redir.to = open(tok->val, O_RDWR, S_IRUSR | S_IWUSR)) < 0)
+		if ((redir.to = open(tok->val, O_RDONLY, 0644)) < 0)
 			return (sh_parseerr(*ln, tok, "%s: %e", tok->val, errno));
 		ft_veccpush((t_vec *)&proc->redirs, &redir);
 		tok = sh_toknext(toks);

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   eval/raout.c                                       :+:      :+:    :+:   */
+/*   eval/ramp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,7 +12,7 @@
 
 #include "ush/eval.h"
 
-inline int		sh_evalraout(t_job *job, int fd, t_deq *toks, char **ln)
+inline int			sh_evalramp(t_job *job, int fd, t_deq *toks, char **ln)
 {
 	t_tok	*tok;
 	t_proc	*proc;
@@ -22,19 +22,23 @@ inline int		sh_evalraout(t_job *job, int fd, t_deq *toks, char **ln)
 	(void)fd;
 	op = sh_tokpeek(toks);
 	if ((tok = sh_toknext(toks))->id != TOK_WORD)
-		return (sh_parseerr(*ln, tok, "Expected `<filename>' got `%s'",
-			sh_tokstr(tok)));
+		return (sh_parseerr(*ln, tok, "Expected `<word>' after redirection "
+			"`%s' got `%s'", sh_tokstr(op), sh_tokstr(tok)));
 	proc = ft_vecback((t_vec *)&job->processes);
-	while (tok->id == TOK_WORD)
-	{
-		if (ft_isdigit(*op->val))
-			redir.from = *op->val - '0';
-		else
-			redir.from = STDOUT_FILENO;
-		if ((redir.to = open(tok->val, O_WRONLY | O_APPEND, 0644)) < 0)
-			return (sh_parseerr(*ln, tok, "%s: %e", tok->val, errno));
-		ft_veccpush((t_vec *)&proc->redirs, &redir);
-		tok = sh_toknext(toks);
-	}
+	if (ft_isdigit(*op->val))
+		redir.from = *op->val - '0';
+	else
+		redir.from = STDOUT_FILENO;
+	if (ft_strcmp(tok->val, "-") == 0)
+		redir.to = -1;
+	if (ft_strcmp(tok->val, "-") == 0)
+		redir.to = -1;
+	else if (ft_isdigit(*tok->val) && ft_strlen(tok->val) == 1)
+		redir.to = *tok->val - '0';
+	else
+		return (sh_parseerr(*ln, tok, "ambiguous redirect `%s'",
+			sh_tokstr(op)));
+	ft_veccpush((t_vec *)&proc->redirs, &redir);
+	sh_toknext(toks);
 	return (YEP);
 }
