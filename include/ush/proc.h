@@ -40,7 +40,7 @@ typedef struct	s_procs
 
 extern void		sh_procctor(t_proc *proc);
 extern void		sh_procdtor(t_proc *proc);
-extern void		sh_proclaunch(t_proc *proc, pid_t pgid, int fg);
+extern int		sh_proclaunch(t_proc *proc, pid_t pgid, int fg);
 extern int		sh_procmark(t_proc *proc, int status);
 
 #endif

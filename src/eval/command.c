@@ -11,15 +11,16 @@
 /* ************************************************************************** */
 
 #include "ush/eval.h"
+#include "ush/bi.h"
 
 static t_bool	isname(char *word)
 {
-	if (!ft_isalpha(*word) || *word != '_')
+	if (!ft_isalpha(*word) && *word != '_')
 		return (0);
 	++word;
 	while (*word != '=')
 	{
-		if (!ft_isalnum(*word) || *word != '_')
+		if (!ft_isalnum(*word) && *word != '_')
 			return (0);
 		++word;
 	}
@@ -39,7 +40,10 @@ inline int		sh_evalcommand(t_job *job, int fd, t_deq *toks, char **ln)
 		return (NOP);
 	while ((assign = ft_strchr(tok->val, '=')))
 		if (assign == tok->val)
+		{
 			ft_sdssht((t_sds *)tok, NULL);
+			break ;
+		}
 		else if (isname(tok->val))
 		{
 			*assign = '\0';
@@ -48,6 +52,8 @@ inline int		sh_evalcommand(t_job *job, int fd, t_deq *toks, char **ln)
 			if (!(tok = sh_toknext(toks)) || tok->id != TOK_WORD)
 				return (YEP);
 		}
+		else
+			break ;
 	ft_vecctor(&av, sizeof(char *));
 	while (tok->id == TOK_WORD)
 	{
@@ -59,5 +65,15 @@ inline int		sh_evalcommand(t_job *job, int fd, t_deq *toks, char **ln)
 	sh_procctor(proc);
 	proc->argv = av.buf;
 	proc->envv = g_env;
+	if (!ft_strcmp(proc->argv[0], "cd"))
+	{
+		proc->u.fn = sh_bicd;
+		proc->kind = PROC_FN;
+	}
+	else if (!ft_strcmp(proc->argv[0], "echo"))
+	{
+		proc->u.fn = sh_biecho;
+		proc->kind = PROC_FN;
+	}
 	return (YEP);
 }
