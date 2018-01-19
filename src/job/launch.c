@@ -63,7 +63,7 @@ int				sh_joblaunch(t_job *job, int fg)
 		proc = job->processes.buf + i++;
 		jobpipe(job, i, fds, g_io);
 		if (jobfork(job, proc, (t_bool)(job->processes.len > 1), fg))
-			return (job->status = 1);
+			return (job->status = !job->bang);
 		if (g_io[STDIN_FILENO] != STDIN_FILENO)
 			close(g_io[STDIN_FILENO]);
 		if (g_io[STDOUT_FILENO] != STDOUT_FILENO)
@@ -80,8 +80,8 @@ int				sh_joblaunch(t_job *job, int fg)
 			sh_jobbg(job, 0);
 
 	}
-	if (!(!g_shinteract || fg) || !((job->andor == ANDOR_OR && !job->status) ||
-		(job->andor == ANDOR_AND && job->status)))
+	if (!(!g_shinteract || fg) || !((job->andor == ANDOR_OR && job->status) ||
+		(job->andor == ANDOR_AND && !job->status)))
 		return (job->status);
 	return (sh_joblaunch(job->next, fg));
 }

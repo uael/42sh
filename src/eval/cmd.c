@@ -17,7 +17,8 @@ inline int		sh_evalcmd(t_job *job, int fd, t_deq *toks, char **ln)
 	t_tok	*tok;
 
 	if (!(tok = sh_tokpeek(toks)))
-		return (NOP);
+		return (sh_synerr(*ln, NULL, "Unexpected token `%s'",
+			sh_tokstr(NULL)));
 	if ((tok->id == TOK_WORD || TOK_ISREDIR(tok->id)) &&
 		!sh_evalsimple(job, fd, toks, ln))
 		return (YEP);

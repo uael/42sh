@@ -67,10 +67,8 @@ inline int			sh_eval(int fd, t_deq *toks, char **ln)
 		sh_varscope();
 		sh_poolscope();
 	}
-	tok = sh_tokpeek(toks);
 	if (sh_evallist(fd, toks, ln))
-		return (evalfinalize(tok ? sh_synerr(*ln, *ln + tok->pos,
-			"4: Unexpected token `%s'", sh_tokidstr(tok->id)) : NOP, toks, fd));
+		return (NOP);
 	if (!(tok = sh_tokpeek(toks)))
 		return (evalfinalize(YEP, toks, fd));
 	if (tok->id == TOK_SEMICOLON)
@@ -79,6 +77,6 @@ inline int			sh_eval(int fd, t_deq *toks, char **ln)
 		return (evalfinalize(YEP, toks, fd));
 	else if (tok->id != TOK_EOL)
 		return (evalfinalize(sh_synerr(*ln, *ln + tok->pos,
-			"3: Unexpected token `%s'", sh_tokidstr(tok->id)), toks, fd));
+			"Unexpected token `%s'", sh_tokidstr(tok->id)), toks, fd));
 	return (evalfinalize(parseeol(toks, ln), toks, fd));
 }

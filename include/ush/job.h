@@ -32,6 +32,7 @@ typedef struct	s_jb
 	char		*command;
 	t_procs		processes;
 	t_bool		notified;
+	t_bool		bang;
 	TTY			tmodes;
 }				t_job;
 

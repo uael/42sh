@@ -103,7 +103,7 @@ static inline int	lex(int fd, t_tok *tok, char **it, char **ln)
 		return (WUT);
 	if (st && (st = sh_lexword(fd, tok, it, ln)) < 0)
 		return (WUT);
-	return (st ? sh_synerr(*ln, *it, "1: Unexpected token `%c'", **it) : YEP);
+	return (st);
 }
 
 static inline int	reduce(int fd, t_deq *toks, char **it, char **ln)
