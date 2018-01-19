@@ -65,17 +65,13 @@ static inline int	procredir(t_proc *proc, pid_t pid)
 	while (i < proc->redirs.len)
 	{
 		redir = proc->redirs.buf + i++;
+		if (pid == g_shpgid && redir->from >= 0 && redir->from <= 2 &&
+			proc->scope[redir->from] < 0)
+			proc->scope[redir->from] = dup(redir->from);
 		if (redir->to < 0)
 			close(redir->from);
-		else
-		{
-			if (pid == g_shpgid && redir->from >= 0 && redir->from <= 2 &&
-				proc->scope[redir->from] < 0)
-				proc->scope[redir->from] = dup(redir->from);
-			if (dup2(redir->to, redir->from) < 0 ||
-				close(redir->to))
-				return (THROW(WUT));
-		}
+		else if (dup2(redir->to, redir->from) < 0 || close(redir->to))
+			return (THROW(WUT));
 	}
 	return (YEP);
 }
