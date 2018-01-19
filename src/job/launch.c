@@ -13,6 +13,8 @@
 #include "ush/proc.h"
 #include "ush/job.h"
 
+static int			g_io[3] = { 0, 0, 0 };
+
 static inline void	jobpipe(t_job *job, size_t i, int *fds, int *io)
 {
 	if (i < job->processes.len)
@@ -22,7 +24,7 @@ static inline void	jobpipe(t_job *job, size_t i, int *fds, int *io)
 		io[STDOUT_FILENO] = fds[1];
 	}
 	else
-		io[STDOUT_FILENO] = job->io[STDOUT_FILENO];
+		io[STDOUT_FILENO] = STDOUT_FILENO;
 }
 
 static inline int	jobfork(t_job *job, t_proc *proc, t_bool piped, int fg)
@@ -30,7 +32,7 @@ static inline int	jobfork(t_job *job, t_proc *proc, t_bool piped, int fg)
 	pid_t	pid;
 
 	if ((!piped && proc->kind == PROC_FN) || !(pid = fork()))
-		return (sh_proclaunch(proc, job->pgid, fg));
+		return (sh_proclaunch(proc, job->pgid, g_io, fg));
 	else if (pid < 0)
 		sh_exit(THROW(WUT), NULL);
 	else
@@ -51,22 +53,22 @@ int				sh_joblaunch(t_job *job, int fg)
 	size_t	i;
 	t_proc	*proc;
 	int		fds[2];
-	int		io[3];
 
 	i = 0;
-	ft_memcpy(io, job->io, 3 * sizeof(int));
+	g_io[STDIN_FILENO] = STDIN_FILENO;
+	g_io[STDOUT_FILENO] = STDOUT_FILENO;
+	g_io[STDERR_FILENO] = STDERR_FILENO;
 	while (i < job->processes.len)
 	{
 		proc = job->processes.buf + i++;
-		jobpipe(job, i, fds, io);
-		ft_memcpy(proc->io, io, 3 * sizeof(int));
+		jobpipe(job, i, fds, g_io);
 		if (jobfork(job, proc, (t_bool)(job->processes.len > 1), fg))
 			return (job->status = 1);
-		if (io[STDIN_FILENO] != job->io[STDIN_FILENO])
-			close(io[STDIN_FILENO]);
-		if (io[STDOUT_FILENO] != job->io[STDOUT_FILENO])
-			close(io[STDOUT_FILENO]);
-		io[STDIN_FILENO] = fds[0];
+		if (g_io[STDIN_FILENO] != STDIN_FILENO)
+			close(g_io[STDIN_FILENO]);
+		if (g_io[STDOUT_FILENO] != STDOUT_FILENO)
+			close(g_io[STDOUT_FILENO]);
+		g_io[STDIN_FILENO] = fds[0];
 	}
 	if (job->processes.buf->pid)
 	{

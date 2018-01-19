@@ -28,7 +28,8 @@ typedef struct	s_proc
 	int			status;
 	char		**argv;
 	char		**envv;
-	int			io[3];
+	int			scope[3];
+	int			src[3];
 	t_redirs	redirs;
 	t_procu		u;
 }				t_proc;
@@ -42,8 +43,9 @@ typedef struct	s_procs
 }				t_procs;
 
 extern int		sh_procctor(t_proc *proc, char *path, char *exe, char **envv);
+extern int		sh_procfn(t_proc *proc, t_procfn *fn, char **envv);
 extern void		sh_procdtor(t_proc *proc);
-extern int		sh_proclaunch(t_proc *proc, pid_t pgid, int fg);
+extern int		sh_proclaunch(t_proc *proc, pid_t pgid, int *io, int fg);
 extern int		sh_procmark(t_proc *proc, int status);
 
 #endif

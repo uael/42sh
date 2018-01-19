@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   eval/processes.c                                    :+:      :+:    :+:   */
+/*   eval/ramp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,23 +12,31 @@
 
 #include "ush/eval.h"
 
-inline int		sh_evalpipeline(t_job *job, int fd, t_deq *toks, char **ln)
+inline int			sh_evalramp(t_job *job, int fd, t_deq *toks, char **ln)
 {
 	t_tok	*tok;
-	t_tok	*eol;
+	t_proc	*proc;
+	t_redir	redir;
+	t_tok	*op;
 
-	if (sh_evalcmd(job, fd, toks, ln))
-		return (NOP);
-	while (1)
-		if ((tok = sh_tokpeek(toks))->id == TOK_PIPE)
-		{
-			while ((eol = sh_toknext(toks)))
-				if (eol->id != TOK_EOL)
-					break ;
-			if (sh_evalcmd(job, fd, toks, ln))
-				return (sh_parseerr(*ln, tok, "Unfinished pipeline sequence "
-					"near `%s'", sh_tokstr(tok)));
-		}
-		else
-			return (YEP);
+	(void)fd;
+	op = sh_tokpeek(toks);
+	if ((tok = sh_toknext(toks))->id != TOK_WORD)
+		return (sh_parseerr(*ln, tok, "Expected `<word>' after redirection "
+			"`%s' got `%s'", sh_tokstr(op), sh_tokstr(tok)));
+	proc = ft_vecback((t_vec *)&job->processes);
+	if (ft_isdigit(*op->val))
+		redir.from = *op->val - '0';
+	else
+		redir.from = STDOUT_FILENO;
+	if (ft_strcmp(tok->val, "-") == 0)
+		redir.to = -1;
+	else if (ft_isdigit(*tok->val) && ft_strlen(tok->val) == 1)
+		redir.to = *tok->val - '0';
+	else
+		return (sh_parseerr(*ln, tok, "ambiguous redirect `%s'",
+			sh_tokstr(op)));
+	ft_veccpush((t_vec *)&proc->redirs, &redir);
+	sh_toknext(toks);
+	return (YEP);
 }

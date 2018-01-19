@@ -33,33 +33,30 @@ static inline pid_t	procfg(pid_t pgid, int fg)
 	return (pid);
 }
 
-static inline int	porcio(t_proc *proc)
+static inline int	porcio(int *io, int *src)
 {
-	int io[3];
-
-	ft_memcpy(io, proc->io, 3 * sizeof(int));
 	if (io[STDIN_FILENO] >= 0 && io[STDIN_FILENO] != STDIN_FILENO)
 	{
-		if (dup2(io[STDIN_FILENO], STDIN_FILENO) < 0 ||
+		if (dup2(io[STDIN_FILENO], src[STDIN_FILENO]) < 0 ||
 			close(io[STDIN_FILENO]))
 			return (THROW(WUT));
 	}
 	if (io[STDOUT_FILENO] >= 0 && io[STDOUT_FILENO] != STDOUT_FILENO)
 	{
-		if (dup2(io[STDOUT_FILENO], STDOUT_FILENO) < 0 ||
+		if (dup2(io[STDOUT_FILENO], src[STDOUT_FILENO]) < 0 ||
 			close(io[STDOUT_FILENO]))
 			return (THROW(WUT));
 	}
 	if (io[STDERR_FILENO] >= 0 && io[STDERR_FILENO] != STDERR_FILENO)
 	{
-		if (dup2(io[STDERR_FILENO], STDERR_FILENO) < 0 ||
+		if (dup2(io[STDERR_FILENO], src[STDERR_FILENO]) < 0 ||
 			close(io[STDERR_FILENO]))
 			return (THROW(WUT));
 	}
 	return (YEP);
 }
 
-static inline void	procredir(t_proc *proc)
+static inline int	procredir(t_proc *proc, pid_t pid)
 {
 	size_t	i;
 	t_redir	*redir;
@@ -67,12 +64,16 @@ static inline void	procredir(t_proc *proc)
 	i = 0;
 	while (i < proc->redirs.len)
 	{
-		redir = proc->redirs.buf + i;
+		redir = proc->redirs.buf + i++;
+		if (pid == g_shpgid && redir->from >= 0 && redir->from <= 2 &&
+			proc->scope[redir->from] < 0)
+			proc->scope[redir->from] = dup(redir->from);
 		if (redir->to < 0)
 			close(redir->from);
 		else if (dup2(redir->to, redir->from) < 0 || close(redir->to))
-			sh_exit(THROW(WUT), NULL);
+			return (THROW(WUT));
 	}
+	return (YEP);
 }
 
 static inline int	avcount(char **av)
@@ -87,19 +88,25 @@ static inline int	avcount(char **av)
 	return ((int)(av - beg));
 }
 
-int					sh_proclaunch(t_proc *proc, pid_t pgid, int fg)
+int					sh_proclaunch(t_proc *proc, pid_t pgid, int *io, int fg)
 {
 	pid_t pid;
 
 	pid = procfg(pgid, fg);
-	if (porcio(proc))
+	if (porcio(io, proc->src) || procredir(proc, pid))
+	{
+		if (pid == g_shpgid)
+			exit(EXIT_FAILURE);
 		return (NOP);
-	procredir(proc);
+	}
 	if (proc->kind == PROC_FN)
 	{
 		proc->status = proc->u.fn(avcount(proc->argv), proc->argv, proc->envv);
 		if (pid > 0 && pid != g_shpgid)
 			exit(proc->status);
+		porcio(proc->scope,
+			(int[3]){STDIN_FILENO, STDOUT_FILENO, STDERR_FILENO});
+		return (YEP);
 	}
 	else if (proc->kind == PROC_EXE)
 	{

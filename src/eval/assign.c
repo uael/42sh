@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   eval/command.c                                     :+:      :+:    :+:   */
+/*   eval/argv.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -26,18 +26,14 @@ static t_bool	isname(char *word)
 	return (1);
 }
 
-inline int		sh_evalcommand(t_job *job, int fd, t_deq *toks, char **ln)
+inline int		sh_evalassign(t_deq *toks)
 {
 	t_tok	*tok;
 	char	*assign;
-	t_vec	av;
 	int		st;
-	t_proc	proc;
 
-	(void)fd;
-	(void)ln;
-	if (!(tok = sh_tokpeek(toks)) || tok->id != TOK_WORD)
-		return (NOP);
+	st = NOP;
+	tok = sh_tokpeek(toks);
 	while ((assign = ft_strchr(tok->val, '=')))
 		if (assign == tok->val)
 		{
@@ -46,32 +42,14 @@ inline int		sh_evalcommand(t_job *job, int fd, t_deq *toks, char **ln)
 		}
 		else if (isname(tok->val))
 		{
+			st = YEP;
 			*assign = '\0';
 			sh_varset(tok->val, assign + 1);
 			g_shstatus = 0;
 			if (!(tok = sh_toknext(toks)) || tok->id != TOK_WORD)
-				return (YEP);
+				break ;
 		}
 		else
 			break ;
-	if ((st = sh_procctor(&proc, "PATH", tok->val, g_env)))
-	{
-		g_shstatus = st;
-		if (st == PROC_NORIGHTS)
-			return (sh_parseerr(*ln, tok, "%s: permission denied", tok->val));
-		return (sh_parseerr(*ln, tok, "%s: Command not found", tok->val));
-	}
-	ft_vecctor(&av, sizeof(char *));
-	*(char **)ft_vecpush(&av) = proc.kind == PROC_FN ? ft_strdup(tok->val) :
-		proc.u.exe;
-	tok = sh_toknext(toks);
-	while (tok->id == TOK_WORD)
-	{
-		*(char **)ft_vecpush(&av) = ft_strdup(tok->val);
-		tok = sh_toknext(toks);
-	}
-	*(char **)ft_vecpush(&av) = NULL;
-	proc.argv = av.buf;
-	ft_veccpush((t_vec *)&job->processes, &proc);
-	return (YEP);
+	return (st);
 }
