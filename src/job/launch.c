@@ -21,6 +21,8 @@ static inline void	jobpipe(t_job *job, size_t i, int *fds, int *io)
 			sh_exit(THROW(WUT), NULL);
 		io[STDOUT_FILENO] = fds[1];
 	}
+	else
+		io[STDOUT_FILENO] = job->io[STDOUT_FILENO];
 }
 
 static inline int	jobfork(t_job *job, t_proc *proc, t_bool piped, int fg)
@@ -57,7 +59,8 @@ int				sh_joblaunch(t_job *job, int fg)
 	{
 		proc = job->processes.buf + i++;
 		jobpipe(job, i, fds, io);
-		if (jobfork(job, proc, (t_bool)(i < job->processes.len), fg))
+		ft_memcpy(proc->io, io, 3 * sizeof(int));
+		if (jobfork(job, proc, (t_bool)(job->processes.len > 1), fg))
 			return (job->status = 1);
 		if (io[STDIN_FILENO] != job->io[STDIN_FILENO])
 			close(io[STDIN_FILENO]);
