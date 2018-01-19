@@ -14,7 +14,7 @@
 
 #define M_SYNER "Syntax error"
 #define M_ENOID "not an identifier"
-#define N_EXPORT COLOR_RED COLOR_BOLD "export: " COLOR_RESET
+#define N_EXPORT COLOR_RED COLOR_BOLD "setenv: " COLOR_RESET
 
 inline int	sh_bisetenv(int ac, char **av, char **env)
 {
