@@ -23,6 +23,14 @@ extern int		sh_parse(int fd, t_deq *toks, char **ln);
 extern int		sh_evallist(int fd, t_deq *toks, char **ln);
 extern int		sh_evalandor(t_job *job, int fd, t_deq *toks, char **ln);
 extern int		sh_evalpipeline(t_job *job, int fd, t_deq *toks, char **ln);
-extern int		sh_evalcommand(t_job *job, int fd, t_deq *toks, char **ln);
+extern int		sh_evalcmd(t_job *job, int fd, t_deq *toks, char **ln);
+extern int		sh_evalsimple(t_job *job, int fd, t_deq *toks, char **ln);
+
+extern int		sh_evalassign(t_deq *toks);
+
+extern int		sh_evalargv(t_job *job, int fd, t_deq *toks, char **ln);
+extern int		sh_evalredir(t_job *job, int fd, t_deq *toks, char **ln);
+extern int		sh_evalrin(t_job *job, int fd, t_deq *toks, char **ln);
+extern int		sh_evalrout(t_job *job, int fd, t_deq *toks, char **ln);
 
 #endif

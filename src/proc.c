@@ -71,6 +71,7 @@ inline int		sh_procctor(t_proc *proc, char *path, char *exe, char **envv)
 	char	buf[PATH_MAX + 1];
 
 	ft_memset(proc, 0, sizeof(t_proc));
+	ft_memset(proc->scope, -1, 3 * sizeof(int));
 	proc->envv = envv;
 	if (!ft_strcmp(exe, "cd"))
 	{

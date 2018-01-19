@@ -36,9 +36,10 @@ static void			sigchld(int signo)
 
 static inline void	sh_init(int fd)
 {
+	g_shpgid = getpgrp();
 	if (!(g_shinteract = (t_bool)isatty(fd)))
 		return ;
-	while (tcgetpgrp(fd) != (g_shpgid = getpgrp()))
+	while (tcgetpgrp(fd) != g_shpgid)
 		kill(-g_shpgid, SIGTTIN);
 	signal(SIGINT, SIG_IGN);
 	signal(SIGQUIT, SIG_IGN);

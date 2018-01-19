@@ -29,6 +29,7 @@ typedef struct	s_proc
 	char		**argv;
 	char		**envv;
 	int			io[3];
+	int			scope[3];
 	t_redirs	redirs;
 	t_procu		u;
 }				t_proc;

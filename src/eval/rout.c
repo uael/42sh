@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   eval/processes.c                                    :+:      :+:    :+:   */
+/*   eval/rout.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,23 +12,29 @@
 
 #include "ush/eval.h"
 
-inline int		sh_evalpipeline(t_job *job, int fd, t_deq *toks, char **ln)
+inline int		sh_evalrout(t_job *job, int fd, t_deq *toks, char **ln)
 {
 	t_tok	*tok;
-	t_tok	*eol;
+	t_proc	*proc;
+	t_redir	redir;
+	t_tok	*op;
 
-	if (sh_evalcmd(job, fd, toks, ln))
-		return (NOP);
-	while (1)
-		if ((tok = sh_tokpeek(toks))->id == TOK_PIPE)
-		{
-			while ((eol = sh_toknext(toks)))
-				if (eol->id != TOK_EOL)
-					break ;
-			if (sh_evalcmd(job, fd, toks, ln))
-				return (sh_parseerr(*ln, tok, "Unfinished pipeline sequence "
-					"near `%s'", sh_tokstr(tok)));
-		}
+	(void)fd;
+	op = sh_tokpeek(toks);
+	if ((tok = sh_toknext(toks))->id != TOK_WORD)
+		return (sh_parseerr(*ln, tok, "Expected `<filename>' got `%s'",
+			sh_tokstr(tok)));
+	proc = ft_vecback((t_vec *)&job->processes);
+	while (tok->id == TOK_WORD)
+	{
+		if (ft_isdigit(*op->val))
+			redir.from = *op->val - '0';
 		else
-			return (YEP);
+			redir.from = STDOUT_FILENO;
+		if ((redir.to = open(tok->val, O_RDWR | O_CREAT, 0644)) < 0)
+			return (sh_parseerr(*ln, tok, "%s: %e", tok->val, errno));
+		ft_veccpush((t_vec *)&proc->redirs, &redir);
+		tok = sh_toknext(toks);
+	}
+	return (YEP);
 }

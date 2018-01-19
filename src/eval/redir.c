@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   eval/processes.c                                    :+:      :+:    :+:   */
+/*   eval/redir.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,23 +12,18 @@
 
 #include "ush/eval.h"
 
-inline int		sh_evalpipeline(t_job *job, int fd, t_deq *toks, char **ln)
+inline int		sh_evalredir(t_job *job, int fd, t_deq *toks, char **ln)
 {
-	t_tok	*tok;
-	t_tok	*eol;
+	t_tok *tok;
 
-	if (sh_evalcmd(job, fd, toks, ln))
-		return (NOP);
-	while (1)
-		if ((tok = sh_tokpeek(toks))->id == TOK_PIPE)
-		{
-			while ((eol = sh_toknext(toks)))
-				if (eol->id != TOK_EOL)
-					break ;
-			if (sh_evalcmd(job, fd, toks, ln))
-				return (sh_parseerr(*ln, tok, "Unfinished pipeline sequence "
-					"near `%s'", sh_tokstr(tok)));
-		}
-		else
-			return (YEP);
+	(void)fd;
+	tok = sh_tokpeek(toks);
+	if (!job->processes.len)
+		return (sh_parseerr(*ln, tok, "Unexpected redirection `%s' "
+			"for empty command line", sh_tokstr(tok)));
+	if (tok->id == '<')
+		return (sh_evalrin(job, fd, toks, ln));
+	if (tok->id == '>')
+		return (sh_evalrout(job, fd, toks, ln));
+	return (NOP);
 }

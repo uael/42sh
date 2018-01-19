@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   eval/processes.c                                    :+:      :+:    :+:   */
+/*   eval/simple.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,23 +12,26 @@
 
 #include "ush/eval.h"
 
-inline int		sh_evalpipeline(t_job *job, int fd, t_deq *toks, char **ln)
+inline int		sh_evalsimple(t_job *job, int fd, t_deq *toks, char **ln)
 {
 	t_tok	*tok;
-	t_tok	*eol;
+	int		st;
 
-	if (sh_evalcmd(job, fd, toks, ln))
-		return (NOP);
-	while (1)
-		if ((tok = sh_tokpeek(toks))->id == TOK_PIPE)
+	st = NOP;
+	if ((tok = sh_tokpeek(toks))->id == TOK_WORD)
+	{
+		if (ft_strchr(tok->val, '='))
+			st = sh_evalassign(toks);
+		else if ((st = sh_evalargv(job, fd, toks, ln)))
+			return (NOP);
+	}
+	while ((tok = sh_tokpeek(toks)))
+		if (TOK_ISREDIR(tok->id))
 		{
-			while ((eol = sh_toknext(toks)))
-				if (eol->id != TOK_EOL)
-					break ;
-			if (sh_evalcmd(job, fd, toks, ln))
-				return (sh_parseerr(*ln, tok, "Unfinished pipeline sequence "
-					"near `%s'", sh_tokstr(tok)));
+			if ((st = sh_evalredir(job, fd, toks, ln)))
+				return (NOP);
 		}
 		else
-			return (YEP);
+			return (st);
+	return (st);
 }
