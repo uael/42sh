@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   eval/redir.c                                       :+:      :+:    :+:   */
+/*   eval/raout.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,20 +12,29 @@
 
 #include "ush/eval.h"
 
-inline int		sh_evalredir(t_job *job, int fd, t_deq *toks, char **ln)
+inline int		sh_evalraout(t_job *job, int fd, t_deq *toks, char **ln)
 {
-	t_tok *tok;
+	t_tok	*tok;
+	t_proc	*proc;
+	t_redir	redir;
+	t_tok	*op;
 
 	(void)fd;
-	tok = sh_tokpeek(toks);
-	if (!job->processes.len)
-		return (sh_parseerr(*ln, tok, "Unexpected redirection `%s' "
-			"for empty command line", sh_tokstr(tok)));
-	if (tok->id == '<')
-		return (sh_evalrin(job, fd, toks, ln));
-	if (tok->id == '>')
-		return (sh_evalrout(job, fd, toks, ln));
-	if (tok->id == TOK_RAOUT)
-		return (sh_evalraout(job, fd, toks, ln));
-	return (NOP);
+	op = sh_tokpeek(toks);
+	if ((tok = sh_toknext(toks))->id != TOK_WORD)
+		return (sh_parseerr(*ln, tok, "Expected `<filename>' got `%s'",
+			sh_tokstr(tok)));
+	proc = ft_vecback((t_vec *)&job->processes);
+	while (tok->id == TOK_WORD)
+	{
+		if (ft_isdigit(*op->val))
+			redir.from = *op->val - '0';
+		else
+			redir.from = STDOUT_FILENO;
+		if ((redir.to = open(tok->val, O_RDWR | O_APPEND, 0644)) < 0)
+			return (sh_parseerr(*ln, tok, "%s: %e", tok->val, errno));
+		ft_veccpush((t_vec *)&proc->redirs, &redir);
+		tok = sh_toknext(toks);
+	}
+	return (YEP);
 }
