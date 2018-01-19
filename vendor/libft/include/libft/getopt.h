@@ -58,5 +58,6 @@ int			ft_getopt_long(int ac, char **av,
 						char *optstring, t_opt *longopt);
 int			ft_getopt_long_long(t_opt *lopt, char **av, char *pname);
 void		ft_getopt_init(char **pname, char **nextchar, char *s);
+int		ft_getopt(int ac, const char **av, const char *optstring);
 
 #endif

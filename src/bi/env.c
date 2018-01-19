@@ -11,3 +11,10 @@
 /* ************************************************************************** */
 
 #include "ush/bi.h"
+
+#define ENV_I (1 << 0)
+#define ENV_P (0)
+#define ENV_U (1)
+#define M_DUP "Duplicate option"
+#define N_ENV COLOR_RED COLOR_BOLD "env: " COLOR_RESET
+
