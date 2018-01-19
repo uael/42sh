@@ -65,13 +65,26 @@ static int		exelookup(char **env, char *exe, char *path, char *buf)
 	return (PROC_NOTFOUND);
 }
 
+inline int		sh_procfn(t_proc *proc, t_procfn *fn, char **envv)
+{
+	ft_memset(proc, 0, sizeof(t_proc));
+	proc->envv = envv;
+	proc->u.fn = fn;
+	proc->kind = PROC_FN;
+	ft_vecctor((t_vec *)&proc->redirs, sizeof(t_redir));
+	ft_memset(proc->scope, -1, 3 * sizeof(int));
+	proc->src[STDIN_FILENO] = STDIN_FILENO;
+	proc->src[STDOUT_FILENO] = STDOUT_FILENO;
+	proc->src[STDERR_FILENO] = STDERR_FILENO;
+	return (YEP);
+}
+
 inline int		sh_procctor(t_proc *proc, char *path, char *exe, char **envv)
 {
 	int		st;
 	char	buf[PATH_MAX + 1];
 
 	ft_memset(proc, 0, sizeof(t_proc));
-	ft_memset(proc->scope, -1, 3 * sizeof(int));
 	proc->envv = envv;
 	if (!ft_strcmp(exe, "cd"))
 	{
@@ -108,9 +121,10 @@ inline int		sh_procctor(t_proc *proc, char *path, char *exe, char **envv)
 	else
 		proc->u.exe = ft_strdup(buf);
 	ft_vecctor((t_vec *)&proc->redirs, sizeof(t_redir));
-	proc->io[STDIN_FILENO] = STDIN_FILENO;
-	proc->io[STDOUT_FILENO] = STDOUT_FILENO;
-	proc->io[STDERR_FILENO] = STDERR_FILENO;
+	ft_memset(proc->scope, -1, 3 * sizeof(int));
+	proc->src[STDIN_FILENO] = STDIN_FILENO;
+	proc->src[STDOUT_FILENO] = STDOUT_FILENO;
+	proc->src[STDERR_FILENO] = STDERR_FILENO;
 	return (YEP);
 }
 

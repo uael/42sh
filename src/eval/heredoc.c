@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   eval/redir.c                                       :+:      :+:    :+:   */
+/*   eval/heredoc.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,22 +12,35 @@
 
 #include "ush/eval.h"
 
-inline int		sh_evalredir(t_job *job, int fd, t_deq *toks, char **ln)
+static inline int	ouput(int ac, char **av, char**envv)
 {
-	t_tok *tok;
+	(void)ac;
+	(void)envv;
+	ft_putf(STDOUT_FILENO, av[0]);
+	return (EXIT_SUCCESS);
+}
+
+inline int			sh_evalheredoc(t_job *job, int fd, t_deq *toks, char **ln)
+{
+	t_tok	*tok;
+	size_t	i;
+	t_tok	*op;
+	t_proc	out;
+	t_proc	*proc;
 
 	(void)fd;
-	tok = sh_tokpeek(toks);
-	if (!job->processes.len)
-		return (sh_parseerr(*ln, tok, "Unexpected redirection `%s' "
-			"for empty command line", sh_tokstr(tok)));
-	if (tok->id == '<')
-		return (sh_evalrin(job, fd, toks, ln));
-	if (tok->id == '>' || tok->id == TOK_RPOUT)
-		return (sh_evalrout(job, fd, toks, ln));
-	if (tok->id == TOK_RAOUT)
-		return (sh_evalraout(job, fd, toks, ln));
-	if (tok->id == TOK_HEREDOC || tok->id == TOK_HEREDOCT)
-		return (sh_evalheredoc(job, fd, toks, ln));
-	return (NOP);
+	(void)ln;
+	op = sh_tokpeek(toks);
+	tok = sh_toknext(toks);
+	i = job->processes.len - 1;
+	proc = ft_vecat((t_vec *)&job->processes, i);
+	sh_procfn(&out, ouput, NULL);
+	if (ft_isdigit(*op->val))
+		proc->src[STDIN_FILENO] = *op->val - '0';
+	out.argv = ft_malloc(2 * sizeof(char **));
+	out.argv[0] = ft_strdup(tok->val);
+	out.argv[1] = NULL;
+	ft_veccput((t_vec *)&job->processes, i, &out);
+	sh_toknext(toks);
+	return (YEP);
 }

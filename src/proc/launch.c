@@ -33,23 +33,23 @@ static inline pid_t	procfg(pid_t pgid, int fg)
 	return (pid);
 }
 
-static inline int	porcio(int *io)
+static inline int	porcio(int *io, int *src)
 {
 	if (io[STDIN_FILENO] >= 0 && io[STDIN_FILENO] != STDIN_FILENO)
 	{
-		if (dup2(io[STDIN_FILENO], STDIN_FILENO) < 0 ||
+		if (dup2(io[STDIN_FILENO], src[STDIN_FILENO]) < 0 ||
 			close(io[STDIN_FILENO]))
 			return (THROW(WUT));
 	}
 	if (io[STDOUT_FILENO] >= 0 && io[STDOUT_FILENO] != STDOUT_FILENO)
 	{
-		if (dup2(io[STDOUT_FILENO], STDOUT_FILENO) < 0 ||
+		if (dup2(io[STDOUT_FILENO], src[STDOUT_FILENO]) < 0 ||
 			close(io[STDOUT_FILENO]))
 			return (THROW(WUT));
 	}
 	if (io[STDERR_FILENO] >= 0 && io[STDERR_FILENO] != STDERR_FILENO)
 	{
-		if (dup2(io[STDERR_FILENO], STDERR_FILENO) < 0 ||
+		if (dup2(io[STDERR_FILENO], src[STDERR_FILENO]) < 0 ||
 			close(io[STDERR_FILENO]))
 			return (THROW(WUT));
 	}
@@ -92,12 +92,12 @@ static inline int	avcount(char **av)
 	return ((int)(av - beg));
 }
 
-int					sh_proclaunch(t_proc *proc, pid_t pgid, int fg)
+int					sh_proclaunch(t_proc *proc, pid_t pgid, int *io, int fg)
 {
 	pid_t pid;
 
 	pid = procfg(pgid, fg);
-	if (porcio(proc->io) || procredir(proc, pid))
+	if (porcio(io, proc->src) || procredir(proc, pid))
 	{
 		if (pid == g_shpgid)
 			exit(EXIT_FAILURE);
@@ -108,7 +108,8 @@ int					sh_proclaunch(t_proc *proc, pid_t pgid, int fg)
 		proc->status = proc->u.fn(avcount(proc->argv), proc->argv, proc->envv);
 		if (pid > 0 && pid != g_shpgid)
 			exit(proc->status);
-		porcio(proc->scope);
+		porcio(proc->scope,
+			(int[3]){STDIN_FILENO, STDOUT_FILENO, STDERR_FILENO});
 		return (YEP);
 	}
 	else if (proc->kind == PROC_EXE)

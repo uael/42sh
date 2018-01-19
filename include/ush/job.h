@@ -33,7 +33,6 @@ typedef struct	s_jb
 	t_procs		processes;
 	t_bool		notified;
 	TTY			tmodes;
-	int			io[3];
 }				t_job;
 
 extern void		sh_jobctor(t_job *job);
