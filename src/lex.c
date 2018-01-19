@@ -144,6 +144,8 @@ int					sh_lex(int fd, t_deq *toks, char **it, char **ln)
 		ln = it;
 	while ((tok = ft_deqpush(toks)))
 	{
+		ft_sdsgrow((t_sds *)tok, 1);
+		*tok->val = '\0';
 		if (!**it)
 		{
 			tok->id = TOK_END;
