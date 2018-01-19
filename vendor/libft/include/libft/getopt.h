@@ -29,10 +29,10 @@ enum			e_arg
 
 typedef struct	s_opt
 {
-	char	*s;
-	int		has_arg;
-	int		*f;
-	int		val;
+	char		*s;
+	int			has_arg;
+	int			*f;
+	int			val;
 }               t_opt;
 
 /*
@@ -54,10 +54,10 @@ extern int		g_opterr;
  ** optopt is the option find
 */
 
-int			ft_getopt_long(int ac, char **av,
-						char *optstring, t_opt *longopt);
-int			ft_getopt_long_long(t_opt *lopt, char **av, char *pname);
-void		ft_getopt_init(char **pname, char **nextchar, char *s);
-int		ft_getopt(int ac, const char **av, const char *optstring);
+int				ft_lgetopt(int ac, char **av,
+	char *optstring, t_opt *longopt);
+int				ft_llgetopt(t_opt *lopt, char **av, char *pname);
+void			ft_getopt_init(char **pname, char **nextchar, char *s);
+int				ft_getopt(int ac, const char **av, const char *optstring);
 
 #endif

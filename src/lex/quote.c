@@ -24,10 +24,10 @@ inline int	sh_lexquote(int fd, t_tok *tok, char **it, char **ln)
 			return (st < 0 ? WUT : sh_synerr(*ln, *it, "Unexpected "
 				"EOF while looking for matching `%c'", quote));
 		else if (quote == '"' && *(*it - 1) == '\\')
-			ft_sdscpush((t_sds *)tok, ft_strchr("\\\n\"$", **it)
-				? *(*it)++ : (char)'\\');
+			ft_sdscpush((t_sds *)tok, ft_strchr("\\\n\"$", *++*it)
+				? **it : (char)'\\');
 		else if (quote == '\'' && *(*it - 1) == '\\')
-			ft_sdscpush((t_sds *)tok, **it == '\'' ? *(*it)++ : (char)'\\');
+			ft_sdscpush((t_sds *)tok, *++*it == '\'' ? **it : (char)'\\');
 		else if (**it == quote && ++*it)
 			break ;
 		else if (**it == '\\')

@@ -51,7 +51,7 @@ static int	ft_getopt_long_longoptarg(t_opt *lopt, char *pname)
 	return (lopt->f ? 0 : lopt->val);
 }
 
-int			ft_getopt_long_long(t_opt *lopt, char **av, char *pname)
+int			ft_llgetopt(t_opt *lopt, char **av, char *pname)
 {
 	g_optind += 1;
 	if (lopt == NULL)

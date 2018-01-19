@@ -18,3 +18,16 @@
 #define M_DUP "Duplicate option"
 #define N_ENV COLOR_RED COLOR_BOLD "env: " COLOR_RESET
 
+inline int	sh_bienv(int ac, char **av, char **env)
+{
+	int i;
+
+	(void)ac;
+	(void)av;
+	(void)env;
+	i = -1;
+	while (env[++i])
+		ft_putf(1, "%s\n", env[i]);
+	return (EXIT_SUCCESS);
+}
+

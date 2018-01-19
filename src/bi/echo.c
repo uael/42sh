@@ -19,6 +19,7 @@ inline int	sh_biecho(int ac, char **argv, char **env)
 
 	(void)env;
 	n_flag = 0;
+	//ft_putn(1, ft_getopt(ac, (const char **)argv, "noeld"), 10);
 	if (!argv[1])
 	{
 		ft_write(1, "\n", 1);
