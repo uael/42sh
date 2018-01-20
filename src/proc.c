@@ -174,6 +174,7 @@ inline void		sh_procdtor(t_proc *proc)
 		while (*av)
 			free(*av++);
 		free(proc->argv);
+		proc->argv = NULL;
 	}
 	ft_vecdtor((t_vec *)&proc->redirs, NULL);
 	if (proc->kind == PROC_SH)
