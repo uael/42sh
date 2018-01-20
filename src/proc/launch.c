@@ -99,7 +99,15 @@ int					sh_proclaunch(t_proc *proc, pid_t pgid, int *io, int fg)
 			exit(EXIT_FAILURE);
 		return (NOP);
 	}
-	if (proc->kind == PROC_FN)
+	if (proc->kind == PROC_SH)
+	{
+		g_shinteract = 0;
+		g_shpgid = pid;
+		sh_eval(-1, &proc->u.sh.toks, &proc->u.sh.ln);
+		proc->status = g_shstatus;
+		return (sh_exit(g_shstatus, NULL));
+	}
+	else if (proc->kind == PROC_FN)
 	{
 		proc->status = proc->u.fn(avcount(proc->argv), proc->argv, proc->envv);
 		if (pid > 0 && pid != g_shpgid)

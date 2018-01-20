@@ -1,38 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   eval/command.c                                     :+:      :+:    :+:   */
+/*   ush/proc/sh.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2018/01/06 11:10:01 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/06 12:00:10 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ush/eval.h"
+#ifndef USH_PROC_SH_H
+# define USH_PROC_SH_H
 
-inline int		sh_evalcmd(t_job *job, int fd, t_deq *toks, char **ln)
+# include "../shell.h"
+
+typedef struct	s_subsh
 {
-	t_tok	*tok;
-	int		st;
+	t_deq		toks;
+	char		*ln;
+}				t_subsh;
 
-	st = NOP;
-	if (!(tok = sh_tokpeek(toks)))
-		return (NOP);
-	if ((tok->id == TOK_WORD || TOK_ISREDIR(tok->id)) &&
-		!(st = sh_evalsimple(job, fd, toks, ln)))
-		return (YEP);
-	if (tok->id == '(' && !(st = sh_evalcompound(job, fd, toks, ln)))
-	{
-		while ((tok = sh_tokpeek(toks)))
-			if (TOK_ISREDIR(tok->id))
-			{
-				if ((st = sh_evalredir(job, fd, toks, ln)))
-					return (st);
-			}
-			else
-				return (YEP);
-	}
-	return (st);
-}
+#endif

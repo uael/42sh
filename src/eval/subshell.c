@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   eval/command.c                                     :+:      :+:    :+:   */
+/*   eval/subshell.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,27 +12,14 @@
 
 #include "ush/eval.h"
 
-inline int		sh_evalcmd(t_job *job, int fd, t_deq *toks, char **ln)
+inline int		sh_evalsubshell(t_job *job, int fd, t_deq *toks, char **ln)
 {
-	t_tok	*tok;
-	int		st;
+	t_proc	proc;
 
-	st = NOP;
-	if (!(tok = sh_tokpeek(toks)))
-		return (NOP);
-	if ((tok->id == TOK_WORD || TOK_ISREDIR(tok->id)) &&
-		!(st = sh_evalsimple(job, fd, toks, ln)))
-		return (YEP);
-	if (tok->id == '(' && !(st = sh_evalcompound(job, fd, toks, ln)))
-	{
-		while ((tok = sh_tokpeek(toks)))
-			if (TOK_ISREDIR(tok->id))
-			{
-				if ((st = sh_evalredir(job, fd, toks, ln)))
-					return (st);
-			}
-			else
-				return (YEP);
-	}
-	return (st);
+	(void)fd;
+	if (sh_procsh(&proc, toks, *ln))
+		return (sh_evalerr(*ln, sh_tokpeek(toks), "Empty subshell"));
+	sh_toknext(toks);
+	ft_veccpush((t_vec *)&job->processes, &proc);
+	return (YEP);
 }
