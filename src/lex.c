@@ -94,9 +94,9 @@ static inline int	lex(int fd, t_tok *tok, char **it, char **ln)
 			;
 		return (YEP);
 	}
-	if (**it == '\\' && *++*it == '\n' && !*++*it &&
-		(st = fd < 0 ? NOP : rl_catline(fd, -2, ln, it)))
-		return (st);
+	while (**it == '\\' && *(*it + 1) == '\n' && !*(*it + 2))
+		if ((st = fd < 0 ? NOP : rl_catline(fd, -2, ln, it)))
+			return (st);
 	if (**it == '#')
 		while (**it && **it != '\n' && **it != '\r')
 			++it;

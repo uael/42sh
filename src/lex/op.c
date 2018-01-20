@@ -23,9 +23,9 @@ static inline int	opnext(int fd, char **it, char **ln)
 {
 	int	st;
 
-	if (*++*it == '\\' && *++*it == '\n' && !*++*it &&
-		(st = fd < 0 ? NOP : rl_catline(fd, -2, ln, it)))
-		return (st);
+	while (*++*it == '\\' && *(*it + 1) == '\n' && !*(*it + 2))
+		if ((st = fd < 0 ? NOP : rl_catline(fd, -2, ln, it)))
+			return (st);
 	return (YEP);
 }
 

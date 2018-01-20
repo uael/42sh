@@ -68,6 +68,10 @@ inline int			sh_eval(int fd, t_deq *toks, char **ln)
 		sh_varscope();
 		sh_poolscope();
 	}
+	if (!(tok = sh_tokpeek(toks)))
+		return (evalfinalize(YEP, toks, fd));
+	while (tok && tok->id == TOK_EOL)
+		tok = sh_toknext(toks);
 	if (sh_evallist(fd, toks, ln) == ERR)
 		return (evalfinalize(NOP, toks, fd));
 	if (!(tok = sh_tokpeek(toks)))

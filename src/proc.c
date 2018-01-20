@@ -16,6 +16,8 @@
 #include "ush/eval.h"
 #include "ush/bi.h"
 
+static int		g_iodfl[3] = {STDIN_FILENO, STDOUT_FILENO, STDERR_FILENO};
+
 static int		exetest(char *exe)
 {
 	struct stat s;
@@ -75,9 +77,36 @@ inline int		sh_procfn(t_proc *proc, t_procfn *fn, char **envv)
 	proc->kind = PROC_FN;
 	ft_vecctor((t_vec *)&proc->redirs, sizeof(t_redir));
 	ft_memset(proc->scope, -1, 3 * sizeof(int));
-	proc->src[STDIN_FILENO] = STDIN_FILENO;
-	proc->src[STDOUT_FILENO] = STDOUT_FILENO;
-	proc->src[STDERR_FILENO] = STDERR_FILENO;
+	ft_memcpy(proc->src, g_iodfl, 3 * sizeof(int));
+	return (YEP);
+}
+
+inline int		sh_procsh(t_proc *proc, t_deq *toks, char *ln)
+{
+	int		stack;
+	t_tok	*tok;
+
+	ft_memset(proc, stack = 0, sizeof(t_proc));
+	ft_deqctor(&proc->u.sh.toks, sizeof(t_tok));
+	proc->u.sh.ln = ln;
+	if (toks)
+	{
+		while ((tok = sh_toknext(toks))->id != ')' && !stack)
+		{
+			if (tok->id == '(')
+				++stack;
+			else if (tok->id == ')')
+				--stack;
+			*(t_tok *)ft_deqpush(&proc->u.sh.toks) = *tok;
+		}
+		if (!proc->u.sh.toks.len)
+			return (NOP);
+		(*(t_tok *)ft_deqpush(&proc->u.sh.toks)).id = TOK_END;
+	}
+	proc->kind = PROC_SH;
+	ft_vecctor((t_vec *)&proc->redirs, sizeof(t_redir));
+	ft_memset(proc->scope, -1, 3 * sizeof(int));
+	ft_memcpy(proc->src, g_iodfl, 3 * sizeof(int));
 	return (YEP);
 }
 
@@ -89,9 +118,7 @@ inline int		sh_procctor(t_proc *proc, char *path, char *exe, char **envv)
 	ft_memset(proc, 0, sizeof(t_proc));
 	ft_vecctor((t_vec *)&proc->redirs, sizeof(t_redir));
 	ft_memset(proc->scope, -1, 3 * sizeof(int));
-	proc->src[STDIN_FILENO] = STDIN_FILENO;
-	proc->src[STDOUT_FILENO] = STDOUT_FILENO;
-	proc->src[STDERR_FILENO] = STDERR_FILENO;
+	ft_memcpy(proc->src, g_iodfl, 3 * sizeof(int));
 	proc->envv = envv;
 	if (!ft_strcmp(exe, "cd"))
 	{

@@ -13,12 +13,13 @@
 #ifndef USH_PROC_KIND_H
 # define USH_PROC_KIND_H
 
-# include "../shell.h"
+# include "sh.h"
 
 typedef enum	e_prockd
 {
 	PROC_EXE,
-	PROC_FN
+	PROC_FN,
+	PROC_SH
 }				t_prockd;
 
 typedef int		(t_procfn)(int ac, char **av, char **envv);
@@ -27,6 +28,7 @@ typedef union	u_procu
 {
 	char		*exe;
 	t_procfn	*fn;
+	t_subsh		sh;
 }				t_procu;
 
 #endif
