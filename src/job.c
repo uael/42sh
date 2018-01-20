@@ -20,5 +20,5 @@ inline void		sh_jobctor(t_job *job)
 
 inline void		sh_jobdtor(t_job *job)
 {
-	ft_vecclr((t_vec *)&job->processes, (t_dtor)sh_procdtor);
+	ft_vecdtor((t_vec *)&job->processes, (t_dtor)sh_procdtor);
 }

@@ -176,4 +176,6 @@ inline void		sh_procdtor(t_proc *proc)
 		free(proc->argv);
 	}
 	ft_vecdtor((t_vec *)&proc->redirs, NULL);
+	if (proc->kind == PROC_SH)
+		ft_deqdtor(&proc->u.sh.toks, (t_dtor)ft_sdsdtor);
 }
