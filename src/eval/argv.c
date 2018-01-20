@@ -26,8 +26,8 @@ inline int		sh_evalargv(t_job *job, int fd, t_deq *toks, char **ln)
 	{
 		g_shstatus = st;
 		if (st == PROC_NORIGHTS)
-			return (sh_parseerr(*ln, tok, "%s: permission denied", tok->val));
-		return (sh_parseerr(*ln, tok, "%s: Command not found", tok->val));
+			return (sh_evalerr(*ln, tok, "%s: permission denied", tok->val));
+		return (sh_evalerr(*ln, tok, "%s: Command not found", tok->val));
 	}
 	ft_vecctor(&av, sizeof(char *));
 	*(char **)ft_vecpush(&av) = proc.kind == PROC_FN ? ft_strdup(tok->val) :

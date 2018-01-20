@@ -16,18 +16,22 @@ inline int		sh_evalpipeline(t_job *job, int fd, t_deq *toks, char **ln)
 {
 	t_tok	*tok;
 	t_tok	*eol;
+	int		st;
 
-	if (sh_evalcmd(job, fd, toks, ln))
-		return (NOP);
+	if ((st = sh_evalcmd(job, fd, toks, ln)))
+		return (st);
 	while (1)
-		if ((tok = sh_tokpeek(toks))->id == TOK_PIPE)
+		if (sh_tokpeek(toks)->id == TOK_PIPE)
 		{
 			while ((eol = sh_toknext(toks)))
 				if (eol->id != TOK_EOL)
 					break ;
-			if (sh_evalcmd(job, fd, toks, ln))
-				return (sh_parseerr(*ln, tok, "Unfinished pipeline sequence "
-					"near `%s'", sh_tokstr(tok)));
+			if ((st = sh_evalcmd(job, fd, toks, ln)))
+			{
+				tok = sh_tokpeek(toks);
+				return (st == NOP ? sh_evalerr(*ln, tok, "Unexpected token `%s'"
+					" on pipeline sequence", sh_tokstr(tok)) : st);
+			}
 		}
 		else
 			return (YEP);

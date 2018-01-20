@@ -15,12 +15,13 @@
 inline int		sh_evalcmd(t_job *job, int fd, t_deq *toks, char **ln)
 {
 	t_tok	*tok;
+	int		st;
 
+	st = NOP;
 	if (!(tok = sh_tokpeek(toks)))
-		return (sh_synerr(*ln, NULL, "Unexpected token `%s'",
-			sh_tokstr(NULL)));
+		return (NOP);
 	if ((tok->id == TOK_WORD || TOK_ISREDIR(tok->id)) &&
-		!sh_evalsimple(job, fd, toks, ln))
+		!(st = sh_evalsimple(job, fd, toks, ln)))
 		return (YEP);
-	return (NOP);
+	return (st);
 }

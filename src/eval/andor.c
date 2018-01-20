@@ -12,19 +12,27 @@
 
 #include "ush/eval.h"
 
+static inline int	pipelineerr(int st, t_tok *tok, t_bool bang, char *ln)
+{
+	if (st == NOP)
+		return (sh_evalerr(ln, tok, bang ? "Unexpected bang `%s' for empty "
+			"pipeline" : "Expected pipeline got `%s'", sh_tokstr(tok)));
+	return (st);
+}
+
 inline int		sh_evalandor(t_job *job, int fd, t_deq *toks, char **ln)
 {
-	t_tok *tok;
-	t_job right;
+	t_tok	*tok;
+	t_job	right;
+	int		st;
 
 	if ((tok = sh_tokpeek(toks))->id == TOK_NOT)
 	{
 		job->bang = 1;
 		sh_toknext(toks);
 	}
-	if (sh_evalpipeline(job, fd, toks, ln))
-		return (!job->bang ? NOP : sh_synerr(*ln, *ln + tok->pos, "Unexpected "
-			"bang `%s'", sh_tokidstr(tok->id)));
+	if ((st = sh_evalpipeline(job, fd, toks, ln)))
+		return (pipelineerr(st, tok, job->bang, *ln));
 	while (1)
 		if ((tok = sh_tokpeek(toks))->id == TOK_LAND)
 		{
@@ -32,14 +40,16 @@ inline int		sh_evalandor(t_job *job, int fd, t_deq *toks, char **ln)
 				if (tok->id != TOK_EOL)
 					break ;
 			sh_jobctor(&right);
-			if (sh_tokpeek(toks)->id == TOK_NOT)
+			if (!(tok = sh_tokpeek(toks)))
+				return (sh_evalerr(*ln, tok, "Expected <pipeline> got `%s'",
+					sh_tokstr(tok)));
+			if (tok->id == TOK_NOT)
 			{
-				job->bang = 1;
+				right.bang = 1;
 				sh_toknext(toks);
 			}
-			if (sh_evalpipeline(&right, fd, toks, ln))
-				return (!job->bang ? NOP : sh_synerr(*ln, *ln + tok->pos,
-					"Unexpected bang `%s'", sh_tokidstr(tok->id)));
+			if ((st = sh_evalpipeline(&right, fd, toks, ln)))
+				return (pipelineerr(st, tok, right.bang, *ln));
 			job->andor = ANDOR_AND;
 			job->next = ft_memdup(&right, sizeof(t_job));
 			job = job->next;
@@ -50,8 +60,16 @@ inline int		sh_evalandor(t_job *job, int fd, t_deq *toks, char **ln)
 				if (tok->id != TOK_EOL)
 					break ;
 			sh_jobctor(&right);
-			if (sh_evalpipeline(&right, fd, toks, ln))
-				return (NOP);
+			if (!(tok = sh_tokpeek(toks)))
+				return (sh_evalerr(*ln, tok, "Expected <pipeline> got `%s'",
+					sh_tokstr(tok)));
+			if (tok->id == TOK_NOT)
+			{
+				right.bang = 1;
+				sh_toknext(toks);
+			}
+			if ((st = sh_evalpipeline(&right, fd, toks, ln)))
+				return (pipelineerr(st, tok, right.bang, *ln));
 			job->andor = ANDOR_OR;
 			job->next = ft_memdup(&right, sizeof(t_job));
 			job = job->next;
