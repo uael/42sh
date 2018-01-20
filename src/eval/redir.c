@@ -14,12 +14,12 @@
 
 inline int		sh_evalredir(t_job *job, int fd, t_deq *toks, char **ln)
 {
-	t_tok *tok;
+	t_tok	*tok;
 
 	(void)fd;
 	tok = sh_tokpeek(toks);
 	if (!job->processes.len)
-		return (sh_parseerr(*ln, tok, "Unexpected redirection `%s' "
+		return (sh_evalerr(*ln, tok, "Unexpected redirection `%s' "
 			"for empty command line", sh_tokstr(tok)));
 	if (tok->id == '<')
 		return (sh_evalrin(job, fd, toks, ln));

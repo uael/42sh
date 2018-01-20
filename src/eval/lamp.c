@@ -22,7 +22,7 @@ inline int			sh_evallamp(t_job *job, int fd, t_deq *toks, char **ln)
 	(void)fd;
 	op = sh_tokpeek(toks);
 	if ((tok = sh_toknext(toks))->id != TOK_WORD)
-		return (sh_parseerr(*ln, tok, "Expected `<word>' after redirection "
+		return (sh_evalerr(*ln, tok, "Expected `<word>' after redirection "
 			"`%s' got `%s'", sh_tokstr(op), sh_tokstr(tok)));
 	proc = ft_vecback((t_vec *)&job->processes);
 	if (ft_isdigit(*op->val))
@@ -36,7 +36,7 @@ inline int			sh_evallamp(t_job *job, int fd, t_deq *toks, char **ln)
 	else if (ft_isdigit(*tok->val) && ft_strlen(tok->val) == 1)
 		redir.to = *tok->val - '0';
 	else
-		return (sh_parseerr(*ln, tok, "ambiguous redirect `%s'",
+		return (sh_evalerr(*ln, tok, "ambiguous redirect `%s'",
 			sh_tokstr(op)));
 	ft_veccpush((t_vec *)&proc->redirs, &redir);
 	sh_toknext(toks);

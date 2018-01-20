@@ -12,34 +12,50 @@
 
 #include "ush/eval.h"
 
+static inline int	ouput(int ac, char **av, char**envv)
+{
+	(void)ac;
+	(void)envv;
+	sh_synerr(av[0], av[1], (int)av[3] == PROC_NORIGHTS ?
+		"%s: permission denied" : "%s: Command not found", av[2]);
+	return ((int)av[3]);
+}
+
 inline int		sh_evalargv(t_job *job, int fd, t_deq *toks, char **ln)
 {
 	t_tok	*tok;
 	t_vec	av;
-	int		st;
-	t_proc	proc;
+	int64_t	st;
+	t_proc	*proc;
 
 	(void)fd;
-	(void)ln;
 	tok = sh_tokpeek(toks);
-	if ((st = sh_procctor(&proc, "PATH", tok->val, g_env)))
-	{
-		g_shstatus = st;
-		if (st == PROC_NORIGHTS)
-			return (sh_parseerr(*ln, tok, "%s: permission denied", tok->val));
-		return (sh_parseerr(*ln, tok, "%s: Command not found", tok->val));
-	}
+	proc = ft_vecpush((t_vec *)&job->processes);
 	ft_vecctor(&av, sizeof(char *));
-	*(char **)ft_vecpush(&av) = proc.kind == PROC_FN ? ft_strdup(tok->val) :
-		proc.u.exe;
-	tok = sh_toknext(toks);
-	while (tok->id == TOK_WORD)
+	if ((st = sh_procctor(proc, "PATH", tok->val, g_env)))
 	{
-		*(char **)ft_vecpush(&av) = ft_strdup(tok->val);
+		proc->kind = PROC_FN;
+		proc->u.fn = ouput;
+		*(char **)ft_vecpush(&av) = *ln;
+		*(char **)ft_vecpush(&av) = *ln + tok->pos;
+		*(char **)ft_vecpush(&av) = tok->val;
+		*(char **)ft_vecpush(&av) = (char *)st;
 		tok = sh_toknext(toks);
+		while (tok->id == TOK_WORD)
+			tok = sh_toknext(toks);
+	}
+	else
+	{
+		*(char **)ft_vecpush(&av) = proc->kind == PROC_FN ? ft_strdup(tok->val) :
+			proc->u.exe;
+		tok = sh_toknext(toks);
+		while (tok->id == TOK_WORD)
+		{
+			*(char **)ft_vecpush(&av) = ft_strdup(tok->val);
+			tok = sh_toknext(toks);
+		}
 	}
 	*(char **)ft_vecpush(&av) = NULL;
-	proc.argv = av.buf;
-	ft_veccpush((t_vec *)&job->processes, &proc);
+	proc->argv = av.buf;
 	return (YEP);
 }

@@ -22,7 +22,7 @@ inline int			sh_evalcmp(t_job *job, int fd, t_deq *toks, char **ln)
 	(void)fd;
 	op = sh_tokpeek(toks);
 	if ((tok = sh_toknext(toks))->id != TOK_WORD)
-		return (sh_parseerr(*ln, tok, "Expected `<filename>' got `%s'",
+		return (sh_evalerr(*ln, tok, "Expected `<filename>' got `%s'",
 			sh_tokstr(tok)));
 	proc = ft_vecback((t_vec *)&job->processes);
 	while (tok->id == TOK_WORD)
@@ -32,7 +32,7 @@ inline int			sh_evalcmp(t_job *job, int fd, t_deq *toks, char **ln)
 		else
 			redir.from = STDIN_FILENO;
 		if ((redir.to = open(tok->val, O_RDWR | O_CREAT, 0644)) < 0)
-			return (sh_parseerr(*ln, tok, "%s: %e", tok->val, errno));
+			return (sh_evalerr(*ln, tok, "%s: %e", tok->val, errno));
 		ft_veccpush((t_vec *)&proc->redirs, &redir);
 		tok = sh_toknext(toks);
 	}

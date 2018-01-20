@@ -19,7 +19,6 @@
 
 extern t_map	*g_binaries;
 
-extern int		sh_parse(int fd, t_deq *toks, char **ln);
 extern int		sh_evallist(int fd, t_deq *toks, char **ln);
 extern int		sh_evalandor(t_job *job, int fd, t_deq *toks, char **ln);
 extern int		sh_evalpipeline(t_job *job, int fd, t_deq *toks, char **ln);

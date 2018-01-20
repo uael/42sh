@@ -52,10 +52,10 @@ int			sh_synerr(char const *ln, char const *it, char const *fmt, ...)
 		ft_ofswrs(g_cerr, COLOR_BRED"^"COLOR_RESET"\n");
 	}
 	ft_ofsflush(g_cerr);
-	return (NOP);
+	return (ERR);
 }
 
-int			sh_parseerr(char const *ln, t_tok *tok, char const *fmt, ...)
+int			sh_evalerr(char const *ln, t_tok *tok, char const *fmt, ...)
 {
 	va_list	ap;
 	char	*it;
@@ -76,5 +76,5 @@ int			sh_parseerr(char const *ln, t_tok *tok, char const *fmt, ...)
 		ft_ofswrs(g_cerr, COLOR_BRED"^"COLOR_RESET"\n");
 	}
 	ft_ofsflush(g_cerr);
-	return (NOP);
+	return (ERR);
 }

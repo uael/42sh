@@ -97,13 +97,22 @@ static inline int	lex(int fd, t_tok *tok, char **it, char **ln)
 	if (**it == '\\' && *++*it == '\n' && !*++*it &&
 		(st = fd < 0 ? NOP : rl_catline(fd, -2, ln, it)))
 		return (st);
+	if (**it == '#')
+		while (**it && **it != '\n' && **it != '\r')
+			++it;
+	if (!**it)
+	{
+		tok->id = TOK_END;
+		return (YEP);
+	}
 	if (ft_isdigit(**it))
 		ft_sdscpush((t_sds *)tok, *(*it)++);
 	if ((st = sh_lexop(fd, tok, it, ln)) < 0)
 		return (WUT);
 	if (st && (st = sh_lexword(fd, tok, it, ln)) < 0)
 		return (WUT);
-	return (st);
+	return (st == NOP ? sh_synerr(*ln, *it, "Unexpected token `%c'", **it)
+		: YEP);
 }
 
 static inline int	reduce(int fd, t_deq *toks, char **it, char **ln)
@@ -172,7 +181,7 @@ int					sh_lex(int fd, t_deq *toks, char **it, char **ln)
 		}
 		if ((st = lex(fd, tok, it, ln)))
 			return (st);
-		if (!i && tok->id == TOK_EOL)
+		if (!i && (tok->id == TOK_EOL || tok->id == TOK_END))
 			break ;
 		if (ft_strchr("({[", tok->id))
 			stack[i++] = bracket(tok->id);

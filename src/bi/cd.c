@@ -20,7 +20,8 @@
 static char		*cd_path(int ac, char **av, char **env, t_bool p)
 {
 	char *envv;
-
+	if ((ac == 1 + p) && (envv = ft_getenv(env, "HOME")))
+		return (ft_strdup(envv));
 	if (ac == 2 + p && ft_strcmp(av[1 + p], "-") == 0 &&
 		(envv = ft_getenv(env, "OLDPWD")))
 		return (ft_strdup(envv));
