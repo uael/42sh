@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ush/proc/kind.h                                    :+:      :+:    :+:   */
+/*   ush/proc/cmderr.h                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,28 +10,17 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef USH_PROC_KIND_H
-# define USH_PROC_KIND_H
+#ifndef USH_PROC_CMDERR_H
+# define USH_PROC_CMDERR_H
 
-# include "sh.h"
-# include "cmderr.h"
+# include "../shell.h"
 
-typedef enum	e_prockd
+typedef struct	s_cmderr
 {
-	PROC_EXE,
-	PROC_FN,
-	PROC_SH,
-	PROC_CMDERR
-}				t_prockd;
-
-typedef int		(t_procfn)(int ac, char **av, char **envv);
-
-typedef union	u_procu
-{
+	int			st;
+	char		*ln;
+	char		*it;
 	char		*exe;
-	t_procfn	*fn;
-	t_subsh		sh;
-	t_cmderr	cmderr;
-}				t_procu;
+}				t_cmderr;
 
 #endif

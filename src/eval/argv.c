@@ -12,20 +12,11 @@
 
 #include "ush/eval.h"
 
-static inline int	ouput(int ac, char **av, char**envv)
-{
-	(void)ac;
-	(void)envv;
-	sh_synerr(av[0], av[1], (int)av[3] == PROC_NORIGHTS ?
-		"%s: permission denied" : "%s: Command not found", av[2]);
-	return ((int)av[3]);
-}
-
 inline int		sh_evalargv(t_job *job, int fd, t_deq *toks, char **ln)
 {
 	t_tok	*tok;
 	t_vec	av;
-	int64_t	st;
+	int		st;
 	t_proc	*proc;
 
 	(void)fd;
@@ -34,12 +25,7 @@ inline int		sh_evalargv(t_job *job, int fd, t_deq *toks, char **ln)
 	ft_vecctor(&av, sizeof(char *));
 	if ((st = sh_procctor(proc, "PATH", tok->val, g_env)))
 	{
-		proc->kind = PROC_FN;
-		proc->u.fn = ouput;
-		*(char **)ft_vecpush(&av) = *ln;
-		*(char **)ft_vecpush(&av) = *ln + tok->pos;
-		*(char **)ft_vecpush(&av) = tok->val;
-		*(char **)ft_vecpush(&av) = (char *)st;
+		sh_proccmderr(proc, *ln, tok, st);
 		tok = sh_toknext(toks);
 		while (tok && tok->id == TOK_WORD)
 			tok = sh_toknext(toks);

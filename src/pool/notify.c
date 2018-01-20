@@ -38,6 +38,12 @@ inline void		sh_poolnotify(void)
 				ft_putf(1, "\n");
 			print = 1;
 			sh_jobdebug(job);
+			if ((job->andor == ANDOR_OR && job->status) ||
+				(job->andor == ANDOR_AND && !job->status))
+			{
+				sh_poolpush(job->next);
+				job->next = NULL;
+			}
 			sh_jobdtor(job);
 			if (--i != --g_pool->len)
 				ft_memmove(g_pool->jobs + i, g_pool->jobs + i + 1,

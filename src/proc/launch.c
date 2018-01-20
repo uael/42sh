@@ -116,6 +116,13 @@ int					sh_proclaunch(t_proc *proc, pid_t pgid, int *io, int fg)
 			(int[3]){STDIN_FILENO, STDOUT_FILENO, STDERR_FILENO});
 		return (YEP);
 	}
+	else if (proc->kind == PROC_CMDERR)
+	{
+		sh_synerr(proc->u.cmderr.ln, proc->u.cmderr.it,
+			proc->u.cmderr.st == PROC_NORIGHTS ? "%s: permission denied"
+				: "%s: Command not found", proc->u.cmderr.exe);
+		exit(proc->u.cmderr.st);
+	}
 	else if (proc->kind == PROC_EXE)
 	{
 		execve(proc->argv[0], proc->argv, proc->envv);
