@@ -88,9 +88,17 @@ static inline int	avcount(char **av)
 	return ((int)(av - beg));
 }
 
+static int	exhdl(int rcode, void *arg)
+{
+	(void)arg;
+	errno = 0;
+	return (rcode);
+}
+
 int					sh_proclaunch(t_proc *proc, pid_t pgid, int *io, int fg)
 {
-	pid_t pid;
+	pid_t		pid;
+	t_ex_hdl	dfl;
 
 	pid = procfg(pgid, fg);
 	if (porcio(io, proc->src) || procredir(proc, pid))
@@ -109,7 +117,9 @@ int					sh_proclaunch(t_proc *proc, pid_t pgid, int *io, int fg)
 	}
 	else if (proc->kind == PROC_FN)
 	{
+		ft_exbind(EXALL, ft_exhdl(exhdl, NULL), &dfl);
 		proc->status = proc->u.fn(avcount(proc->argv), proc->argv, proc->envv);
+		ft_exbind(EXALL, dfl, NULL);
 		if (pid > 0 && pid != g_shpgid)
 			exit(proc->status);
 		porcio(proc->scope,
@@ -118,9 +128,13 @@ int					sh_proclaunch(t_proc *proc, pid_t pgid, int *io, int fg)
 	}
 	else if (proc->kind == PROC_CMDERR)
 	{
-		sh_synerr(proc->u.cmderr.ln, proc->u.cmderr.it,
-			proc->u.cmderr.st == PROC_NORIGHTS ? "%s: permission denied"
-				: "%s: Command not found", proc->u.cmderr.exe);
+		if (proc->u.cmderr.ln)
+			sh_synerr(proc->u.cmderr.ln, proc->u.cmderr.it,
+				proc->u.cmderr.st == PROC_NORIGHTS ? "%s: permission denied"
+					: "%s: Command not found", proc->u.cmderr.exe);
+		else
+			ft_putf(2, proc->u.cmderr.st == PROC_NORIGHTS ? "%s: permission denied\n"
+				: "%s: Command not found\n", proc->u.cmderr.exe);
 		exit(proc->u.cmderr.st);
 	}
 	else if (proc->kind == PROC_EXE)

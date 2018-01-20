@@ -65,6 +65,8 @@ t_editln			*g_eln;
 t_bool				g_edit_cat = 0;
 char				*g_edit_prompt = 0;
 
+t_rlhook			*g_rlhook = NULL;
+
 static inline int	resetmode(void)
 {
 	if (g_mode != RL_INSERT)
@@ -85,6 +87,7 @@ static t_editbind	g_inskeymap[] =
     {1, K_CTRL_C, rl_signalc},
 	{1, K_CTRL_D, rl_signald},
 	{1, K_CTRL_P, rl_visualpaste},
+	{1, K_CTRL_L, rl_editclear},
 	{1, K_CTRL_V, rl_visualtoggle},
 	{1, K_CTRL_Y, rl_visualyank},
 	{3, K_LEFT, rl_editleft},
@@ -119,6 +122,7 @@ static t_editbind	g_viskeymap[] =
     {1, K_CTRL_C, rl_signalc},
 	{1, K_CTRL_D, rl_signald},
 	{1, K_CTRL_P, rl_visualpaste},
+	{1, K_CTRL_L, rl_editclear},
 	{1, K_CTRL_V, rl_visualtoggle},
 	{1, K_CTRL_Y, rl_visualyank},
 	{3, K_LEFT, rl_editleft},
@@ -205,7 +209,7 @@ int					rl_editln(char const *p, size_t *sz, char **ln, t_bool cat)
 		if ((rd = ft_read(STDIN_FILENO, key, 1)) < 0)
 			return (WUT);
 		else if (!rd)
-			continue ;
+			g_rlhook ? g_rlhook() : 0;
 		else if (ft_iscntrl(*key) || !ft_isascii(*key))
 		{
 			if ((st = keymap(key, rd)))

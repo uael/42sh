@@ -33,7 +33,7 @@ int			main(int ac, char **av, char **envv)
 	int		st;
 
 	st = EXIT_SUCCESS;
-	ft_exbind(0, ft_exhdl(exhdl, NULL), NULL);
+	ft_exbind(EXALL, ft_exhdl(exhdl, NULL), NULL);
 	sh_envinit(envv);
 	if (ac == 1)
 		return (sh_exit(sh_run(g_shfd = STDIN_FILENO), NULL));
