@@ -54,22 +54,21 @@ inline int				sh_lexword(int fd, t_tok *tok, char **it, char **ln)
 			break ;
 		else if (**it == '\'' || **it == '"')
 		{
-			if (sh_lexquote(fd, tok, it, ln) < 0)
-				return (WUT);
+			if ((st = sh_lexquote(fd, tok, it, ln)))
+				return (st);
 		}
 		else if (**it == '\\' && *++*it == '\n' && !*++*it &&
 			(st = fd < 0 ? NOP : rl_catline(fd, -2, ln, it)))
 			return (st);
 		else if (**it == '$')
 		{
-			if (sh_lexvar(fd, tok, it, ln) < 0)
-				return (WUT);
+			if ((st = sh_lexvar(fd, tok, it, ln)))
+				return (st);
 		}
 		else
 			ft_sdscpush((t_sds *)tok, *(*it)++);
 	if (!tok->len && beg == *it)
 		return (NOP);
-	ft_sdsgrow((t_sds *)tok, 1);
 	if ((tok->id = wordid(tok->val, tok->len)) == TOK_WORD)
 		sh_wordexpand((t_sds *)tok);
 	return (YEP);

@@ -94,16 +94,25 @@ static inline int	lex(int fd, t_tok *tok, char **it, char **ln)
 			;
 		return (YEP);
 	}
-	if (**it == '\\' && *++*it == '\n' && !*++*it &&
-		(st = fd < 0 ? NOP : rl_catline(fd, -2, ln, it)))
-		return (st);
+	while (**it == '\\' && *(*it + 1) == '\n' && !*(*it + 2))
+		if ((st = fd < 0 ? NOP : rl_catline(fd, -2, ln, it)))
+			return (st);
+	if (**it == '#')
+		while (**it && **it != '\n' && **it != '\r')
+			++it;
+	if (!**it)
+	{
+		tok->id = TOK_END;
+		return (YEP);
+	}
 	if (ft_isdigit(**it))
 		ft_sdscpush((t_sds *)tok, *(*it)++);
 	if ((st = sh_lexop(fd, tok, it, ln)) < 0)
 		return (WUT);
 	if (st && (st = sh_lexword(fd, tok, it, ln)) < 0)
 		return (WUT);
-	return (st ? sh_synerr(*ln, *it, "1: Unexpected token `%c'", **it) : YEP);
+	return (st == NOP ? sh_synerr(*ln, *it, "Unexpected token `%c'", **it)
+		: YEP);
 }
 
 static inline int	reduce(int fd, t_deq *toks, char **it, char **ln)
@@ -133,26 +142,59 @@ static inline int	reduce(int fd, t_deq *toks, char **it, char **ln)
 	return (YEP);
 }
 
+char				bracket(char b)
+{
+	if (b == '[')
+		return ']';
+	if (b == '{')
+		return '}';
+	if (b == '(')
+		return ')';
+	return (0);
+}
+
 int					sh_lex(int fd, t_deq *toks, char **it, char **ln)
 {
 	t_tok	*tok;
 	int 	st;
+	char	stack[1000];
+	size_t	i;
 
 	if (!**it)
 		return (NOP);
 	if (!ln)
 		ln = it;
+	i = 0;
 	while ((tok = ft_deqpush(toks)))
 	{
+		ft_sdsgrow((t_sds *)tok, 1);
+		*tok->val = '\0';
 		if (!**it)
 		{
-			tok->id = TOK_END;
-			break ;
+			if (!i)
+			{
+				tok->id = TOK_END;
+				break ;
+			}
+			if ((st = fd < 0 ? NOP : rl_catline(fd, -1, ln, it)))
+				return (st);
 		}
-		else if ((st = lex(fd, tok, it, ln)) < 0)
-			return (WUT);
-		else if (st || tok->id == TOK_EOL)
+		if ((st = lex(fd, tok, it, ln)))
+			return (st);
+		if (!i && (tok->id == TOK_EOL || tok->id == TOK_END))
 			break ;
+		if (ft_strchr("({[", tok->id))
+			stack[i++] = bracket(tok->id);
+		else if (i && tok->id == stack[i - 1])
+			--i;
+		else if (ft_strchr(")}]", tok->id) && (!i || tok->id != stack[i - 1]))
+		{
+			if (i)
+				return (sh_synerr(*ln, *ln + tok->pos, "Unexpected token `%c' "
+					"while looking for matching `%c'", tok->id, stack[i - 1]));
+			return (sh_synerr(*ln, *ln + tok->pos, "Unexpected closing "
+				"bracket `%c'", tok->id));
+		}
 	}
 	return (tok ? reduce(fd, toks, it, ln) : YEP);
 }

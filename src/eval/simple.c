@@ -23,13 +23,13 @@ inline int		sh_evalsimple(t_job *job, int fd, t_deq *toks, char **ln)
 		if (ft_strchr(tok->val, '='))
 			st = sh_evalassign(toks);
 		else if ((st = sh_evalargv(job, fd, toks, ln)))
-			return (NOP);
+			return (st);
 	}
 	while ((tok = sh_tokpeek(toks)))
 		if (TOK_ISREDIR(tok->id))
 		{
 			if ((st = sh_evalredir(job, fd, toks, ln)))
-				return (NOP);
+				return (st);
 		}
 		else
 			return (st);

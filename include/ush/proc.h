@@ -13,8 +13,9 @@
 #ifndef USH_PROC_H
 # define USH_PROC_H
 
-# include "proc/state.h"
 # include "proc/kind.h"
+# include "proc/sh.h"
+# include "proc/state.h"
 # include "redir.h"
 
 #define PROC_NOTFOUND 127
@@ -44,6 +45,7 @@ typedef struct	s_procs
 
 extern int		sh_procctor(t_proc *proc, char *path, char *exe, char **envv);
 extern int		sh_procfn(t_proc *proc, t_procfn *fn, char **envv);
+extern int		sh_procsh(t_proc *proc, t_deq *toks, char *ln);
 extern void		sh_procdtor(t_proc *proc);
 extern int		sh_proclaunch(t_proc *proc, pid_t pgid, int *io, int fg);
 extern int		sh_procmark(t_proc *proc, int status);

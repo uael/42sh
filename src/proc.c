@@ -16,6 +16,8 @@
 #include "ush/eval.h"
 #include "ush/bi.h"
 
+static int		g_iodfl[3] = {STDIN_FILENO, STDOUT_FILENO, STDERR_FILENO};
+
 static int		exetest(char *exe)
 {
 	struct stat s;
@@ -23,7 +25,7 @@ static int		exetest(char *exe)
 	if (!*exe || lstat(exe, &s) < 0)
 		return (PROC_NOTFOUND);
 	if (!(s.st_mode & (S_IFREG | S_IXUSR)))
-		return (PROC_NORIGHTS);
+		return (PROC_NOTFOUND);
 	if (access(exe, X_OK) != 0)
 		return (PROC_NORIGHTS);
 	return (YEP);
@@ -36,9 +38,11 @@ static int		exelookup(char **env, char *exe, char *path, char *buf)
 	size_t		len;
 	uint32_t	i;
 	int			st;
+	int			rights;
 
-	if (!(st = exetest(ft_strcpy(buf, exe))) || st == PROC_NORIGHTS)
+	if (!(st = exetest(ft_strcpy(buf, exe))))
 		return (st);
+	rights = st == PROC_NORIGHTS;
 	if (!(beg = ft_getenv(env, path)))
 		return (exetest(ft_strcat(ft_strcpy(buf, "/bin/"), exe)));
 	if (ft_mapget(g_binaries, exe, &i))
@@ -62,7 +66,7 @@ static int		exelookup(char **env, char *exe, char *path, char *buf)
 			break ;
 		beg = sep + 1;
 	}
-	return (PROC_NOTFOUND);
+	return (rights ? PROC_NORIGHTS : PROC_NOTFOUND);
 }
 
 inline int		sh_procfn(t_proc *proc, t_procfn *fn, char **envv)
@@ -73,9 +77,36 @@ inline int		sh_procfn(t_proc *proc, t_procfn *fn, char **envv)
 	proc->kind = PROC_FN;
 	ft_vecctor((t_vec *)&proc->redirs, sizeof(t_redir));
 	ft_memset(proc->scope, -1, 3 * sizeof(int));
-	proc->src[STDIN_FILENO] = STDIN_FILENO;
-	proc->src[STDOUT_FILENO] = STDOUT_FILENO;
-	proc->src[STDERR_FILENO] = STDERR_FILENO;
+	ft_memcpy(proc->src, g_iodfl, 3 * sizeof(int));
+	return (YEP);
+}
+
+inline int		sh_procsh(t_proc *proc, t_deq *toks, char *ln)
+{
+	int		stack;
+	t_tok	*tok;
+
+	ft_memset(proc, stack = 0, sizeof(t_proc));
+	ft_deqctor(&proc->u.sh.toks, sizeof(t_tok));
+	proc->u.sh.ln = ln;
+	if (toks)
+	{
+		while ((tok = sh_toknext(toks))->id != ')' && !stack)
+		{
+			if (tok->id == '(')
+				++stack;
+			else if (tok->id == ')')
+				--stack;
+			*(t_tok *)ft_deqpush(&proc->u.sh.toks) = *tok;
+		}
+		if (!proc->u.sh.toks.len)
+			return (NOP);
+		(*(t_tok *)ft_deqpush(&proc->u.sh.toks)).id = TOK_END;
+	}
+	proc->kind = PROC_SH;
+	ft_vecctor((t_vec *)&proc->redirs, sizeof(t_redir));
+	ft_memset(proc->scope, -1, 3 * sizeof(int));
+	ft_memcpy(proc->src, g_iodfl, 3 * sizeof(int));
 	return (YEP);
 }
 
@@ -85,6 +116,9 @@ inline int		sh_procctor(t_proc *proc, char *path, char *exe, char **envv)
 	char	buf[PATH_MAX + 1];
 
 	ft_memset(proc, 0, sizeof(t_proc));
+	ft_vecctor((t_vec *)&proc->redirs, sizeof(t_redir));
+	ft_memset(proc->scope, -1, 3 * sizeof(int));
+	ft_memcpy(proc->src, g_iodfl, 3 * sizeof(int));
 	proc->envv = envv;
 	if (!ft_strcmp(exe, "cd"))
 	{
@@ -120,11 +154,6 @@ inline int		sh_procctor(t_proc *proc, char *path, char *exe, char **envv)
 		return (st);
 	else
 		proc->u.exe = ft_strdup(buf);
-	ft_vecctor((t_vec *)&proc->redirs, sizeof(t_redir));
-	ft_memset(proc->scope, -1, 3 * sizeof(int));
-	proc->src[STDIN_FILENO] = STDIN_FILENO;
-	proc->src[STDOUT_FILENO] = STDOUT_FILENO;
-	proc->src[STDERR_FILENO] = STDERR_FILENO;
 	return (YEP);
 }
 

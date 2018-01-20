@@ -14,29 +14,38 @@
 
 static inline int	onsemicolon(t_job *job, int fd, t_deq *toks, char **ln)
 {
+	int st;
+
 	sh_toknext(toks);
-	g_shstatus = job->processes.len ? sh_joblaunch(job, 1) : job->status;
-	job->processes.len = 0;
-	if (sh_evalandor(job, fd, toks, ln))
+	if (job->processes.len)
+	{
+		g_shstatus = job->processes.len ? sh_joblaunch(job, 1) : job->status;
+		job->processes.len = 0;
+	}
+	if ((st = sh_evalandor(job, fd, toks, ln)))
 	{
 		sh_jobdtor(job);
-		return (NOP);
+		return (st);
 	}
 	return (YEP);
 }
 
 static inline int	onamp(t_job *job, int fd, t_deq *toks, char **ln)
 {
+	int st;
+
 	if (!g_shinteract)
 		return (onsemicolon(job, fd, toks, ln));
 	sh_toknext(toks);
 	if (job->processes.len)
+	{
 		sh_poolpush(job);
-	sh_jobctor(job);
-	if (sh_evalandor(job, fd, toks, ln))
+		sh_jobctor(job);
+	}
+	if ((st = sh_evalandor(job, fd, toks, ln)))
 	{
 		sh_jobdtor(job);
-		return (NOP);
+		return (st);
 	}
 	return (YEP);
 }
@@ -50,22 +59,28 @@ static inline int	oneof(t_job *job)
 
 inline int			sh_evallist(int fd, t_deq *toks, char **ln)
 {
-	t_tok *tok;
-	t_job job;
+	t_tok	*tok;
+	t_job	job;
+	int		st;
 
 	sh_jobctor(&job);
-	if (sh_evalandor(&job, fd, toks, ln))
-		return (NOP);
+	if (sh_evalandor(&job, fd, toks, ln) == ERR)
+		return (ERR);
 	while (1)
-		if ((tok = sh_tokpeek(toks))->id == TOK_AMP)
+		if (!(tok = sh_tokpeek(toks)))
 		{
-			if (onamp(&job, fd, toks, ln))
-				return (YEP);
+			sh_jobdtor(&job);
+			return (YEP);
+		}
+		else if (tok->id == TOK_AMP)
+		{
+			if ((st = onamp(&job, fd, toks, ln)))
+				return (st == NOP ? YEP : st);
 		}
 		else if (tok->id == TOK_SEMICOLON)
 		{
-			if (onsemicolon(&job, fd, toks, ln))
-				return (YEP);
+			if ((st = onsemicolon(&job, fd, toks, ln)))
+				return (st == NOP ? YEP : st);
 		}
 		else if (tok->id == TOK_END || tok->id == TOK_EOL)
 			return (oneof(&job));

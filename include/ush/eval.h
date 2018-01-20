@@ -19,12 +19,13 @@
 
 extern t_map	*g_binaries;
 
-extern int		sh_parse(int fd, t_deq *toks, char **ln);
 extern int		sh_evallist(int fd, t_deq *toks, char **ln);
 extern int		sh_evalandor(t_job *job, int fd, t_deq *toks, char **ln);
 extern int		sh_evalpipeline(t_job *job, int fd, t_deq *toks, char **ln);
 extern int		sh_evalcmd(t_job *job, int fd, t_deq *toks, char **ln);
 extern int		sh_evalsimple(t_job *job, int fd, t_deq *toks, char **ln);
+extern int		sh_evalcompound(t_job *job, int fd, t_deq *toks, char **ln);
+extern int		sh_evalsubshell(t_job *job, int fd, t_deq *toks, char **ln);
 
 extern int		sh_evalassign(t_deq *toks);
 

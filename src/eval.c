@@ -29,8 +29,8 @@ static int			parseeol(t_deq *toks, char **ln)
 		else if (tok->id == TOK_END)
 			return (YEP);
 		else
-			return (sh_synerr(*ln, *ln + tok->pos, "2: Unexpected token `%s'",
-				sh_tokidstr(tok->id)));
+			return (sh_evalerr(*ln, tok, "Unexpected token `%s'",
+				sh_tokstr(tok)));
 	return (YEP);
 }
 
@@ -43,7 +43,7 @@ static inline int	evalfinalize(int ret, t_deq *toks, int fd)
 		sh_varunscope();
 		sh_poolunscope();
 	}
-	if (ret == NOP)
+	if (ret > 0)
 	{
 		tok = sh_tokpeek(toks);
 		while (tok)
@@ -54,6 +54,7 @@ static inline int	evalfinalize(int ret, t_deq *toks, int fd)
 				sh_toknext(toks);
 				break ;
 			}
+		return (NOP);
 	}
 	return (ret);
 }
@@ -67,7 +68,11 @@ inline int			sh_eval(int fd, t_deq *toks, char **ln)
 		sh_varscope();
 		sh_poolscope();
 	}
-	if (sh_evallist(fd, toks, ln))
+	if (!(tok = sh_tokpeek(toks)))
+		return (evalfinalize(YEP, toks, fd));
+	while (tok && tok->id == TOK_EOL)
+		tok = sh_toknext(toks);
+	if (sh_evallist(fd, toks, ln) == ERR)
 		return (evalfinalize(NOP, toks, fd));
 	if (!(tok = sh_tokpeek(toks)))
 		return (evalfinalize(YEP, toks, fd));
@@ -76,7 +81,7 @@ inline int			sh_eval(int fd, t_deq *toks, char **ln)
 	else if (tok->id == TOK_END)
 		return (evalfinalize(YEP, toks, fd));
 	else if (tok->id != TOK_EOL)
-		return (evalfinalize(sh_synerr(*ln, *ln + tok->pos,
-			"3: Unexpected token `%s'", sh_tokidstr(tok->id)), toks, fd));
+		return (evalfinalize(sh_evalerr(*ln, tok,
+			"Unexpected token `%s'", sh_tokstr(tok)), toks, fd));
 	return (evalfinalize(parseeol(toks, ln), toks, fd));
 }
