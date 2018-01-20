@@ -20,7 +20,7 @@ static inline int	onsemicolon(t_job *job, int fd, t_deq *toks, char **ln)
 	if (job->processes.len)
 	{
 		g_shstatus = job->processes.len ? sh_joblaunch(job, 1) : job->status;
-		job->processes.len = 0;
+		ft_vecclr((t_vec *)&job->processes, (t_dtor)sh_procdtor);
 	}
 	if ((st = sh_evalandor(job, fd, toks, ln)))
 	{
@@ -37,11 +37,8 @@ static inline int	onamp(t_job *job, int fd, t_deq *toks, char **ln)
 	if (!g_shinteract)
 		return (onsemicolon(job, fd, toks, ln));
 	sh_toknext(toks);
-	if (job->processes.len)
-	{
-		sh_poolpush(job);
-		sh_jobctor(job);
-	}
+	sh_poolpush(job);
+	sh_jobctor(job);
 	if ((st = sh_evalandor(job, fd, toks, ln)))
 	{
 		sh_jobdtor(job);

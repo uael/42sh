@@ -69,7 +69,7 @@ static int		exelookup(char **env, char *exe, char *path, char *buf)
 	return (rights ? PROC_NORIGHTS : PROC_NOTFOUND);
 }
 
-inline int		sh_procfn(t_proc *proc, t_procfn *fn, char **envv)
+inline void		sh_procfn(t_proc *proc, t_procfn *fn, char **envv)
 {
 	ft_memset(proc, 0, sizeof(t_proc));
 	proc->envv = envv;
@@ -78,7 +78,15 @@ inline int		sh_procfn(t_proc *proc, t_procfn *fn, char **envv)
 	ft_vecctor((t_vec *)&proc->redirs, sizeof(t_redir));
 	ft_memset(proc->scope, -1, 3 * sizeof(int));
 	ft_memcpy(proc->src, g_iodfl, 3 * sizeof(int));
-	return (YEP);
+}
+
+inline void		sh_proccmderr(t_proc *proc, char *ln, t_tok *tok, int st)
+{
+	proc->kind = PROC_CMDERR;
+	proc->u.cmderr.ln = ln;
+	proc->u.cmderr.it = ln + tok->pos;
+	proc->u.cmderr.exe = tok->val;
+	proc->u.cmderr.st = st;
 }
 
 inline int		sh_procsh(t_proc *proc, t_deq *toks, char *ln)
@@ -159,5 +167,13 @@ inline int		sh_procctor(t_proc *proc, char *path, char *exe, char **envv)
 
 inline void		sh_procdtor(t_proc *proc)
 {
+	char **av;
+
+	if ((av = proc->argv))
+	{
+		while (*av)
+			free(*av++);
+		free(proc->argv);
+	}
 	ft_vecdtor((t_vec *)&proc->redirs, NULL);
 }
