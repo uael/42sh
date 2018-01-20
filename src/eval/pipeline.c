@@ -21,7 +21,9 @@ inline int		sh_evalpipeline(t_job *job, int fd, t_deq *toks, char **ln)
 	if ((st = sh_evalcmd(job, fd, toks, ln)))
 		return (st);
 	while (1)
-		if (sh_tokpeek(toks)->id == TOK_PIPE)
+		if (!(tok = sh_tokpeek(toks)))
+			return (NOP);
+		else if (tok->id == TOK_PIPE)
 		{
 			while ((eol = sh_toknext(toks)))
 				if (eol->id != TOK_EOL)

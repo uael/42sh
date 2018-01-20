@@ -17,8 +17,11 @@ static inline int	onsemicolon(t_job *job, int fd, t_deq *toks, char **ln)
 	int st;
 
 	sh_toknext(toks);
-	g_shstatus = job->processes.len ? sh_joblaunch(job, 1) : job->status;
-	job->processes.len = 0;
+	if (job->processes.len)
+	{
+		g_shstatus = job->processes.len ? sh_joblaunch(job, 1) : job->status;
+		job->processes.len = 0;
+	}
 	if ((st = sh_evalandor(job, fd, toks, ln)))
 	{
 		sh_jobdtor(job);
@@ -35,8 +38,10 @@ static inline int	onamp(t_job *job, int fd, t_deq *toks, char **ln)
 		return (onsemicolon(job, fd, toks, ln));
 	sh_toknext(toks);
 	if (job->processes.len)
+	{
 		sh_poolpush(job);
-	sh_jobctor(job);
+		sh_jobctor(job);
+	}
 	if ((st = sh_evalandor(job, fd, toks, ln)))
 	{
 		sh_jobdtor(job);
@@ -59,10 +64,15 @@ inline int			sh_evallist(int fd, t_deq *toks, char **ln)
 	int		st;
 
 	sh_jobctor(&job);
-	if ((st = sh_evalandor(&job, fd, toks, ln)))
-		return (st);
+	if (sh_evalandor(&job, fd, toks, ln) == ERR)
+		return (ERR);
 	while (1)
-		if ((tok = sh_tokpeek(toks))->id == TOK_AMP)
+		if (!(tok = sh_tokpeek(toks)))
+		{
+			sh_jobdtor(&job);
+			return (YEP);
+		}
+		else if (tok->id == TOK_AMP)
 		{
 			if ((st = onamp(&job, fd, toks, ln)))
 				return (st == NOP ? YEP : st);

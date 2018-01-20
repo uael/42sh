@@ -62,16 +62,14 @@ static inline int	evalfinalize(int ret, t_deq *toks, int fd)
 inline int			sh_eval(int fd, t_deq *toks, char **ln)
 {
 	t_tok	*tok;
-	int		st;
 
 	if (fd < 0)
 	{
 		sh_varscope();
 		sh_poolscope();
 	}
-	if ((st = sh_evallist(fd, toks, ln)))
-		return (evalfinalize(st == NOP ? sh_evalerr(*ln, sh_tokpeek(toks), "Une"
-			"xpected token `%s'", sh_tokstr(sh_tokpeek(toks))) : st, toks, fd));
+	if (sh_evallist(fd, toks, ln) == ERR)
+		return (evalfinalize(NOP, toks, fd));
 	if (!(tok = sh_tokpeek(toks)))
 		return (evalfinalize(YEP, toks, fd));
 	if (tok->id == TOK_SEMICOLON)

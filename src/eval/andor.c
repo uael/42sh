@@ -14,9 +14,9 @@
 
 static inline int	pipelineerr(int st, t_tok *tok, t_bool bang, char *ln)
 {
-	if (st == NOP)
-		return (sh_evalerr(ln, tok, bang ? "Unexpected bang `%s' for empty "
-			"pipeline" : "Expected pipeline got `%s'", sh_tokstr(tok)));
+	if (st == NOP && bang)
+		return (sh_evalerr(ln, tok, "Unexpected bang `%s' for empty "
+			"pipeline", sh_tokstr(tok)));
 	return (st);
 }
 
@@ -26,7 +26,9 @@ inline int		sh_evalandor(t_job *job, int fd, t_deq *toks, char **ln)
 	t_job	right;
 	int		st;
 
-	if ((tok = sh_tokpeek(toks))->id == TOK_NOT)
+	if (!(tok = sh_tokpeek(toks)))
+		return (NOP);
+	if (tok->id == TOK_NOT)
 	{
 		job->bang = 1;
 		sh_toknext(toks);
@@ -34,7 +36,9 @@ inline int		sh_evalandor(t_job *job, int fd, t_deq *toks, char **ln)
 	if ((st = sh_evalpipeline(job, fd, toks, ln)))
 		return (pipelineerr(st, tok, job->bang, *ln));
 	while (1)
-		if ((tok = sh_tokpeek(toks))->id == TOK_LAND)
+		if (!(tok = sh_tokpeek(toks)))
+			return (NOP);
+		else if (tok->id == TOK_LAND)
 		{
 			while ((tok = sh_toknext(toks)))
 				if (tok->id != TOK_EOL)
