@@ -16,15 +16,24 @@
 
 inline void		sh_jobwait(t_job *job)
 {
-	int		status;
-	pid_t	pid;
+	t_proc	*proc;
+	ssize_t	i;
+	int		st;
 
-	while ((pid = waitpid(WAIT_ANY, &status, WUNTRACED)) < 0)
-		if (errno != EINTR)
-			break ;
-	while (!sh_jobmark(job, pid, status) && !sh_jobstopped(job)
-		&& !sh_jobcompleted(job))
-		while ((pid = waitpid(WAIT_ANY, &status, WUNTRACED)) < 0)
+	i = job->processes.len;
+	while (--i >= 0)
+	{
+		if ((proc = job->processes.buf + i)->pid <= 0)
+			continue ;
+		while (waitpid(proc->pid, &st, 0) < 0)
 			if (errno != EINTR)
+			{
+				THROW(WUT);
 				break ;
+			}
+		sh_procmark(proc, st);
+	}
+	job->status = job->processes.buf[job->processes.len - 1].status;
+	if (job->bang)
+		job->status = job->status ? 0 : 1;
 }

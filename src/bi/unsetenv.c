@@ -16,10 +16,10 @@
 
 inline int	sh_biunsetenv(int ac, char **av, char **env)
 {
-	int	i;
-	int	fst;
+	int i;
+	int fst;
 
-    (void)env;
+	(void)env;
 	if (ac < 2)
 		return (ft_retf(NOP, N_UNSET"%e\n", EINVAL));
 	i = 0;

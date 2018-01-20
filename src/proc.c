@@ -44,7 +44,7 @@ static int		exelookup(char **env, char *exe, char *path, char *buf)
 		return (st);
 	rights = st == PROC_NORIGHTS;
 	if (!(beg = ft_getenv(env, path)))
-		return (exetest(ft_strcat(ft_strcpy(buf, "/bin/"), exe)));
+		return (PROC_NOTFOUND);
 	if (ft_mapget(g_binaries, exe, &i))
 	{
 		if (!(st = exetest(ft_strcpy(buf, ((char **)g_binaries->vals)[i]))) ||
@@ -83,9 +83,10 @@ inline void		sh_procfn(t_proc *proc, t_procfn *fn, char **envv)
 inline void		sh_proccmderr(t_proc *proc, char *ln, t_tok *tok, int st)
 {
 	proc->kind = PROC_CMDERR;
-	proc->u.cmderr.ln = ln;
-	proc->u.cmderr.it = ln + tok->pos;
-	proc->u.cmderr.exe = tok->val;
+	if ((proc->u.cmderr.ln = ln))
+		proc->u.cmderr.it = ln + tok->pos;
+	if (tok)
+		proc->u.cmderr.exe = tok->val;
 	proc->u.cmderr.st = st;
 }
 
@@ -138,11 +139,11 @@ inline int		sh_procctor(t_proc *proc, char *path, char *exe, char **envv)
 		proc->u.fn = sh_biecho;
 		proc->kind = PROC_FN;
 	}
-	/*else if (!ft_strcmp(exe, "env"))
+	else if (!ft_strcmp(exe, "env"))
 	{
 		proc->u.fn = sh_bienv;
 		proc->kind = PROC_FN;
-	}*/
+	}
 	else if (!ft_strcmp(exe, "exit"))
 	{
 		proc->u.fn = sh_biexit;
