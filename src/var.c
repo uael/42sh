@@ -67,7 +67,16 @@ inline void		sh_varset(char *var, char *val)
 	uint32_t	it;
 	char		*dvar;
 
-	if (ft_mapget(g_scope, var, &it))
+	if (!val)
+	{
+		if (ft_mapget(g_scope, var, &it))
+		{
+			free(((char **)g_scope->keys)[it]);
+			free(((char **)g_scope->vals)[it]);
+			ft_mapdel(g_scope, it);
+		}
+	}
+	else if (ft_mapget(g_scope, var, &it))
 		((char **)g_scope->vals)[it] = ft_strdup(val);
 	else if (ft_mapput(g_scope, dvar = ft_strdup(var), &it))
 		((char **)g_scope->vals)[it] = ft_strdup(val);
