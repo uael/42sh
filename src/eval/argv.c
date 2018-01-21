@@ -25,7 +25,7 @@ inline int		sh_evalargv(t_job *job, int fd, t_deq *toks, char **ln)
 	ft_vecctor(&av, sizeof(char *));
 	if ((st = sh_procctor(proc, "PATH", tok->val, g_env)))
 	{
-		sh_proccmderr(proc, *ln, tok, st);
+		sh_proccnf(proc, *ln, tok, st);
 		tok = sh_toknext(toks);
 		while (tok && tok->id == TOK_WORD)
 			tok = sh_toknext(toks);

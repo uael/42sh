@@ -61,11 +61,9 @@ static int		env_finalize(char *path, char **argv, char **envv)
 	t_proc	proc;
 	t_job	job;
 
-	if (!argv || !*argv)
-		return (YEP);
 	if ((s = sh_procctor(&proc, path, argv[0], envv)))
 	{
-		sh_proccmderr(&proc, NULL, NULL, s);
+		sh_proccnf(&proc, NULL, NULL, s);
 		proc.u.cnf.exe = argv[0];
 	}
 	else
@@ -80,6 +78,7 @@ static int		env_finalize(char *path, char **argv, char **envv)
 	ft_veccpush((t_vec *)&job.processes, &proc);
 	s = sh_joblaunch(&job, 1);
 	sh_jobdtor(&job);
+	free(envv);
 	return (s);
 }
 
@@ -106,11 +105,11 @@ static int	env_rmvar(t_vec *env, char *var)
 
 inline int	sh_bienv(int ac, char **av, char **env)
 {
-	int i;
-	int s;
-	uint8_t flag;
-	char *opt[2];
-	t_vec e;
+	int		i;
+	int		s;
+	uint8_t	flag;
+	char	*opt[2];
+	t_vec	e;
 
 	ft_vecctor(&e, sizeof(char *));
 	ft_memset(opt, flag = 0, 2 * sizeof(char *));
@@ -128,5 +127,7 @@ inline int	sh_bienv(int ac, char **av, char **env)
 	*(char **)ft_vecpush(&e) = NULL;
 	if (opt[ENV_U])
 		env_rmvar(&e, opt[ENV_U]);
+	if (!*(av + s))
+		return (EXIT_SUCCESS);
 	return (env_finalize(opt[ENV_P] ? opt[ENV_P] : "PATH", av + s, e.buf));
 }

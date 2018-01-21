@@ -1,33 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ush/env.h                                          :+:      :+:    :+:   */
+/*   bi.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/07 09:52:30 by cmalfroy          #+#    #+#             */
-/*   Updated: 2017/12/06 12:00:10 by alucas-          ###   ########.fr       */
+/*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
+/*   Updated: 2017/12/13 08:28:05 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ush/bi.h"
 
-inline int	sh_biecho(int ac, char **argv, char **env)
+inline t_procfn	*sh_bifn(char const *exe)
 {
-	int i;
-	int n_flag;
-
-	(void)env;
-	if (!argv[(i = 0) + 1])
-		return (ft_retf(EXIT_FAILURE, "\n"));
-	else if (argv[1][0] == '-' && argv[1][1] == 'n' && argv[1][2] == '\0')
-		++i;
-	n_flag = i;
-	while (++i < ac)
-	{
-		ft_puts(1, argv[i]);
-		i < ac - 1 ? ft_putc(1, ' ') : 0;
-	}
-	n_flag ? 0 : ft_putc(1, '\n');
-	return (EXIT_SUCCESS);
+	if (!ft_strcmp(exe, "cd"))
+		 return (sh_bicd);
+	else if (!ft_strcmp(exe, "echo"))
+		 return (sh_biecho);
+	else if (!ft_strcmp(exe, "env"))
+		 return (sh_bienv);
+	else if (!ft_strcmp(exe, "exit"))
+		 return (sh_biexit);
+	else if (!ft_strcmp(exe, "setenv"))
+		 return (sh_bisetenv);
+	else if (!ft_strcmp(exe, "unsetenv"))
+		 return (sh_biunsetenv);
+	return (NULL);
 }
