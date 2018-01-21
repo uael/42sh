@@ -27,13 +27,14 @@
 */
 
 typedef void	(t_rlhook)(void);
+typedef void	(t_rlcomp)(t_sds *cmd);
 
 extern int		rl_histload(char const *filename);
 extern int		rl_histsave(char const *filename);
 extern char		*rl_histadd(char const *ln, size_t len);
 
 extern void 	rl_hook(t_rlhook *hook);
-extern void 	rl_unhook(void);
+extern void 	rl_complete(t_rlcomp *comp);
 extern int		rl_getline(int fd, char *prompt, char **ln);
 extern int		rl_catline(int fd, char c, char **ln, char **it);
 extern int		rl_reprint(void);
