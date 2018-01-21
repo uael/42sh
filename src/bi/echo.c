@@ -32,8 +32,8 @@ inline int	sh_biecho(int ac, char **argv, char **env)
 	while (++i < ac)
 	{
 		ft_puts(1, argv[i]);
-		if (!argv[i + 1] && !n_flag)
-			ft_putc(1, '\n');
+		i < ac - 1 ? ft_putc(1, ' ') : 0;
 	}
+	n_flag ? 0 : ft_putc(1, '\n');
 	return (EXIT_SUCCESS);
 }
