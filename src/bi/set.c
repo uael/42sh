@@ -12,7 +12,7 @@
 
 #include "ush.h"
 
-inline int sh_biset(int argc, char **argv, char **env)
+inline int	sh_biset(int argc, char **argv, char **env)
 {
 	(void)env;
 	if (argc == 1)

@@ -20,7 +20,7 @@
 #define EHELP1 "usage: env [-iv] [-P utilpath] [-u name]\n"
 #define EHELP EHELP1 "           [name=value ...] [utility [argument ...]]\n"
 
-static void	env_get_opt(char o, char *a, char **opt)
+static void		env_get_opt(char o, char *a, char **opt)
 {
 	if (o == 'P')
 		opt[ENV_P] = a;
@@ -28,10 +28,10 @@ static void	env_get_opt(char o, char *a, char **opt)
 		opt[ENV_U] = a;
 }
 
-static int	env_parse_opts(char **av, void **o, t_vec *e)
+static int		env_parse_opts(char **av, void **o, t_vec *e)
 {
-	int i;
-	char *a;
+	int			i;
+	char		*a;
 
 	i = 0;
 	while ((a = av[++i]))
@@ -50,7 +50,7 @@ static int	env_parse_opts(char **av, void **o, t_vec *e)
 		else if (ft_strchr(a, '='))
 			*(char **)ft_vecpush(e) = a;
 		else
-			break;
+			break ;
 	return (i);
 }
 
@@ -82,7 +82,7 @@ static int		env_finalize(char *path, char **argv, char **envv)
 	return (s);
 }
 
-static int	env_rmvar(t_vec *env, char *var)
+static int		env_rmvar(t_vec *env, char *var)
 {
 	size_t	i;
 	char	**it;
@@ -103,7 +103,7 @@ static int	env_rmvar(t_vec *env, char *var)
 	return (0);
 }
 
-inline int	sh_bienv(int ac, char **av, char **env)
+inline int		sh_bienv(int ac, char **av, char **env)
 {
 	int		i;
 	int		s;
