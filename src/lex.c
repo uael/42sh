@@ -113,12 +113,11 @@ static inline int	lex(int fd, t_tok *tok, char **it, char **ln)
 		++*it;
 	if (ft_isdigit(**it))
 		ft_sdscpush((t_sds *)tok, *(*it)++);
-	if ((st = sh_lexop(fd, tok, it, ln)) < 0)
-		return (WUT);
-	if (st && (st = sh_lexword(fd, tok, it, ln)) < 0)
-		return (WUT);
-	return (st == NOP ? sh_synerr(*ln, *it, "Unexpected token `%c'", **it)
-		: YEP);
+	if ((st = sh_lexop(fd, tok, it, ln)) != NOP)
+		return (st);
+	if ((st = sh_lexword(fd, tok, it, ln)) != NOP)
+		return (st);
+	return (sh_synerr(*ln, *it, "Unexpected token `%c'", **it));
 }
 
 static inline int	reduce(int fd, t_deq *toks, char **it, char **ln)

@@ -15,6 +15,7 @@
 
 # include "var.h"
 
+extern void		sh_wordglob(t_sds *word);
 extern void		sh_wordexpand(t_sds *word);
 
 #endif

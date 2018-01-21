@@ -29,6 +29,7 @@ typedef struct	s_proc
 	int			status;
 	char		**argv;
 	char		**envv;
+	t_bool		ownenv;
 	int			scope[3];
 	int			src[3];
 	t_redirs	redirs;

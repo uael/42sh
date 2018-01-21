@@ -12,26 +12,43 @@
 
 #include "ush/eval.h"
 
+static int		evalexport(t_map *vars)
+{
+	uint32_t it;
+
+	if (!vars->len)
+		return (NOP);
+	it = 0;
+	while (it < vars->cap)
+	{
+		if (BUCKET_ISPOPULATED(vars->bucks, it))
+			sh_varset(((char **)vars->keys)[it], ((char **)vars->vals)[it]);
+		++it;
+	}
+	ft_mapdtor(vars, (t_dtor)ft_pfree, (t_dtor)ft_pfree);
+	return (YEP);
+}
+
 inline int		sh_evalsimple(t_job *job, int fd, t_deq *toks, char **ln)
 {
 	t_tok	*tok;
-	int		st;
+	t_map	vars;
 
-	st = NOP;
+	ft_mapctor(&vars, g_strhash, sizeof(char *), sizeof(char *));
 	if ((tok = sh_tokpeek(toks))->id == TOK_WORD)
 	{
 		if (ft_strchr(tok->val, '='))
-			st = sh_evalassign(toks);
-		else if ((st = sh_evalargv(job, fd, toks, ln)))
-			return (st);
+			sh_evalassign(toks, &vars);
+		if (sh_evalargv(job, &vars, toks, ln))
+			return (evalexport(&vars));
 	}
 	while ((tok = sh_tokpeek(toks)))
 		if (TOK_ISREDIR(tok->id))
 		{
-			if ((st = sh_evalredir(job, fd, toks, ln)))
-				return (st);
+			if (sh_evalredir(job, fd, toks, ln) == ERR)
+				return (ERR);
 		}
 		else
-			return (st);
-	return (st);
+			break ;
+	return (YEP);
 }
