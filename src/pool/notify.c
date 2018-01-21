@@ -14,6 +14,39 @@
 
 #include "ush/pool.h"
 
+static void		sh_no_print(t_bool *print)
+{
+	if (!*print)
+		ft_putf(1, "\n");
+	*print = 1;
+}
+
+static void		sh_jobstatus(size_t i, t_job *job, t_bool *print)
+{
+	while (i < g_pool->len)
+		if (sh_jobcompleted(job = g_pool->jobs + i++))
+		{
+			sh_no_print(print);
+			sh_jobdebug(job);
+			if ((job->andor == ANDOR_OR && job->status) ||
+				(job->andor == ANDOR_AND && !job->status))
+			{
+				sh_poolpush(job->next);
+				job->next = NULL;
+			}
+			sh_jobdtor(job);
+			if (--i != --g_pool->len)
+				ft_memmove(g_pool->jobs + i, g_pool->jobs + i + 1,
+					sizeof(t_job) * (g_pool->len - i));
+		}
+		else if (sh_jobstopped(job) && !job->notified)
+		{
+			sh_no_print(print);
+			sh_jobdebug(job);
+			job->notified = 1;
+		}
+}
+
 inline void		sh_poolnotify(void)
 {
 	size_t	i;
@@ -33,32 +66,7 @@ inline void		sh_poolnotify(void)
 				break ;
 	i = 0;
 	print = 0;
-	while (i < g_pool->len)
-		if (sh_jobcompleted(job = g_pool->jobs + i++))
-		{
-			if (!print)
-				ft_putf(1, "\n");
-			print = 1;
-			sh_jobdebug(job);
-			if ((job->andor == ANDOR_OR && job->status) ||
-				(job->andor == ANDOR_AND && !job->status))
-			{
-				sh_poolpush(job->next);
-				job->next = NULL;
-			}
-			sh_jobdtor(job);
-			if (--i != --g_pool->len)
-				ft_memmove(g_pool->jobs + i, g_pool->jobs + i + 1,
-					sizeof(t_job) * (g_pool->len - i));
-		}
-		else if (sh_jobstopped(job) && !job->notified)
-		{
-			if (!print)
-				ft_putf(1, "\n");
-			print = 1;
-			sh_jobdebug(job);
-			job->notified = 1;
-		}
+	sh_jobstatus(i, job, &print);
 	if (print)
 		rl_reprint();
 }
