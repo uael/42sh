@@ -22,6 +22,10 @@ inline t_procfn	*sh_bifn(char const *exe)
 		 return (sh_bienv);
 	else if (!ft_strcmp(exe, "exit"))
 		 return (sh_biexit);
+	else if (!ft_strcmp(exe, "export"))
+		 return (sh_biexport);
+	else if (!ft_strcmp(exe, "set"))
+		 return (sh_biset);
 	else if (!ft_strcmp(exe, "setenv"))
 		 return (sh_bisetenv);
 	else if (!ft_strcmp(exe, "unsetenv"))
