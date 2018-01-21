@@ -27,7 +27,7 @@ inline int sh_biset(int argc, char **argv, char **env)
 			ft_putf(STDERR_FILENO, "It's forbidden to use '='\n");
 			return (NOP);
 		}
-		sh_varset(argv[1], argv[2] ? argv[2] : NULL);
+		sh_varset(argv[1], argv[2]);
 		return (YEP);
 	}
 	else
