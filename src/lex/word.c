@@ -71,6 +71,6 @@ inline int				sh_lexword(int fd, t_tok *tok, char **it, char **ln)
 	if (!tok->len && beg == *it)
 		return (NOP);
 	if ((tok->id = wordid(tok->val, tok->len)) == TOK_WORD)
-		sh_wordexpand((t_sds *)tok);
+		sh_wordglob((t_sds *)tok);
 	return (YEP);
 }

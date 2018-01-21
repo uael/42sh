@@ -26,7 +26,7 @@ inline void		sh_varscope(void)
 		ft_mapctor(scope, g_strhash, sizeof(char *), sizeof(char *));
 	it = 0;
 	if (g_scope)
-		while (it < g_scope->len)
+		while (it < g_scope->cap)
 		{
 			if (BUCKET_ISPOPULATED(g_scope->bucks, it) &&
 				ft_mapput(scope, ((char **)g_scope->keys)[it], &put))
@@ -52,9 +52,14 @@ inline t_bool	sh_varunscope(void)
 inline void		sh_varset(char *var, char *val)
 {
 	uint32_t	it;
+	char		*dvar;
 
-	if (ft_mapget(g_scope, var, &it) || ft_mapput(g_scope, ft_strdup(var), &it))
+	if (ft_mapget(g_scope, var, &it))
 		((char **)g_scope->vals)[it] = ft_strdup(val);
+	else if (ft_mapput(g_scope, dvar = ft_strdup(var), &it))
+		((char **)g_scope->vals)[it] = ft_strdup(val);
+	else
+		free(dvar);
 }
 
 inline char		*sh_varget(char *var)

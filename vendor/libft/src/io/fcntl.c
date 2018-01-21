@@ -28,7 +28,11 @@ inline ssize_t	ft_write(int fd, void const *buf, size_t sz)
 
 	while ((wr = write(fd, buf, sz)) < 0)
 		if (errno != EINTR && errno != EAGAIN)
+		{
+			if (errno == EBADF && fd == 2)
+				exit(EXIT_FAILURE);
 			return (THROW(WUT));
+		}
 	return (wr);
 }
 
