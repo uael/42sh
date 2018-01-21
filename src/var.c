@@ -15,12 +15,12 @@
 static t_vec	g_scopes = { NULL, sizeof(t_map), 0, 0 };
 static t_map	*g_scope = NULL;
 
-void sh_vardump()
+inline void		sh_vardump(void)
 {
 	uint32_t it;
 
 	it = 0;
-	while (it < g_scope->len)
+	while (it < g_scope->cap)
 	{
 		if (BUCKET_ISPOPULATED(g_scope->bucks, it))
 			ft_putl(1, ((char **)g_scope->vals)[it]);
