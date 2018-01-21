@@ -12,8 +12,8 @@
 
 #include "ush.h"
 
-inline int sh_bifg(int ac, char **av, char **env)
+/*inline int sh_bifg(int ac, char **av, char **env)
 {
 
 
-}
+}*/

@@ -55,6 +55,7 @@ inline void		sh_poolnotify(void)
 	int		status;
 	t_bool	print;
 
+	job = NULL;
 	if (!g_pool)
 		return ;
 	while ((pid = waitpid(WAIT_ANY, &status, WUNTRACED | WNOHANG)) < 0)

@@ -12,7 +12,7 @@
 
 #include "ush.h"
 
-inline int sh_bibg(int ac, char **av, char **env)
+/*inline int sh_bibg(int ac, char **av, char **env)
 {
 
-}
+}*/
