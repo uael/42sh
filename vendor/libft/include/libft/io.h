@@ -20,6 +20,8 @@
 # include "io/ifs.h"
 # include "io/ofs.h"
 
+#define STD_FILENOS ((int[3]){STDIN_FILENO, STDOUT_FILENO, STDERR_FILENO})
+
 extern ssize_t	ft_putc(int fd, char c);
 extern ssize_t	ft_putl(int fd, char const *s);
 extern ssize_t	ft_putd(int fd, float n, int precision, uint8_t base);
