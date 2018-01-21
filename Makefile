@@ -36,7 +36,8 @@ SRC_NAME = \
 	lex.c lex/heredoc.c lex/op.c lex/quote.c lex/var.c lex/word.c \
 	main.c \
 	pool.c pool/mark.c pool/notify.c \
-	proc.c proc/launch.c proc/mark.c \
+	proc.c proc/cnf.c proc/fn.c proc/launch.c proc/mark.c proc/sh.c \
+	redir.c \
 	shell.c \
 	tok.c \
 	var.c var/ifs.c \

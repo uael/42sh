@@ -66,7 +66,7 @@ static int		env_finalize(char *path, char **argv, char **envv)
 	if ((s = sh_procctor(&proc, path, argv[0], envv)))
 	{
 		sh_proccmderr(&proc, NULL, NULL, s);
-		proc.u.cmderr.exe = argv[0];
+		proc.u.cnf.exe = argv[0];
 	}
 	else
 	{
@@ -75,7 +75,6 @@ static int		env_finalize(char *path, char **argv, char **envv)
 			ft_veccpush(&av, *argv++);
 		*(char **)ft_vecpush(&av) = NULL;
 		proc.argv = av.buf;
-		proc.argv[0] = proc.u.exe;
 	}
 	sh_jobctor(&job);
 	ft_veccpush((t_vec *)&job.processes, &proc);

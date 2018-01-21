@@ -26,7 +26,6 @@ int					g_shstatus = 0;
 
 static t_deq		g_stack_toks = { NULL, sizeof(t_tok), 0, 0, 0 };
 static t_deq		*g_toks = &g_stack_toks;
-static size_t		g_toks_max = 0;
 
 static inline void	sh_init(int fd)
 {
@@ -92,8 +91,7 @@ inline int			sh_run(int fd)
 		while (!(st = sh_lex(fd, g_toks, &it, &ln)))
 		{
 			sh_eval(fd, g_toks, &ln);
-			g_toks->len = 0;
-			g_toks->cur = 0;
+			ft_deqclean(g_toks, (t_dtor)ft_sdsdtor);
 		}
 		if (st < 0)
 			break ;
@@ -116,8 +114,6 @@ int					sh_exit(int exitno, char const *fmt, ...)
 		rl_finalize(g_shfd);
 	rl_dtor();
 	sh_envdtor();
-	g_toks->len = g_toks_max;
-	g_toks->cur = 0;
 	ft_deqdtor(g_toks, (t_dtor)ft_sdsdtor);
 	if (fmt)
 	{

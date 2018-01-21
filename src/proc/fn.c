@@ -1,35 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ush/redir.h                                        :+:      :+:    :+:   */
+/*   proc/fn.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/06 12:00:10 by alucas-          ###   ########.fr       */
+/*   Updated: 2018/01/06 11:10:01 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef USH_REDIR_H
-# define USH_REDIR_H
+#include "ush/proc.h"
 
-# include "lex.h"
-# include "env.h"
-
-typedef struct	s_redir
+static int	exhdl(int rcode, void *arg)
 {
-	int 		from;
-	int			to;
-}				t_redir;
+	(void)arg;
+	errno = 0;
+	return (rcode);
+}
 
-typedef struct	s_redirs
+inline int		sh_procfnlaunch(t_proc *proc, pid_t pid)
 {
-	t_redir		*buf;
-	size_t		isz;
-	size_t		cap;
-	size_t		len;
-}				t_redirs;
+	t_ex_hdl	dfl;
+	char		**av;
 
-extern int		sh_redirect(t_redirs *redirs, int *scope);
-
-#endif
+	av = proc->argv;
+	while (*av)
+		++av;
+	ft_exbind(EXALL, ft_exhdl(exhdl, NULL), &dfl);
+	proc->status = proc->u.fn((int)(av - proc->argv), proc->argv, proc->envv);
+	ft_exbind(EXALL, dfl, NULL);
+	if (pid > 0 && pid != g_shpgid)
+		exit(proc->status);
+	ft_dup2std(proc->scope,
+		(int[3]){STDIN_FILENO, STDOUT_FILENO, STDERR_FILENO});
+	return (YEP);
+}

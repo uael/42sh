@@ -10,6 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <sys/wait.h>
+
 #include "ush/pool.h"
 
 inline void		sh_poolnotify(void)

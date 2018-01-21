@@ -82,12 +82,12 @@ inline void		sh_procfn(t_proc *proc, t_procfn *fn, char **envv)
 
 inline void		sh_proccmderr(t_proc *proc, char *ln, t_tok *tok, int st)
 {
-	proc->kind = PROC_CMDERR;
-	if ((proc->u.cmderr.ln = ln))
-		proc->u.cmderr.it = ln + tok->pos;
+	proc->kind = PROC_CNF;
+	if ((proc->u.cnf.ln = ln))
+		proc->u.cnf.it = ln + tok->pos;
 	if (tok)
-		proc->u.cmderr.exe = tok->val;
-	proc->u.cmderr.st = st;
+		proc->u.cnf.exe = tok->val;
+	proc->u.cnf.st = st;
 }
 
 inline int		sh_procsh(t_proc *proc, t_deq *toks, char *ln)
@@ -179,5 +179,5 @@ inline void		sh_procdtor(t_proc *proc)
 	}
 	ft_vecdtor((t_vec *)&proc->redirs, NULL);
 	if (proc->kind == PROC_SH)
-		ft_deqdtor(&proc->u.sh.toks, (t_dtor)ft_sdsdtor);
+		ft_deqdtor(&proc->u.sh.toks, NULL);
 }
