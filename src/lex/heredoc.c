@@ -18,6 +18,8 @@
 ** EOL
 */
 
+#define UXPTDEOF "Unexpected EOF while looking for heredoc delimiter `%s'"
+
 inline int			sh_lexheredoc(int fd, t_tok *tok, char **it, char **ln)
 {
 	char	*eof;
@@ -54,8 +56,7 @@ inline int			sh_lexheredoct(int fd, t_tok *tok, char **it, char **ln)
 	while (1)
 	{
 		if (!**it && (st = fd < 0 ? NOP : rl_catline(fd, 0, ln, it)))
-			return (st < 0 ? WUT : sh_synerr(*ln, *it, "Unexpected "
-				"EOF while looking for heredoc delimiter `%s'", eof));
+			return (st < 0 ? WUT : sh_synerr(*ln, *it, UXPTDEOF, eof));
 		if (*(*it - 1) == '\n')
 			while (**it == '\t')
 				++*it;

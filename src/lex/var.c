@@ -18,6 +18,9 @@
 ** shity and make me sick
 */
 
+#define UNPXTD "Unexpected EOF while looking for matching `}'"
+#define EXPTD "Expected letter or '}' got `%c'"
+
 inline int			sh_lexvar(int fd, t_tok *tok, char **it, char **ln)
 {
 	char	brace;
@@ -33,13 +36,11 @@ inline int			sh_lexvar(int fd, t_tok *tok, char **it, char **ln)
 	while (++*it)
 	{
 		if (!**it && (st = fd < 0 ? NOP : rl_catline(fd, 0, ln, it)))
-			return (st < 0 ? WUT : sh_synerr(*ln, *it, "Unexpected "
-				"EOF while looking for matching `}'"));
+			return (st < 0 ? WUT : sh_synerr(*ln, *it, UNPXTD));
 		if (!ft_isalnum(**it) && **it != '_')
 		{
 			if (brace == '{' && **it != '}')
-				return (sh_synerr(*ln, *it, "Expected letter or '}' got `%c'",
-					**it));
+				return (sh_synerr(*ln, *it, EXPTD, **it));
 			else if (brace == '{')
 				++*it;
 			break ;
