@@ -21,6 +21,7 @@ extern void		sh_varscope(void);
 extern t_bool	sh_varunscope(void);
 extern void		sh_varset(char *var, char *val);
 extern char		*sh_varget(char *var);
+void 			sh_vardump();
 
 extern char		*sh_varifs(void);
 

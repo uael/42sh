@@ -15,6 +15,22 @@
 static t_vec	g_scopes = { NULL, sizeof(t_map), 0, 0 };
 static t_map	*g_scope = NULL;
 
+void sh_vardump()
+{
+	t_map		*scope;
+	uint32_t it;
+
+	scope = ft_vecpush(&g_scopes);
+	it = 0;
+	while (it < g_scope->len)
+	{
+		if (BUCKET_ISPOPULATED(g_scope->bucks, it))
+			ft_putl(1, ((char **)g_scope->vals)[it]);
+		++it;
+	}
+	g_scope = scope;
+}
+
 inline void		sh_varscope(void)
 {
 	t_map		*scope;
@@ -62,7 +78,7 @@ inline void		sh_varset(char *var, char *val)
 		free(dvar);
 }
 
-inline char		*sh_varget(char *var)
+inline char        *sh_varget(char *var)
 {
 	uint32_t	it;
 

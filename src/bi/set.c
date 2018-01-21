@@ -11,3 +11,26 @@
 /* ************************************************************************** */
 
 #include "ush.h"
+
+inline int sh_biset(int argc, char **argv, char **env)
+{
+	(void)env;
+	if (argc == 1)
+	{
+		sh_vardump();
+		return (YEP);
+	}
+	else if (argc == 2 || argc == 3)
+	{
+		if (ft_strchr(argv[1], '='))
+		{
+			ft_putf(STDERR_FILENO, "It's forbidden to use '='\n");
+			return (NOP);
+		}
+		sh_varset(argv[1], argv[2] ? argv[2] : NULL);
+		return (YEP);
+	}
+	else
+		ft_putf(STDERR_FILENO, "Usage: set <key> <value>\n");
+	return (NOP);
+}

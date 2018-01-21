@@ -14,31 +14,19 @@
 
 #include "ush/pool.h"
 
-inline void		sh_poolnotify(void)
+static void		sh_no_print(t_bool *print)
 {
-	size_t	i;
-	t_job	*job;
-	pid_t	pid;
-	int		status;
-	t_bool	print;
+	if (!*print)
+		ft_putf(1, "\n");
+	*print = 1;
+}
 
-	if (!g_pool)
-		return ;
-	while ((pid = waitpid(WAIT_ANY, &status, WUNTRACED | WNOHANG)) < 0)
-		if (errno != EINTR)
-			break ;
-	while (!sh_poolmark(pid, status))
-		while ((pid = waitpid(WAIT_ANY, &status, WUNTRACED | WNOHANG)) < 0)
-			if (errno != EINTR)
-				break ;
-	i = 0;
-	print = 0;
+static void		sh_jobstatus(size_t i, t_job *job, t_bool *print)
+{
 	while (i < g_pool->len)
 		if (sh_jobcompleted(job = g_pool->jobs + i++))
 		{
-			if (!print)
-				ft_putf(1, "\n");
-			print = 1;
+			sh_no_print(print);
 			sh_jobdebug(job);
 			if ((job->andor == ANDOR_OR && job->status) ||
 				(job->andor == ANDOR_AND && !job->status))
@@ -53,12 +41,33 @@ inline void		sh_poolnotify(void)
 		}
 		else if (sh_jobstopped(job) && !job->notified)
 		{
-			if (!print)
-				ft_putf(1, "\n");
-			print = 1;
+			sh_no_print(print);
 			sh_jobdebug(job);
 			job->notified = 1;
 		}
+}
+
+inline void		sh_poolnotify(void)
+{
+	size_t	i;
+	t_job	*job;
+	pid_t	pid;
+	int		status;
+	t_bool	print;
+
+	job = NULL;
+	if (!g_pool)
+		return ;
+	while ((pid = waitpid(WAIT_ANY, &status, WUNTRACED | WNOHANG)) < 0)
+		if (errno != EINTR)
+			break ;
+	while (!sh_poolmark(pid, status))
+		while ((pid = waitpid(WAIT_ANY, &status, WUNTRACED | WNOHANG)) < 0)
+			if (errno != EINTR)
+				break ;
+	i = 0;
+	print = 0;
+	sh_jobstatus(i, job, &print);
 	if (print)
 		rl_reprint();
 }
