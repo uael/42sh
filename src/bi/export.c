@@ -12,12 +12,32 @@
 
 #include "ush.h"
 
-static void	*sh_getvalue(char *val)
+static inline void		export(char *var, char *val)
 {
-	sh_setenv(val, val);
+	char *local;
+
+	if ((local = sh_varget(var)) && !val)
+		val = local;
+	sh_setenv(var, val);
+	if (local)
+		sh_varset(var, NULL);
 }
 
-inline int 	sh_biexport(int ac, char **av, char **env)
+static inline t_bool	isname(char *word)
+{
+	if (!ft_isalpha(*word) && *word != '_')
+		return (0);
+	++word;
+	while (*word != '=')
+	{
+		if (!ft_isalnum(*word) && *word != '_')
+			return (0);
+		++word;
+	}
+	return (1);
+}
+
+inline int 				sh_biexport(int ac, char **av, char **env)
 {
 	char *val;
 	int i;
@@ -25,16 +45,19 @@ inline int 	sh_biexport(int ac, char **av, char **env)
 	(void)env;
 	i = 0;
 	while (++i < ac)
-		if ((val = sh_getenv(av[i])))
-		{
-			sh_setenv(av[i], val);
-			sh_varset(av[i], NULL);
-		}
-		else if (ft_strcmp(av[i], "="))
-			ft_retf(NOP, "bad assignment");
-		else if ((val = ft_strchr(av[1], '=')))
-			sh_getvalue(val);
+		if (*av[i] == '=')
+			ft_retf(EXIT_FAILURE, "%s: bad assignment", av[i]);
+		else if ((val = ft_strchr(av[i], '=')))
+			if (!isname(av[i]))
+				ft_retf(EXIT_FAILURE, "%s: bad assignment", av[i]);
+			else
+			{
+				*val = '\0';
+				export(av[i], ++val);
+			}
+		else if (isname(av[i]))
+			export(av[i], NULL);
 		else
-			sh_setenv(av[i], "");
-	return (YEP);
+			ft_retf(EXIT_FAILURE, "%s: bad assignment", av[i]);
+	return (EXIT_SUCCESS);
 }
