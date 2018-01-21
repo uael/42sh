@@ -19,6 +19,17 @@ static int		exhdl(int rcode, void *arg)
 	return (rcode);
 }
 
+inline void		sh_procfn(t_proc *proc, t_procfn *fn, char **envv)
+{
+	ft_memset(proc, 0, sizeof(t_proc));
+	proc->envv = envv;
+	proc->u.fn = fn;
+	proc->kind = PROC_FN;
+	ft_vecctor((t_vec *)&proc->redirs, sizeof(t_redir));
+	ft_memset(proc->scope, -1, 3 * sizeof(int));
+	ft_memcpy(proc->src, STD_FILENOS, 3 * sizeof(int));
+}
+
 inline int		sh_procfnlaunch(t_proc *proc, pid_t pid)
 {
 	t_ex_hdl	dfl;

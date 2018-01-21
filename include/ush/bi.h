@@ -13,7 +13,9 @@
 #ifndef USH_BI_H
 # define USH_BI_H
 
-# include <libft.h>
+# include "proc.h"
+
+extern t_procfn	*sh_bifn(char const *exe);
 
 extern int  sh_biecho(int ac, char **argv, char **env);
 extern int  sh_biexit(int ac, char **av, char **env);

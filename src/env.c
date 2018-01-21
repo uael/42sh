@@ -71,26 +71,6 @@ t_bool			sh_unsetenv(char *var, t_bool m)
 
 void			sh_setenv(char *var, char *val)
 {
-	char **it;
-
-	if (!g_venv->len || !(it = ft_vecbeg(g_venv)))
-		return ;
-	while (it != ft_vecend(g_venv))
-		if (!*it || !ft_strbegw(var, *it) || (*it)[ft_strlen(var)] != '=')
-			++it;
-		else
-		{
-			free(*it);
-			break ;
-		}
-	if (!*it)
-		it = ft_vecpush(g_venv);
-	*it = ft_malloc((ft_strlen(var) + (val ? ft_strlen(val) : 0) + 2) *
-		sizeof(char));
-	ft_strcpy(*it, var);
-	(!ft_strrchr(*it, '=') ? ft_strcat(*it, "=") : NULL);
-	(val ? ft_strcat(*it, val) : NULL);
-	ft_vecgrow(g_venv, 1);
-	ft_memset(ft_vecend(g_venv), 0, sizeof(char *));
+	ft_setenv(g_venv, var, val);
 	g_env = g_venv->buf;
 }

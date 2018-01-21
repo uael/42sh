@@ -13,41 +13,34 @@
 #include "ush/lex.h"
 #include "ush/var.h"
 
-/*
-** TODO(uael): use your brain to find a proper and working algo, this one is
-** shity and make me sick
-*/
-
 #define UNPXTD "Unexpected EOF while looking for matching `}'"
-#define EXPTD "Expected letter or '}' got `%c'"
+#define EXPTD "Expected letter _ or '}' got `%c'"
 
 inline int			sh_lexvar(int fd, t_tok *tok, char **it, char **ln)
 {
 	char	brace;
-	t_sds	var;
-	char	*val;
 	int		st;
 
-	if (**it != '$')
-		return (sh_synerr(*ln, *it, "Expected token '$'"));
-	ft_sdsctor(&var);
-	if (ft_isalpha(brace = *++*it) || brace == '_')
-		ft_sdscpush(&var, brace);
-	while (++*it)
+	ft_sdscpush((t_sds *)tok, *(*it)++);
+	if ((brace = **it) == '(' || ft_strchr(sh_varifs(), brace))
+		return (YEP);
+	if (!ft_isalpha(brace) && brace != '_' && brace != '{')
+		return (sh_synerr(*ln, *it, "Expected alpha _ or '{' got `%c'", **it));
+	while (ft_sdscpush((t_sds *)tok, *(*it)++))
 	{
-		if (!**it && (st = fd < 0 ? NOP : rl_catline(fd, 0, ln, it)))
+		if (brace == '{' && !**it &&
+			(st = fd < 0 ? NOP : rl_catline(fd, 0, ln, it)))
 			return (st < 0 ? WUT : sh_synerr(*ln, *it, UNPXTD));
+		if (!**it)
+			break ;
 		if (!ft_isalnum(**it) && **it != '_')
 		{
 			if (brace == '{' && **it != '}')
 				return (sh_synerr(*ln, *it, EXPTD, **it));
-			else if (brace == '{')
-				++*it;
+			if (brace == '{')
+				ft_sdscpush((t_sds *)tok, *(*it)++);
 			break ;
 		}
-		ft_sdscpush(&var, **it);
 	}
-	ft_sdsapd((t_sds *)tok, var.len && (val = sh_varget(var.buf)) ? val : "");
-	ft_sdsdtor(&var);
 	return (YEP);
 }
