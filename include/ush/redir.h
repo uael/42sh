@@ -30,4 +30,6 @@ typedef struct	s_redirs
 	size_t		len;
 }				t_redirs;
 
+extern int		sh_redirect(t_redirs *redirs, int *scope);
+
 #endif

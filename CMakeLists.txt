@@ -16,7 +16,7 @@ set(CMAKE_C_FLAGS "")
 set(CMAKE_C_FLAGS_DEBUG "")
 set(CMAKE_C_FLAGS_RELEASE "")
 
-set(21sh_HDR ${21sh_INC_DIR}/ush.h)
+set(21sh_HDR ${21sh_INC_DIR}/ush.h src/bi/cd.c)
 file(GLOB_RECURSE 21sh_HDRS ${21sh_HDRS} ${21sh_INC_DIR}/ush/*.h)
 file(GLOB_RECURSE 21sh_SRCS ${21sh_SRCS} ${21sh_SRC_DIR}/*.c)
 file(GLOB_RECURSE 21sh_SRCS ${21sh_SRCS} ${21sh_SRC_DIR}/*.h)
@@ -24,7 +24,7 @@ file(GLOB_RECURSE 21sh_SRCS ${21sh_SRCS} ${21sh_SRC_DIR}/*.h)
 add_executable(21sh ${21sh_HDR} ${21sh_HDRS} ${21sh_SRCS})
 set_property(TARGET 21sh PROPERTY C_STANDARD 90)
 target_include_directories(21sh PUBLIC ${21sh_INC_DIR})
-target_link_libraries(21sh PUBLIC ft rl)
+target_link_libraries(21sh PUBLIC debug ft debug rl)
 
 target_compile_definitions(21sh
   PRIVATE $<$<CONFIG:Debug>:DEBUG>$<$<CONFIG:Release>:NDEBUG>)

@@ -1,38 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pool/mark.c                                        :+:      :+:    :+:   */
+/*   redir.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2018/01/06 11:10:01 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/11 13:31:59 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ush/pool.h"
+#include "ush/redir.h"
 
-inline int		sh_poolmark(pid_t pid, int status)
+inline int		sh_redirect(t_redirs *redirs, int *scope)
 {
 	size_t	i;
-	size_t	j;
-	t_job	*job;
-	t_proc	*proc;
+	t_redir	*redir;
 
-	if (!g_pool)
-		return (NOP);
-	if (pid > 0 && pid != (pid_t)-1)
+	i = 0;
+	while (i < redirs->len)
 	{
-		i = 0;
-		while (i < g_pool->len)
-		{
-			j = 0;
-			job = g_pool->jobs + i++;
-			while (j < job->processes.len)
-				if ((proc = job->processes.buf + j++)->pid == pid)
-					return (sh_procmark(proc, status));
-		}
-		return (NOP);
+		redir = redirs->buf + i++;
+		if (scope && redir->from >= 0 && redir->from <= 2 &&
+			scope[redir->from] < 0)
+			scope[redir->from] = dup(redir->from);
+		if (redir->to < 0)
+			close(redir->from);
+		else if (dup2(redir->to, redir->from) < 0)
+			return (THROW(WUT));
+		else if (redir->to > 2)
+			close(redir->to);
 	}
-	return ((pid == 0 || errno == ECHILD) ? WUT : THROW(WUT));
+	return (YEP);
 }

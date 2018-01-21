@@ -44,7 +44,7 @@ static int		exelookup(char **env, char *exe, char *path, char *buf)
 		return (st);
 	rights = st == PROC_NORIGHTS;
 	if (!(beg = ft_getenv(env, path)))
-		return (exetest(ft_strcat(ft_strcpy(buf, "/bin/"), exe)));
+		return (PROC_NOTFOUND);
 	if (ft_mapget(g_binaries, exe, &i))
 	{
 		if (!(st = exetest(ft_strcpy(buf, ((char **)g_binaries->vals)[i]))) ||
@@ -69,7 +69,7 @@ static int		exelookup(char **env, char *exe, char *path, char *buf)
 	return (rights ? PROC_NORIGHTS : PROC_NOTFOUND);
 }
 
-inline int		sh_procfn(t_proc *proc, t_procfn *fn, char **envv)
+inline void		sh_procfn(t_proc *proc, t_procfn *fn, char **envv)
 {
 	ft_memset(proc, 0, sizeof(t_proc));
 	proc->envv = envv;
@@ -78,7 +78,16 @@ inline int		sh_procfn(t_proc *proc, t_procfn *fn, char **envv)
 	ft_vecctor((t_vec *)&proc->redirs, sizeof(t_redir));
 	ft_memset(proc->scope, -1, 3 * sizeof(int));
 	ft_memcpy(proc->src, g_iodfl, 3 * sizeof(int));
-	return (YEP);
+}
+
+inline void		sh_proccmderr(t_proc *proc, char *ln, t_tok *tok, int st)
+{
+	proc->kind = PROC_CNF;
+	if ((proc->u.cnf.ln = ln))
+		proc->u.cnf.it = ln + tok->pos;
+	if (tok)
+		proc->u.cnf.exe = tok->val;
+	proc->u.cnf.st = st;
 }
 
 inline int		sh_procsh(t_proc *proc, t_deq *toks, char *ln)
@@ -130,11 +139,11 @@ inline int		sh_procctor(t_proc *proc, char *path, char *exe, char **envv)
 		proc->u.fn = sh_biecho;
 		proc->kind = PROC_FN;
 	}
-	/*else if (!ft_strcmp(exe, "env"))
+	else if (!ft_strcmp(exe, "env"))
 	{
 		proc->u.fn = sh_bienv;
 		proc->kind = PROC_FN;
-	}*/
+	}
 	else if (!ft_strcmp(exe, "exit"))
 	{
 		proc->u.fn = sh_biexit;
@@ -159,5 +168,16 @@ inline int		sh_procctor(t_proc *proc, char *path, char *exe, char **envv)
 
 inline void		sh_procdtor(t_proc *proc)
 {
+	char **av;
+
+	if ((av = proc->argv))
+	{
+		while (*av)
+			free(*av++);
+		free(proc->argv);
+		proc->argv = NULL;
+	}
 	ft_vecdtor((t_vec *)&proc->redirs, NULL);
+	if (proc->kind == PROC_SH)
+		ft_deqdtor(&proc->u.sh.toks, NULL);
 }

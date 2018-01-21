@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pool/mark.c                                        :+:      :+:    :+:   */
+/*   proc/fn.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,29 +10,29 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ush/pool.h"
+#include "ush/proc.h"
 
-inline int		sh_poolmark(pid_t pid, int status)
+static int	exhdl(int rcode, void *arg)
 {
-	size_t	i;
-	size_t	j;
-	t_job	*job;
-	t_proc	*proc;
+	(void)arg;
+	errno = 0;
+	return (rcode);
+}
 
-	if (!g_pool)
-		return (NOP);
-	if (pid > 0 && pid != (pid_t)-1)
-	{
-		i = 0;
-		while (i < g_pool->len)
-		{
-			j = 0;
-			job = g_pool->jobs + i++;
-			while (j < job->processes.len)
-				if ((proc = job->processes.buf + j++)->pid == pid)
-					return (sh_procmark(proc, status));
-		}
-		return (NOP);
-	}
-	return ((pid == 0 || errno == ECHILD) ? WUT : THROW(WUT));
+inline int		sh_procfnlaunch(t_proc *proc, pid_t pid)
+{
+	t_ex_hdl	dfl;
+	char		**av;
+
+	av = proc->argv;
+	while (*av)
+		++av;
+	ft_exbind(EXALL, ft_exhdl(exhdl, NULL), &dfl);
+	proc->status = proc->u.fn((int)(av - proc->argv), proc->argv, proc->envv);
+	ft_exbind(EXALL, dfl, NULL);
+	if (pid > 0 && pid != g_shpgid)
+		exit(proc->status);
+	ft_dup2std(proc->scope,
+		(int[3]){STDIN_FILENO, STDOUT_FILENO, STDERR_FILENO});
+	return (YEP);
 }

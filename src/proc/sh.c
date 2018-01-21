@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pool/mark.c                                        :+:      :+:    :+:   */
+/*   proc/sh.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,29 +10,13 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ush/pool.h"
+#include "ush/proc.h"
 
-inline int		sh_poolmark(pid_t pid, int status)
+inline int		sh_procshlaunch(t_proc *proc, pid_t pid)
 {
-	size_t	i;
-	size_t	j;
-	t_job	*job;
-	t_proc	*proc;
-
-	if (!g_pool)
-		return (NOP);
-	if (pid > 0 && pid != (pid_t)-1)
-	{
-		i = 0;
-		while (i < g_pool->len)
-		{
-			j = 0;
-			job = g_pool->jobs + i++;
-			while (j < job->processes.len)
-				if ((proc = job->processes.buf + j++)->pid == pid)
-					return (sh_procmark(proc, status));
-		}
-		return (NOP);
-	}
-	return ((pid == 0 || errno == ECHILD) ? WUT : THROW(WUT));
+	g_shinteract = 0;
+	g_shpgid = pid;
+	sh_eval(-1, &proc->u.sh.toks, &proc->u.sh.ln);
+	proc->status = g_shstatus;
+	exit(g_shstatus);
 }

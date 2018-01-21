@@ -20,13 +20,22 @@
 static char		*cd_path(int ac, char **av, char **env, t_bool p)
 {
 	char *envv;
+
 	if ((ac == 1 + p) && (envv = ft_getenv(env, "HOME")))
 		return (ft_strdup(envv));
-	if (ac == 2 + p && ft_strcmp(av[1 + p], "-") == 0 &&
-		(envv = ft_getenv(env, "OLDPWD")))
-		return (ft_strdup(envv));
 	if (ac == 2 + p)
-		return (ft_strdup(av[1 + p]));
+	{
+		if (ft_strcmp(av[1 + p], "-") == 0 && (envv = ft_getenv(env, "OLDPWD")))
+			return (ft_strdup(envv));
+		else if (ft_strcmp(av[1 + p], "-L") == 0 &&
+			(envv = ft_getenv(env, "HOME")))
+			return (ft_strdup(envv));
+		else if (ft_strcmp(av[1 + p], "-P") == 0 &&
+			(envv = ft_getenv(env, "HOME")))
+			return (ft_strdup(envv));
+		else
+			return (ft_strdup(av[1 + p]));
+	}
 	return (NULL);
 }
 
@@ -62,13 +71,15 @@ static int		cd_chdir(char *path)
 
 inline int		sh_bicd(int ac, char **av, char **env)
 {
-    char	buf[PATH_MAX + 1];
+	char	buf[PATH_MAX + 1];
 	char	*path;
 	char	*pwd;
-    
-    if (ac > 3)
+	t_bool	optp;
+
+	optp = (t_bool)(ac == 3 && ft_strcmp("-P", av[1]) == 0);
+	if (ac > 3)
 		return (ft_retf(NOP, N_CD"%e\n", E2BIG));
-	if (ac == 3 && ft_strcmp("-P", av[1]) != 0)
+	if (ac == 3 && !optp && ft_strcmp("-L", av[1]) != 0)
 		return (ft_retf(NOP, N_CD"%e '%s'\n", EINVAL, av[1]));
 	if (!(path = cd_path(ac, av, env, (t_bool)(ac == 3))))
 		return (ft_retf(NOP, N_CD"%s\n", "Environ is empty"));
@@ -76,7 +87,7 @@ inline int		sh_bicd(int ac, char **av, char **env)
 		return (NOP);
 	if ((pwd = ft_getenv(env, "PWD")))
 		sh_setenv("OLDPWD", pwd);
-	if (ft_pathabs(path, buf, ac != 3 && pwd ? pwd : NULL))
+	if (ft_pathabs(path, buf, !optp && pwd ? pwd : NULL))
 	{
 		free(path);
 		path = ft_strdup(buf);

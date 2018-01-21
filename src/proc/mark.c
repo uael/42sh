@@ -15,14 +15,16 @@
 inline int		sh_procmark(t_proc *proc, int status)
 {
 	proc->status = status;
-	if (WIFSTOPPED(proc->status))
+	if (WIFEXITED(status))
+		proc->status = WEXITSTATUS(status);
+	if (WIFSTOPPED(status))
 		proc->state = PROC_STOPPED;
 	else
 	{
 		proc->state = PROC_COMPLETED;
-		if (WIFSIGNALED (status))
+		if (WIFSIGNALED(status))
 			sh_err("%d: Terminated by signal %d.\n",
-				(int)proc->pid, WTERMSIG (proc->status));
+				(int)proc->pid, WTERMSIG(status));
 	}
 	return (YEP);
 }

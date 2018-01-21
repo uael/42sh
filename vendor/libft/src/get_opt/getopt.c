@@ -18,59 +18,58 @@ int 	g_optopt = 0;
 int 	g_opterr = 1;
 int 	g_optreset = 0;
 
-int 	treatment_opt(const char **av, int *i, const char *optstring, int *end)
+int			illegal_option(const char *name, char c)
 {
-	if (av[g_optind] && !av[g_optind][*i + 1])
-		*end += 1;
-	if (ft_strchr(optstring, av[g_optind][*i]))
-	{
-		*i += 1;
-		g_optopt = av[g_optind][*i - 1];
-		return (av[g_optind][*i - 1]);
-	}
-	else
-	{
-		if (g_opterr)
-			ft_putf(1, "%s: illegal option -- %s\n", av[0],
-				&(av[g_optind][*i]));
-		*i += 1;
-		g_optopt = av[g_optind][*i - 1];
-		return ('?');
-	}
-}
-
-void 	reset(int *i)
-{
-	g_optind++;
-	*i = 1;
-}
-
-int 	ft_getopt(int ac, const char **av, const char *optstring)
-{
-	static int i = 1;
-	static int end = 0;
-
-	if (end)
-	{
-		reset(&i);
-		end = 0;
-	}
-	if (ac >= 2)
-	{
-		if (av[g_optind] && av[g_optind][0] == '-' && av[g_optind][1] == '-')
-		{
-			g_optind++;
-			return (-1);
-		}
-		if (av[g_optind] && av[g_optind][0] == '-' && av[g_optind][1] == '\0')
-			return (-1);
-		else if (av[g_optind] && av[g_optind][i] == '\0' &&
-			av[g_optind][0] == '-')
-			reset(&i);
-		if (av[g_optind] && av[g_optind][i] && av[g_optind][0] == '-' &&
-			av[g_optind][i] != '-')
-			return (treatment_opt(av, &i, optstring, &end));
-	}
+	if (g_opterr == 1)
+		ft_putf(2, "%s: illegal option -- %c\n", name, c);
 	return (-1);
 }
 
+int			isopt(char c, const char *optstring)
+{
+	if (ft_strchr(optstring, c))
+		return (c);
+	else
+		return (0);
+}
+
+void		set_reset(int *is_over)
+{
+	if (g_optreset == 1)
+	{
+		*is_over = 0;
+		g_optind = 1;
+		g_optreset = 0;
+	}
+}
+
+int			ft_getopt(int argc, const char **argv, const char *optstring)
+{
+	static int	is_over = 0;
+	static int	i = 1;
+
+	set_reset(&is_over);
+	if (is_over == 1)
+		return (-1);
+	if (g_optind < argc && argv[g_optind][0] == '-' && argv[g_optind][1] != '-')
+	{
+		if ((g_optopt = isopt(argv[g_optind][i], optstring)))
+		{
+			if (argv[g_optind][++i] == 0)
+			{
+				i = 1;
+				g_optind++;
+			}
+			return (g_optopt);
+		}
+		else
+		{
+			return (illegal_option(argv[0], argv[g_optind][i]));
+		}
+	}
+	(g_optind < argc && argv[g_optind][0] == '-' && argv[g_optind][1] == '-') ?
+		g_optind += 1 : 0;
+	is_over = 1;
+	g_optreset = 1;
+	return (-1);
+}

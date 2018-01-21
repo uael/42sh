@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pool/mark.c                                        :+:      :+:    :+:   */
+/*   proc/cnf.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,29 +10,17 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ush/pool.h"
+#include "ush/proc.h"
 
-inline int		sh_poolmark(pid_t pid, int status)
+inline int		sh_proccnflaunch(t_proc *proc)
 {
-	size_t	i;
-	size_t	j;
-	t_job	*job;
-	t_proc	*proc;
+	char *msg;
 
-	if (!g_pool)
-		return (NOP);
-	if (pid > 0 && pid != (pid_t)-1)
-	{
-		i = 0;
-		while (i < g_pool->len)
-		{
-			j = 0;
-			job = g_pool->jobs + i++;
-			while (j < job->processes.len)
-				if ((proc = job->processes.buf + j++)->pid == pid)
-					return (sh_procmark(proc, status));
-		}
-		return (NOP);
-	}
-	return ((pid == 0 || errno == ECHILD) ? WUT : THROW(WUT));
+	msg = proc->u.cnf.st == PROC_NORIGHTS ? "%s: permission denied" :
+		"%s: Command not found";
+	if (proc->u.cnf.ln)
+		sh_synerr(proc->u.cnf.ln, proc->u.cnf.it, msg, proc->u.cnf.exe);
+	else
+		ft_putf(STDERR_FILENO, msg, proc->u.cnf.exe);
+	exit(proc->u.cnf.st);
 }

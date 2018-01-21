@@ -81,7 +81,9 @@ inline void	ft_sdsdtor(t_sds *self)
 {
 	if (self->buf)
 		free(self->buf);
-	FT_INIT(self, t_sds);
+	self->buf = NULL;
+	self->cap = 0;
+	self->len = 0;
 }
 
 inline void	ft_vecdtor(t_vec *self, t_dtor idtor)

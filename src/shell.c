@@ -26,13 +26,6 @@ int					g_shstatus = 0;
 
 static t_deq		g_stack_toks = { NULL, sizeof(t_tok), 0, 0, 0 };
 static t_deq		*g_toks = &g_stack_toks;
-static size_t		g_toks_max = 0;
-
-static void			sigchld(int signo)
-{
-	(void)signo;
-	sh_poolnotify();
-}
 
 static inline void	sh_init(int fd)
 {
@@ -46,25 +39,51 @@ static inline void	sh_init(int fd)
 	signal(SIGTSTP, SIG_IGN);
 	signal(SIGTTIN, SIG_IGN);
 	signal(SIGTTOU, SIG_IGN);
-	signal(SIGCHLD, sigchld);
 	g_shpgid = getpid();
 	if (setpgid(g_shpgid, g_shpgid) < 0)
 		sh_exit(EXIT_FAILURE, "Couldn't put the shell in its own process "
 			"group");
 	tcsetpgrp(fd, g_shpgid);
 	tcgetattr(fd, &g_shmode);
+	rl_hook(sh_poolnotify);
 }
+
+static char			*sh_prompt(char *prompt, char *buf)
+{
+	size_t	l;
+	char	cwd[PATH_MAX + 1];
+	char	*p;
+	char	*home;
+
+	if (!(p = getcwd(cwd, PATH_MAX)))
+	{
+		THROW(WUT);
+		return (NULL);
+	}
+	if ((home = sh_getenv("HOME")) && ft_strbegw(home, p))
+	{
+		if (p[l = ft_strlen(home)] != '\0')
+			ft_memmove(p + 1, p + l, (ft_strlen(p) - l + 1) * sizeof(char));
+		else
+			p[1] = '\0';
+		*p = '~';
+	}
+	return (ft_strcpy(buf, ft_strcat(p, prompt)));
+}
+
+#define SH_PROMPT() (g_shstatus==0?" \033[32m❯\033[0m ":" \033[31m❯\033[0m ")
 
 inline int			sh_run(int fd)
 {
 	char	*ln;
 	char	*it;
 	int		st;
+	char	buf[PATH_MAX];
 
 	sh_init(fd);
 	sh_varscope();
 	sh_poolscope();
-	while (!(st = rl_getline(fd, "$> ", &ln)))
+	while (!(st = rl_getline(fd, sh_prompt(SH_PROMPT(), buf), &ln)))
 	{
 		it = ln;
 		g_toks->len = 0;
@@ -72,8 +91,7 @@ inline int			sh_run(int fd)
 		while (!(st = sh_lex(fd, g_toks, &it, &ln)))
 		{
 			sh_eval(fd, g_toks, &ln);
-			g_toks->len = 0;
-			g_toks->cur = 0;
+			ft_deqclean(g_toks, (t_dtor)ft_sdsdtor);
 		}
 		if (st < 0)
 			break ;
@@ -96,8 +114,6 @@ int					sh_exit(int exitno, char const *fmt, ...)
 		rl_finalize(g_shfd);
 	rl_dtor();
 	sh_envdtor();
-	g_toks->len = g_toks_max;
-	g_toks->cur = 0;
 	ft_deqdtor(g_toks, (t_dtor)ft_sdsdtor);
 	if (fmt)
 	{

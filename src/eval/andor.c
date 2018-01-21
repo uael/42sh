@@ -20,7 +20,7 @@ static inline int	pipelineerr(int st, t_tok *tok, t_bool bang, char *ln)
 	return (st);
 }
 
-inline int		sh_evalandor(t_job *job, int fd, t_deq *toks, char **ln)
+inline int			sh_evalandor(t_job *job, int fd, t_deq *toks, char **ln)
 {
 	t_tok	*tok;
 	t_job	right;

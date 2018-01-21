@@ -34,7 +34,11 @@
 # define TC_CL "\r\x1b[0K"
 # define TC_MR "\x1b[7m"
 # define TC_ME "\x1b[m"
+# define TC_SCP "\x1b[s"
+# define TC_RCP "\x1b[u"
 # define TC_CL_UP TC_CL TC_UP
+# define TC_ED "\x1b[2J"
+# define TC_CUP "\x1b[0;0H"
 
 # define RL_EXIT 3
 
@@ -62,6 +66,7 @@ extern uint8_t	g_edit_idx;
 extern t_editln	*g_eln;
 extern t_bool	g_edit_cat;
 extern char		*g_edit_prompt;
+extern t_rlhook	*g_rlhook;
 
 extern void		rl_editdtor(void);
 extern void		rl_editlnupdate(t_editln *ln);
@@ -70,6 +75,7 @@ extern void		rl_editprint(void);
 extern int		rl_editinsert(char c);
 extern int		rl_editdelete(void);
 extern int		rl_editbackspace(void);
+extern int		rl_editclear(void);
 extern int		rl_editreturn(void);
 extern int		rl_editleft(void);
 extern int		rl_editright(void);
