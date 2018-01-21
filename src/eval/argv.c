@@ -32,8 +32,7 @@ inline int		sh_evalargv(t_job *job, int fd, t_deq *toks, char **ln)
 	}
 	else
 	{
-		*(char **)ft_vecpush(&av) = proc->kind == PROC_FN ? ft_strdup(tok->val) :
-			proc->u.exe;
+		*(char **)ft_vecpush(&av) = ft_strdup(tok->val);
 		tok = sh_toknext(toks);
 		while (tok && tok->id == TOK_WORD)
 		{

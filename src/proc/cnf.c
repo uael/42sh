@@ -1,35 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ush/redir.h                                        :+:      :+:    :+:   */
+/*   proc/cnf.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/06 12:00:10 by alucas-          ###   ########.fr       */
+/*   Updated: 2018/01/06 11:10:01 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef USH_REDIR_H
-# define USH_REDIR_H
+#include "ush/proc.h"
 
-# include "lex.h"
-# include "env.h"
-
-typedef struct	s_redir
+inline int		sh_proccnflaunch(t_proc *proc)
 {
-	int 		from;
-	int			to;
-}				t_redir;
+	char *msg;
 
-typedef struct	s_redirs
-{
-	t_redir		*buf;
-	size_t		isz;
-	size_t		cap;
-	size_t		len;
-}				t_redirs;
-
-extern int		sh_redirect(t_redirs *redirs, int *scope);
-
-#endif
+	msg = proc->u.cnf.st == PROC_NORIGHTS ? "%s: permission denied" :
+		"%s: Command not found";
+	if (proc->u.cnf.ln)
+		sh_synerr(proc->u.cnf.ln, proc->u.cnf.it, msg, proc->u.cnf.exe);
+	else
+		ft_putf(STDERR_FILENO, msg, proc->u.cnf.exe);
+	exit(proc->u.cnf.st);
+}

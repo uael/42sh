@@ -1,35 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ush/redir.h                                        :+:      :+:    :+:   */
+/*   proc/sh.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/06 12:00:10 by alucas-          ###   ########.fr       */
+/*   Updated: 2018/01/06 11:10:01 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef USH_REDIR_H
-# define USH_REDIR_H
+#include "ush/proc.h"
 
-# include "lex.h"
-# include "env.h"
-
-typedef struct	s_redir
+inline int		sh_procshlaunch(t_proc *proc, pid_t pid)
 {
-	int 		from;
-	int			to;
-}				t_redir;
-
-typedef struct	s_redirs
-{
-	t_redir		*buf;
-	size_t		isz;
-	size_t		cap;
-	size_t		len;
-}				t_redirs;
-
-extern int		sh_redirect(t_redirs *redirs, int *scope);
-
-#endif
+	g_shinteract = 0;
+	g_shpgid = pid;
+	sh_eval(-1, &proc->u.sh.toks, &proc->u.sh.ln);
+	proc->status = g_shstatus;
+	exit(g_shstatus);
+}

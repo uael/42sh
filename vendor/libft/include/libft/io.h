@@ -36,4 +36,6 @@ extern ssize_t	ft_padr(int fd, char const *s, size_t pad);
 extern ssize_t	ft_putf(int fd, char const *fmt, ...);
 extern ssize_t	ft_vputf(int fd, char const *f, va_list ap);
 
+extern int		ft_dup2std(int *io, int *src);
+
 #endif

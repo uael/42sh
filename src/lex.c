@@ -90,21 +90,25 @@ static inline int	lex(int fd, t_tok *tok, char **it, char **ln)
 	{
 		tok->id = TOK_EOL;
 		ft_sdscpush((t_sds *)tok, '\n');
-		while (*++*it == '\n')
-			;
+		++*it;
+		while (**it == '\n' || (**it == '\r' && *(*it + 1) == '\n'))
+			++*it;
 		return (YEP);
 	}
-	while (**it == '\\' && *(*it + 1) == '\n' && !*(*it + 2))
+	while (**it == '\\' && ((*(*it + 1) == '\n' && !*(*it + 2)) ||
+		((*(*it + 1) == '\r' && *(*it + 2) == '\n' && !*(*it + 3)))))
 		if ((st = fd < 0 ? NOP : rl_catline(fd, -2, ln, it)))
 			return (st);
 	if (**it == '#')
-		while (**it && **it != '\n' && **it != '\r')
-			++it;
+		while (**it && (**it != '\n' || (**it != '\r' && *(*it + 1) != '\n')))
+			++*it;
 	if (!**it)
 	{
 		tok->id = TOK_END;
 		return (YEP);
 	}
+	while (ft_strchr(sh_varifs(), **it))
+		++*it;
 	if (ft_isdigit(**it))
 		ft_sdscpush((t_sds *)tok, *(*it)++);
 	if ((st = sh_lexop(fd, tok, it, ln)) < 0)

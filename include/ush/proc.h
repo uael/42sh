@@ -48,7 +48,10 @@ extern void		sh_procfn(t_proc *proc, t_procfn *fn, char **envv);
 extern void		sh_proccmderr(t_proc *proc, char *ln, t_tok *tok, int st);
 extern int		sh_procsh(t_proc *proc, t_deq *toks, char *ln);
 extern void		sh_procdtor(t_proc *proc);
-extern int		sh_proclaunch(t_proc *proc, pid_t pgid, int *io, int fg);
 extern int		sh_procmark(t_proc *proc, int status);
+extern int		sh_proclaunch(t_proc *proc, pid_t pgid, int *io, int fg);
+extern int		sh_procfnlaunch(t_proc *proc, pid_t pid);
+extern int		sh_procshlaunch(t_proc *proc, pid_t pid);
+extern int		sh_proccnflaunch(t_proc *proc);
 
 #endif

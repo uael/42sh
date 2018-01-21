@@ -21,7 +21,7 @@ typedef enum	e_prockd
 	PROC_EXE,
 	PROC_FN,
 	PROC_SH,
-	PROC_CMDERR
+	PROC_CNF
 }				t_prockd;
 
 typedef int		(t_procfn)(int ac, char **av, char **envv);
@@ -31,7 +31,7 @@ typedef union	u_procu
 	char		*exe;
 	t_procfn	*fn;
 	t_subsh		sh;
-	t_cmderr	cmderr;
+	t_cmderr	cnf;
 }				t_procu;
 
 #endif
