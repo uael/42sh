@@ -46,6 +46,7 @@ static inline void	sh_init(int fd)
 	tcsetpgrp(fd, g_shpgid);
 	tcgetattr(fd, &g_shmode);
 	rl_hook(sh_poolnotify);
+	rl_complete(sh_complete);
 }
 
 static char			*sh_prompt(char *prompt, char *buf)
