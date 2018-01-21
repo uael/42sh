@@ -52,14 +52,14 @@ inline int				sh_lexword(int fd, t_tok *tok, char **it, char **ln)
 	while (**it)
 		if (ft_isspace(**it) || ft_strchr("><&|!;(){}", **it))
 			break ;
-		else if ((**it == '\'' || **it == '"') &&
-			(st = sh_lexquote(fd, tok, it, ln)))
-			return (st);
+		else if ((**it == '\'' || **it == '"'))
+		{
+			if ((st = sh_lexquote(fd, tok, it, ln)))
+				return (st);
+		}
 		else if (**it == '\\' && ((*(*it + 1) == '\n' && !*(*it + 2)) ||
 			(*(*it + 1) == '\r' && *(*it + 2) == '\n' && !*(*it + 3))) &&
 			(st = fd < 0 ? NOP : rl_catline(fd, -2, ln, it)))
-			return (st);
-		else if (**it == '$' && (st = sh_lexvar(fd, tok, it, ln)))
 			return (st);
 		else
 			ft_sdscpush((t_sds *)tok, *(*it)++);

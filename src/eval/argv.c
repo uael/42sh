@@ -12,7 +12,7 @@
 
 #include "ush/eval.h"
 
-inline char		**buildenv(t_map *vars, t_bool *owned)
+static char		**buildenv(t_map *vars, t_bool *owned)
 {
 	t_vec		*e;
 	char		**envv;

@@ -17,7 +17,7 @@
 **
 */
 
-inline void		expandvar(t_sds *word)
+static void		expandvar(t_sds *word)
 {
 	char		*var;
 	char		*end;
