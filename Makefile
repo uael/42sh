@@ -24,7 +24,7 @@ OBJ_NAME = $(SRC_NAME:.c=.o)
 3TH_NAME = rl ft
 SRC_NAME = \
 	bi/cd.c bi/echo.c bi/env.c bi/exit.c bi/export.c bi/set.c bi/setenv.c \
-	bi/unset.c bi/unsetenv.c \
+	bi/unset.c bi/unsetenv.c  bi/fg.c bi/bg.c bi/jobs.c \
 	env.c \
 	err.c \
 	eval.c eval/andor.c eval/argv.c eval/assign.c eval/cmd.c eval/cmp.c \

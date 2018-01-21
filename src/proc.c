@@ -159,6 +159,11 @@ inline int		sh_procctor(t_proc *proc, char *path, char *exe, char **envv)
 		proc->u.fn = sh_biunsetenv;
 		proc->kind = PROC_FN;
 	}
+	else if (!ft_strcmp(exe, "set"))
+	{
+		proc->u.fn = sh_biset;
+		proc->kind = PROC_FN;
+	}
 	else if ((st = exelookup(envv, exe, path, buf)))
 		return (st);
 	else
