@@ -18,17 +18,11 @@ inline int	sh_biecho(int ac, char **argv, char **env)
 	int n_flag;
 
 	(void)env;
-	n_flag = 0;
-	if (!argv[1])
-	{
-		ft_write(1, "\n", 1);
-		return (EXIT_SUCCESS);
-	}
+	if (!argv[(i = 0) + 1])
+		return (ft_retf(EXIT_FAILURE, "\n"));
 	else if (argv[1][0] == '-' && argv[1][1] == 'n' && argv[1][2] == '\0')
-		n_flag = 1;
-	i = 0;
-	if (n_flag)
 		++i;
+	n_flag = i;
 	while (++i < ac)
 	{
 		ft_puts(1, argv[i]);
