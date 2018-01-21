@@ -17,8 +17,10 @@ static t_map	*g_scope = NULL;
 
 void sh_vardump()
 {
+	t_map		*scope;
 	uint32_t it;
 
+	scope = ft_vecpush(&g_scopes);
 	it = 0;
 	while (it < g_scope->len)
 	{
@@ -26,6 +28,7 @@ void sh_vardump()
 			ft_putl(1, ((char **)g_scope->vals)[it]);
 		++it;
 	}
+	g_scope = scope;
 }
 
 inline void		sh_varscope(void)

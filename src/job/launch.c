@@ -13,9 +13,9 @@
 #include "ush/proc.h"
 #include "ush/job.h"
 
-static int			g_io[3] = { 0, 0, 0 };
+static int				g_io[3] = { 0, 0, 0 };
 
-static inline void	jobpipe(t_job *job, size_t i, int *fds, int *io)
+static inline void		jobpipe(t_job *job, size_t i, int *fds, int *io)
 {
 	if (i < job->processes.len)
 	{
@@ -27,7 +27,7 @@ static inline void	jobpipe(t_job *job, size_t i, int *fds, int *io)
 		io[STDOUT_FILENO] = STDOUT_FILENO;
 }
 
-static inline int	jobfork(t_job *job, t_proc *proc, t_bool piped, int fg)
+static inline int		jobfork(t_job *job, t_proc *proc, t_bool piped, int fg)
 {
 	pid_t	pid;
 
@@ -48,7 +48,20 @@ static inline int	jobfork(t_job *job, t_proc *proc, t_bool piped, int fg)
 	return (YEP);
 }
 
-int				sh_joblaunch(t_job *job, int fg)
+static void				sh_joblayer(t_job *job, int fg)
+{
+	if (job->processes.buf->pid)
+	{
+		if (!g_shinteract)
+			sh_jobwait(job);
+		else if (fg)
+			sh_jobfg(job, 0);
+		else
+			sh_jobbg(job, 0);
+	}
+}
+
+int						sh_joblaunch(t_job *job, int fg)
 {
 	size_t	i;
 	t_proc	*proc;
@@ -70,15 +83,7 @@ int				sh_joblaunch(t_job *job, int fg)
 			close(g_io[STDOUT_FILENO]);
 		g_io[STDIN_FILENO] = fds[0];
 	}
-	if (job->processes.buf->pid)
-	{
-		if (!g_shinteract)
-			sh_jobwait(job);
-		else if (fg)
-			sh_jobfg(job, 0);
-		else
-			sh_jobbg(job, 0);
-	}
+	sh_joblayer(job, fg);
 	if (!(!g_shinteract || fg) || !((job->andor == ANDOR_OR && job->status) ||
 		(job->andor == ANDOR_AND && !job->status)))
 		return (job->status);
