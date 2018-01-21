@@ -12,7 +12,7 @@
 
 #include "ush/proc.h"
 
-static int	exhdl(int rcode, void *arg)
+static int		exhdl(int rcode, void *arg)
 {
 	(void)arg;
 	errno = 0;
