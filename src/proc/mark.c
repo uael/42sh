@@ -22,9 +22,14 @@ inline int		sh_procmark(t_proc *proc, int status)
 	else
 	{
 		proc->state = PROC_COMPLETED;
-		if (WIFSIGNALED(status))
+		if (WIFSIGNALED(status) && WTERMSIG(status) != 2)
 			sh_err("%d: Terminated by signal %d.\n",
 				(int)proc->pid, WTERMSIG(status));
+		else if (WTERMSIG(status) == 2)
+		{
+			ft_putc(STDIN_FILENO, '\n');
+			proc->status = 130;
+		}
 	}
 	return (YEP);
 }
