@@ -12,7 +12,7 @@
 
 #include "ush/eval.h"
 
-static inline int	ouput(int ac, char **av, char**envv)
+static inline int	ouput(int ac, char **av, char **envv)
 {
 	(void)ac;
 	(void)envv;

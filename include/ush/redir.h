@@ -18,7 +18,7 @@
 
 typedef struct	s_redir
 {
-	int 		from;
+	int			from;
 	int			to;
 }				t_redir;
 

@@ -40,7 +40,7 @@ inline int	reduce(int fd, t_deq *toks, char **it, char **ln)
 	return (YEP);
 }
 
-char				bracket(char b)
+char		bracket(char b)
 {
 	if (b == '[')
 		return (']');

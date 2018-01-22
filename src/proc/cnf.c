@@ -21,6 +21,7 @@ inline void		sh_proccnf(t_proc *proc, char *ln, t_tok *tok, int st)
 		proc->u.cnf.exe = tok->val;
 	proc->u.cnf.st = st;
 }
+
 inline int		sh_proccnflaunch(t_proc *proc)
 {
 	char *msg;
