@@ -23,14 +23,14 @@ static void		noprint(t_bool *print)
 
 static void		jobfini(t_job *job)
 {
-	g_shstatus = job->processes.buf[job->processes.len - 1].status;
-	if (job->bang)
-		g_shstatus = g_shstatus ? 0 : 1;
-	if ((job->andor == ANDOR_OR && g_shstatus) ||
-		(job->andor == ANDOR_AND && !g_shstatus))
+	if (job->bg)
 	{
-		sh_joblaunch(job->next, !job->bg);
-		job->next = NULL;
+		g_shstatus = job->processes.buf[job->processes.len - 1].status;
+		if (job->bang)
+			g_shstatus = !g_shstatus;
+		if ((job->andor == ANDOR_OR && g_shstatus) ||
+			(job->andor == ANDOR_AND && !g_shstatus))
+			sh_joblaunch(job->next, !job->bg);
 	}
 	sh_jobdtor(job);
 }
@@ -59,6 +59,7 @@ static void		jobstatus(t_bool *print)
 				ft_puts(STDIN_FILENO, "\r\x1b[0K^Z\n");
 			*print = 1;
 			sh_jobdebug(job);
+			job->notified = 1;
 		}
 }
 

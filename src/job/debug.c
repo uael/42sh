@@ -40,5 +40,4 @@ inline void		sh_jobdebug(t_job *job)
 			ft_putf(STDOUT_FILENO, "%d %s\n", proc->pid, g_strst[proc->state]);
 		}
 	}
-	job->notified = 1;
 }

@@ -11,6 +11,8 @@
 /* ************************************************************************** */
 
 #include "edit.h"
+#include "visual.h"
+#include "read.h"
 
 inline int	rl_signalc(void)
 {
@@ -25,7 +27,11 @@ inline int	rl_signalc(void)
 inline int	rl_signald(void)
 {
     if (g_eln->str.len)
+    {
+        if (g_mode == RL_VISUAL)
+            return (rl_visualdelete());
         return (YEP);
+    }
     ft_sdsmpush(&g_eln->str, "exit", 4);
     rl_editprint();
     ft_write(STDOUT_FILENO, "\n", 1);

@@ -11,6 +11,8 @@
 /* ************************************************************************** */
 
 #include "../edit.h"
+#include "../read.h"
+#include "../visual.h"
 
 inline int	rl_editinsert(char c)
 {
@@ -25,6 +27,8 @@ inline int	rl_editdelete(void)
 {
 	if (g_eln->idx < g_eln->str.len)
 	{
+		if (g_mode == RL_VISUAL && g_eln->idx != g_eln->vidx)
+			return (rl_visualdelete());
 		ft_sdsrem(&g_eln->str, g_eln->idx, NULL);
 		rl_editprint();
 	}
@@ -35,6 +39,8 @@ inline int	rl_editbackspace(void)
 {
 	if (g_eln->idx && g_eln->str.len)
 	{
+		if (g_mode == RL_VISUAL && g_eln->idx != g_eln->vidx)
+			return (rl_visualdelete());
 		ft_sdsrem(&g_eln->str, --g_eln->idx, NULL);
 		rl_editprint();
 	}

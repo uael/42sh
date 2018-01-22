@@ -21,8 +21,8 @@ inline void		sh_jobcont(t_job *job, int fg)
 	while (i < job->processes.len)
 	{
 		p = job->processes.buf + i++;
-		p->state = p->state == PROC_CONTINUED && fg ?
-			PROC_RUNNING : PROC_CONTINUED;
+		if (p->state == PROC_STOPPED)
+			p->state = PROC_CONTINUED;
 	}
 	sh_jobdebug(job);
 	job->notified = 0;

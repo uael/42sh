@@ -48,7 +48,7 @@ extern int		sh_jobcompleted(t_job *j);
 extern int		sh_joblaunch(t_job *job, int fg);
 extern int		sh_jobmark(t_job *job, pid_t pid, int status);
 extern void		sh_jobwait(t_job *job);
-extern void		sh_jobfg(t_job *job, int cont);
+extern int		sh_jobfg(t_job *job, int cont);
 extern void		sh_jobbg(t_job *job, int cont);
 extern void		sh_jobcont(t_job *job, int fg);
 extern void		sh_jobdebug(t_job *job);

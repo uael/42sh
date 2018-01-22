@@ -24,7 +24,7 @@ inline int	sh_bibg(int ac, char **av, char **env)
 		return (ft_retf(EXIT_FAILURE, BG"no current job\n"));
 	if (ac != 1)
 		while (*++av)
-			(job = sh_poolfind((pid_t)ft_atoi(*av)))
+			(job = sh_poolfind((pid_t)ft_atoi(*av))) && sh_jobstopped(job)
 				? sh_jobcont(job, 0)
 				: ft_putf(STDERR_FILENO, BG"%s: job not found\n", *av);
 	else
