@@ -67,6 +67,7 @@ extern t_editln	*g_eln;
 extern t_bool	g_edit_cat;
 extern char		*g_edit_prompt;
 extern t_rlhook	*g_rlhook;
+extern t_rlcomp	*g_rlcomp;
 
 extern void		rl_editdtor(void);
 extern void		rl_editlnupdate(t_editln *ln);
@@ -87,5 +88,6 @@ extern int		rl_editctrlup(void);
 extern int		rl_editctrldown(void);
 extern int		rl_edithome(void);
 extern int		rl_editend(void);
+extern int		rl_edittab(void);
 
 #endif

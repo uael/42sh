@@ -66,6 +66,7 @@ t_bool				g_edit_cat = 0;
 char				*g_edit_prompt = 0;
 
 t_rlhook			*g_rlhook = NULL;
+t_rlcomp			*g_rlcomp = NULL;
 
 static inline int	resetmode(void)
 {
@@ -83,6 +84,7 @@ static t_editbind	g_inskeymap[] =
 	{1, K_RETURN, rl_editreturn},
 	{1, K_BACKSPACE, rl_editbackspace},
 	{1, K_ENTER, rl_editreturn},
+	{1, K_TAB, rl_edittab},
 	{1, K_CTRL_B, rl_editbackspace},
     {1, K_CTRL_C, rl_signalc},
 	{1, K_CTRL_D, rl_signald},
@@ -118,6 +120,7 @@ static t_editbind	g_viskeymap[] =
 	{1, K_RETURN, rl_editreturn},
 	{1, K_BACKSPACE, rl_editbackspace},
 	{1, K_ENTER, rl_editreturn},
+	{1, K_TAB, rl_edittab},
 	{1, K_CTRL_B, rl_editbackspace},
     {1, K_CTRL_C, rl_signalc},
 	{1, K_CTRL_D, rl_signald},
