@@ -48,19 +48,18 @@ static inline uint32_t	setput(t_set *self, void *key)
 
 	step = 0;
 	if (self->occupieds >= self->upper_bound)
-		ft_setrsz(
-			self, self->cap > (self->len << 1) ? self->cap - 1 : self->cap + 1
-		);
+		ft_setrsz(self, self->cap > (self->len << 1)
+			? self->cap - 1 : self->cap + 1);
 	mask = self->cap - 1;
 	i = self->hasher.hash(key) & mask;
 	last = i;
 	while (1)
-		if (self->bucks[i] & BUCKET_EMPTY || (!( self->bucks[i] &
+		if (self->bucks[i] & BUCKET_EMPTY || (!(self->bucks[i] &
 			BUCKET_DELETED) && self->hasher.eq(*(void **)((char *)self->keys +
 			(i * self->ksz)), key)))
-			break;
+			break ;
 		else if ((i = (i + (++step)) & mask) == last)
-			break;
+			break ;
 	return (i);
 }
 

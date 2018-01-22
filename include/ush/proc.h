@@ -18,8 +18,8 @@
 # include "proc/state.h"
 # include "redir.h"
 
-#define PROC_NOTFOUND (127)
-#define PROC_NORIGHTS (126)
+# define PROC_NOTFOUND (127)
+# define PROC_NORIGHTS (126)
 
 typedef struct	s_proc
 {

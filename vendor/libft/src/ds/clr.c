@@ -51,7 +51,7 @@ inline void	ft_vecclr(t_vec *self, t_dtor idtor)
 
 	if (self->buf && idtor)
 	{
-		item = (char *) ft_vecbeg(self) - self->isz;
+		item = (char *)ft_vecbeg(self) - self->isz;
 		while ((item += self->isz) != (char *)ft_vecend(self))
 			idtor(item);
 		self->len = 0;

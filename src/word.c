@@ -13,8 +13,7 @@
 #include "ush/word.h"
 
 /*
-** TODO: Handle pathname expansion
-**
+ ** TODO: Handle pathname expansion
 */
 
 static void		expandvar(t_sds *word)

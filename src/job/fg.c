@@ -14,17 +14,23 @@
 
 #include "ush/job.h"
 
-inline void		sh_jobfg(t_job *j, int cont)
+inline int		sh_jobfg(t_job *job, int cont)
 {
-	tcsetpgrp(STDIN_FILENO, j->pgid);
+	job->bg = 0;
+	if (g_shinteract)
+		tcsetpgrp(STDIN_FILENO, job->pgid);
 	if (cont)
 	{
-		tcsetattr(STDIN_FILENO, TCSADRAIN, &j->tmodes);
-		if (kill(-j->pgid, SIGCONT) < 0)
+		tcsetattr(STDIN_FILENO, TCSADRAIN, &job->tmodes);
+		if (kill(-job->pgid, SIGCONT) < 0)
 			sh_err("kill (SIGCONT): %e\n", errno);
 	}
-	sh_jobwait(j);
-	tcsetpgrp(STDIN_FILENO, g_shpgid);
-	tcgetattr(STDIN_FILENO, &j->tmodes);
-	tcsetattr(STDIN_FILENO, TCSADRAIN, &g_shmode);
+	sh_jobwait(job);
+	if (g_shinteract)
+	{
+		tcsetpgrp(STDIN_FILENO, g_shpgid);
+		tcgetattr(STDIN_FILENO, &job->tmodes);
+		tcsetattr(STDIN_FILENO, TCSADRAIN, &g_shmode);
+	}
+	return (job->processes.buf[job->processes.len - 1].status);
 }

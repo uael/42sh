@@ -12,6 +12,7 @@
 
 #include "ush/proc.h"
 #include "ush/job.h"
+#include "ush/pool.h"
 
 static int				g_io[3] = { 0, 0, 0 };
 
@@ -38,27 +39,38 @@ static inline int		jobfork(t_job *job, t_proc *proc, t_bool piped, int fg)
 	else
 	{
 		proc->pid = pid;
+		proc->state = PROC_RUNNING;
 		if (g_shinteract)
 		{
+			setpgid(pid, job->pgid);
 			if (!job->pgid)
 				job->pgid = pid;
-			setpgid(pid, job->pgid);
 		}
 	}
 	return (YEP);
 }
 
-static void				sh_joblayer(t_job *job, int fg)
+static int				sh_joblayer(t_job *job, int fg)
 {
-	if (job->processes.buf->pid)
+	size_t	i;
+	t_proc	*proc;
+
+	if (!job->processes.buf->pid)
+		return (EXIT_FAILURE);
+	job = sh_pooladd(job);
+	if (fg)
+		return (job->bang ? !sh_jobfg(job, 0) : sh_jobfg(job, 0));
+	sh_jobbg(job, 0);
+	ft_putf(STDOUT_FILENO, "[%d] ", 1);
+	i = 0;
+	while (i < job->processes.len)
 	{
-		if (!g_shinteract)
-			sh_jobwait(job);
-		else if (fg)
-			sh_jobfg(job, 0);
-		else
-			sh_jobbg(job, 0);
+		proc = job->processes.buf + i++;
+		ft_putf(STDOUT_FILENO, i < job->processes.len ? "%d " : "%d",
+			proc->pid);
 	}
+	ft_putf(STDOUT_FILENO, "\n");
+	return (0);
 }
 
 int						sh_joblaunch(t_job *job, int fg)
@@ -76,16 +88,16 @@ int						sh_joblaunch(t_job *job, int fg)
 		proc = job->processes.buf + i++;
 		jobpipe(job, i, fds, g_io);
 		if (jobfork(job, proc, (t_bool)(job->processes.len > 1), fg))
-			return (job->status = !job->bang);
+			return (g_shstatus = !job->bang);
 		if (g_io[STDIN_FILENO] != STDIN_FILENO)
 			close(g_io[STDIN_FILENO]);
 		if (g_io[STDOUT_FILENO] != STDOUT_FILENO)
 			close(g_io[STDOUT_FILENO]);
 		g_io[STDIN_FILENO] = fds[0];
 	}
-	sh_joblayer(job, fg);
-	if (!(!g_shinteract || fg) || !((job->andor == ANDOR_OR && job->status) ||
-		(job->andor == ANDOR_AND && !job->status)))
-		return (job->status);
+	g_shstatus = sh_joblayer(job, fg);
+	if (!(!g_shinteract || fg) || !((job->andor == ANDOR_OR && g_shstatus) ||
+		(job->andor == ANDOR_AND && !g_shstatus)))
+		return (g_shstatus);
 	return (sh_joblaunch(job->next, fg));
 }

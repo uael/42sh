@@ -14,9 +14,9 @@
 
 char	*g_optarg = 0;
 int		g_optind = 1;
-int 	g_optopt = 0;
-int 	g_opterr = 1;
-int 	g_optreset = 0;
+int		g_optopt = 0;
+int		g_opterr = 1;
+int		g_optreset = 0;
 
 int			illegal_option(const char *name, char c)
 {
@@ -55,11 +55,8 @@ int			ft_getopt(int argc, const char **argv, const char *optstring)
 	{
 		if ((g_optopt = isopt(argv[g_optind][i], optstring)))
 		{
-			if (argv[g_optind][++i] == 0)
-			{
-				i = 1;
+			if (argv[g_optind][++i] == 0 && (i = 1))
 				g_optind++;
-			}
 			return (g_optopt);
 		}
 		else

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   dtor.c                                              :+:      :+:    :+:   */
+/*   example/cat.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/07 09:52:33 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/18 14:18:33 by null             ###   ########.fr       */
+/*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
+/*   Updated: 2017/12/13 08:28:05 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void		ft_mapdtor(t_map *self, t_dtor kdtor, t_dtor vdtor)
 		free(self->bucks);
 		free(self->keys);
 		free(self->vals);
-    }
+	}
 }
 
 void		ft_setdtor(t_set *self, t_dtor kdtor)
@@ -74,7 +74,7 @@ void		ft_setdtor(t_set *self, t_dtor kdtor)
 		}
 		free(self->bucks);
 		free(self->keys);
-    }
+	}
 }
 
 inline void	ft_sdsdtor(t_sds *self)

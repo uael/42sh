@@ -12,16 +12,22 @@
 
 #include "ush/job.h"
 
-inline void		sh_jobcont(t_job *j, int fg)
+inline void		sh_jobcont(t_job *job, int fg)
 {
-	size_t i;
+	size_t	i;
+	t_proc	*p;
 
 	i = 0;
-	while (i < j->processes.len)
-		(j->processes.buf + i++)->state = PROC_CONTINUED;
-	j->notified = 0;
+	while (i < job->processes.len)
+	{
+		p = job->processes.buf + i++;
+		if (p->state == PROC_STOPPED)
+			p->state = PROC_CONTINUED;
+	}
+	sh_jobdebug(job);
+	job->notified = 0;
 	if (fg)
-		sh_jobfg(j, 1);
+		sh_jobfg(job, 1);
 	else
-		sh_jobbg(j, 1);
+		sh_jobbg(job, 1);
 }

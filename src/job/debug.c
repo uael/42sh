@@ -27,13 +27,17 @@ inline void		sh_jobdebug(t_job *job)
 	size_t i;
 	t_proc *proc;
 
+	if (!job->processes.len || !job->bg)
+		return ;
 	ft_putf(STDOUT_FILENO, "[%d]  + ", g_scopelvl);
 	i = 0;
 	while (i < job->processes.len)
 	{
-		proc = job->processes.buf + i++;
-		if (i != 1)
-			ft_putf(STDOUT_FILENO, "       ");
-		ft_putf(STDOUT_FILENO, "%d %s\n", proc->pid, g_strst[proc->state]);
+		if ((proc = job->processes.buf + i++)->state)
+		{
+			if (i != 1)
+				ft_putf(STDOUT_FILENO, "       ");
+			ft_putf(STDOUT_FILENO, "%d %s\n", proc->pid, g_strst[proc->state]);
+		}
 	}
 }
