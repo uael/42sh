@@ -14,8 +14,8 @@
 
 int		sh_jobstopped(t_job *j)
 {
-	t_proc *p;
-	size_t i;
+	t_proc	*p;
+	size_t	i;
 	int		s;
 
 	i = 0;
@@ -27,7 +27,6 @@ int		sh_jobstopped(t_job *j)
 				return (0);
 			++s;
 		}
-
 	return (s > 0);
 }
 

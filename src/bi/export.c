@@ -39,8 +39,8 @@ static inline t_bool	isname(char *word)
 
 inline int				sh_biexport(int ac, char **av, char **env)
 {
-	char 	*val;
-	int 	i;
+	char	*val;
+	int		i;
 
 	(void)env;
 	i = 0;

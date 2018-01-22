@@ -61,12 +61,12 @@ static inline void	reh1(t_map *self, uint32_t sz, uint8_t *bucks, uint32_t j)
 
 static inline void	reh(t_map *self, uint32_t sz, uint8_t *bucks)
 {
-	uint32_t		j;
+	int64_t		j;
 
 	j = -1;
 	while (++j != self->cap)
 		if (BUCKET_ISEITHER(self->bucks, j) == 0)
-			reh1(self, sz, bucks, j);
+			reh1(self, sz, bucks, (uint32_t)j);
 	if (self->cap > sz)
 	{
 		self->keys = ft_realloc(self->keys, self->len * self->ksz,
@@ -85,7 +85,7 @@ size_t				ft_maprsz(t_map *self, uint32_t sz)
 {
 	uint8_t			*bucks;
 	uint32_t		j;
-	
+
 	j = 1;
 	bucks = NULL;
 	if ((sz = pow2_next32(sz)) < 32)

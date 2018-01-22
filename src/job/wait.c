@@ -13,13 +13,11 @@
 #include <sys/wait.h>
 
 #include "ush/job.h"
-#include "ush/pool.h"
 
 inline void		sh_jobwait(t_job *job)
 {
 	int		status;
 	pid_t	pid;
-	//t_job	*new;
 
 	while (1)
 	{
@@ -30,12 +28,4 @@ inline void		sh_jobwait(t_job *job)
 			|| sh_jobcompleted(job))
 			break ;
 	}
-	/*if (sh_jobstopped(job))
-	{
-		ft_putc(STDIN_FILENO, '\n');
-		sh_jobdebug(new = sh_pooladd(job));
-		if (new != job)
-			sh_jobctor(job);
-		return ;
-	}*/
 }

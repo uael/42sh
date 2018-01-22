@@ -27,7 +27,7 @@ int		ft_ex_throw(int rcode, char const *fn, int line)
 		exit(rcode);
 	if (errno == ENIMPL)
 	{
-		ft_putf(2, COLOR_RED COLOR_BOLD"error: "COLOR_RESET"%e\n", errno);
+		ft_putf(2, COLOR_BRED"error: "COLOR_RESET"%e\n", errno);
 		exit(rcode);
 	}
 	return (rcode);
