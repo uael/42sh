@@ -12,7 +12,7 @@
 
 #include "libft/getopt.h"
 
-char 	*g_optarg = 0;
+char	*g_optarg = 0;
 int		g_optind = 1;
 int		g_optopt = 0;
 int		g_opterr = 1;

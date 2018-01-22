@@ -18,7 +18,8 @@ static uint16_t			g_idx_up;
 static t_ofs			g_edit_out_stack = {STDOUT_FILENO, 0, {0}};
 static t_ofs			*g_out = &g_edit_out_stack;
 
-static inline void			onprint(t_ofs *out, char const *row, char const *pos)
+static inline void			onprint(t_ofs *out, char const *row,
+	char const *pos)
 {
 	char *vis;
 
@@ -44,7 +45,8 @@ static inline void			onprint(t_ofs *out, char const *row, char const *pos)
 	}
 }
 
-static inline void			printrow(char const *r, char const *p, char const *eol)
+static inline void			printrow(char const *r, char const *p,
+	char const *eol)
 {
 	while (r < eol)
 	{
@@ -127,7 +129,8 @@ static int					utf8_strlen(char *str)
 		else if (!ft_strncmp("\033[0m", str + i, sizeof("\033[0m") - 1) &&
 			(i += sizeof("\033[0m") - 1))
 			--q;
-		else if (!ft_strncmp("\xe2\x9d\xaf", str + i, sizeof("\xe2\x9d\xaf") - 1))
+		else if (!ft_strncmp("\xe2\x9d\xaf", str + i, sizeof("\xe2\x9d\xaf") -
+			1))
 			i += sizeof("\xe2\x9d\xaf") - 1;
 		else
 			++i;

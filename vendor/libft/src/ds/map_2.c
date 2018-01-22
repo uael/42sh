@@ -54,7 +54,7 @@ static inline uint32_t	mapput(t_map *self, void *key)
 	i = self->hasher.hash(key) & mask;
 	last = i;
 	while (1)
-		if (self->bucks[i] & BUCKET_EMPTY || (!( self->bucks[i] &
+		if (self->bucks[i] & BUCKET_EMPTY || (!(self->bucks[i] &
 			BUCKET_DELETED) && self->hasher.eq(*(void **)((char *)self->keys +
 			(i * self->ksz)), key)))
 			break ;

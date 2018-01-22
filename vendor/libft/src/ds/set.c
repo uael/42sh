@@ -57,7 +57,8 @@ static inline void	reh(t_set *self, uint32_t sz, uint8_t *bucks)
 {
 	uint32_t		j;
 
-	for (j = 0; j != self->cap; ++j)
+	j = -1;
+	for (++j != self->cap)
 		if (BUCKET_ISEITHER(self->bucks, j) == 0)
 			reh1(self, sz, bucks, j);
 	if (self->cap > sz)

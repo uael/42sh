@@ -12,12 +12,12 @@
 
 #include "edit.h"
 
-inline void 	rl_hook(t_rlhook *hook)
+inline void		rl_hook(t_rlhook *hook)
 {
 	g_rlhook = hook;
 }
 
-inline void 	rl_complete(t_rlcomp *comp)
+inline void		rl_complete(t_rlcomp *comp)
 {
 	g_rlcomp = comp;
 }

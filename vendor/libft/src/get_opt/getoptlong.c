@@ -16,9 +16,8 @@ int			g_optind;
 char		*g_optarg;
 int			g_opterr = 1;
 
-t_opt				*ft_opt_getstruct_long(char *s,
-		t_opt 	*longopt,
-		char 	*pname)
+t_opt				*ft_opt_getstruct_long(char *s, t_opt *longopt,
+	char *pname)
 {
 	char	*has_arg;
 	size_t	ncmp;
