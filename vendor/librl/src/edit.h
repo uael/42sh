@@ -39,6 +39,8 @@
 # define TC_CL_UP TC_CL TC_UP
 # define TC_ED "\x1b[2J"
 # define TC_CUP "\x1b[0;0H"
+# define TC_ED "\x1b[2J"
+# define TC_ED_CUP TC_ED "\x1b[0;0H"
 
 # define RL_EXIT 3
 
@@ -70,6 +72,7 @@ extern t_rlhook	*g_rlhook;
 extern t_rlcomp	*g_rlcomp;
 
 extern void		rl_editdtor(void);
+extern int		rl_wstrlen(char *str);
 extern void		rl_editlnupdate(t_editln *ln);
 extern int		rl_editln(char const *prompt, size_t *sz, char **l, t_bool cat);
 extern void		rl_editprint(void);

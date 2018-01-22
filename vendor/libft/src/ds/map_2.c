@@ -14,10 +14,10 @@
 
 t_bool					ft_mapget(t_map *self, void *key, uint32_t *out)
 {
-	uint32_t	i;
-	uint32_t	last;
-	uint32_t	mask;
-	uint32_t	step;
+	uint32_t i;
+	uint32_t last;
+	uint32_t mask;
+	uint32_t step;
 
 	if (!self->cap)
 		return (0);

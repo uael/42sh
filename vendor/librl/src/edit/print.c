@@ -108,36 +108,6 @@ static inline uint16_t		printprompt(void)
 	return (i);
 }
 
-static int					utf8_strlen(char *str)
-{
-	int i;
-	int ix;
-	int q;
-
-	q = 0;
-	i = 0;
-	ix = (int)ft_strlen(str);
-	while (i < ix)
-	{
-		++q;
-		if (!ft_strncmp("\033[32m", str + i, sizeof("\033[32m") - 1) &&
-			(i += sizeof("\033[32m") - 1))
-			--q;
-		else if (!ft_strncmp("\033[31m", str + i, sizeof("\033[31m") - 1) &&
-			(i += sizeof("\033[31m") - 1))
-			--q;
-		else if (!ft_strncmp("\033[0m", str + i, sizeof("\033[0m") - 1) &&
-			(i += sizeof("\033[0m") - 1))
-			--q;
-		else if (!ft_strncmp("\xe2\x9d\xaf", str + i, sizeof("\xe2\x9d\xaf") -
-			1))
-			i += sizeof("\xe2\x9d\xaf") - 1;
-		else
-			++i;
-	}
-	return (q);
-}
-
 inline void					rl_editprint(void)
 {
 	uint16_t i;
@@ -152,7 +122,7 @@ inline void					rl_editprint(void)
 	g_idx_up = 0;
 	rl_editlnupdate(g_eln);
 	i = printprompt();
-	println(i, (uint16_t)utf8_strlen(g_edit_prompt));
+	println(i, (uint16_t)rl_wstrlen(g_edit_prompt));
 	if (g_idx_up)
 		ft_ofswrf(g_out, TC_GOTOUP(g_idx_up));
 	g_eln->row = (uint16_t)(g_eln->rows.len - g_idx_up);

@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "edit.h"
+#include "read.h"
 
 inline void		rl_hook(t_rlhook *hook)
 {
@@ -20,4 +21,14 @@ inline void		rl_hook(t_rlhook *hook)
 inline void		rl_complete(t_rlcomp *comp)
 {
 	g_rlcomp = comp;
+}
+
+inline int		rl_reprint(void)
+{
+	if (g_mode == RL_INSERT)
+	{
+		rl_editprint();
+		return (YEP);
+	}
+	return (NOP);
 }
