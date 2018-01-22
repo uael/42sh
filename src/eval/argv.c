@@ -48,7 +48,10 @@ inline int		sh_evalargv(t_job *job, t_map *vars, t_deq *toks, char **ln)
 	prc = ft_vecpush((t_vec *)&job->processes);
 	ft_vecctor(&av, sizeof(char *));
 	if (*tok->val == '$' && tok->len > 1)
+	{
 		sh_wordexpand((t_sds *)tok);
+		sh_tokexplode(tok, toks);
+	}
 	if ((st = sh_procctor(prc, "PATH", tok->val, buildenv(vars, &prc->ownenv))))
 	{
 		sh_proccnf(prc, *ln, tok, st);
@@ -63,7 +66,10 @@ inline int		sh_evalargv(t_job *job, t_map *vars, t_deq *toks, char **ln)
 		while (tok && tok->id == TOK_WORD)
 		{
 			if (*tok->val == '$' && tok->len > 1)
+			{
 				sh_wordexpand((t_sds *)tok);
+				sh_tokexplode(tok, toks);
+			}
 			*(char **)ft_vecpush(&av) = ft_strdup(tok->val);
 			tok = sh_toknext(toks);
 		}

@@ -28,10 +28,10 @@ inline int	sh_lexquote(int fd, t_tok *tok, char **it, char **ln)
 			return (st < 0 ? WUT : sh_synerr(*ln, *it, UNXPTD, quote));
 		else if (bs)
 			if (!(bs = 0) && quote == '"')
-				ft_sdscpush((t_sds *)tok, ft_strchr("\\\n\"$", *++*it)
-					? **it : (char)'\\');
+				ft_sdscpush((t_sds *)tok, ft_strchr("\\\n\"$", **it)
+					? *(*it)++ : (char)'\\');
 			else
-				ft_sdscpush((t_sds *)tok, *++*it == '\'' ? **it : (char)'\\');
+				ft_sdscpush((t_sds *)tok, **it == '\'' ? *(*it)++ : (char)'\\');
 		else if (**it == quote && ++*it)
 			break ;
 		else if ((bs = **it == '\\'))

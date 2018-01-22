@@ -88,3 +88,14 @@ t_bool					ft_mapput(t_map *self, void *key, uint32_t *out)
 	}
 	return (0);
 }
+
+t_bool					ft_mapdel(t_map *map, uint32_t it)
+{
+	if (it != map->cap && BUCKET_ISPOPULATED(map->bucks, it))
+	{
+		BUCKET_SET_ISDEL_TRUE(map->bucks, it);
+		--map->len;
+		return (1);
+	}
+	return (0);
+}

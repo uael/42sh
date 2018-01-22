@@ -17,5 +17,6 @@
 
 extern t_tok	*sh_tokpeek(t_deq *toks);
 extern t_tok	*sh_toknext(t_deq *toks);
+extern void		sh_tokexplode(t_tok *tok, t_deq *into);
 
 #endif
