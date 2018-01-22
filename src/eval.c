@@ -19,6 +19,11 @@ static t_map		g_binaries_stack =
 };
 t_map				*g_binaries = &g_binaries_stack;
 
+inline void			sh_evaldtor(void)
+{
+	ft_mapdtor(g_binaries, (t_dtor)ft_pfree, (t_dtor)ft_pfree);
+}
+
 static int			parseeol(t_deq *toks, char **ln)
 {
 	t_tok *tok;

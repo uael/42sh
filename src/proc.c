@@ -43,7 +43,7 @@ static int		exelookuppath(char *pvar, char *exe, int rights, char *buf)
 		ft_strncpy(buf, pvar, len)[len] = '\0';
 		if (!(st = exetest(ft_pathcat(buf, exe))) || st == PROC_NORIGHTS)
 		{
-			ft_mapput(g_binaries, exe, &i);
+			ft_mapput(g_binaries, ft_strdup(exe), &i);
 			((char **)g_binaries->vals)[i] = ft_strdup(buf);
 			return (st);
 		}
