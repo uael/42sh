@@ -88,7 +88,7 @@ extern int		sh_lexquote(int fd, t_tok *tok, char **it, char **ln);
 extern int		sh_lexword(int fd, t_tok *tok, char **it, char **ln);
 extern int		sh_lexheredoc(int fd, t_tok *tok, char **it, char **ln);
 extern int		sh_lexheredoct(int fd, t_tok *tok, char **it, char **ln);
-extern int		reduce(int fd, t_deq *toks, char **it, char **ln);
-char			bracket(char b);
+extern int		sh_lexreduce(int fd, t_deq *toks, char **it, char **ln);
+extern char		sh_isbracket(char b);
 
 #endif

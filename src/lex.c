@@ -154,14 +154,14 @@ int					sh_lex(int fd, t_deq *toks, char **it, char **ln)
 		if (!i && (tok->id == TOK_EOL || tok->id == TOK_END))
 			break ;
 		if (ft_strchr("({[", tok->id))
-			stack[i++] = bracket(tok->id);
+			stack[i++] = sh_isbracket(tok->id);
 		else if (i && tok->id == stack[i - 1])
 			--i;
 		else if (ft_strchr(")}]", tok->id) && (!i || tok->id != stack[i - 1]))
 			return (i ? sh_synerr(*ln, *ln + tok->pos, UNXPTD_C, tok->id,
 				stack[i - 1]) : sh_synerr(*ln, *ln + tok->pos, UXPTD, tok->id));
 	}
-	return (tok ? reduce(fd, toks, it, ln) : YEP);
+	return (tok ? sh_lexreduce(fd, toks, it, ln) : YEP);
 }
 
 int					sh_lexnext(int fd, t_deq *toks, char **ln)

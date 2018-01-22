@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lex/quote.c                                        :+:      :+:    :+:   */
+/*   lex/reduce.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,11 +12,11 @@
 
 #include "ush/lex.h"
 
-inline int	reduce(int fd, t_deq *toks, char **it, char **ln)
+inline int		sh_lexreduce(int fd, t_deq *toks, char **it, char **ln)
 {
-	t_tok	*tok;
-	t_tok	*prev;
-	t_tok	*end;
+	t_tok *tok;
+	t_tok *prev;
+	t_tok *end;
 
 	prev = NULL;
 	tok = (t_tok *)ft_deqbeg(toks) - 1;
@@ -40,7 +40,7 @@ inline int	reduce(int fd, t_deq *toks, char **it, char **ln)
 	return (YEP);
 }
 
-char		bracket(char b)
+inline char		sh_isbracket(char b)
 {
 	if (b == '[')
 		return (']');
