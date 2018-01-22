@@ -17,7 +17,7 @@ inline void 	rl_hook(t_rlhook *hook)
 	g_rlhook = hook;
 }
 
-inline void 	rl_unhook(void)
+inline void 	rl_complete(t_rlcomp *comp)
 {
-	g_rlhook = NULL;
+	g_rlcomp = comp;
 }

@@ -46,6 +46,7 @@ static inline void	sh_init(int fd)
 	tcsetpgrp(fd, g_shpgid);
 	tcgetattr(fd, &g_shmode);
 	rl_hook(sh_poolnotify);
+	rl_complete(sh_complete);
 }
 
 static char			*sh_prompt(char *prompt, char *buf)
@@ -53,6 +54,7 @@ static char			*sh_prompt(char *prompt, char *buf)
 	size_t	l;
 	char	cwd[PATH_MAX + 1];
 	char	*p;
+	char	*r;
 	char	*home;
 
 	if (!(p = getcwd(cwd, PATH_MAX)))
@@ -68,7 +70,18 @@ static char			*sh_prompt(char *prompt, char *buf)
 			p[1] = '\0';
 		*p = '~';
 	}
-	return (ft_strcpy(buf, ft_strcat(p, prompt)));
+	r = buf;
+	while (*p)
+		if (*p == '/' && *(p + 1) && (home = ft_strchr(p + 1, '/')))
+		{
+			*r++ = *p++;
+			*r++ = *p;
+			p = home;
+		}
+		else
+			*r++ = *p++;
+	ft_strcpy(r, prompt);
+	return (buf);
 }
 
 #define SH_PROMPT() (g_shstatus==0?" \033[32m❯\033[0m ":" \033[31m❯\033[0m ")

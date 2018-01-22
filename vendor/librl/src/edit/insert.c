@@ -45,6 +45,7 @@ inline int	rl_editclear(void)
 {
 	ft_puts(STDOUT_FILENO, TC_ED TC_CUP);
 	g_eln->row = 0;
+	g_eln->rows.len = 0;
 	rl_editprint();
 	return (YEP);
 }

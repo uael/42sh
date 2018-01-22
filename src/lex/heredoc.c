@@ -34,8 +34,9 @@ inline int			sh_lexheredoc(int fd, t_tok *tok, char **it, char **ln)
 			return (st < 0 ? WUT : sh_synerr(*ln, *it, "Unexpected "
 				"EOF while looking for heredoc delimiter `%s'", eof));
 		else if (*ft_sdscpush((t_sds *)tok, *(*it)++) == '\n' && tok->len >=
-			eofl + 2 && tok->val[tok->len - (eofl + 2)] == '\n' &&
-			!ft_strncmp(tok->val + tok->len - (eofl + 1), eof, eofl))
+			eofl + 1 && (*(*it - (eofl + 2)) == '\n' ||
+			(*it - (eofl + 1)) == *ln) &&
+			!ft_strncmp(*it - (eofl + 1), eof, eofl))
 		{
 			ft_sdsnpop((t_sds *)tok, eofl + 1, NULL);
 			break ;
@@ -61,8 +62,9 @@ inline int			sh_lexheredoct(int fd, t_tok *tok, char **it, char **ln)
 			while (**it == '\t')
 				++*it;
 		if (*ft_sdscpush((t_sds *)tok, *(*it)++) == '\n' && tok->len >=
-			eofl + 2 && tok->val[tok->len - (eofl + 2)] == '\n' &&
-			!ft_strncmp(tok->val + tok->len - (eofl + 1), eof, eofl))
+			eofl + 1 && (*(*it - (eofl + 2)) == '\n' ||
+			(*it - (eofl + 1)) == *ln) &&
+			!ft_strncmp(*it - (eofl + 1), eof, eofl))
 		{
 			ft_sdsnpop((t_sds *)tok, eofl + 1, NULL);
 			break ;

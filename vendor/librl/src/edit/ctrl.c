@@ -89,3 +89,19 @@ inline int	rl_editctrldown(void)
 	rl_editprint();
 	return (YEP);
 }
+
+inline int	rl_edittab(void)
+{
+	if (g_eln->idx != g_eln->str.len)
+	{
+		g_eln->idx = (uint16_t)g_eln->str.len;
+		rl_editprint();
+	}
+	else if (g_rlcomp)
+	{
+		g_rlcomp(&g_eln->str);
+		g_eln->idx = (uint16_t)g_eln->str.len;
+		rl_editprint();
+	}
+	return (YEP);
+}
