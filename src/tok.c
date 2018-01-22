@@ -46,7 +46,7 @@ inline void		sh_tokexplode(t_tok *tok, t_deq *into)
 	while (*val && !ft_strchr(sh_varifs(), *val))
 		++val;
 	if (!*val)
-		return;
+		return ;
 	*val = '\0';
 	tok->len = val++ - tok->val;
 	i = 0;

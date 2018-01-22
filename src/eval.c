@@ -6,11 +6,13 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/11 13:31:59 by alucas-          ###   ########.fr       */
+/*   Updated: 2018/01/22 13:39:06 by cmalfroy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ush/eval.h"
+
+#define UNEX "Unexpected token `%s'"
 
 static t_map		g_binaries_stack =
 {
@@ -34,12 +36,11 @@ static int			parseeol(t_deq *toks, char **ln)
 		else if (tok->id == TOK_END)
 			return (YEP);
 		else
-			return (sh_evalerr(*ln, tok, "Unexpected token `%s'",
-				sh_tokstr(tok)));
+			return (sh_evalerr(*ln, tok, UNEX, sh_tokstr(tok)));
 	return (YEP);
 }
 
-static inline int	evalfinalize(int ret, t_deq *toks, int fd)
+static inline int	evalfini(int ret, t_deq *toks, int fd)
 {
 	t_tok	*tok;
 
@@ -74,19 +75,18 @@ inline int			sh_eval(int fd, t_deq *toks, char **ln)
 		sh_poolscope();
 	}
 	if (!(tok = sh_tokpeek(toks)))
-		return (evalfinalize(YEP, toks, fd));
+		return (evalfini(YEP, toks, fd));
 	while (tok && tok->id == TOK_EOL)
 		tok = sh_toknext(toks);
 	if (sh_evallist(fd, toks, ln) == ERR)
-		return (evalfinalize(NOP, toks, fd));
+		return (evalfini(NOP, toks, fd));
 	if (!(tok = sh_tokpeek(toks)))
-		return (evalfinalize(YEP, toks, fd));
+		return (evalfini(YEP, toks, fd));
 	if (tok->id == TOK_SEMICOLON)
 		sh_toknext(toks);
 	else if (tok->id == TOK_END)
-		return (evalfinalize(YEP, toks, fd));
+		return (evalfini(YEP, toks, fd));
 	else if (tok->id != TOK_EOL)
-		return (evalfinalize(sh_evalerr(*ln, tok,
-			"Unexpected token `%s'", sh_tokstr(tok)), toks, fd));
-	return (evalfinalize(parseeol(toks, ln), toks, fd));
+		return (evalfini(sh_evalerr(*ln, tok, UNEX, sh_tokstr(tok)), toks, fd));
+	return (evalfini(parseeol(toks, ln), toks, fd));
 }
