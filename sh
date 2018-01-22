@@ -1,2 +1,0 @@
-cat <<EOL
-EOL
