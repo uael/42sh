@@ -14,22 +14,29 @@
 
 inline int		sh_procmark(t_proc *proc, int status)
 {
-	proc->status = status;
-	if (WIFEXITED(status))
-		proc->status = WEXITSTATUS(status);
 	if (WIFSTOPPED(status))
+	{
 		proc->state = PROC_STOPPED;
+		proc->status = 0;
+	}
 	else
 	{
 		proc->state = PROC_COMPLETED;
-		if (WIFSIGNALED(status) && WTERMSIG(status) != 2)
+		if (WIFEXITED(status))
+			proc->status = WEXITSTATUS(status);
+		else if (WIFSIGNALED(status) && WTERMSIG(status) != 2)
+		{
 			sh_err("%d: Terminated by signal %d.\n",
 				(int)proc->pid, WTERMSIG(status));
+			proc->status = 1;
+		}
 		else if (WTERMSIG(status) == 2)
 		{
 			ft_putc(STDIN_FILENO, '\n');
 			proc->status = 130;
 		}
+		else
+			proc->status = status;
 	}
 	return (YEP);
 }

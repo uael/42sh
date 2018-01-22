@@ -39,7 +39,7 @@ inline t_bool	sh_poolunscope(void)
 	return (0);
 }
 
-inline t_job	*sh_poolpush(t_job *job)
+inline t_job	*sh_poolbg(t_job *job)
 {
 	size_t	i;
 	t_job	*new;
@@ -58,6 +58,17 @@ inline t_job	*sh_poolpush(t_job *job)
 			proc->pid);
 	}
 	ft_putf(STDOUT_FILENO, "\n");
+	return (new);
+}
+
+inline t_job	*sh_pooladd(t_job *job)
+{
+	t_job	*new;
+
+	if (g_pool->len == CHILD_MAX)
+		return (NULL);
+	if (!(new = sh_poolfind(job->pgid)))
+		new = ft_memcpy(g_pool->jobs + g_pool->len++, job, sizeof(t_job));
 	return (new);
 }
 

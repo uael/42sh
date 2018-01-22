@@ -12,7 +12,31 @@
 
 #include "ush.h"
 
-/*inline int sh_bibg(int ac, char **av, char **env)
-{
+#define BG COLOR_BRED"bg: "COLOR_RESET
 
-}*/
+inline int	sh_bibg(int ac, char **av, char **env)
+{
+	ssize_t	i;
+	t_job	*job;
+
+	(void)env;
+	if (!g_pool || !g_pool->len)
+		return (ft_retf(EXIT_FAILURE, BG"no current job\n"));
+	if (ac != 1)
+		while (*++av)
+			(job = sh_poolfind((pid_t)ft_atoi(*av))) && sh_jobstopped(job)
+				? sh_jobcont(job, 0)
+				: ft_putf(STDERR_FILENO, BG"%s: job not found\n", *av);
+	else
+	{
+		i = g_pool->len;
+		while (--i >= 0)
+			if (sh_jobstopped(job = g_pool->jobs + i))
+			{
+				sh_jobcont(job, 0);
+				return (EXIT_SUCCESS);
+			}
+		return (ft_retf(EXIT_FAILURE, BG"no current job\n"));
+	}
+	return (EXIT_SUCCESS);
+}

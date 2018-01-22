@@ -28,9 +28,7 @@ static inline pid_t	prepare(t_proc *proc, pid_t pgid, int *io, int fg)
 	}
 	if (pid != g_shpgid && g_shinteract)
 	{
-		if (pgid == 0)
-			pgid = pid;
-		setpgid(pid, pgid);
+		setpgid(0, pgid);
 		if (fg)
 			tcsetpgrp(STDIN_FILENO, pgid);
 		signal(SIGINT, SIG_DFL);
@@ -38,6 +36,7 @@ static inline pid_t	prepare(t_proc *proc, pid_t pgid, int *io, int fg)
 		signal(SIGTSTP, SIG_DFL);
 		signal(SIGTTIN, SIG_DFL);
 		signal(SIGTTOU, SIG_DFL);
+		signal(SIGCHLD, SIG_DFL);
 	}
 	return (pid);
 }

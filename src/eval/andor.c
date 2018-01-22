@@ -12,13 +12,16 @@
 
 #include "ush/eval.h"
 
+#define UNXPTD "Unexpected bang `%s' for empty pipeline"
+
 static inline int	pipelineerr(int st, t_tok *tok, t_bool bang, char *ln)
 {
 	if (st == NOP && bang)
-		return (sh_evalerr(ln, tok, "Unexpected bang `%s' for empty "
-			"pipeline", sh_tokstr(tok)));
+		return (sh_evalerr(ln, tok, UNXPTD, sh_tokstr(tok)));
 	return (st);
 }
+
+#define EXPTD "Expected <pipeline> got `%s'"
 
 inline int			sh_evalandor(t_job *job, int fd, t_deq *toks, char **ln)
 {
@@ -45,8 +48,7 @@ inline int			sh_evalandor(t_job *job, int fd, t_deq *toks, char **ln)
 					break ;
 			sh_jobctor(&right);
 			if (!(tok = sh_tokpeek(toks)))
-				return (sh_evalerr(*ln, tok, "Expected <pipeline> got `%s'",
-					sh_tokstr(tok)));
+				return (sh_evalerr(*ln, tok, EXPTD, sh_tokstr(tok)));
 			if (tok->id == TOK_NOT)
 			{
 				right.bang = 1;
@@ -65,8 +67,7 @@ inline int			sh_evalandor(t_job *job, int fd, t_deq *toks, char **ln)
 					break ;
 			sh_jobctor(&right);
 			if (!(tok = sh_tokpeek(toks)))
-				return (sh_evalerr(*ln, tok, "Expected <pipeline> got `%s'",
-					sh_tokstr(tok)));
+				return (sh_evalerr(*ln, tok, EXPTD, sh_tokstr(tok)));
 			if (tok->id == TOK_NOT)
 			{
 				right.bang = 1;

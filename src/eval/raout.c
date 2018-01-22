@@ -12,6 +12,8 @@
 
 #include "ush/eval.h"
 
+#define EXPTTD "Expected `<filename>' got `%s'"
+
 inline int		sh_evalraout(t_job *job, int fd, t_deq *toks, char **ln)
 {
 	t_tok	*tok;
@@ -22,8 +24,7 @@ inline int		sh_evalraout(t_job *job, int fd, t_deq *toks, char **ln)
 	(void)fd;
 	op = sh_tokpeek(toks);
 	if ((tok = sh_toknext(toks))->id != TOK_WORD)
-		return (sh_evalerr(*ln, tok, "Expected `<filename>' got `%s'",
-			sh_tokstr(tok)));
+		return (sh_evalerr(*ln, tok, EXPTTD, sh_tokstr(tok)));
 	proc = ft_vecback((t_vec *)&job->processes);
 	while (tok->id == TOK_WORD)
 	{

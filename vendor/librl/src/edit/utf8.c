@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   job/state.c                                        :+:      :+:    :+:   */
+/*   edit/utf8.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,44 +10,35 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ush/job.h"
+#include "../edit.h"
 
-int		sh_jobstopped(t_job *j)
+#define UNI "\xe2\x9d\xaf"
+
+inline int	rl_wstrlen(char *str)
 {
-	t_proc	*p;
-	size_t	i;
-	int		s;
+	int i;
+	int ix;
+	int q;
 
+	q = 0;
 	i = 0;
-	s = 0;
-	while (i < j->processes.len)
-		if ((p = j->processes.buf + i++)->state != PROC_COMPLETED)
-		{
-			if (p->state != PROC_STOPPED)
-				return (0);
-			++s;
-		}
-	return (s > 0);
-}
-
-int		sh_jobcontinued(t_job *j)
-{
-	size_t i;
-
-	i = 0;
-	while (i < j->processes.len)
-		if ((j->processes.buf + i++)->state != PROC_CONTINUED)
-			return (0);
-	return (1);
-}
-
-int		sh_jobcompleted(t_job *j)
-{
-	size_t i;
-
-	i = 0;
-	while (i < j->processes.len)
-		if ((j->processes.buf + i++)->state != PROC_COMPLETED)
-			return (0);
-	return (1);
+	ix = (int)ft_strlen(str);
+	while (i < ix)
+	{
+		++q;
+		if (!ft_strncmp("\033[32m", str + i, sizeof("\033[32m") - 1) &&
+			(i += sizeof("\033[32m") - 1))
+			--q;
+		else if (!ft_strncmp("\033[31m", str + i, sizeof("\033[31m") - 1) &&
+			(i += sizeof("\033[31m") - 1))
+			--q;
+		else if (!ft_strncmp("\033[0m", str + i, sizeof("\033[0m") - 1) &&
+			(i += sizeof("\033[0m") - 1))
+			--q;
+		else if (!ft_strncmp(UNI, str + i, sizeof(UNI) - 1))
+			i += sizeof(UNI) - 1;
+		else
+			++i;
+	}
+	return (q);
 }

@@ -35,6 +35,7 @@ SRC_NAME = \
 	job.c job/bg.c job/cont.c job/debug.c job/fg.c job/mark.c job/launch.c \
 	job/state.c job/wait.c \
 	lex.c lex/heredoc.c lex/op.c lex/quote.c lex/var.c lex/word.c \
+	lex/reduce.c \
 	main.c \
 	pool.c pool/mark.c pool/notify.c \
 	proc.c proc/cnf.c proc/fn.c proc/launch.c proc/mark.c proc/sh.c \

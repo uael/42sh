@@ -39,6 +39,7 @@ static inline void	sh_init(int fd)
 	signal(SIGTSTP, SIG_IGN);
 	signal(SIGTTIN, SIG_IGN);
 	signal(SIGTTOU, SIG_IGN);
+	signal(SIGCHLD, SIG_DFL);
 	g_shpgid = getpid();
 	if (setpgid(g_shpgid, g_shpgid) < 0)
 		sh_exit(EXIT_FAILURE, "Couldn't put the shell in its own process "
@@ -109,14 +110,10 @@ inline int			sh_run(int fd)
 		if (st < 0)
 			break ;
 	}
-	while (sh_varunscope())
-		;
-	while (sh_poolunscope())
-		;
+	sh_varunscope();
+	sh_poolunscope();
 	rl_finalize(fd);
-	if (st < 0)
-		g_shstatus = EXIT_FAILURE;
-	return (g_shstatus);
+	return (st < 0 ? (g_shstatus = EXIT_FAILURE) : g_shstatus);
 }
 
 int					sh_exit(int exitno, char const *fmt, ...)

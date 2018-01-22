@@ -34,8 +34,8 @@ SRC_NAME = \
 	fs/fs.c fs/fs_2.c fs/fs_3.c fs/fs_4.c \
 	hash/hash.c hash/hash_2.c \
 	int/len.c int/str.c \
-	io/fcntl.c io/ifs.c io/ofs.c io/padn.c io/putc.c io/putf.c io/putl.c \
-	io/putn.c io/puts.c \
+	io/fcntl.c io/ifs.c io/ifs_2.c io/ofs.c io/ofs_2.c io/ofs_3.c io/padn.c \
+	io/putc.c io/putf.c io/putl.c io/putn.c io/puts.c \
 	lib/atoi.c lib/clean.c lib/dtor.c lib/getenv.c lib/itoa.c lib/join.c \
 	lib/strerr.c \
 	math/imax.c math/imin.c math/m4.c math/m4_mul.c math/m4_rot.c \

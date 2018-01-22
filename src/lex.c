@@ -12,6 +12,9 @@
 
 #include "ush/lex.h"
 
+#define UNXPTD_C "Unexpected token `%c' while looking for matching `%c'"
+#define UXPTD "Unexpected closing bracket `%c'"
+
 static char		*g_tokidsstr[] =
 {
 	[TOK_END] = "<EOF>",
@@ -120,48 +123,10 @@ static inline int	lex(int fd, t_tok *tok, char **it, char **ln)
 	return (sh_synerr(*ln, *it, "Unexpected token `%c'", **it));
 }
 
-static inline int	reduce(int fd, t_deq *toks, char **it, char **ln)
-{
-	t_tok	*tok;
-	t_tok	*prev;
-	t_tok	*end;
-
-	prev = NULL;
-	tok = (t_tok *)ft_deqbeg(toks) - 1;
-	end = ft_deqend(toks);
-	while (++tok < end)
-	{
-		if (tok->id == TOK_WORD && prev)
-		{
-			if (prev->id == TOK_HEREDOC && sh_lexheredoc(fd, tok, it, ln))
-				return (WUT);
-			if (prev->id == TOK_HEREDOCT && sh_lexheredoct(fd, tok, it, ln))
-				return (WUT);
-		}
-		else if (prev && (prev->id == TOK_HEREDOC || prev->id == TOK_HEREDOCT))
-			return (sh_synerr(*ln, *ln + tok->pos, "Expected `%s' after "
-				"heredoc `%s' got `%s'", sh_tokidstr(TOK_WORD),
-				sh_tokidstr(prev->id), sh_tokidstr(tok->id)));
-		prev = tok;
-	}
-	return (YEP);
-}
-
-char				bracket(char b)
-{
-	if (b == '[')
-		return ']';
-	if (b == '{')
-		return '}';
-	if (b == '(')
-		return ')';
-	return (0);
-}
-
 int					sh_lex(int fd, t_deq *toks, char **it, char **ln)
 {
 	t_tok	*tok;
-	int 	st;
+	int		st;
 	char	stack[1000];
 	size_t	i;
 
@@ -193,13 +158,8 @@ int					sh_lex(int fd, t_deq *toks, char **it, char **ln)
 		else if (i && tok->id == stack[i - 1])
 			--i;
 		else if (ft_strchr(")}]", tok->id) && (!i || tok->id != stack[i - 1]))
-		{
-			if (i)
-				return (sh_synerr(*ln, *ln + tok->pos, "Unexpected token `%c' "
-					"while looking for matching `%c'", tok->id, stack[i - 1]));
-			return (sh_synerr(*ln, *ln + tok->pos, "Unexpected closing "
-				"bracket `%c'", tok->id));
-		}
+			return (i ? sh_synerr(*ln, *ln + tok->pos, UNXPTD_C, tok->id,
+				stack[i - 1]) : sh_synerr(*ln, *ln + tok->pos, UXPTD, tok->id));
 	}
 	return (tok ? reduce(fd, toks, it, ln) : YEP);
 }

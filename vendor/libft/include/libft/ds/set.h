@@ -21,7 +21,7 @@ typedef struct	s_set
 	uint32_t	len;
 	uint32_t	occupieds;
 	uint32_t	upper_bound;
-    uint8_t		*bucks;
+	uint8_t		*bucks;
 	t_hasher	hasher;
 	size_t		ksz;
 	void		*keys;

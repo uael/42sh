@@ -14,10 +14,10 @@
 
 t_bool					ft_mapget(t_map *self, void *key, uint32_t *out)
 {
-	uint32_t	i;
-	uint32_t	last;
-	uint32_t	mask;
-	uint32_t	step;
+	uint32_t i;
+	uint32_t last;
+	uint32_t mask;
+	uint32_t step;
 
 	if (!self->cap)
 		return (0);
@@ -48,19 +48,18 @@ static inline uint32_t	mapput(t_map *self, void *key)
 
 	step = 0;
 	if (self->occupieds >= self->upper_bound)
-		ft_maprsz(
-			self, self->cap > (self->len << 1) ? self->cap - 1 : self->cap + 1
-		);
+		ft_maprsz(self, self->cap > (self->len << 1)
+			? self->cap - 1 : self->cap + 1);
 	mask = self->cap - 1;
 	i = self->hasher.hash(key) & mask;
 	last = i;
 	while (1)
-		if (self->bucks[i] & BUCKET_EMPTY || (!( self->bucks[i] &
+		if (self->bucks[i] & BUCKET_EMPTY || (!(self->bucks[i] &
 			BUCKET_DELETED) && self->hasher.eq(*(void **)((char *)self->keys +
 			(i * self->ksz)), key)))
-			break;
+			break ;
 		else if ((i = (i + (++step)) & mask) == last)
-			break;
+			break ;
 	return (i);
 }
 

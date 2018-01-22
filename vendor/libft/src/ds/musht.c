@@ -16,6 +16,7 @@ inline void	*ft_deqmusht(t_deq *self, void const *b, size_t n)
 {
 	return (ft_memcpy(ft_deqnusht(self, n), b, n * self->isz));
 }
+
 inline char	*ft_sdsmusht(t_sds *self, char const *items, size_t n)
 {
 	return (ft_memcpy(ft_sdsnusht(self, n), items, n * sizeof(char)));
