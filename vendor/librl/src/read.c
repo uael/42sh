@@ -66,11 +66,11 @@ int				rl_catline(int fd, char c, char **ln, char **it)
 
 	if (fd != 0 || !isatty(fd) || rl_rawmode(fd))
 		return (rl_readnotty(fd, it));
-	ft_write(STDOUT_FILENO, "\033[31m>\033[0m ", 2);
+	ft_write(STDOUT_FILENO, "> ", 2);
 	signal(SIGWINCH, rd_sigwinch);
 	if (!g_screen_init && rl_screenget(g_screen) < 0)
 		st = WUT;
-	else if (!(st = rl_editln("\033[31m>\033[0m ", &len, &buf, 1)) && len > 1)
+	else if (!(st = rl_editln("> ", &len, &buf, 1)) && len > 1)
 		*it = rl_histcat(buf, len, c, ln);
 	g_screen_init = 1;
 	rl_offmode(fd);
