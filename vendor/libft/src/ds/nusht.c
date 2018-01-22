@@ -36,7 +36,7 @@ inline void		*ft_deqnusht(t_deq *self, size_t n)
 	return (it);
 }
 
-inline char	*ft_sdsnusht(t_sds *self, size_t n)
+inline char		*ft_sdsnusht(t_sds *self, size_t n)
 {
 	size_t	len;
 	char	*it;

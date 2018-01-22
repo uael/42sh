@@ -16,7 +16,7 @@
 # include "../str.h"
 # include "../hash.h"
 
-#define MAP_HASH_UPPER 0.77
+# define MAP_HASH_UPPER 0.77
 
 enum			e_bucket
 {
@@ -25,14 +25,14 @@ enum			e_bucket
 	BUCKET_BOTH = BUCKET_DELETED | BUCKET_EMPTY
 };
 
-#define BUCKET_ISEMPTY(buckets, i) (((buckets)[i]&BUCKET_EMPTY)==BUCKET_EMPTY)
-#define BUCKET_ISDEL(buckets, i) (((buckets)[i]&BUCKET_DELETED)==BUCKET_DELETED)
-#define BUCKET_ISEITHER(buckets, i) (((buckets)[i]&BUCKET_BOTH)!=0)
-#define BUCKET_ISPOPULATED(buckets, i) (((buckets)[i]&BUCKET_BOTH)==0)
-#define BUCKET_SET_ISDEL_FALSE(buckets, i) ((buckets)[i]&=~BUCKET_DELETED)
-#define BUCKET_SET_ISEMPTY_FALSE(buckets, i) ((buckets)[i]&=~BUCKET_EMPTY)
-#define BUCKET_SET_ISBOTH_FALSE(buckets, i) ((buckets)[i]=0)
-#define BUCKET_SET_ISDEL_TRUE(buckets, i) ((buckets)[i]|=BUCKET_DELETED)
+# define BUCKET_ISEMPTY(buckets, i) (((buckets)[i]&BUCKET_EMPTY)==BUCKET_EMPTY)
+# define BUCKET_ISDEL(bckets, i) (((bckets)[i]&BUCKET_DELETED)==BUCKET_DELETED)
+# define BUCKET_ISEITHER(buckets, i) (((buckets)[i]&BUCKET_BOTH)!=0)
+# define BUCKET_ISPOPULATED(buckets, i) (((buckets)[i]&BUCKET_BOTH)==0)
+# define BUCKET_SET_ISDEL_FALSE(buckets, i) ((buckets)[i]&=~BUCKET_DELETED)
+# define BUCKET_SET_ISEMPTY_FALSE(buckets, i) ((buckets)[i]&=~BUCKET_EMPTY)
+# define BUCKET_SET_ISBOTH_FALSE(buckets, i) ((buckets)[i]=0)
+# define BUCKET_SET_ISDEL_TRUE(buckets, i) ((buckets)[i]|=BUCKET_DELETED)
 
 typedef struct	s_map
 {
@@ -40,7 +40,7 @@ typedef struct	s_map
 	uint32_t	len;
 	uint32_t	occupieds;
 	uint32_t	upper_bound;
-    uint8_t		*bucks;
+	uint8_t		*bucks;
 	t_hasher	hasher;
 	size_t		ksz;
 	size_t		vsz;

@@ -84,7 +84,7 @@ inline void		sh_varset(char *var, char *val)
 		free(dvar);
 }
 
-inline char        *sh_varget(char *var)
+inline char		*sh_varget(char *var)
 {
 	uint32_t	it;
 

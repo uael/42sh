@@ -110,14 +110,10 @@ inline int			sh_run(int fd)
 		if (st < 0)
 			break ;
 	}
-	while (sh_varunscope())
-		;
-	while (sh_poolunscope())
-		;
+	sh_varunscope();
+	sh_poolunscope();
 	rl_finalize(fd);
-	if (st < 0)
-		g_shstatus = EXIT_FAILURE;
-	return (g_shstatus);
+	return ((g_shstatus = st < 0 ? EXIT_FAILURE : g_shstatus));
 }
 
 int					sh_exit(int exitno, char const *fmt, ...)

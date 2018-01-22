@@ -111,7 +111,7 @@ ssize_t			ft_ofsvwrf(t_ofs *self, char const *f, va_list ap)
 		else if (*sp == 's')
 			sz += ft_ofswrs(self, va_arg(ap, char const *));
 		else if (*sp == 'c')
-			sz += ft_ofswrc(self, (unsigned char) va_arg(ap, int));
+			sz += ft_ofswrc(self, (unsigned char)va_arg(ap, int));
 		else if (*sp == 'f')
 			sz += ft_ofswrd(self, va_arg(ap, double), 10, 10);
 		else if (*sp == 'e')

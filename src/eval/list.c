@@ -71,10 +71,7 @@ inline int			sh_evallist(int fd, t_deq *toks, char **ln)
 		return (ERR);
 	while (1)
 		if (!(tok = sh_tokpeek(toks)))
-		{
-			sh_jobdtor(&job);
-			return (YEP);
-		}
+			return (ft_dtor(YEP, (t_dtor)sh_jobdtor, &job, NULL));
 		else if (tok->id == TOK_AMP)
 		{
 			if ((st = onamp(&job, fd, toks, ln)))
@@ -88,8 +85,5 @@ inline int			sh_evallist(int fd, t_deq *toks, char **ln)
 		else if (tok->id == TOK_END || tok->id == TOK_EOL)
 			return (oneof(&job));
 		else
-		{
-			sh_jobdtor(&job);
-			return (YEP);
-		}
+			return (ft_dtor(YEP, (t_dtor)sh_jobdtor, &job, NULL));
 }

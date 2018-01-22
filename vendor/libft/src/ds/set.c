@@ -37,7 +37,7 @@ static inline void	reh1(t_set *self, uint32_t sz, uint8_t *bucks, uint32_t j)
 	uint32_t		k;
 	uint32_t		i;
 	uint32_t		step;
-	
+
 	step = 0;
 	key = *(void **)((char *)self->keys + (j * self->ksz));
 	BUCKET_SET_ISDEL_TRUE(self->bucks, j);
@@ -55,15 +55,15 @@ static inline void	reh1(t_set *self, uint32_t sz, uint8_t *bucks, uint32_t j)
 
 static inline void	reh(t_set *self, uint32_t sz, uint8_t *bucks)
 {
-	
 	uint32_t		j;
-	
-	for (j = 0; j != self->cap; ++j)
+
+	j = -1;
+	while (++j != self->cap)
 		if (BUCKET_ISEITHER(self->bucks, j) == 0)
 			reh1(self, sz, bucks, j);
 	if (self->cap > sz)
 		self->keys = ft_realloc(self->keys, self->len * self->ksz,
-			sz * self->ksz);
+		sz * self->ksz);
 	free(self->bucks);
 	self->bucks = bucks;
 	self->cap = sz;
@@ -75,7 +75,7 @@ size_t				ft_setrsz(t_set *self, uint32_t sz)
 {
 	uint8_t			*bucks;
 	uint32_t		j;
-	
+
 	j = 1;
 	bucks = NULL;
 	if ((sz = pow2_next32(sz)) < 32)
