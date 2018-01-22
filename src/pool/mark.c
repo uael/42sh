@@ -21,7 +21,7 @@ inline int		sh_poolmark(pid_t pid, int status)
 
 	if (!g_pool)
 		return (NOP);
-	if (pid > 0 && pid != (pid_t)-1)
+	if (pid > 0)
 	{
 		i = 0;
 		while (i < g_pool->len)
@@ -30,7 +30,11 @@ inline int		sh_poolmark(pid_t pid, int status)
 			job = g_pool->jobs + i++;
 			while (j < job->processes.len)
 				if ((proc = job->processes.buf + j++)->pid == pid)
-					return (sh_procmark(proc, status));
+				{
+					sh_procmark(proc, status);
+					if (job->bg == 0 && proc->status == PROC_STOPPED)
+						job->bg = 1;
+				}
 		}
 		return (NOP);
 	}

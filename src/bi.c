@@ -16,19 +16,25 @@ inline t_procfn	*sh_bifn(char const *exe)
 {
 	if (!ft_strcmp(exe, "cd"))
 		 return (sh_bicd);
-	else if (!ft_strcmp(exe, "echo"))
+	if (!ft_strcmp(exe, "bg"))
+		 return (sh_bibg);
+	if (!ft_strcmp(exe, "echo"))
 		 return (sh_biecho);
-	else if (!ft_strcmp(exe, "env"))
+	if (!ft_strcmp(exe, "env"))
 		 return (sh_bienv);
-	else if (!ft_strcmp(exe, "exit"))
+	if (!ft_strcmp(exe, "exit"))
 		 return (sh_biexit);
-	else if (!ft_strcmp(exe, "export"))
+	if (!ft_strcmp(exe, "export"))
 		 return (sh_biexport);
-	else if (!ft_strcmp(exe, "set"))
+	if (!ft_strcmp(exe, "fg"))
+		 return (sh_bifg);
+	if (!ft_strcmp(exe, "jobs"))
+		 return (sh_bijobs);
+	if (!ft_strcmp(exe, "set"))
 		 return (sh_biset);
-	else if (!ft_strcmp(exe, "setenv"))
+	if (!ft_strcmp(exe, "setenv"))
 		 return (sh_bisetenv);
-	else if (!ft_strcmp(exe, "unsetenv"))
+	if (!ft_strcmp(exe, "unsetenv"))
 		 return (sh_biunsetenv);
 	return (NULL);
 }

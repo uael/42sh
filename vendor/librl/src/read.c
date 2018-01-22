@@ -24,6 +24,8 @@ void			rd_sigwinch(int signo)
 {
 	(void)signo;
 	rl_screenget(g_screen);
+	if (g_mode == RL_INSERT)
+		rl_editprint();
 }
 
 void			rl_finalize(int fd)

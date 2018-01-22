@@ -23,7 +23,6 @@ inline int		sh_jobmark(t_job *job, pid_t pid, int status)
 		while (i < job->processes.len)
 			if ((proc = job->processes.buf + i++)->pid == pid)
 				return (sh_procmark(proc, status));
-		sh_err("No child process %d for gpid %d.\n", pid, job->pgid);
 		return (WUT);
 	}
 	return ((pid == 0 || errno == ECHILD) ? WUT : THROW(WUT));

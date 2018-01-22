@@ -13,22 +13,29 @@
 #include <sys/wait.h>
 
 #include "ush/job.h"
+#include "ush/pool.h"
 
 inline void		sh_jobwait(t_job *job)
 {
 	int		status;
 	pid_t	pid;
+	//t_job	*new;
 
 	while (1)
 	{
-		while ((pid = waitpid(WAIT_ANY, &status, WUNTRACED)) < 0)
+		while ((pid = waitpid(-job->pgid, &status, WUNTRACED)) < 0)
 			if (errno != EINTR)
 				break ;
 		if (sh_jobmark(job, pid, status) || sh_jobstopped(job)
 			|| sh_jobcompleted(job))
 			break ;
 	}
-	job->status = job->processes.buf[job->processes.len - 1].status;
-	if (job->bang)
-		job->status = job->status ? 0 : 1;
+	/*if (sh_jobstopped(job))
+	{
+		ft_putc(STDIN_FILENO, '\n');
+		sh_jobdebug(new = sh_pooladd(job));
+		if (new != job)
+			sh_jobctor(job);
+		return ;
+	}*/
 }

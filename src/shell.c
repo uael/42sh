@@ -39,6 +39,7 @@ static inline void	sh_init(int fd)
 	signal(SIGTSTP, SIG_IGN);
 	signal(SIGTTIN, SIG_IGN);
 	signal(SIGTTOU, SIG_IGN);
+	signal(SIGCHLD, SIG_DFL);
 	g_shpgid = getpid();
 	if (setpgid(g_shpgid, g_shpgid) < 0)
 		sh_exit(EXIT_FAILURE, "Couldn't put the shell in its own process "
