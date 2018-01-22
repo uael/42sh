@@ -58,7 +58,7 @@ static inline void	reh(t_set *self, uint32_t sz, uint8_t *bucks)
 	uint32_t		j;
 
 	j = -1;
-	for (++j != self->cap)
+	while (++j != self->cap)
 		if (BUCKET_ISEITHER(self->bucks, j) == 0)
 			reh1(self, sz, bucks, j);
 	if (self->cap > sz)
@@ -75,7 +75,7 @@ size_t				ft_setrsz(t_set *self, uint32_t sz)
 {
 	uint8_t			*bucks;
 	uint32_t		j;
-	
+
 	j = 1;
 	bucks = NULL;
 	if ((sz = pow2_next32(sz)) < 32)
