@@ -198,7 +198,7 @@ static inline int	keymap(char *key, ssize_t rd)
 			st = bind->cb();
 	if (st <= 0)
 		return (st);
-	return (st == RL_EXIT ? NOP : YEP);
+	return (st == RL_EXIT ? RL_EXIT : NOP);
 }
 
 int					rl_editln(char const *p, size_t *sz, char **ln, t_bool cat)
@@ -222,10 +222,10 @@ int					rl_editln(char const *p, size_t *sz, char **ln, t_bool cat)
 		}
 		else if (rl_editinsert(*key))
 			break ;
-	if (!st)
+	if (!st || st == NOP)
 	{
 		*sz = g_eln->str.len;
 		*ln = g_eln->str.buf;
 	}
-	return (st);
+	return (st == NOP ? YEP : st);
 }

@@ -89,26 +89,26 @@ static char			*sh_prompt(char *prompt, char *buf)
 
 inline int			sh_run(int fd)
 {
-	char	*ln;
-	char	*it;
+	char	*ln[2];
 	int		st;
 	char	buf[PATH_MAX];
 
 	sh_init(fd);
 	sh_varscope();
 	sh_poolscope();
-	while (!(st = rl_getline(fd, sh_prompt(SH_PROMPT(), buf), &ln)))
+	while (!(st = rl_getline(fd, sh_prompt(SH_PROMPT(), buf), ln)))
 	{
-		it = ln;
+		ln[1] = ln[0];
 		g_toks->len = 0;
 		g_toks->cur = 0;
-		while (!(st = sh_lex(fd, g_toks, &it, &ln)))
+		while (!(st = sh_lex(fd, g_toks, ln + 1, ln)))
 		{
-			sh_eval(fd, g_toks, &ln);
+			sh_eval(fd, g_toks, ln) ? g_shstatus = 1 : 0;
 			ft_deqclean(g_toks, (t_dtor)ft_sdsdtor);
 		}
 		if (st < 0)
 			break ;
+		st == ERR ? g_shstatus = 1 : 0;
 	}
 	sh_varunscope();
 	sh_poolunscope();
