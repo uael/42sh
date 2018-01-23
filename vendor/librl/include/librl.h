@@ -21,11 +21,6 @@
 #  define TTY struct termios
 # endif
 
-/*
-** TODO: hist load/save
-** TODO: autocomplete api
-*/
-
 typedef void	(t_rlhook)(void);
 typedef void	(t_rlcomp)(t_sds *cmd);
 

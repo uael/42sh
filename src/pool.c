@@ -24,7 +24,8 @@ inline void		sh_poolscope(void)
 }
 
 /*
-** TODO: check for running jobs
+** TODO(42sh): Check for running jobs
+** https://github.com/uael/21sh/issues/80
 */
 
 inline t_bool	sh_poolunscope(void)
