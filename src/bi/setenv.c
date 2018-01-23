@@ -30,7 +30,7 @@ static t_bool	isname(char *word)
 	return (1);
 }
 
-inline int	sh_bisetenv(int ac, char **av, char **env)
+inline int		sh_bisetenv(int ac, char **av, char **env)
 {
 	if (ac == 1)
 		return (sh_bienv(ac, av, env));
