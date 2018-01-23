@@ -12,7 +12,7 @@
 
 #include "ush/eval.h"
 
-static char		**buildenv(t_map *vars, t_bool *owned)
+static char		**mev(t_map *vars, t_bool *owned)
 {
 	t_vec		*e;
 	char		**envv;
@@ -36,6 +36,23 @@ static char		**buildenv(t_map *vars, t_bool *owned)
 	return (e->buf);
 }
 
+static int		procbool(t_job *job, t_tok *tok, t_deq *toks, char **ln)
+{
+	tok = sh_toknext(toks);
+	while (tok)
+		if (tok->id == TOK_WORD)
+			tok = sh_toknext(toks);
+		else if (TOK_ISREDIR(tok->id))
+		{
+			if (sh_evalredir(job, toks, ln) == ERR)
+				return (ERR);
+			tok = sh_tokpeek(toks);
+		}
+		else
+			break ;
+	return (YEP);
+}
+
 inline int		sh_evalargv(t_job *job, t_map *vars, t_deq *toks, char **ln)
 {
 	t_tok	*tok;
@@ -43,7 +60,8 @@ inline int		sh_evalargv(t_job *job, t_map *vars, t_deq *toks, char **ln)
 	int		st;
 	t_proc	*prc;
 
-	if (!(tok = sh_tokpeek(toks)) || tok->id != TOK_WORD)
+	if (!(tok = sh_tokpeek(toks)) ||
+		(tok->id != TOK_WORD && !TOK_ISBOOL(tok->id)))
 		return (NOP);
 	prc = alloca(sizeof(t_proc));
 	ft_vecctor(&av, sizeof(char *));
@@ -52,7 +70,13 @@ inline int		sh_evalargv(t_job *job, t_map *vars, t_deq *toks, char **ln)
 		sh_wordexpand((t_sds *)tok);
 		sh_tokexplode(tok, toks);
 	}
-	if ((st = sh_procctor(prc, "PATH", tok->val, buildenv(vars, &prc->ownenv))))
+	if (tok->id == TOK_TRUE || tok->id == TOK_FALSE)
+	{
+		sh_procbool(prc, (t_bool)(tok->id == TOK_FALSE));
+		if (procbool(job, tok, toks, ln) == ERR)
+			return (ERR);
+	}
+	else if ((st = sh_procctor(prc, "PATH", tok->val, mev(vars, &prc->ownenv))))
 	{
 		sh_proccnf(prc, *ln, tok, st);
 		tok = sh_toknext(toks);
@@ -86,9 +110,9 @@ inline int		sh_evalargv(t_job *job, t_map *vars, t_deq *toks, char **ln)
 			}
 			else
 				break ;
+		*(char **)ft_vecpush(&av) = NULL;
+		prc->argv = av.buf;
 	}
-	*(char **)ft_vecpush(&av) = NULL;
-	prc->argv = av.buf;
 	ft_veccpush((t_vec *)&job->procs, prc);
 	return (YEP);
 }

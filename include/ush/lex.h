@@ -48,6 +48,8 @@ enum			e_tok
 	TOK_UNTIL,
 	TOK_WHILE,
 	TOK_WORD,
+	TOK_TRUE,
+	TOK_FALSE,
 	TOK_NOT = '!',
 	TOK_AMP = '&',
 	TOK_LPAR = '(',
@@ -67,6 +69,7 @@ enum			e_tok
 # define TOK_ISREDIR_1(ID) ((ID)==TOK_RIN||(ID)==TOK_ROUT)
 # define TOK_ISREDIR_2(ID) ((ID)!=TOK_EOL&&((ID)>=TOK_HEREDOC&&(ID)<=TOK_AMPR))
 # define TOK_ISREDIR(ID) (TOK_ISREDIR_1(ID)||TOK_ISREDIR_2(ID))
+# define TOK_ISBOOL(ID) ((ID)==TOK_TRUE||(ID)==TOK_FALSE)
 
 typedef struct	s_tok
 {

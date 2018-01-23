@@ -37,7 +37,7 @@ inline int		sh_evalsimple(t_job *job, int fd, t_deq *toks, char **ln)
 
 	(void)fd;
 	ft_mapctor(&vars, g_strhash, sizeof(char *), sizeof(char *));
-	if ((tok = sh_tokpeek(toks))->id == TOK_WORD)
+	if ((tok = sh_tokpeek(toks))->id == TOK_WORD || TOK_ISBOOL(tok->id))
 	{
 		if (ft_strchr(tok->val, '='))
 			sh_evalassign(toks, &vars);

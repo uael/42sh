@@ -54,5 +54,7 @@ extern void		sh_proccnf(t_proc *proc, char *ln, t_tok *tok, int st);
 extern int		sh_proccnflaunch(t_proc *proc);
 extern int		sh_procsh(t_proc *proc, t_deq *toks, char *ln);
 extern int		sh_procshlaunch(t_proc *proc, pid_t pid);
+extern void		sh_procbool(t_proc *proc, t_bool boolean);
+extern int		sh_procboollaunch(t_proc *proc, pid_t pid);
 
 #endif

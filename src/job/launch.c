@@ -32,7 +32,8 @@ static inline int		jobfork(t_job *job, t_proc *proc, t_bool piped, int fg)
 {
 	pid_t	pid;
 
-	if ((!piped && proc->kind == PROC_FN) || !(pid = fork()))
+	if ((!piped && (proc->kind == PROC_FN || proc->kind == PROC_BOOL))
+		|| !(pid = fork()))
 		return (sh_proclaunch(proc, job->pgid, g_io, fg));
 	else if (pid < 0)
 		sh_exit(THROW(WUT), NULL);

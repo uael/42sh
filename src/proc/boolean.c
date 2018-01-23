@@ -1,39 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ush/proc/kind.h                                    :+:      :+:    :+:   */
+/*   proc/boolean.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/06 12:00:10 by alucas-          ###   ########.fr       */
+/*   Updated: 2018/01/06 11:10:01 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef USH_PROC_KIND_H
-# define USH_PROC_KIND_H
+#include "ush/proc.h"
 
-# include "sh.h"
-# include "cmderr.h"
-
-typedef enum	e_prockd
+inline void		sh_procbool(t_proc *proc, t_bool boolean)
 {
-	PROC_EXE,
-	PROC_FN,
-	PROC_SH,
-	PROC_CNF,
-	PROC_BOOL
-}				t_prockd;
+	ft_memset(proc, 0, sizeof(t_proc));
+	proc->kind = PROC_BOOL;
+	proc->u.boolean = boolean;
+	ft_vecctor((t_vec *)&proc->redirs, sizeof(t_redir));
+	ft_memset(proc->scope, -1, 3 * sizeof(int));
+	ft_memcpy(proc->src, STD_FILENOS, 3 * sizeof(int));
+}
 
-typedef int		(t_procfn)(int ac, char **av, char **envv);
-
-typedef union	u_procu
+inline int		sh_procboollaunch(t_proc *proc, pid_t pid)
 {
-	char		*exe;
-	t_procfn	*fn;
-	t_subsh		sh;
-	t_cmderr	cnf;
-	t_bool		boolean;
-}				t_procu;
-
-#endif
+	proc->status = proc->u.boolean;
+	if (pid > 0 && pid != g_shpgid)
+		exit(proc->status);
+	ft_dup2std(proc->scope, STD_FILENOS);
+	return (YEP);
+}
