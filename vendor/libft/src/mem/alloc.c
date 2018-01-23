@@ -20,7 +20,7 @@ inline void	*ft_malloc(size_t sz)
 	void *p;
 
 	if (!(p = malloc(sz)))
-		THROW(WUT);
+		errno ? THROW(WUT) : ENO_THROW(WUT, ENOMEM);
 	return (p);
 }
 
