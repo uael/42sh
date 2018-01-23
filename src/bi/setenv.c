@@ -21,7 +21,7 @@ static t_bool	isname(char *word)
 	if (!ft_isalpha(*word) && *word != '_')
 		return (0);
 	++word;
-	while (*word != '=')
+	while (*word)
 	{
 		if (!ft_isalnum(*word) && *word != '_')
 			return (0);

@@ -10,3 +10,8 @@ setenv 1 2>&1 | grep "setenv: 1: not an identifier" || exit 1
 setenv FOO=bar 2>&1 | grep "setenv: Syntax error" || exit 1
 setenv FOO =bar 2>&1 | grep "setenv: Syntax error" || exit 1
 setenv FOO sad=bar 2>&1 | grep "setenv: Syntax error" || exit 1
+env -i ./21sh <<EOL
+dfgdfgsd
+dfgdffsgdsfg
+EOL
+
