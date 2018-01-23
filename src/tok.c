@@ -40,7 +40,7 @@ inline void		sh_tokexplode(t_tok *tok, t_deq *into)
 	char	*end;
 	size_t	i;
 
-	while (ft_strchr(sh_varifs(), *tok->val))
+	while (tok->len && ft_strchr(sh_varifs(), *tok->val))
 		ft_sdssht((t_sds *)tok, NULL);
 	val = tok->val;
 	while (*val && !ft_strchr(sh_varifs(), *val))

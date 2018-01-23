@@ -12,10 +12,6 @@
 
 #include "ush/word.h"
 
-/*
- ** TODO: Handle pathname expansion
-*/
-
 static void		expandvar(t_sds *word)
 {
 	char		*var;
@@ -39,6 +35,11 @@ static void		expandvar(t_sds *word)
 	else
 		*word->buf = '\0';
 }
+
+/*
+** TODO(42sh): Handle pathname expansion, glob
+** https://github.com/uael/21sh/issues/29
+*/
 
 inline void		sh_wordglob(t_sds *word)
 {

@@ -64,7 +64,7 @@ static int		exelookup(char **env, char *exe, char *path, char *buf)
 	if (!(st = exetest(ft_strcpy(buf, exe))))
 		return (st);
 	rights = st == PROC_NORIGHTS;
-	if (!(beg = ft_getenv(env, path)))
+	if (!(beg = sh_varget(path)) && !(beg = ft_getenv(env, path)))
 		return (PROC_NOTFOUND);
 	if (ft_mapget(g_binaries, exe, &i))
 	{
@@ -119,4 +119,6 @@ inline void		sh_procdtor(t_proc *proc)
 	ft_vecdtor((t_vec *)&proc->redirs, NULL);
 	if (proc->kind == PROC_SH)
 		ft_deqdtor(&proc->u.sh.toks, NULL);
+	else if (proc->kind == PROC_EXE)
+		free(proc->u.exe);
 }

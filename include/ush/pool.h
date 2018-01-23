@@ -26,7 +26,7 @@ extern size_t	g_scopelvl;
 
 extern void		sh_poolscope(void);
 extern t_bool	sh_poolunscope(void);
-extern t_job	*sh_pooladd(t_job *job);
+extern t_job	*sh_poolqueue(t_job *job);
 extern t_job	*sh_poolfind(pid_t pgid);
 extern int		sh_poolmark(pid_t pid, int status);
 extern void		sh_poolnotify(void);
