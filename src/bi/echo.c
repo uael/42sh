@@ -19,7 +19,7 @@ inline int	sh_biecho(int ac, char **argv, char **env)
 
 	(void)env;
 	if (!argv[(i = 0) + 1])
-		return (ft_retf(EXIT_FAILURE, "\n"));
+		return (ft_retf(EXIT_SUCCESS, "\n"));
 	else if (argv[1][0] == '-' && argv[1][1] == 'n' && argv[1][2] == '\0')
 		++i;
 	n_flag = i;

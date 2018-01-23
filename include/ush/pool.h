@@ -30,5 +30,6 @@ extern t_job	*sh_pooladd(t_job *job);
 extern t_job	*sh_poolfind(pid_t pgid);
 extern int		sh_poolmark(pid_t pid, int status);
 extern void		sh_poolnotify(void);
+extern void		sh_poolclean(void);
 
 #endif

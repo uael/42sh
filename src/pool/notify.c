@@ -84,3 +84,19 @@ inline void		sh_poolnotify(void)
 	if (print)
 		rl_reprint();
 }
+
+inline void		sh_poolclean(void)
+{
+	size_t	i;
+	t_job	*job;
+
+	i = 0;
+	while (i < g_pool->len)
+		if (sh_jobcompleted(job = g_pool->jobs + i++))
+		{
+			jobfini(job);
+			if (--i != --g_pool->len)
+				ft_memmove(g_pool->jobs + i, g_pool->jobs + i + 1,
+					sizeof(t_job) * (g_pool->len - i));
+		}
+}
