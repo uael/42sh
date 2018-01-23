@@ -53,8 +53,8 @@ int				rl_getline(int fd, char *prompt, char **ln)
 	signal(SIGWINCH, rd_sigwinch);
 	if (!g_screen_init && rl_screenget(g_screen) < 0)
 		st = WUT;
-	else if (!(st = rl_editln(prompt, &len, &buf, 0)) && len > 1)
-		*ln = rl_histadd(buf, len);
+	else if (!(st = rl_editln(prompt, &len, &buf, 0)))
+		*ln = len > 1 ? rl_histadd(buf, len) : buf;
 	g_screen_init = 1;
 	rl_offmode(fd);
 	return (st);
@@ -72,8 +72,8 @@ int				rl_catline(int fd, char c, char **ln, char **it)
 	signal(SIGWINCH, rd_sigwinch);
 	if (!g_screen_init && rl_screenget(g_screen) < 0)
 		st = WUT;
-	else if (!(st = rl_editln("\033[31m>\033[0m ", &len, &buf, 1)) && len > 1)
-		*it = rl_histcat(buf, len, c, ln);
+	else if (!(st = rl_editln("\033[31m>\033[0m ", &len, &buf, 1)))
+		*it = len > 1 ? rl_histcat(buf, len, c, ln) : buf;
 	g_screen_init = 1;
 	rl_offmode(fd);
 	return (st);

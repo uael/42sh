@@ -14,13 +14,7 @@
 
 inline int	rl_editreturn(void)
 {
-	if (g_eln->str.len)
-		ft_sdscpush(&g_eln->str, '\n');
+	ft_sdscpush(&g_eln->str, '\n');
 	ft_write(STDOUT_FILENO, "\n", 1);
-	if (!g_eln->str.len)
-	{
-		rl_editprint();
-		return (YEP);
-	}
 	return (NOP);
 }
