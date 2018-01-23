@@ -1,29 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   edit/ln.c                                          :+:      :+:    :+:   */
+/*   hist/load.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/13 08:23:58 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/11 13:31:59 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../edit.h"
+#include "../hist.h"
 
-inline void		rl_editlnupdate(t_editln *ln)
+inline int		rl_histload(char const *filename)
 {
-	char *beg;
-	char *eol;
+	t_ifs	*in;
+	ssize_t	sz;
+	char	*ln;
+	t_bool	new;
 
-	ln->rows.len = 0;
-	ln->rows.isz = sizeof(char *);
-	beg = ln->str.buf;
-	while ((eol = ft_strchr(beg, '\n')))
+	if (ft_ifsopen(in = alloca(sizeof(t_ifs)), filename))
+		return (NOP);
+	new = 1;
+	while ((sz = ft_ifschr(in, 0, '\n', &ln)) > 0)
 	{
-		*(char **)ft_vecpush(&ln->rows) = beg;
-		beg = eol + 1;
+		if (sz == 1)
+			new = 1;
+		else
+		{
+			new ? rl_histadd(ln, (size_t)sz) : rl_histcat(ln, (size_t)sz, 0, 0);
+			new = 0;
+		}
+		ft_ifsrd(in, NULL, (size_t)sz);
 	}
-	*(char **)ft_vecpush(&ln->rows) = beg;
+	ft_ifsclose(in);
+	return (YEP);
 }

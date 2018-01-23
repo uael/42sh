@@ -30,6 +30,7 @@ int				ft_ofsopen(t_ofs *self, char const *filename)
 
 int				ft_ofsclose(t_ofs *self)
 {
+	ft_ofsflush(self);
 	if (close(self->ofd))
 		return (WUT);
 	return (YEP);

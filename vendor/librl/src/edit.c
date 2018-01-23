@@ -165,6 +165,8 @@ inline void			rl_editdtor(void)
 
 static inline void	prepare(t_bool cat)
 {
+	if (g_edit_len == 0)
+		ft_memset(g_edit, 0, (HIST_MAX + 1) * sizeof(t_editln));
 	g_edit_len = 0;
 	while (rl_histcpy(g_edit_len, &g_edit[g_edit_len].str))
 		++g_edit_len;

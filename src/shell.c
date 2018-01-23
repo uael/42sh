@@ -29,6 +29,9 @@ static t_deq		*g_toks = &g_stack_toks;
 
 static inline void	sh_init(int fd)
 {
+	char	*home;
+	char 	buf[PATH_MAX];
+
 	g_shpgid = getpgrp();
 	if (!(g_shinteract = (t_bool)isatty(fd)))
 		return ;
@@ -48,6 +51,8 @@ static inline void	sh_init(int fd)
 	tcgetattr(fd, &g_shmode);
 	rl_hook(sh_poolnotify);
 	rl_complete(sh_complete);
+	if ((home = sh_getenv("HOME")))
+		rl_histload(ft_pathcat(ft_strcpy(buf, home), ".ushst"));
 }
 
 static char			*sh_prompt(char *prompt, char *buf)
@@ -119,7 +124,11 @@ inline int			sh_run(int fd)
 int					sh_exit(int exitno, char const *fmt, ...)
 {
 	va_list	ap;
+	char	*home;
+	char 	buf[PATH_MAX];
 
+	if (g_shinteract && (home = sh_getenv("HOME")))
+		rl_histsave(ft_pathcat(ft_strcpy(buf, home), ".ushst"));
 	if (g_shfd >= 0)
 		rl_finalize(g_shfd);
 	rl_dtor();

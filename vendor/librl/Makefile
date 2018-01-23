@@ -25,7 +25,7 @@ OBJ_NAME = $(SRC_NAME:.c=.o)
 SRC_NAME = \
 	edit.c edit/ctrl.c edit/hist.c edit/insert.c edit/move.c edit/print.c \
 	edit/return.c edit/ln.c edit/utf8.c \
-	hist.c \
+	hist.c hist/load.c hist/save.c \
 	hook.c \
 	read.c read/notty.c read/tty.c \
 	screen.c \

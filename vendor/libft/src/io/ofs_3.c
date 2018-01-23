@@ -12,6 +12,16 @@
 
 #include "libft/io.h"
 
+int				ft_ofstrunc(t_ofs *self, char const *filename)
+{
+	int fd;
+
+	if ((fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644)) < 0)
+		return (WUT);
+	ft_ofsctor(self, fd);
+	return (YEP);
+}
+
 ssize_t			ft_ofsvwrf(t_ofs *self, char const *f, va_list ap)
 {
 	char	*sp;
