@@ -61,6 +61,8 @@ t_bool			sh_unsetenv(char *var, t_bool m)
 		{
 			if (ft_vecrem(g_venv, i, it) && m)
 				free(*it);
+			ft_vecgrow(g_venv, 1);
+			ft_memset(ft_vecend(g_venv), 0, sizeof(char *));
 			g_env = g_venv->buf;
 			return (1);
 		}

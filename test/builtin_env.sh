@@ -1,0 +1,1 @@
+setenv FOO bar; unsetenv FOO; env; setenv FOO; env; setenv FOO
