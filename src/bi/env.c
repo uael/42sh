@@ -48,7 +48,7 @@ static int		env_parse_opts(char **av, void **o, t_vec *e)
 					return (ft_retf(0, N_ENV"%c: %e\n", *a, EINVAL));
 		}
 		else if (ft_strchr(a, '='))
-			*(char **)ft_vecpush(e) = a;
+			*(char **)ft_vecpush(e) = ft_strdup(a);
 		else
 			break ;
 	return (i);
@@ -70,16 +70,14 @@ static int		env_finalize(char *path, char **argv, char **envv)
 	{
 		ft_vecctor(&av, sizeof(char *));
 		while (*argv)
-			ft_veccpush(&av, *argv++);
+			*(char **)ft_vecpush(&av) = ft_strdup(*argv++);
 		*(char **)ft_vecpush(&av) = NULL;
 		proc.argv = av.buf;
 	}
+	proc.ownenv = 1;
 	sh_jobctor(&job);
 	ft_veccpush((t_vec *)&job.procs, &proc);
-	s = sh_joblaunch(&job, 1);
-	sh_jobdtor(&job);
-	free(envv);
-	return (s);
+	return (sh_joblaunch(&job, 1));
 }
 
 static int		env_rmvar(t_vec *env, char *var)
@@ -95,6 +93,7 @@ static int		env_rmvar(t_vec *env, char *var)
 			ft_strbegw(var, *it) && (*it)[ft_strlen(var)] == '=')
 		{
 			ft_vecrem(env, i, it);
+			free(*it);
 			g_env = env->buf;
 			return (1);
 		}
@@ -120,7 +119,7 @@ inline int		sh_bienv(int ac, char **av, char **env)
 		{
 			if (s == 1 && s == ac)
 				ft_putl(1, env[i]);
-			*(char **)ft_vecpush(&e) = env[i];
+			*(char **)ft_vecpush(&e) = ft_strdup(env[i]);
 		}
 	if (s == 1 && s == ac)
 		return (YEP);
