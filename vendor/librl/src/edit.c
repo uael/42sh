@@ -196,7 +196,9 @@ static inline int	keymap(char *key, ssize_t rd)
 	while (st == 2 && (++bind)->rd <= rd && bind->rd)
 		if (rd == bind->rd && !ft_memcmp(key, bind->key, (size_t)bind->rd))
 			st = bind->cb();
-	return (st == 2 ? YEP : st);
+	if (st <= 0)
+		return (st);
+	return (st == RL_EXIT ? NOP : YEP);
 }
 
 int					rl_editln(char const *p, size_t *sz, char **ln, t_bool cat)
@@ -220,10 +222,10 @@ int					rl_editln(char const *p, size_t *sz, char **ln, t_bool cat)
 		}
 		else if (rl_editinsert(*key))
 			break ;
-	if (st >= 0)
+	if (!st)
 	{
 		*sz = g_eln->str.len;
 		*ln = g_eln->str.buf;
 	}
-	return (st < 0 || st == RL_EXIT ? WUT : YEP);
+	return (st);
 }

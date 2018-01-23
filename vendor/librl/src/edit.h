@@ -39,7 +39,6 @@
 # define TC_CL_UP TC_CL TC_UP
 # define TC_ED "\x1b[2J"
 # define TC_CUP "\x1b[0;0H"
-# define TC_ED "\x1b[2J"
 # define TC_ED_CUP TC_ED "\x1b[0;0H"
 
 # define RL_EXIT 3
