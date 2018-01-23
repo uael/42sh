@@ -12,7 +12,12 @@
 
 NAME = librl.a
 CC = gcc
-CFLAGS = -Werror -Wextra -Wall -g2 -DDEBUG
+CFLAGS = -Werror -Wextra -Wall
+
+ifeq ($(DEV),yes)
+    CFLAGS += -g3 -DDEBUG -fsanitize=address -fno-omit-frame-pointer \
+        -fno-optimize-sibling-calls
+endif
 
 SRC_PATH = ./src/
 OBJ_PATH = ./obj/

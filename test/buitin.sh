@@ -1,0 +1,1 @@
+echo It works && cd /tmp && pwd && cd && pwd && cd - && pwd cd && cd .. && pwd && cd . && pwd
