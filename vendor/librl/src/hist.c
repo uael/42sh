@@ -17,14 +17,19 @@ static uint8_t	g_hist_len = 0;
 
 inline char		*rl_histadd(char const *ln, size_t len)
 {
-	t_sds *histln;
+	t_sds	*histln;
+	size_t	i;
 
 	if (g_hist_len && !ft_strcmp(g_hist[g_hist_len - 1].buf, ln))
 		return (g_hist[g_hist_len - 1].buf);
 	if (g_hist_len == HIST_MAX)
 	{
-		ft_memmove(g_hist, g_hist + HIST_DELTA, HIST_DELTA * sizeof(t_sds));
-		g_hist_len -= HIST_DELTA;
+		i = 0;
+		while (i < HIST_DELTA)
+			ft_sdsdtor(g_hist + i++);
+		ft_memmove(g_hist, g_hist + HIST_DELTA,
+			(g_hist_len -= HIST_DELTA) * sizeof(t_sds));
+		ft_memset(g_hist + g_hist_len, 0, HIST_DELTA * sizeof(t_sds));
 	}
 	histln = g_hist + g_hist_len++;
 	histln->len = 0;
