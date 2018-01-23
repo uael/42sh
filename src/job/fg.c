@@ -30,7 +30,7 @@ inline int		sh_jobfg(t_job *job, int cont)
 	}
 	sh_jobwait(job);
 	st = job->procs.buf[job->procs.len - 1].status;
-	if (!g_shinteract)
+	if (!g_shinteract || !job->procs.buf->pid)
 		sh_poolclean();
 	else
 	{
