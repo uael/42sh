@@ -43,7 +43,6 @@ typedef struct	s_jb
 extern void		sh_jobctor(t_job *job);
 extern void		sh_jobdtor(t_job *job);
 extern int		sh_jobstopped(t_job *j);
-extern int		sh_jobcontinued(t_job *j);
 extern int		sh_jobcompleted(t_job *j);
 extern int		sh_joblaunch(t_job *job, int fg);
 extern int		sh_jobmark(t_job *job, pid_t pid, int status);

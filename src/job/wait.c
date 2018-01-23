@@ -13,7 +13,6 @@
 #include <sys/wait.h>
 
 #include "ush/job.h"
-#include "ush/pool.h"
 
 static inline void	waitchilds(t_job *job)
 {
