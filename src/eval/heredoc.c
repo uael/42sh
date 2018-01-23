@@ -20,7 +20,7 @@ static inline int	ouput(int ac, char **av, char **envv)
 	return (EXIT_SUCCESS);
 }
 
-inline int			sh_evalheredoc(t_job *job, int fd, t_deq *toks, char **ln)
+inline int			sh_evalheredoc(t_job *job, t_deq *toks, char **ln)
 {
 	t_tok	*tok;
 	size_t	i;
@@ -28,7 +28,6 @@ inline int			sh_evalheredoc(t_job *job, int fd, t_deq *toks, char **ln)
 	t_proc	out;
 	t_proc	*proc;
 
-	(void)fd;
 	(void)ln;
 	op = sh_tokpeek(toks);
 	tok = sh_toknext(toks);

@@ -14,19 +14,18 @@
 
 #define EXPTTD "Expected `<filename>' got `%s'"
 
-inline int		sh_evalraout(t_job *job, int fd, t_deq *toks, char **ln)
+inline int		sh_evalraout(t_job *job, t_deq *toks, char **ln)
 {
 	t_tok	*tok;
 	t_proc	*proc;
 	t_redir	redir;
 	t_tok	*op;
 
-	(void)fd;
 	op = sh_tokpeek(toks);
 	if ((tok = sh_toknext(toks))->id != TOK_WORD)
 		return (sh_evalerr(*ln, tok, EXPTTD, sh_tokstr(tok)));
 	proc = ft_vecback((t_vec *)&job->procs);
-	while (tok->id == TOK_WORD)
+	if (tok->id == TOK_WORD)
 	{
 		if (ft_isdigit(*op->val))
 			redir.from = *op->val - '0';
@@ -35,7 +34,7 @@ inline int		sh_evalraout(t_job *job, int fd, t_deq *toks, char **ln)
 		if ((redir.to = open(tok->val, O_WRONLY | O_APPEND, 0644)) < 0)
 			return (sh_evalerr(*ln, tok, "%s: %e", tok->val, errno));
 		ft_veccpush((t_vec *)&proc->redirs, &redir);
-		tok = sh_toknext(toks);
+		sh_toknext(toks);
 	}
 	return (YEP);
 }

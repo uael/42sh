@@ -45,7 +45,7 @@ inline int		sh_evalargv(t_job *job, t_map *vars, t_deq *toks, char **ln)
 
 	if (!(tok = sh_tokpeek(toks)) || tok->id != TOK_WORD)
 		return (NOP);
-	prc = ft_vecpush((t_vec *)&job->procs);
+	prc = alloca(sizeof(t_proc));
 	ft_vecctor(&av, sizeof(char *));
 	if (*tok->val == '$' && tok->len > 1)
 	{
@@ -56,25 +56,39 @@ inline int		sh_evalargv(t_job *job, t_map *vars, t_deq *toks, char **ln)
 	{
 		sh_proccnf(prc, *ln, tok, st);
 		tok = sh_toknext(toks);
-		while (tok && tok->id == TOK_WORD)
+		while (tok && (tok->id == TOK_WORD || TOK_ISREDIR(tok->id)))
 			tok = sh_toknext(toks);
 	}
 	else
 	{
 		*(char **)ft_vecpush(&av) = ft_strdup(tok->val);
 		tok = sh_toknext(toks);
-		while (tok && tok->id == TOK_WORD)
-		{
-			if (*tok->val == '$' && tok->len > 1)
+		while (tok)
+			if (tok->id == TOK_WORD)
 			{
-				sh_wordexpand((t_sds *)tok);
-				sh_tokexplode(tok, toks);
+				if (*tok->val == '$' && tok->len > 1)
+				{
+					sh_wordexpand((t_sds *)tok);
+					sh_tokexplode(tok, toks);
+				}
+				*(char **)ft_vecpush(&av) = ft_strdup(tok->val);
+				tok = sh_toknext(toks);
 			}
-			*(char **)ft_vecpush(&av) = ft_strdup(tok->val);
-			tok = sh_toknext(toks);
-		}
+			else if (TOK_ISREDIR(tok->id))
+			{
+				if (sh_evalredir(job, toks, ln) == ERR)
+				{
+					free(prc->u.exe);
+					ft_vecdtor(&av, (t_dtor)ft_pfree);
+					return (ERR);
+				}
+				tok = sh_tokpeek(toks);
+			}
+			else
+				break ;
 	}
 	*(char **)ft_vecpush(&av) = NULL;
 	prc->argv = av.buf;
+	ft_veccpush((t_vec *)&job->procs, prc);
 	return (YEP);
 }

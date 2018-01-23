@@ -33,22 +33,18 @@ inline int		sh_evalsimple(t_job *job, int fd, t_deq *toks, char **ln)
 {
 	t_tok	*tok;
 	t_map	vars;
+	int		st;
 
+	(void)fd;
 	ft_mapctor(&vars, g_strhash, sizeof(char *), sizeof(char *));
 	if ((tok = sh_tokpeek(toks))->id == TOK_WORD)
 	{
 		if (ft_strchr(tok->val, '='))
 			sh_evalassign(toks, &vars);
-		if (sh_evalargv(job, &vars, toks, ln))
+		if ((st = sh_evalargv(job, &vars, toks, ln)) == ERR)
+			return (st);
+		else if (st)
 			return (evalexport(&vars));
 	}
-	while ((tok = sh_tokpeek(toks)))
-		if (TOK_ISREDIR(tok->id))
-		{
-			if (sh_evalredir(job, fd, toks, ln) == ERR)
-				return (ERR);
-		}
-		else
-			break ;
 	return (YEP);
 }

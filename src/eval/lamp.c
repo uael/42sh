@@ -15,14 +15,13 @@
 #define EXPTD "Expected `<word>' after redirection `%s' got `%s'"
 #define AMBG  "ambiguous redirect `%s'"
 
-inline int			sh_evallamp(t_job *job, int fd, t_deq *toks, char **ln)
+inline int			sh_evallamp(t_job *job, t_deq *toks, char **ln)
 {
 	t_tok	*tok;
 	t_proc	*proc;
 	t_redir	redir;
 	t_tok	*op;
 
-	(void)fd;
 	op = sh_tokpeek(toks);
 	if ((tok = sh_toknext(toks))->id != TOK_WORD)
 		return (sh_evalerr(*ln, tok, EXPTD, sh_tokstr(op), sh_tokstr(tok)));
