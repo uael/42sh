@@ -16,6 +16,8 @@ char			**g_env = NULL;
 static t_vec	g_venv_stack = { 0, sizeof(char *), 0, 0 };
 static t_vec	*g_venv = &g_venv_stack;
 
+#define PATH_DFL "PATH=usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:."
+
 inline void		sh_envdtor(void)
 {
 	ft_vecdtor(g_venv, (t_dtor)ft_pfree);
@@ -24,11 +26,19 @@ inline void		sh_envdtor(void)
 inline void		sh_envinit(char **envv)
 {
 	ssize_t	i;
+	t_bool	hasp;
 
 	i = -1;
+	hasp = 0;
 	if (envv)
 		while (envv[++i])
+		{
 			*(char **)ft_vecpush(g_venv) = ft_strdup(envv[i]);
+			if (ft_strbegw("PATH", envv[i]) && envv[i][4] == '=')
+				hasp = 1;
+		}
+	if (!hasp)
+		*(char **)ft_vecpush(g_venv) = ft_strdup(PATH_DFL);
 	ft_vecgrow(g_venv, 1);
 	ft_memset(ft_vecend(g_venv), 0, sizeof(char *));
 	g_env = g_venv->buf;
