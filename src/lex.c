@@ -88,32 +88,40 @@ static inline int	lex(int fd, t_tok *tok, char **it, char **ln)
 	int	st;
 
 	tok->len = 0;
-	while (ft_strchr(sh_varifs(), **it))
-		++*it;
+	while (1)
+		if (**it && ft_strchr(sh_varifs(), **it))
+			++*it;
+		else if (**it == '\n' || (**it == '\r' && *(*it + 1) == '\n'))
+		{
+			tok->pos = (uint16_t)(*it - *ln);
+			++*it;
+			while (**it == '\n' || (**it == '\r' && *(*it + 1) == '\n'))
+				++*it;
+			tok->id = TOK_EOL;
+			ft_sdscpush((t_sds *)tok, '\n');
+			return (YEP);
+		}
+		else if (**it == '\\' && ((*(*it + 1) == '\n' && !*(*it + 2)) ||
+			((*(*it + 1) == '\r' && *(*it + 2) == '\n' && !*(*it + 3)))))
+		{
+			*it += (*(*it + 1) == '\n') ? 2 : 3;
+			if (fd >= 0 && (st = rl_catline(fd, -2, ln, it)))
+				return (st);
+		}
+		else if (**it == '#')
+		{
+			while (**it && (**it != '\n' || (**it != '\r' && *(*it + 1) != '\n')))
+				++*it;
+		}
+		else if (!**it)
+		{
+			tok->pos = (uint16_t)(*it - *ln);
+			tok->id = TOK_END;
+			return (YEP);
+		}
+		else
+			break ;
 	tok->pos = (uint16_t)(*it - *ln);
-	if (**it == '\n' || (**it == '\r' && *(*it + 1) == '\n'))
-	{
-		tok->id = TOK_EOL;
-		ft_sdscpush((t_sds *)tok, '\n');
-		++*it;
-		while (**it == '\n' || (**it == '\r' && *(*it + 1) == '\n'))
-			++*it;
-		return (YEP);
-	}
-	while (**it == '\\' && ((*(*it + 1) == '\n' && !*(*it + 2)) ||
-		((*(*it + 1) == '\r' && *(*it + 2) == '\n' && !*(*it + 3)))))
-		if ((st = fd < 0 ? NOP : rl_catline(fd, -2, ln, it)))
-			return (st);
-	if (**it == '#')
-		while (**it && (**it != '\n' || (**it != '\r' && *(*it + 1) != '\n')))
-			++*it;
-	if (!**it)
-	{
-		tok->id = TOK_END;
-		return (YEP);
-	}
-	while (ft_strchr(sh_varifs(), **it))
-		++*it;
 	if (ft_isdigit(**it))
 		ft_sdscpush((t_sds *)tok, *(*it)++);
 	if ((st = sh_lexop(fd, tok, it, ln)) != NOP)

@@ -37,7 +37,10 @@ inline int				sh_lexword(int fd, t_tok *tok, char **it, char **ln)
 			st = sh_lexquote(fd, tok, it, ln);
 		else if (**it == '\\' && ((*(*it + 1) == '\n' && !*(*it + 2)) ||
 			(*(*it + 1) == '\r' && *(*it + 2) == '\n' && !*(*it + 3))))
-			st = fd < 0 ? NOP : rl_catline(fd, -2, ln, it);
+		{
+			*it += (*(*it + 1) == '\n') ? 2 : 3;
+			fd >= 0 ? (st = rl_catline(fd, -2, ln, it)) : 0;
+		}
 		else if (**it == '$')
 			st = sh_lexvar(fd, tok, it, ln);
 		else

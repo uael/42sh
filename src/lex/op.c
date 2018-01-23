@@ -25,8 +25,11 @@ static inline int	opnext(int fd, char **it, char **ln)
 
 	while (*++*it == '\\' && ((*(*it + 1) == '\n' && !*(*it + 2)) ||
 		((*(*it + 1) == '\r' && *(*it + 2) == '\2' && !*(*it + 3)))))
-		if ((st = fd < 0 ? NOP : rl_catline(fd, -2, ln, it)))
+	{
+		*it += (*(*it + 1) == '\n') ? 2 : 3;
+		if (fd >= 0 && (st = rl_catline(fd, -2, ln, it)))
 			return (st);
+	}
 	return (YEP);
 }
 
