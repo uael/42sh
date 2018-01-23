@@ -43,7 +43,6 @@ inline int		sh_procfnlaunch(t_proc *proc, pid_t pid)
 	ft_exbind(EXALL, dfl, NULL);
 	if (pid > 0 && pid != g_shpgid)
 		exit(proc->status);
-	ft_dup2std(proc->scope,
-		(int[3]){STDIN_FILENO, STDOUT_FILENO, STDERR_FILENO});
+	ft_dup2std(proc->scope, STD_FILENOS);
 	return (YEP);
 }
