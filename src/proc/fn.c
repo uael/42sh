@@ -15,9 +15,6 @@
 static int		exhdl(int rcode, void *arg)
 {
 	(void)arg;
-	if (!errno)
-		return (rcode);
-	ft_putf(STDERR_FILENO, "%e\n", errno);
 	errno = 0;
 	return (rcode);
 }

@@ -24,6 +24,11 @@ inline int		sh_redirect(t_redirs *redirs, int *scope)
 		if (scope && redir->from >= 0 && redir->from <= 2 &&
 			scope[redir->from] < 0)
 			scope[redir->from] = dup(redir->from);
+	}
+	i = 0;
+	while (i < redirs->len)
+	{
+		redir = redirs->buf + i++;
 		if (redir->to < 0)
 			close(redir->from);
 		else if (dup2(redir->to, redir->from) < 0)

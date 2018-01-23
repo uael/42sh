@@ -19,7 +19,7 @@ int				rl_screensize(uint16_t *h, uint16_t *w)
 {
 	struct winsize ws;
 
-	if (ioctl(1, TIOCGWINSZ, &ws))
+	if (ioctl(STDIN_FILENO, TIOCGWINSZ, &ws))
 		return (THROW(WUT));
 	if (h)
 		*h = ws.ws_row;
