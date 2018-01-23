@@ -12,14 +12,15 @@
 
 #include "../edit.h"
 #include "../read.h"
-#include "../visual.h"
 
 inline int	rl_editinsert(char c)
 {
+	if (g_mode == RL_SEARCH)
+		return (rl_searchinsert(c));
 	if (c == '\n' || c == '\r')
 		return (rl_editreturn());
 	ft_sdscput(&g_eln->str, g_eln->idx++, c);
-	rl_editprint();
+	rl_editprint(g_edit_prompt, g_eln);
 	return (YEP);
 }
 
@@ -30,7 +31,7 @@ inline int	rl_editdelete(void)
 		if (g_mode == RL_VISUAL && g_eln->idx != g_eln->vidx)
 			return (rl_visualdelete());
 		ft_sdsrem(&g_eln->str, g_eln->idx, NULL);
-		rl_editprint();
+		rl_editprint(g_edit_prompt, g_eln);
 	}
 	return (YEP);
 }
@@ -42,7 +43,7 @@ inline int	rl_editbackspace(void)
 		if (g_mode == RL_VISUAL && g_eln->idx != g_eln->vidx)
 			return (rl_visualdelete());
 		ft_sdsrem(&g_eln->str, --g_eln->idx, NULL);
-		rl_editprint();
+		rl_editprint(g_edit_prompt, g_eln);
 	}
 	return (YEP);
 }
@@ -52,6 +53,6 @@ inline int	rl_editclear(void)
 	ft_puts(STDOUT_FILENO, TC_ED_CUP);
 	g_eln->row = 0;
 	g_eln->rows.len = 0;
-	rl_editprint();
+	rl_editprint(g_edit_prompt, g_eln);
 	return (YEP);
 }

@@ -13,21 +13,21 @@
 #include "../edit.h"
 #include "../read.h"
 
-static uint16_t			g_idx_col;
-static uint16_t			g_idx_up;
+static uint16_t			g_icol;
+static uint16_t			g_iup;
 static t_ofs			g_edit_out_stack = {STDOUT_FILENO, 0, {0}};
 static t_ofs			*g_out = &g_edit_out_stack;
 
-static inline void			onprint(t_ofs *out, char const *row,
+static inline void			onprint(t_editln *ln, t_ofs *out, char const *row,
 	char const *pos)
 {
 	char *vis;
 
 	if (row == pos)
-		g_idx_col = g_screen->col;
+		g_icol = g_screen->col;
 	if (g_mode == RL_VISUAL)
 	{
-		vis = ft_sdsat(&g_eln->str, g_eln->vidx);
+		vis = ft_sdsat(&ln->str, ln->vidx);
 		if (row == pos)
 		{
 			if (pos > vis)
@@ -45,33 +45,33 @@ static inline void			onprint(t_ofs *out, char const *row,
 	}
 }
 
-static inline void			printrow(char const *r, char const *p,
+static inline void			printrow(t_editln *ln, char const *r, char const *p,
 	char const *eol)
 {
 	while (r < eol)
 	{
-		onprint(g_out, r, p);
+		onprint(ln, g_out, r, p);
 		g_screen->col += *r == '\t' ? (8 - (g_screen->col % 8)) : 1;
 		ft_ofswrc(g_out, (unsigned char)*r++);
 	}
-	onprint(g_out, r, p);
+	onprint(ln, g_out, r, p);
 }
 
-static inline void			println(size_t i, uint16_t plen)
+static inline void			println(t_editln *ln, size_t i, uint16_t plen)
 {
 	char *pos;
 	char *row;
 	char *eol;
 
-	pos = ft_sdsat(&g_eln->str, g_eln->idx);
-	while (i < g_eln->rows.len)
+	pos = ft_sdsat(&ln->str, ln->idx);
+	while (i < ln->rows.len)
 	{
 		g_screen->col = plen;
-		row = *((char **)g_eln->rows.buf + i);
+		row = *((char **)ln->rows.buf + i);
 		eol = row;
 		while (*eol && *eol != '\n')
 			++eol;
-		g_idx_up = (uint16_t)((pos >= row && pos <= eol) ? 0 : g_idx_up + 1);
+		g_iup = (uint16_t)((pos >= row && pos <= eol) ? 0 : g_iup + 1);
 		if (pos >= row && pos <= eol && pos - row > g_screen->width - plen - 1)
 		{
 			row = pos - (g_screen->width - plen - 1);
@@ -79,20 +79,20 @@ static inline void			println(size_t i, uint16_t plen)
 		}
 		else if (eol - row > g_screen->width - plen - 1)
 			eol = row + (g_screen->width - plen - 1);
-		printrow(row, pos, eol);
-		if (++i < g_eln->rows.len)
+		printrow(ln, row, pos, eol);
+		if (++i < ln->rows.len)
 			ft_ofswrc(g_out, '\n');
 		plen = 0;
 	}
 }
 
-static inline uint16_t		printprompt(void)
+static inline uint16_t		printprompt(char *prompt)
 {
 	uint16_t	i;
 	char		*p;
 
 	i = 0;
-	p = g_edit_prompt;
+	p = prompt;
 	while (*p)
 	{
 		if (g_screen->col + 1 == g_screen->width)
@@ -108,28 +108,30 @@ static inline uint16_t		printprompt(void)
 	return (i);
 }
 
-inline void					rl_editprint(void)
+inline void					rl_editprint(char *prompt, t_editln *ln)
 {
 	uint16_t i;
 
-	if (g_eln->row < g_eln->rows.len)
-		ft_ofswrf(g_out, TC_GOTODO(g_eln->rows.len - g_eln->row));
+	if (ln->row < ln->rows.len)
+		ft_ofswrf(g_out, TC_GOTODO(ln->rows.len - ln->row));
 	i = 0;
-	while (++i < g_eln->rows.len)
+	while (++i < ln->rows.len)
 		ft_ofswrs(g_out, TC_CL_UP);
 	ft_ofswrs(g_out, TC_CL);
 	g_screen->col = 0;
-	g_idx_up = 0;
-	rl_editlnupdate(g_eln);
-	i = printprompt();
-	println(i, (uint16_t)rl_wstrlen(g_edit_prompt));
-	if (g_idx_up)
-		ft_ofswrf(g_out, TC_GOTOUP(g_idx_up));
-	g_eln->row = (uint16_t)(g_eln->rows.len - g_idx_up);
-	if (!g_idx_col)
-		ft_ofswrs(g_out, TC_CH);
-	else
-		ft_ofswrf(g_out, TC_GOTOCH(g_idx_col));
-	g_screen->col = g_idx_col;
+	g_iup = 0;
+	i = printprompt(prompt);
+	if (!ln->str.len)
+	{
+		ft_ofsflush(g_out);
+		return ;
+	}
+	rl_editlnupdate(ln);
+	println(ln, i, (uint16_t)rl_wstrlen(prompt));
+	if (g_iup)
+		ft_ofswrf(g_out, TC_GOTOUP(g_iup));
+	ln->row = (uint16_t)(ln->rows.len - g_iup);
+	g_icol ? ft_ofswrf(g_out, TC_GOTOCH(g_icol)) : ft_ofswrs(g_out, TC_CH);
+	g_screen->col = g_icol;
 	ft_ofsflush(g_out);
 }

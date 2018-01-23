@@ -10,8 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "visual.h"
-#include "read.h"
+#include "../read.h"
 
 static t_sds	g_clipboard_stack = { NULL, 0, 0 };
 static t_sds	*g_clipboard = &g_clipboard_stack;
@@ -26,7 +25,7 @@ inline int		rl_visualtoggle(void)
 	if (g_mode == RL_VISUAL)
 	{
 		g_mode = RL_INSERT;
-		rl_editprint();
+		rl_editprint(g_edit_prompt, g_eln);
 	}
 	else
 	{
@@ -97,7 +96,7 @@ inline int		rl_visualpaste(void)
 		ft_sdsmput(&g_eln->str, g_eln->idx, g_clipboard->buf,
 			g_clipboard->len);
 		g_eln->idx += g_clipboard->len;
-		rl_editprint();
+		rl_editprint(g_edit_prompt, g_eln);
 	}
 	return (YEP);
 }

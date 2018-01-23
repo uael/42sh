@@ -24,7 +24,7 @@ inline int	rl_editctrlleft(void)
 		!ft_isspace(g_eln->str.buf[g_eln->idx - 1]))
 		--g_eln->idx;
 	if (g_eln->idx != idx)
-		rl_editprint();
+		rl_editprint(g_edit_prompt, g_eln);
 	return (YEP);
 }
 
@@ -42,7 +42,7 @@ inline int	rl_editctrlright(void)
 	if (g_eln->idx < g_eln->str.len)
 		++g_eln->idx;
 	if (g_eln->idx != idx)
-		rl_editprint();
+		rl_editprint(g_edit_prompt, g_eln);
 	return (YEP);
 }
 
@@ -64,7 +64,7 @@ inline int	rl_editctrlup(void)
 		++g_eln->idx;
 		--pos;
 	}
-	rl_editprint();
+	rl_editprint(g_edit_prompt, g_eln);
 	return (YEP);
 }
 
@@ -86,7 +86,7 @@ inline int	rl_editctrldown(void)
 		++g_eln->idx;
 		--pos;
 	}
-	rl_editprint();
+	rl_editprint(g_edit_prompt, g_eln);
 	return (YEP);
 }
 
@@ -95,13 +95,13 @@ inline int	rl_edittab(void)
 	if (g_eln->idx != g_eln->str.len)
 	{
 		g_eln->idx = (uint16_t)g_eln->str.len;
-		rl_editprint();
+		rl_editprint(g_edit_prompt, g_eln);
 	}
 	else if (g_rlcomp)
 	{
 		g_rlcomp(&g_eln->str);
 		g_eln->idx = (uint16_t)g_eln->str.len;
-		rl_editprint();
+		rl_editprint(g_edit_prompt, g_eln);
 	}
 	return (YEP);
 }

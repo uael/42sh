@@ -12,7 +12,7 @@
 
 NAME = libft.a
 CC = gcc
-CFLAGS = -Werror -Wextra -Wall -g2 -DDEBUG
+CFLAGS = -Werror -Wextra -Wall -g2 -DDEBUG -fsanitize=address
 
 SRC_PATH = ./src/
 OBJ_PATH = ./obj/

@@ -17,7 +17,7 @@ inline int	rl_editleft(void)
 	if (g_eln->idx)
 	{
 		--g_eln->idx;
-		rl_editprint();
+		rl_editprint(g_edit_prompt, g_eln);
 	}
 	return (YEP);
 }
@@ -27,7 +27,7 @@ inline int	rl_editright(void)
 	if (g_eln->idx != g_eln->str.len)
 	{
 		++g_eln->idx;
-		rl_editprint();
+		rl_editprint(g_edit_prompt, g_eln);
 	}
 	return (YEP);
 }
@@ -37,7 +37,7 @@ inline int	rl_edithome(void)
 	if (g_eln->idx)
 	{
 		g_eln->idx = 0;
-		rl_editprint();
+		rl_editprint(g_edit_prompt, g_eln);
 	}
 	return (YEP);
 }
@@ -46,8 +46,8 @@ inline int	rl_editend(void)
 {
 	if (g_eln->idx != g_eln->str.len)
 	{
-		g_eln->idx = (uint16_t)g_eln->str.len;
-		rl_editprint();
+		g_eln->idx = g_eln->str.len;
+		rl_editprint(g_edit_prompt, g_eln);
 	}
 	return (YEP);
 }

@@ -10,9 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
 #include "edit.h"
-#include "visual.h"
 #include "read.h"
 
 #define K_ESC "\x1b"
@@ -70,11 +68,10 @@ t_rlcomp			*g_rlcomp = NULL;
 
 static inline int	resetmode(void)
 {
-	if (g_mode != RL_INSERT)
-	{
-		g_mode = RL_INSERT;
-		rl_editprint();
-	}
+	if (g_mode == RL_VISUAL)
+		rl_visualtoggle();
+	if (g_mode == RL_SEARCH)
+		rl_searchtoggle();
 	return (YEP);
 }
 
@@ -92,6 +89,7 @@ static t_editbind	g_inskeymap[] =
 	{1, K_CTRL_L, rl_editclear},
 	{1, K_CTRL_V, rl_visualtoggle},
 	{1, K_CTRL_Y, rl_visualyank},
+	{1, K_CTRL_R, rl_searchtoggle},
 	{3, K_LEFT, rl_editleft},
 	{3, K_RGT, rl_editright},
 	{3, K_UP, rl_editup},
@@ -148,6 +146,17 @@ static t_editbind	g_viskeymap[] =
 	{0, NULL, NULL},
 };
 
+static t_editbind	g_srhkeymap[] =
+{
+	{1, K_ESC, resetmode},
+	{1, K_RETURN, rl_editreturn},
+	{1, K_BACKSPACE, rl_searchbackspace},
+	{1, K_ENTER, rl_editreturn},
+	{1, K_CTRL_B, rl_searchbackspace},
+	{1, K_CTRL_R, rl_searchtoggle},
+	{0, NULL, NULL},
+};
+
 inline void			rl_editdtor(void)
 {
 	rl_histdtor();
@@ -194,10 +203,15 @@ static inline int	keymap(char *key, ssize_t rd)
 		++rd;
 	}
 	st = 2;
-	bind = (g_mode == RL_VISUAL ? g_viskeymap : g_inskeymap) - 1;
+	if (g_mode == RL_SEARCH)
+		bind = g_srhkeymap - 1;
+	else
+		bind = (g_mode == RL_VISUAL ? g_viskeymap : g_inskeymap) - 1;
 	while (st == 2 && (++bind)->rd <= rd && bind->rd)
 		if (rd == bind->rd && !ft_memcmp(key, bind->key, (size_t)bind->rd))
 			st = bind->cb();
+	if (st == 2)
+		return (YEP);
 	if (st <= 0)
 		return (st);
 	return (st == RL_EXIT ? RL_EXIT : NOP);

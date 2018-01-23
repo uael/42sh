@@ -57,8 +57,8 @@ static int		candidatedir(char *path, char *in, int sc, char *buf)
 		if (!ft_strcmp(".", ent->d_name) || !ft_strcmp("..", ent->d_name))
 			continue ;
 		else if (!*path || next)
-			return (!closedir(dir) && ft_strcpy(buf, ent->d_name) &&
-				ft_strcpy(g_savein, in));
+			return (ft_strcpy(buf, ent->d_name) &&
+				ft_strcpy(g_savein, in) && !closedir(dir));
 		else if (!ft_strcmp(g_savein, in) && !ft_strcmp(g_save, ent->d_name)
 			&& !ft_strcmp(g_save, path))
 			next = 1;

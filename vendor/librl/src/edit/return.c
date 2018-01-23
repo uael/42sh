@@ -10,16 +10,18 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../edit.h"
+#include "../read.h"
 
 inline int	rl_editreturn(void)
 {
+	if (g_mode == RL_SEARCH)
+		return (rl_searchinsert('\n'));
 	if (g_eln->str.len)
 		ft_sdscpush(&g_eln->str, '\n');
 	ft_write(STDOUT_FILENO, "\n", 1);
 	if (!g_eln->str.len)
 	{
-		rl_editprint();
+		rl_editprint(g_edit_prompt, g_eln);
 		return (YEP);
 	}
 	return (NOP);

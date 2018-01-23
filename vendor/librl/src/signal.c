@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "edit.h"
-#include "visual.h"
 #include "read.h"
 
 inline int	rl_signalc(void)
@@ -20,7 +19,7 @@ inline int	rl_signalc(void)
 	g_eln->str.len = 0;
 	*g_eln->str.buf = '\0';
 	ft_write(STDOUT_FILENO, "^C\n", 3);
-	rl_editprint();
+	rl_editprint(g_edit_prompt, g_eln);
 	return (YEP);
 }
 
@@ -33,7 +32,7 @@ inline int	rl_signald(void)
 		return (YEP);
 	}
 	ft_sdsmpush(&g_eln->str, "exit", 4);
-	rl_editprint();
+	rl_editprint(g_edit_prompt, g_eln);
 	ft_write(STDOUT_FILENO, "\n", 1);
 	return (RL_EXIT);
 }

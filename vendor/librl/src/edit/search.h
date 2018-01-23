@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   visual.h                                           :+:      :+:    :+:   */
+/*   search.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,15 +10,19 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBRL_VISUAL_H
-# define LIBRL_VISUAL_H
+#ifndef LIBRL_EDIT_SEARCH_H
+# define LIBRL_EDIT_SEARCH_H
 
-# include "edit.h"
+#include "../read.h"
 
-extern void		rl_visualdtor(void);
-extern int		rl_visualtoggle(void);
-extern int		rl_visualyank(void);
-extern int		rl_visualdelete(void);
-extern int		rl_visualpaste(void);
+static t_sds	g_lookup_stack = { 0, 0, 0 };
+static t_sds	*g_lookup = &g_lookup_stack;
+static t_editln	g_candidate_stack;
+static t_editln	*g_candidate = &g_candidate_stack;
+static t_ofs	g_edit_out_stack = {STDOUT_FILENO, 0, {0}};
+static t_ofs	*g_out = &g_edit_out_stack;
+static size_t	g_idx = 0;
+
+void			searchprint(void);
 
 #endif

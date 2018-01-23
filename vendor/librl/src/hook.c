@@ -27,7 +27,7 @@ inline int		rl_reprint(void)
 {
 	if (g_mode == RL_INSERT)
 	{
-		rl_editprint();
+		rl_editprint(g_edit_prompt, g_eln);
 		return (YEP);
 	}
 	return (NOP);

@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "../read.h"
-#include "../visual.h"
 
 static void		rd_redirect(void)
 {

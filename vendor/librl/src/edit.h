@@ -74,7 +74,7 @@ extern void		rl_editdtor(void);
 extern int		rl_wstrlen(char *str);
 extern void		rl_editlnupdate(t_editln *ln);
 extern int		rl_editln(char const *prompt, size_t *sz, char **l, t_bool cat);
-extern void		rl_editprint(void);
+extern void		rl_editprint(char *prompt, t_editln *ln);
 extern int		rl_editinsert(char c);
 extern int		rl_editdelete(void);
 extern int		rl_editbackspace(void);
@@ -91,5 +91,13 @@ extern int		rl_editctrldown(void);
 extern int		rl_edithome(void);
 extern int		rl_editend(void);
 extern int		rl_edittab(void);
+extern void		rl_visualdtor(void);
+extern int		rl_visualtoggle(void);
+extern int		rl_visualyank(void);
+extern int		rl_visualdelete(void);
+extern int		rl_visualpaste(void);
+extern int		rl_searchtoggle(void);
+extern int		rl_searchinsert(char c);
+extern int		rl_searchbackspace(void);
 
 #endif
