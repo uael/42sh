@@ -24,7 +24,8 @@ inline void		sh_poolscope(void)
 }
 
 /*
-** TODO: check for running jobs
+** TODO(42sh): Check for running jobs
+** https://github.com/uael/21sh/issues/80
 */
 
 inline t_bool	sh_poolunscope(void)
@@ -39,29 +40,7 @@ inline t_bool	sh_poolunscope(void)
 	return (0);
 }
 
-inline t_job	*sh_poolbg(t_job *job)
-{
-	size_t	i;
-	t_job	*new;
-	t_proc	*proc;
-
-	if (g_pool->len == CHILD_MAX)
-		return (NULL);
-	new = ft_memcpy(g_pool->jobs + g_pool->len++, job, sizeof(t_job));
-	g_shstatus = sh_joblaunch(new, 0);
-	ft_putf(STDOUT_FILENO, "[%d] ", g_pools->len);
-	i = 0;
-	while (i < job->procs.len)
-	{
-		proc = job->procs.buf + i++;
-		ft_putf(STDOUT_FILENO, i < job->procs.len ? "%d " : "%d",
-			proc->pid);
-	}
-	ft_putf(STDOUT_FILENO, "\n");
-	return (new);
-}
-
-inline t_job	*sh_pooladd(t_job *job)
+inline t_job	*sh_poolqueue(t_job *job)
 {
 	t_job	*new;
 

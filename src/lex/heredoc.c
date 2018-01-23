@@ -12,12 +12,6 @@
 
 #include "ush/lex.h"
 
-/*
-** TODO: Fixes empty heredoc
-** cat <<EOL
-** EOL
-*/
-
 #define UXPTDEOF "Unexpected EOF while looking for heredoc delimiter `%s'"
 
 inline int			sh_lexheredoc(int fd, t_tok *tok, char **it, char **ln)

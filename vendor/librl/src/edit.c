@@ -200,6 +200,8 @@ static inline int	keymap(char *key, ssize_t rd)
 			st = bind->cb();
 	if (st <= 0)
 		return (st);
+	if (st == 2)
+		return (YEP);
 	return (st == RL_EXIT ? RL_EXIT : NOP);
 }
 

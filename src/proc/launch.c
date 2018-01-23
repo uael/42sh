@@ -56,6 +56,7 @@ int					sh_proclaunch(t_proc *proc, pid_t pgid, int *io, int fg)
 	else if (proc->kind == PROC_EXE)
 	{
 		execve(proc->u.exe, proc->argv, proc->envv);
+		ft_putf(2, "exe: %s %s %s\n", proc->u.exe, proc->argv[0], proc->envv[0]);
 		return (sh_exit(THROW(WUT), NULL));
 	}
 	return (YEP);
