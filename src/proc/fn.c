@@ -40,6 +40,7 @@ inline int		sh_procfnlaunch(t_proc *proc, pid_t pid)
 		++av;
 	ft_exbind(EXALL, ft_exhdl(exhdl, NULL), &dfl);
 	proc->status = proc->u.fn((int)(av - proc->argv), proc->argv, proc->envv);
+	ft_putf(1, "bi status %d\n", proc->status);
 	ft_exbind(EXALL, dfl, NULL);
 	if (pid > 0 && pid != g_shpgid)
 		exit(proc->status);

@@ -26,7 +26,7 @@ inline int			sh_evallamp(t_job *job, int fd, t_deq *toks, char **ln)
 	op = sh_tokpeek(toks);
 	if ((tok = sh_toknext(toks))->id != TOK_WORD)
 		return (sh_evalerr(*ln, tok, EXPTD, sh_tokstr(op), sh_tokstr(tok)));
-	proc = ft_vecback((t_vec *)&job->processes);
+	proc = ft_vecback((t_vec *)&job->procs);
 	if (ft_isdigit(*op->val))
 		redir.from = *op->val - '0';
 	else

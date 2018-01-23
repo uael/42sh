@@ -32,5 +32,5 @@ inline int		sh_jobfg(t_job *job, int cont)
 		tcgetattr(STDIN_FILENO, &job->tmodes);
 		tcsetattr(STDIN_FILENO, TCSADRAIN, &g_shmode);
 	}
-	return (job->processes.buf[job->processes.len - 1].status);
+	return (job->procs.buf[job->procs.len - 1].status);
 }

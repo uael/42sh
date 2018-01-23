@@ -24,9 +24,9 @@ static void	fg(t_job *job)
 	else
 	{
 		i = 0;
-		while (i < job->processes.len)
+		while (i < job->procs.len)
 		{
-			p = job->processes.buf + i++;
+			p = job->procs.buf + i++;
 			p->state = PROC_RUNNING;
 		}
 		sh_jobdebug(job);

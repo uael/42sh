@@ -15,12 +15,12 @@
 inline void		sh_jobctor(t_job *job)
 {
 	ft_memset(job, 0, sizeof(t_job));
-	ft_vecctor((t_vec *)&job->processes, sizeof(t_proc));
+	ft_vecctor((t_vec *)&job->procs, sizeof(t_proc));
 }
 
 inline void		sh_jobdtor(t_job *job)
 {
-	ft_vecdtor((t_vec *)&job->processes, (t_dtor)sh_procdtor);
+	ft_vecdtor((t_vec *)&job->procs, (t_dtor)sh_procdtor);
 	if (job->next)
 	{
 		free(job->next);

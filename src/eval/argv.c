@@ -45,7 +45,7 @@ inline int		sh_evalargv(t_job *job, t_map *vars, t_deq *toks, char **ln)
 
 	if (!(tok = sh_tokpeek(toks)) || tok->id != TOK_WORD)
 		return (NOP);
-	prc = ft_vecpush((t_vec *)&job->processes);
+	prc = ft_vecpush((t_vec *)&job->procs);
 	ft_vecctor(&av, sizeof(char *));
 	if (*tok->val == '$' && tok->len > 1)
 	{

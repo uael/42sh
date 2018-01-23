@@ -17,7 +17,7 @@ static inline int	onsemicolon(t_job *job, int fd, t_deq *toks, char **ln)
 	int st;
 
 	sh_toknext(toks);
-	if (job->processes.len)
+	if (job->procs.len)
 	{
 		sh_joblaunch(job, 1);
 		sh_jobctor(job);
@@ -37,7 +37,7 @@ static inline int	onamp(t_job *job, int fd, t_deq *toks, char **ln)
 	if (!g_shinteract)
 		return (onsemicolon(job, fd, toks, ln));
 	sh_toknext(toks);
-	if (job->processes.len)
+	if (job->procs.len)
 	{
 		sh_joblaunch(job, 0);
 		sh_jobctor(job);
@@ -52,7 +52,7 @@ static inline int	onamp(t_job *job, int fd, t_deq *toks, char **ln)
 
 static inline int	oneof(t_job *job)
 {
-	if (job->processes.len)
+	if (job->procs.len)
 	{
 		sh_joblaunch(job, 1);
 		sh_jobctor(job);

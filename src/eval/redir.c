@@ -20,7 +20,7 @@ inline int		sh_evalredir(t_job *job, int fd, t_deq *toks, char **ln)
 
 	(void)fd;
 	tok = sh_tokpeek(toks);
-	if (!job->processes.len)
+	if (!job->procs.len)
 		return (sh_evalerr(*ln, tok, UNEXPTD, sh_tokstr(tok)));
 	if (tok->id == '<')
 		return (sh_evalrin(job, fd, toks, ln));

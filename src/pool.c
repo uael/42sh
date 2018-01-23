@@ -51,10 +51,10 @@ inline t_job	*sh_poolbg(t_job *job)
 	g_shstatus = sh_joblaunch(new, 0);
 	ft_putf(STDOUT_FILENO, "[%d] ", g_pools->len);
 	i = 0;
-	while (i < job->processes.len)
+	while (i < job->procs.len)
 	{
-		proc = job->processes.buf + i++;
-		ft_putf(STDOUT_FILENO, i < job->processes.len ? "%d " : "%d",
+		proc = job->procs.buf + i++;
+		ft_putf(STDOUT_FILENO, i < job->procs.len ? "%d " : "%d",
 			proc->pid);
 	}
 	ft_putf(STDOUT_FILENO, "\n");

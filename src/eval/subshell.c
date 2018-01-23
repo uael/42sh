@@ -20,6 +20,6 @@ inline int		sh_evalsubshell(t_job *job, int fd, t_deq *toks, char **ln)
 	if (sh_procsh(&proc, toks, *ln))
 		return (sh_evalerr(*ln, sh_tokpeek(toks), "Empty subshell"));
 	sh_toknext(toks);
-	ft_veccpush((t_vec *)&job->processes, &proc);
+	ft_veccpush((t_vec *)&job->procs, &proc);
 	return (YEP);
 }

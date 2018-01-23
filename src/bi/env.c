@@ -75,7 +75,7 @@ static int		env_finalize(char *path, char **argv, char **envv)
 		proc.argv = av.buf;
 	}
 	sh_jobctor(&job);
-	ft_veccpush((t_vec *)&job.processes, &proc);
+	ft_veccpush((t_vec *)&job.procs, &proc);
 	s = sh_joblaunch(&job, 1);
 	sh_jobdtor(&job);
 	free(envv);

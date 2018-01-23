@@ -18,7 +18,7 @@ static int				g_io[3] = { 0, 0, 0 };
 
 static inline void		jobpipe(t_job *job, size_t i, int *fds, int *io)
 {
-	if (i < job->processes.len)
+	if (i < job->procs.len)
 	{
 		if (pipe(fds) < 0)
 			sh_exit(THROW(WUT), NULL);
@@ -50,27 +50,36 @@ static inline int		jobfork(t_job *job, t_proc *proc, t_bool piped, int fg)
 	return (YEP);
 }
 
+static inline int		bang(t_bool b, int status)
+{
+	if (b)
+		return (status ? 0 : 1);
+	return (status);
+}
+
 static int				sh_joblayer(t_job *job, int fg)
 {
 	size_t	i;
 	t_proc	*proc;
 
-	if (!job->processes.buf->pid)
+	if (!job->procs.len)
 		return (EXIT_FAILURE);
+	if (!job->procs.buf->pid)
+		return (bang(job->bang, job->procs.buf[job->procs.len - 1].status));
 	job = sh_pooladd(job);
 	if (fg)
-		return (job->bang ? !sh_jobfg(job, 0) : sh_jobfg(job, 0));
+		return (bang(job->bang, sh_jobfg(job, 0)));
 	sh_jobbg(job, 0);
 	ft_putf(STDOUT_FILENO, "[%d] ", 1);
 	i = 0;
-	while (i < job->processes.len)
+	while (i < job->procs.len)
 	{
-		proc = job->processes.buf + i++;
-		ft_putf(STDOUT_FILENO, i < job->processes.len ? "%d " : "%d",
+		proc = job->procs.buf + i++;
+		ft_putf(STDOUT_FILENO, i < job->procs.len ? "%d " : "%d",
 			proc->pid);
 	}
 	ft_putf(STDOUT_FILENO, "\n");
-	return (0);
+	return (bang(job->bang, 0));
 }
 
 int						sh_joblaunch(t_job *job, int fg)
@@ -83,11 +92,11 @@ int						sh_joblaunch(t_job *job, int fg)
 	g_io[STDIN_FILENO] = STDIN_FILENO;
 	g_io[STDOUT_FILENO] = STDOUT_FILENO;
 	g_io[STDERR_FILENO] = STDERR_FILENO;
-	while (i < job->processes.len)
+	while (i < job->procs.len)
 	{
-		proc = job->processes.buf + i++;
+		proc = job->procs.buf + i++;
 		jobpipe(job, i, fds, g_io);
-		if (jobfork(job, proc, (t_bool)(job->processes.len > 1), fg))
+		if (jobfork(job, proc, (t_bool)(job->procs.len > 1), fg))
 			return (g_shstatus = !job->bang);
 		if (g_io[STDIN_FILENO] != STDIN_FILENO)
 			close(g_io[STDIN_FILENO]);

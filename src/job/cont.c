@@ -18,9 +18,9 @@ inline void		sh_jobcont(t_job *job, int fg)
 	t_proc	*p;
 
 	i = 0;
-	while (i < job->processes.len)
+	while (i < job->procs.len)
 	{
-		p = job->processes.buf + i++;
+		p = job->procs.buf + i++;
 		if (p->state == PROC_STOPPED)
 			p->state = PROC_CONTINUED;
 	}

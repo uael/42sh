@@ -25,7 +25,7 @@ inline int		sh_evalrin(t_job *job, int fd, t_deq *toks, char **ln)
 	op = sh_tokpeek(toks);
 	if ((tok = sh_toknext(toks))->id != TOK_WORD)
 		return (sh_evalerr(*ln, tok, EXPTD, sh_tokstr(tok)));
-	proc = ft_vecback((t_vec *)&job->processes);
+	proc = ft_vecback((t_vec *)&job->procs);
 	while (tok->id == TOK_WORD)
 	{
 		if (ft_isdigit(*op->val))

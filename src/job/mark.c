@@ -20,8 +20,8 @@ inline int		sh_jobmark(t_job *job, pid_t pid, int status)
 	if (pid > 0)
 	{
 		i = 0;
-		while (i < job->processes.len)
-			if ((proc = job->processes.buf + i++)->pid == pid)
+		while (i < job->procs.len)
+			if ((proc = job->procs.buf + i++)->pid == pid)
 				return (sh_procmark(proc, status));
 		return (WUT);
 	}

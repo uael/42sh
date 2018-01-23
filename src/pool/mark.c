@@ -28,8 +28,8 @@ inline int		sh_poolmark(pid_t pid, int status)
 		{
 			j = 0;
 			job = g_pool->jobs + i++;
-			while (j < job->processes.len)
-				if ((proc = job->processes.buf + j++)->pid == pid)
+			while (j < job->procs.len)
+				if ((proc = job->procs.buf + j++)->pid == pid)
 				{
 					sh_procmark(proc, status);
 					if (job->bg == 0 && proc->status == PROC_STOPPED)

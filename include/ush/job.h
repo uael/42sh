@@ -33,7 +33,7 @@ typedef struct	s_jb
 	t_andor		andor;
 	pid_t		pgid;
 	char		*command;
-	t_procs		processes;
+	t_procs		procs;
 	t_bool		notified;
 	t_bool		bang;
 	t_bool		bg;
