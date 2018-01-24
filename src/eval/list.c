@@ -77,12 +77,12 @@ inline int			sh_evallist(int fd, t_deq *toks, char **ln)
 		else if (tok->id == TOK_AMP)
 		{
 			if ((st = onamp(&job, fd, toks, ln)))
-				return (st == NOP ? YEP : st);
+				return (st);
 		}
 		else if (tok->id == TOK_SEMICOLON)
 		{
 			if ((st = onsemicolon(&job, fd, toks, ln)))
-				return (st == NOP ? YEP : st);
+				return (st);
 		}
 		else if (tok->id == TOK_END || tok->id == TOK_EOL)
 			return (oneof(&job));

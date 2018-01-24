@@ -11,6 +11,8 @@
 /* ************************************************************************** */
 
 #include "ush/word.h"
+#include "ush/lex.h"
+#include "ush/tok.h"
 
 static void		expandvar(t_sds *word)
 {
@@ -50,4 +52,13 @@ inline void		sh_wordexpand(t_sds *word)
 {
 	if (*word->buf == '$')
 		expandvar(word);
+}
+
+inline void		sh_tokexpand(t_tok *tok, t_deq *toks)
+{
+	if (*tok->val == '$' && tok->len > 1 && sh_isname(tok->val))
+	{
+		sh_wordexpand((t_sds *)tok);
+		sh_tokexplode(tok, toks);
+	}
 }

@@ -22,7 +22,7 @@ static int	exhdl(int rcode, void *arg)
 		sh_err("%s: %e\n", arg, errno);
 	else
 		sh_err("%e\n", errno);
-	if (errno == ENOMEM || errno == EIO || errno == EINVAL || errno > ELAST)
+	if (errno == ENOMEM || errno == EINVAL || errno > ELAST)
 		sh_exit(EXIT_FAILURE, NULL);
 	errno = 0;
 	return (rcode);
