@@ -32,11 +32,9 @@ inline void		sh_jobdebug(t_job *job)
 	i = 0;
 	while (i < job->procs.len)
 	{
-		if ((proc = job->procs.buf + i++)->state)
-		{
-			if (i != 1)
-				ft_putf(STDOUT_FILENO, "       ");
-			ft_putf(STDOUT_FILENO, "%d %s\n", proc->pid, g_strst[proc->state]);
-		}
+		proc = job->procs.buf + i++;
+		if (i != 1)
+			ft_putf(STDOUT_FILENO, "       ");
+		ft_putf(STDOUT_FILENO, "%d %s\n", proc->pid, g_strst[proc->state]);
 	}
 }

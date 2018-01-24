@@ -14,13 +14,6 @@
 
 #include "ush/pool.h"
 
-static void		noprint(t_bool *print)
-{
-	if (!*print)
-		ft_putc(STDIN_FILENO, '\n');
-	*print = 1;
-}
-
 static void		jobfini(t_job *job)
 {
 	if (job->bg)
@@ -44,8 +37,7 @@ static void		jobstatus(t_bool *print)
 	while (i < g_pool->len)
 		if (sh_jobcompleted(job = g_pool->jobs + i++))
 		{
-			if (job->bg)
-				noprint(print);
+			*print = 1;
 			sh_jobdebug(job);
 			jobfini(job);
 			if (--i != --g_pool->len)
