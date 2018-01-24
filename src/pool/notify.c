@@ -48,7 +48,7 @@ static void		jobstatus(t_bool *print)
 		{
 			job->bg = 1;
 			if (!*print)
-				ft_puts(STDIN_FILENO, "\r\x1b[0K^Z\n");
+				ft_puts(STDIN_FILENO, "\x1b[1A\r\x1b[0K^Z\n");
 			*print = 1;
 			sh_jobdebug(job);
 			job->notified = 1;
