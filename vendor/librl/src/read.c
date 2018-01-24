@@ -50,7 +50,7 @@ int				rl_getline(int fd, char *prompt, char **ln)
 
 	if (fd != 0 || !isatty(fd) || rl_rawmode(fd))
 		return (rl_readnotty(fd, ln));
-	if (*ln && !rl_screenpos(NULL, &col) && col > 1)
+	if (!rl_screenpos(NULL, &col) && col > 1)
 		ft_puts(STDOUT_FILENO, TC_MR"%"TC_ME"\n");
 	ft_puts(STDOUT_FILENO, prompt);
 	signal(SIGWINCH, rd_sigwinch);

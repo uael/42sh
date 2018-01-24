@@ -101,7 +101,6 @@ inline int			sh_run(int fd)
 	sh_init(fd);
 	sh_varscope();
 	sh_poolscope();
-	ln[0] = NULL;
 	while (!(st = rl_getline(fd, sh_prompt(SH_PROMPT(), buf), ln)))
 	{
 		ln[1] = ln[0];
