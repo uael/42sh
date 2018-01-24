@@ -1,2 +1,2 @@
-echo >&- 2>&- | wc | grep "0       0       0" || exit 1
-/a | cat /dev/random | base64 > tutu | grep "/a: Command not found" || exit 1
+export VARIABLE_TEST="TOKEN201801241737"
+unsetenv VARIABLE_TEST | unset VARIABLE_TEST | env

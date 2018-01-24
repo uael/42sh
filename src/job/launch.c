@@ -31,18 +31,18 @@ static inline void		jobpipe(t_job *job, size_t i, int *fds, int *io)
 	}
 }
 
-static inline int		jobfork(t_job *job, t_proc *proc, t_bool piped, int fg)
+static inline int		jobfork(t_job *job, t_proc *p, t_bool piped, int fg)
 {
 	pid_t	pid;
 
-	if ((!piped && (proc->kind == PROC_FN || proc->kind == PROC_BOOL ||
-		proc->kind == PROC_CNF)) || !(pid = fork()))
-		return (sh_proclaunch(proc, job->pgid, g_io, fg));
+	p->child = (t_bool)(piped || p->kind == PROC_EXE || p->kind == PROC_SH);
+	if (!p->child || !(pid = fork()))
+		return (sh_proclaunch(p, job->pgid, g_io, fg));
 	else if (pid < 0)
 		sh_exit(THROW(WUT), NULL);
 	else
 	{
-		proc->pid = pid;
+		p->pid = pid;
 		if (g_shinteract)
 		{
 			setpgid(pid, job->pgid);
