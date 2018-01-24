@@ -40,7 +40,6 @@ static inline int		jobfork(t_job *job, t_proc *proc, t_bool piped, int fg)
 	else
 	{
 		proc->pid = pid;
-		proc->state = PROC_RUNNING;
 		if (g_shinteract)
 		{
 			setpgid(pid, job->pgid);
@@ -69,7 +68,10 @@ static int				sh_joblayer(t_job *job, int fg)
 		return (bang(job->bang, job->procs.buf[job->procs.len - 1].status));
 	job = sh_poolqueue(job);
 	if (fg)
+	{
+		//printf("fg: %d\n", job->pgid);
 		return (bang(job->bang, sh_jobfg(job, 0)));
+	}
 	sh_jobbg(job, 0);
 	ft_putf(STDOUT_FILENO, "[%d] ", 1);
 	i = 0;
@@ -97,12 +99,20 @@ int						sh_joblaunch(t_job *job, int fg)
 	{
 		proc = job->procs.buf + i++;
 		jobpipe(job, i, fds, g_io);
+		proc->close = fds[0];
+		proc->state = PROC_RUNNING;
 		if (jobfork(job, proc, (t_bool)(job->procs.len > 1), fg))
 			return (g_shstatus = !job->bang);
 		if (g_io[STDIN_FILENO] != STDIN_FILENO)
+		{
+			//printf("1: close: %d\n", g_io[STDIN_FILENO]);
 			close(g_io[STDIN_FILENO]);
+		}
 		if (g_io[STDOUT_FILENO] != STDOUT_FILENO)
+		{
+			//printf("2: close: %d\n", g_io[STDOUT_FILENO]);
 			close(g_io[STDOUT_FILENO]);
+		}
 		g_io[STDIN_FILENO] = fds[0];
 	}
 	g_shstatus = sh_joblayer(job, fg);

@@ -27,7 +27,11 @@ int		sh_jobstopped(t_job *j)
 
 int		sh_jobcompleted(t_job *j)
 {
-	if (j->procs.len)
-		return (j->procs.buf[j->procs.len - 1].state == PROC_COMPLETED);
-	return (0);
+	size_t i;
+
+	i = 0;
+	while (i < j->procs.len)
+		if ((j->procs.buf + i++)->state != PROC_COMPLETED)
+			return (0);
+	return (1);
 }

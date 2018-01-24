@@ -32,6 +32,7 @@ typedef struct	s_proc
 	t_bool		ownenv;
 	int			scope[3];
 	int			src[3];
+	int			close;
 	t_redirs	redirs;
 	t_procu		u;
 }				t_proc;

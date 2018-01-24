@@ -34,23 +34,20 @@ inline ssize_t	ft_write(int fd, void const *buf, size_t sz)
 
 inline int		ft_dup2std(int *io, int *src)
 {
-	if (io[STDERR_FILENO] >= 0 && io[STDERR_FILENO] != src[STDERR_FILENO])
+	if (io[STDIN_FILENO] >= 0 && io[STDIN_FILENO] != src[STDIN_FILENO])
 	{
-		if (dup2(io[STDERR_FILENO], src[STDERR_FILENO]) < 0 ||
-			close(io[STDERR_FILENO]))
-			return (THROW(WUT));
+		if (dup2(io[STDIN_FILENO], src[STDIN_FILENO]) >= 0)
+			close(io[STDIN_FILENO]);
 	}
 	if (io[STDOUT_FILENO] >= 0 && io[STDOUT_FILENO] != src[STDOUT_FILENO])
 	{
-		if (dup2(io[STDOUT_FILENO], src[STDOUT_FILENO]) < 0 ||
-			close(io[STDOUT_FILENO]))
-			return (THROW(WUT));
+		if (dup2(io[STDOUT_FILENO], src[STDOUT_FILENO]) >= 0)
+			close(io[STDOUT_FILENO]);
 	}
-	if (io[STDIN_FILENO] >= 0 && io[STDIN_FILENO] != src[STDIN_FILENO])
+	if (io[STDERR_FILENO] >= 0 && io[STDERR_FILENO] != src[STDERR_FILENO])
 	{
-		if (dup2(io[STDIN_FILENO], src[STDIN_FILENO]) < 0 ||
-			close(io[STDIN_FILENO]))
-			return (THROW(WUT));
+		if (dup2(io[STDERR_FILENO], src[STDERR_FILENO]) >= 0)
+			close(io[STDERR_FILENO]);
 	}
 	return (YEP);
 }

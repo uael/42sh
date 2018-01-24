@@ -18,7 +18,6 @@ static char		*g_strst[] =
 	[PROC_RUNNING] = "running\t",
 	[PROC_STOPPED] = "suspended\t",
 	[PROC_CONTINUED] = "continued\t",
-	[PROC_TERMINATED] = "terminated\t",
 	[PROC_COMPLETED] = "done\t\t"
 };
 

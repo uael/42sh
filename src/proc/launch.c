@@ -19,6 +19,8 @@ static inline pid_t	prepare(t_proc *proc, pid_t pgid, int *io, int fg)
 	pid_t pid;
 
 	pid = getpid();
+	if (proc->close != STDIN_FILENO && proc->close != io[0])
+		close(proc->close);
 	if (ft_dup2std(io, proc->src) ||
 		sh_redirect(&proc->redirs, pid == g_shpgid ? proc->scope : NULL))
 	{
