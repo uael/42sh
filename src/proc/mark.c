@@ -10,6 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <sys/signal.h>
+
 #include "ush/proc.h"
 
 inline int		sh_procmark(t_proc *proc, int status)
@@ -24,14 +26,14 @@ inline int		sh_procmark(t_proc *proc, int status)
 		proc->state = PROC_COMPLETED;
 		if (WIFEXITED(status))
 			proc->status = WEXITSTATUS(status);
-		else if (WIFSIGNALED(status) && WTERMSIG(status) != 2)
+		else if (WIFSIGNALED(status) && WTERMSIG(status) != SIGINT)
 		{
 			if (WTERMSIG(status) != SIGPIPE)
 				sh_err("%d: Terminated by signal %d.\n",
 					(int)proc->pid, WTERMSIG(status));
 			proc->status = 1;
 		}
-		else if (WTERMSIG(status) == 2 && (proc->status = 130))
+		else if (WTERMSIG(status) == SIGINT && (proc->status = 130))
 			ft_putc(STDIN_FILENO, '\n');
 		else
 			proc->status = status;
