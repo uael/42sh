@@ -22,7 +22,7 @@ int				rl_screenpos(uint16_t *row, uint16_t *col)
 	ssize_t	rd;
 
 	i = 0;
-	if (ft_write(STDOUT_FILENO, "\x1b[6n", 4) != 4)
+	if (ft_write(STDIN_FILENO, "\x1b[6n", 4) != 4)
 		return (THROW(WUT));
 	rd = 0;
 	ft_memset(buf, 0, 64);

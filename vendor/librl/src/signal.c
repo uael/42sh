@@ -19,7 +19,7 @@ inline int	rl_signalc(void)
 	g_eln->idx = 0;
 	g_eln->str.len = 0;
 	*g_eln->str.buf = '\0';
-	ft_write(STDOUT_FILENO, "^C\n", 3);
+	ft_write(STDIN_FILENO, "^C\n", 3);
 	return (NOP);
 }
 
@@ -35,6 +35,6 @@ inline int	rl_signald(void)
 		return (YEP);
 	ft_sdsmpush(&g_eln->str, "exit", 4);
 	rl_editprint();
-	ft_write(STDOUT_FILENO, "\n", 1);
+	ft_write(STDIN_FILENO, "\n", 1);
 	return (RL_EXIT);
 }

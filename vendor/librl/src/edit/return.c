@@ -15,6 +15,6 @@
 inline int	rl_editreturn(void)
 {
 	ft_sdscpush(&g_eln->str, '\n');
-	ft_write(STDOUT_FILENO, "\n", 1);
+	ft_write(STDIN_FILENO, "\n", 1);
 	return (NOP);
 }

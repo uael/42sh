@@ -1,5 +1,3 @@
-echo "builtin tests:"
-echo "set/unsetenv:"
 setenv FOO bar
 env | grep FOO=bar || exit 1
 unsetenv FOO

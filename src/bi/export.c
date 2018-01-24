@@ -32,10 +32,10 @@ inline int				sh_biexport(int ac, char **av, char **env)
 	i = 0;
 	while (++i < ac)
 		if (*av[i] == '=')
-			ft_retf(EXIT_FAILURE, "%s: bad assignment", av[i]);
+			ft_retf(EXIT_FAILURE, "%s: bad assignment\n", av[i]);
 		else if ((val = ft_strchr(av[i], '=')))
 			if (!sh_isname(av[i]))
-				ft_retf(EXIT_FAILURE, "%s: bad assignment", av[i]);
+				ft_retf(EXIT_FAILURE, "%s: bad assignment\n", av[i]);
 			else
 			{
 				*val = '\0';
@@ -44,6 +44,6 @@ inline int				sh_biexport(int ac, char **av, char **env)
 		else if (sh_isname(av[i]))
 			export(av[i], NULL);
 		else
-			ft_retf(EXIT_FAILURE, "%s: bad assignment", av[i]);
+			ft_retf(EXIT_FAILURE, "%s: bad assignment\n", av[i]);
 	return (EXIT_SUCCESS);
 }
