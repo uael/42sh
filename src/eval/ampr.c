@@ -29,8 +29,10 @@ inline int			sh_evalampr(t_job *job, t_deq *toks, char **ln)
 			return (sh_evalerr(*ln, tok, "%s: %e", tok->val, errno));
 		if (proc)
 		{
-			*(t_redir *)ft_vecpush((t_vec *)&proc->redirs) = (t_redir){fd, STDOUT_FILENO};
-			*(t_redir *)ft_vecpush((t_vec *)&proc->redirs) = (t_redir){fd, STDERR_FILENO};
+			*(t_redir *)ft_vecpush((t_vec *)&proc->redirs) =
+				(t_redir){fd, STDOUT_FILENO};
+			*(t_redir *)ft_vecpush((t_vec *)&proc->redirs) =
+				(t_redir){fd, STDERR_FILENO};
 		}
 		else
 			g_shstatus = 0;

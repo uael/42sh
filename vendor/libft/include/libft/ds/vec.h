@@ -50,8 +50,7 @@ extern void		*ft_vecmusht(t_vec *s, void const *b, size_t n);
 extern void		*ft_vecusht(t_vec *s);
 extern void		*ft_veccusht(t_vec *s, void *item);
 extern void		*ft_vecnput(t_vec *s, size_t i, size_t n);
-extern void		*ft_vecmput(t_vec *self, size_t idx, void const *buf,
-	size_t n);
+extern void		*ft_vecmput(t_vec *self, size_t idx, void const *buf, size_t n);
 extern void		*ft_vecput(t_vec *s, size_t i);
 extern void		*ft_veccput(t_vec *s, size_t i, void *item);
 extern size_t	ft_vecnpop(t_vec *s, size_t n, void *out);
