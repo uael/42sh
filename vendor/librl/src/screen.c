@@ -25,12 +25,12 @@ int				rl_screenpos(uint16_t *row, uint16_t *col)
 	if (ft_write(STDOUT_FILENO, "\x1b[6n", 4) != 4)
 		return (THROW(WUT));
 	rd = 0;
+	ft_memset(buf, 0, 64);
 	while (i < 64)
 	{
 		if ((rd = ft_read(STDIN_FILENO, buf + i, 1)) < 0 || buf[i] == 'R')
 			break ;
-		if (rd)
-		++i;
+		rd ? ++i : 0;
 	}
 	if (rd < 0)
 		return (WUT);
