@@ -30,7 +30,7 @@ static t_deq		*g_toks = &g_stack_toks;
 static inline void	sh_init(int fd)
 {
 	char	*home;
-	char 	buf[PATH_MAX];
+	char	buf[PATH_MAX];
 
 	g_shpgid = getpgrp();
 	if (!(g_shinteract = (t_bool)isatty(fd)))
@@ -125,7 +125,7 @@ int					sh_exit(int exitno, char const *fmt, ...)
 {
 	va_list	ap;
 	char	*home;
-	char 	buf[PATH_MAX];
+	char	buf[PATH_MAX];
 
 	if (g_shinteract && (home = sh_getenv("HOME")))
 		rl_histsave(ft_pathcat(ft_strcpy(buf, home), ".ushst"));

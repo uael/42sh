@@ -109,10 +109,9 @@ static inline int	lex(int fd, t_tok *tok, char **it, char **ln)
 				return (st);
 		}
 		else if (**it == '#')
-		{
-			while (**it && (**it != '\n' || (**it != '\r' && *(*it + 1) != '\n')))
+			while (**it && (**it != '\n' ||
+				(**it != '\r' && *(*it + 1) != '\n')))
 				++*it;
-		}
 		else if (!**it)
 		{
 			tok->pos = (uint16_t)(*it - *ln);

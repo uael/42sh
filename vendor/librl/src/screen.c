@@ -28,7 +28,7 @@ int				rl_screenpos(uint16_t *row, uint16_t *col)
 	while (i < 64)
 	{
 		if ((rd = ft_read(STDIN_FILENO, buf + i, 1)) < 0 || buf[i] == 'R')
-			break;
+			break ;
 		if (rd)
 		++i;
 	}
