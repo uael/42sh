@@ -69,8 +69,8 @@ inline int			sh_evallist(int fd, t_deq *toks, char **ln)
 	int		st;
 
 	sh_jobctor(&job);
-	if (sh_evalandor(&job, fd, toks, ln) == ERR)
-		return (ERR);
+	if (sh_evalandor(&job, fd, toks, ln) == OUF)
+		return (OUF);
 	while (1)
 		if (!(tok = sh_tokpeek(toks)))
 			return (ft_dtor(YEP, (t_dtor)sh_jobdtor, &job, NULL));

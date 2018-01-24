@@ -15,119 +15,58 @@
 #define UNXPTD_C "Unexpected token `%c' while looking for matching `%c'"
 #define UXPTD "Unexpected closing bracket `%c'"
 
-static char		*g_tokidsstr[] =
+static inline int	lexerhelp(t_tok *tok, char **it, char **ln)
 {
-	[TOK_END] = "<EOF>",
-	[TOK_HEREDOC] = "<<",
-	[TOK_HEREDOCT] = "<<-",
-	[TOK_RAOUT] = ">>",
-	[TOK_LAMP] = "<&",
-	[TOK_RAMP] = ">&",
-	[TOK_CMP] = "<>",
-	[TOK_EOL] = "<newline>",
-	[TOK_RPOUT] = ">|",
-	[TOK_AMPR] = "&>",
-	[TOK_LAND] = "&&",
-	[TOK_LOR] = "||",
-	[TOK_CASE] = "case",
-	[TOK_DO] = "do",
-	[TOK_DONE] = "done",
-	[TOK_ELIF] = "elif",
-	[TOK_ELSE] = "else",
-	[TOK_FUNCTION] = "function",
-	[TOK_FOR] = "for",
-	[TOK_FI] = "fi",
-	[TOK_IF] = "if",
-	[TOK_IN] = "in",
-	[TOK_ESAC] = "esac",
-	[TOK_SELECT] = "select",
-	[TOK_THEN] = "then",
-	[TOK_UNTIL] = "until",
-	[TOK_WHILE] = "while",
-	[TOK_WORD] = "<word>",
-	[TOK_NOT] = "!",
-	[TOK_AMP] = "&",
-	[TOK_LPAR] = "(",
-	[TOK_RPAR] = ")",
-	[TOK_HYPEN] = "-",
-	[TOK_SEMICOLON] = ";",
-	[TOK_RIN] = "<",
-	[TOK_ASSIGN] = "=",
-	[TOK_ROUT] = ">",
-	[TOK_LBRACKET] = "[",
-	[TOK_RBRACKET] = "]",
-	[TOK_LCURLY] = "{",
-	[TOK_PIPE] = "|",
-	[TOK_RCURLY] = "}"
-};
-
-inline char			*sh_tokidstr(uint8_t id)
-{
-	char *ret;
-
-	if (id > TOK_RCURLY)
-		return ("<unknown>");
-	return ((ret = g_tokidsstr[id]) ? ret : "<unknown>");
+	tok->pos = (uint16_t)(*it - *ln);
+	++*it;
+	while (**it == '\n' || (**it == '\r' && *(*it + 1) == '\n'))
+		++*it;
+	tok->id = TOK_EOL;
+	ft_sdscpush((t_sds *)tok, '\n');
+	return (YEP);
 }
 
-inline char			*sh_tokstr(t_tok *tok)
+static inline int	updatestack(t_tok *tok, char *stack, size_t *i, char **ln)
 {
-	char *ret;
-
-	if (!tok)
-		return (g_tokidsstr[TOK_END]);
-	if (tok->id > TOK_RCURLY)
-		return ("<unknown>");
-	if (tok->len)
-		return (tok->val);
-	return ((ret = g_tokidsstr[tok->id]) ? ret : "<unknown>");
+	if (ft_strchr("({[", tok->id))
+		stack[(*i)++] = sh_isbracket(tok->id);
+	else if (*i && tok->id == stack[*i - 1])
+		--*i;
+	else if (ft_strchr(")}]", tok->id) && (!*i || tok->id != stack[*i - 1]))
+	{
+		return (*i ? sh_synerr(*ln, *ln + tok->pos, UNXPTD_C, tok->id,
+			stack[*i - 1]) : sh_synerr(*ln, *ln + tok->pos, UXPTD, tok->id));
+	}
+	return (YEP);
 }
 
-static inline int	lex(int fd, t_tok *tok, char **it, char **ln)
+static inline int	lex(int fd, t_tok *tok, char **i, char **ln)
 {
-	int	st;
+	int st;
 
 	tok->len = 0;
 	while (1)
-		if (**it && ft_strchr(sh_varifs(), **it))
-			++*it;
-		else if (**it == '\n' || (**it == '\r' && *(*it + 1) == '\n'))
-		{
-			tok->pos = (uint16_t)(*it - *ln);
-			++*it;
-			while (**it == '\n' || (**it == '\r' && *(*it + 1) == '\n'))
-				++*it;
-			tok->id = TOK_EOL;
-			ft_sdscpush((t_sds *)tok, '\n');
-			return (YEP);
-		}
-		else if (**it == '\\' && ((*(*it + 1) == '\n' && !*(*it + 2)) ||
-			((*(*it + 1) == '\r' && *(*it + 2) == '\n' && !*(*it + 3)))))
-		{
-			*it += (*(*it + 1) == '\n') ? 2 : 3;
-			if (fd >= 0 && (st = rl_catline(fd, -2, ln, it)))
-				return (st);
-		}
-		else if (**it == '#')
-			while (**it && (**it != '\n' ||
-				(**it != '\r' && *(*it + 1) != '\n')))
-				++*it;
-		else if (!**it)
-		{
-			tok->pos = (uint16_t)(*it - *ln);
-			tok->id = TOK_END;
-			return (YEP);
-		}
+		if (**i && ft_strchr(sh_varifs(), **i))
+			++*i;
+		else if (**i == '\n' || (**i == '\r' && *(*i + 1) == '\n'))
+			return (lexerhelp(tok, i, ln));
+		else if (**i == '\\' && ((*(*i + 1) == '\n' && !*(*i + 2)) || ((*(*i +
+			1) == '\r' && *(*i + 2) == '\n' && !*(*i + 3)))) && (*i += (*(*i +
+			1) == '\n') ? 2 : 3) && fd >= 0 && (st = rl_catline(fd, -2, ln, i)))
+			return (st);
+		else if (**i == '#')
+			while (**i && (**i != '\n' || (**i != '\r' && *(*i + 1) != '\n')))
+				++*i;
+		else if (!**i && !(tok->id = TOK_END))
+			return ((tok->pos = (uint16_t)(*i - *ln)) & 0);
 		else
 			break ;
-	tok->pos = (uint16_t)(*it - *ln);
-	if (ft_isdigit(**it))
-		ft_sdscpush((t_sds *)tok, *(*it)++);
-	if ((st = sh_lexop(fd, tok, it, ln)) != NOP)
+	tok->pos = (uint16_t)(*i - *ln);
+	ft_isdigit(**i) ? ft_sdscpush((t_sds *)tok, *(*i)++) : 0;
+	if ((st = sh_lexop(fd, tok, i, ln)) != NOP ||
+		(st = sh_lexword(fd, tok, i, ln)) != NOP)
 		return (st);
-	if ((st = sh_lexword(fd, tok, it, ln)) != NOP)
-		return (st);
-	return (sh_synerr(*ln, *it, "Unexpected token `%c'", **it));
+	return (sh_synerr(*ln, *i, "Unexpected token `%c'", **i));
 }
 
 int					sh_lex(int fd, t_deq *toks, char **it, char **ln)
@@ -137,10 +76,9 @@ int					sh_lex(int fd, t_deq *toks, char **it, char **ln)
 	char	stack[1000];
 	size_t	i;
 
-	if (!**it)
+	if (!(i = 0) && !**it)
 		return (NOP);
 	!ln ? (ln = it) : 0;
-	i = 0;
 	while ((tok = ft_deqpush(toks)) && ft_sdsgrow((t_sds *)tok, 1))
 	{
 		if (!(*tok->val = '\0') && !**it)
@@ -154,13 +92,8 @@ int					sh_lex(int fd, t_deq *toks, char **it, char **ln)
 			return (st);
 		if (!i && (tok->id == TOK_EOL || tok->id == TOK_END))
 			break ;
-		if (ft_strchr("({[", tok->id))
-			stack[i++] = sh_isbracket(tok->id);
-		else if (i && tok->id == stack[i - 1])
-			--i;
-		else if (ft_strchr(")}]", tok->id) && (!i || tok->id != stack[i - 1]))
-			return (i ? sh_synerr(*ln, *ln + tok->pos, UNXPTD_C, tok->id,
-				stack[i - 1]) : sh_synerr(*ln, *ln + tok->pos, UXPTD, tok->id));
+		if (updatestack(tok, stack, &i, ln) == OUF)
+			return (OUF);
 	}
 	return (tok ? sh_lexreduce(fd, toks, it, ln) : YEP);
 }

@@ -43,7 +43,7 @@ SRC_NAME = \
 	eval/rout.c eval/simple.c eval/subshell.c \
 	job.c job/bg.c job/cont.c job/debug.c job/fg.c job/mark.c job/launch.c \
 	job/state.c job/wait.c \
-	lex.c lex/heredoc.c lex/op.c lex/quote.c lex/var.c lex/word.c \
+	lex.c lex/heredoc.c lex/op.c lex/quote.c lex/var.c lex/tok.c lex/word.c \
 	lex/reduce.c \
 	main.c \
 	pool.c pool/mark.c pool/notify.c \

@@ -41,12 +41,12 @@ inline int		sh_evalsimple(t_job *job, int fd, t_deq *toks, char **ln)
 	{
 		if (ft_strchr(tok->val, '='))
 			sh_evalassign(toks, &vars);
-		if ((st = sh_evalargv(job, &vars, toks, ln)) == ERR)
+		if ((st = sh_evalargv(job, &vars, toks, ln)) == OUF)
 			return (st);
 		else if (st)
 			return (evalexport(&vars));
 	}
-	else if (TOK_ISREDIR(tok->id) && sh_evalredir(NULL, toks, ln) == ERR)
-		return (ERR);
+	else if (TOK_ISREDIR(tok->id) && sh_evalredir(NULL, toks, ln) == OUF)
+		return (OUF);
 	return (YEP);
 }

@@ -79,7 +79,7 @@ inline int			sh_eval(int fd, t_deq *toks, char **ln)
 		return (evalfini(YEP, toks, fd));
 	while (tok && tok->id == TOK_EOL)
 		tok = sh_toknext(toks);
-	if (sh_evallist(fd, toks, ln) == ERR)
+	if (sh_evallist(fd, toks, ln) == OUF)
 		return (evalfini(NOP, toks, fd));
 	if (!(tok = sh_tokpeek(toks)))
 		return (evalfini(YEP, toks, fd));

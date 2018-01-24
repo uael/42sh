@@ -118,7 +118,7 @@ inline int			sh_run(int fd)
 		}
 		if (st < 0)
 			break ;
-		st == ERR ? g_shstatus = 1 : 0;
+		st == OUF ? g_shstatus = 1 : 0;
 	}
 	sh_varunscope();
 	sh_poolunscope();
