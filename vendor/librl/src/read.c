@@ -46,9 +46,12 @@ int				rl_getline(int fd, char *prompt, char **ln)
 	char		*buf;
 	size_t		len;
 	int			st;
+	uint16_t	col;
 
 	if (fd != 0 || !isatty(fd) || rl_rawmode(fd))
 		return (rl_readnotty(fd, ln));
+	if (*ln && !rl_screenpos(NULL, &col) && col > 1)
+		ft_puts(STDOUT_FILENO, TC_MR"%"TC_ME"\n");
 	ft_puts(STDOUT_FILENO, prompt);
 	signal(SIGWINCH, rd_sigwinch);
 	if (!g_screen_init && rl_screenget(g_screen) < 0)
