@@ -15,7 +15,11 @@ CC = gcc
 CFLAGS = -Werror -Wextra -Wall
 
 ifeq ($(DEV),yes)
-    CFLAGS += -g3 -DDEBUG -fsanitize=address -fno-omit-frame-pointer \
+    CFLAGS += -g3 -DDEBUG
+endif
+
+ifeq ($(SAN),yes)
+    CFLAGS += -fsanitize=address -fno-omit-frame-pointer \
         -fno-optimize-sibling-calls
 endif
 

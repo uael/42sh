@@ -25,7 +25,10 @@ static inline void		jobpipe(t_job *job, size_t i, int *fds, int *io)
 		io[STDOUT_FILENO] = fds[1];
 	}
 	else
+	{
+		ft_memset(fds, 0, 2 * sizeof(int));
 		io[STDOUT_FILENO] = STDOUT_FILENO;
+	}
 }
 
 static inline int		jobfork(t_job *job, t_proc *proc, t_bool piped, int fg)
