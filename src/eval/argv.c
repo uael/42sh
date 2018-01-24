@@ -60,8 +60,8 @@ inline int		sh_evalargv(t_job *job, t_map *vars, t_deq *toks, char **ln)
 	int		st;
 	t_proc	*prc;
 
-	if (!(tok = sh_tokpeek(toks)) ||
-		(tok->id != TOK_WORD && !TOK_ISBOOL(tok->id)))
+	if (!(tok = sh_tokpeek(toks)) || (tok->id != TOK_WORD &&
+		!TOK_ISBOOL(tok->id)))
 		return (NOP);
 	prc = ft_vecpush((t_vec *)&job->procs);
 	ft_vecctor(&av, sizeof(char *));

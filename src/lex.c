@@ -139,20 +139,14 @@ int					sh_lex(int fd, t_deq *toks, char **it, char **ln)
 
 	if (!**it)
 		return (NOP);
-	if (!ln)
-		ln = it;
+	!ln ? (ln = it) : 0;
 	i = 0;
-	while ((tok = ft_deqpush(toks)))
+	while ((tok = ft_deqpush(toks)) && ft_sdsgrow((t_sds *)tok, 1))
 	{
-		ft_sdsgrow((t_sds *)tok, 1);
-		*tok->val = '\0';
-		if (!**it)
+		if (!(*tok->val = '\0') && !**it)
 		{
-			if (!i)
-			{
-				tok->id = TOK_END;
+			if (!i && !(tok->id = TOK_END))
 				break ;
-			}
 			if ((st = fd < 0 ? NOP : rl_catline(fd, -1, ln, it)))
 				return (st);
 		}
