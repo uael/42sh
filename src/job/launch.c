@@ -73,7 +73,7 @@ static int				sh_joblayer(t_job *job, int fg)
 	if (fg)
 		return (bang(job->bang, sh_jobfg(job, 0)));
 	sh_jobbg(job, (int)(i = 0));
-	ft_putf(STDOUT_FILENO, "[%d] ", 1);
+	ft_putf(STDOUT_FILENO, "[%d] ", job->idx + 1);
 	while (i < job->procs.len)
 	{
 		proc = job->procs.buf + i++;
