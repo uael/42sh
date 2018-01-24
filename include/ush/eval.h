@@ -38,5 +38,6 @@ extern int		sh_evalraout(t_job *job, t_deq *toks, char **ln);
 extern int		sh_evalheredoc(t_job *job, t_deq *toks, char **ln);
 extern int		sh_evallamp(t_job *job, t_deq *toks, char **ln);
 extern int		sh_evalramp(t_job *job, t_deq *toks, char **ln);
+extern int		sh_evalampr(t_job *job, t_deq *toks, char **ln);
 
 #endif

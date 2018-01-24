@@ -1,2 +1,1 @@
-export VARIABLE_TEST="TOKEN201801241737"
-unsetenv VARIABLE_TEST | unset VARIABLE_TEST | env
+echo bite &>new_file_stderr_and_stdout
