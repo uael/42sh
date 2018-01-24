@@ -28,7 +28,7 @@ static inline pid_t	prepare(t_proc *proc, pid_t pgid, int *io, int fg)
 			exit(EXIT_FAILURE);
 		return (WUT);
 	}
-	if (pid != g_shpgid && g_shinteract)
+	if ((pid = getpgrp()) != g_shpgid && g_shinteract)
 	{
 		setpgid(0, pgid);
 		if (fg)
@@ -60,8 +60,6 @@ int					sh_proclaunch(t_proc *proc, pid_t pgid, int *io, int fg)
 	else if (proc->kind == PROC_EXE)
 	{
 		execve(proc->u.exe, proc->argv, proc->envv);
-		ft_putf(2, "exe: %s %s %s\n", proc->u.exe, proc->argv[0],
-			proc->envv[0]);
 		return (sh_exit(THROW(WUT), NULL));
 	}
 	return (YEP);
