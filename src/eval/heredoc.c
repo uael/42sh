@@ -20,12 +20,22 @@ static inline int	ouput(int ac, char **av, char **envv)
 	return (EXIT_SUCCESS);
 }
 
+static void			out_help(t_tok *tok, t_job *job, size_t i)
+{
+	t_proc out;
+
+	sh_procfn(&out, ouput, NULL);
+	out.argv = ft_malloc(2 * sizeof(char **));
+	out.argv[0] = ft_strdup(tok->val);
+	out.argv[1] = NULL;
+	ft_veccput((t_vec *)&job->procs, i, &out);
+}
+
 inline int			sh_evalheredoc(t_job *job, t_deq *toks, char **ln)
 {
 	t_tok	*tok;
 	size_t	i;
 	t_tok	*op;
-	t_proc	out;
 	t_proc	*proc;
 
 	(void)ln;
@@ -41,13 +51,7 @@ inline int			sh_evalheredoc(t_job *job, t_deq *toks, char **ln)
 		job->procs.buf[i - 1].argv[0] = ft_strdup(tok->val);
 	}
 	else
-	{
-		sh_procfn(&out, ouput, NULL);
-		out.argv = ft_malloc(2 * sizeof(char **));
-		out.argv[0] = ft_strdup(tok->val);
-		out.argv[1] = NULL;
-		ft_veccput((t_vec *)&job->procs, i, &out);
-	}
+		out_help(tok, job, i);
 	sh_toknext(toks);
 	return (YEP);
 }

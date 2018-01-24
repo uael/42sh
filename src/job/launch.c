@@ -100,10 +100,8 @@ int						sh_joblaunch(t_job *job, int fg)
 		proc->state = PROC_RUNNING;
 		if (jobfork(job, proc, (t_bool)(job->procs.len > 1), fg))
 			return (g_shstatus = !job->bang);
-		if (g_io[STDIN_FILENO] != STDIN_FILENO)
-			close(g_io[STDIN_FILENO]);
-		if (g_io[STDOUT_FILENO] != STDOUT_FILENO)
-			close(g_io[STDOUT_FILENO]);
+		g_io[STDIN_FILENO] != STDIN_FILENO ? close(g_io[STDIN_FILENO]) : 0;
+		g_io[STDOUT_FILENO] != STDOUT_FILENO ? close(g_io[STDOUT_FILENO]) : 0;
 		g_io[STDIN_FILENO] = fds[0];
 	}
 	g_shstatus = sh_joblayer(job, fg);

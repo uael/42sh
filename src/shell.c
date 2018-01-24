@@ -55,6 +55,20 @@ static inline void	sh_init(int fd)
 		rl_histload(ft_pathcat(ft_strcpy(buf, home), ".ushst"));
 }
 
+static char			*prompt_help(char *p, char *r, char *home)
+{
+	while (*p)
+		if (*p == '/' && *(p + 1) && (home = ft_strchr(p + 1, '/')))
+		{
+			*r++ = *p++;
+			*r++ = *p;
+			p = home;
+		}
+		else
+			*r++ = *p++;
+	return (r);
+}
+
 static char			*sh_prompt(char *prompt, char *buf)
 {
 	size_t	l;
@@ -77,16 +91,7 @@ static char			*sh_prompt(char *prompt, char *buf)
 		*p = '~';
 	}
 	r = buf;
-	while (*p)
-		if (*p == '/' && *(p + 1) && (home = ft_strchr(p + 1, '/')))
-		{
-			*r++ = *p++;
-			*r++ = *p;
-			p = home;
-		}
-		else
-			*r++ = *p++;
-	ft_strcpy(r, prompt);
+	ft_strcpy(prompt_help(p, r, home), prompt);
 	return (buf);
 }
 

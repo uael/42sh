@@ -39,7 +39,7 @@ static inline void	waitchilds(t_job *job)
 	}
 }
 
-inline void		sh_jobwait(t_job *job)
+inline void			sh_jobwait(t_job *job)
 {
 	int		status;
 	pid_t	pid;
