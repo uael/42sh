@@ -50,3 +50,17 @@ inline char		sh_isbracket(char b)
 		return (')');
 	return (0);
 }
+
+inline t_bool	sh_isname(char *word)
+{
+	if (!ft_isalpha(*word) && *word != '_')
+		return (0);
+	++word;
+	while (*word != '=')
+	{
+		if (!ft_isalnum(*word) && *word != '_')
+			return (0);
+		++word;
+	}
+	return (1);
+}

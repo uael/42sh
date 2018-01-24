@@ -22,13 +22,13 @@ static inline pid_t	prepare(t_proc *proc, pid_t pgid, int *io, int fg)
 	if (proc->close != STDIN_FILENO && proc->close != io[0])
 		close(proc->close);
 	if (ft_dup2std(io, proc->src) ||
-		sh_redirect(&proc->redirs, pid == g_shpgid ? proc->scope : NULL))
+		sh_redirect(&proc->redirs, proc->child ? NULL : proc->scope))
 	{
-		if (pid == g_shpgid)
+		if (proc->child)
 			exit(EXIT_FAILURE);
 		return (WUT);
 	}
-	if (pid != g_shpgid && g_shinteract)
+	if (proc->child && g_shinteract)
 	{
 		setpgid(0, pgid);
 		if (fg)
@@ -52,17 +52,15 @@ int					sh_proclaunch(t_proc *proc, pid_t pgid, int *io, int fg)
 	if (proc->kind == PROC_SH)
 		return (sh_procshlaunch(proc, pid));
 	else if (proc->kind == PROC_FN)
-		return (sh_procfnlaunch(proc, pid));
+		return (sh_procfnlaunch(proc));
 	else if (proc->kind == PROC_CNF)
 		return (sh_proccnflaunch(proc));
 	else if (proc->kind == PROC_BOOL)
-		return (sh_procboollaunch(proc, pid));
+		return (sh_procboollaunch(proc));
 	else if (proc->kind == PROC_EXE)
 	{
 		execve(proc->u.exe, proc->argv, proc->envv);
-		ft_putf(2, "exe: %s %s %s\n", proc->u.exe, proc->argv[0],
-			proc->envv[0]);
-		return (sh_exit(THROW(WUT), NULL));
+		return (sh_exit(EXIT_FAILURE, NULL));
 	}
 	return (YEP);
 }

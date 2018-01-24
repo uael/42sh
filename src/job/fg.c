@@ -30,9 +30,7 @@ inline int		sh_jobfg(t_job *job, int cont)
 	}
 	sh_jobwait(job);
 	st = job->procs.buf[job->procs.len - 1].status;
-	if (!g_shinteract || !job->procs.buf->pid)
-		sh_poolclean();
-	else
+	if (g_shinteract)
 	{
 		tcsetpgrp(STDIN_FILENO, g_shpgid);
 		tcgetattr(STDIN_FILENO, &job->tmodes);

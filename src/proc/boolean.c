@@ -22,10 +22,10 @@ inline void		sh_procbool(t_proc *proc, t_bool boolean)
 	ft_memcpy(proc->src, STD_FILENOS, 3 * sizeof(int));
 }
 
-inline int		sh_procboollaunch(t_proc *proc, pid_t pid)
+inline int		sh_procboollaunch(t_proc *proc)
 {
 	proc->status = proc->u.boolean;
-	if (pid > 0 && pid != g_shpgid)
+	if (proc->child)
 		exit(proc->status);
 	ft_dup2std(proc->scope, STD_FILENOS);
 	return (YEP);

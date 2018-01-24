@@ -30,7 +30,7 @@ inline void		sh_procfn(t_proc *proc, t_procfn *fn, char **envv)
 	ft_memcpy(proc->src, STD_FILENOS, 3 * sizeof(int));
 }
 
-inline int		sh_procfnlaunch(t_proc *proc, pid_t pid)
+inline int		sh_procfnlaunch(t_proc *proc)
 {
 	t_ex_hdl	dfl;
 	char		**av;
@@ -41,8 +41,9 @@ inline int		sh_procfnlaunch(t_proc *proc, pid_t pid)
 	ft_exbind(EXALL, ft_exhdl(exhdl, NULL), &dfl);
 	proc->status = proc->u.fn((int)(av - proc->argv), proc->argv, proc->envv);
 	ft_exbind(EXALL, dfl, NULL);
-	if (pid > 0 && pid != g_shpgid)
+	if (proc->child)
 		exit(proc->status);
+	proc->state = PROC_COMPLETED;
 	ft_dup2std(proc->scope, STD_FILENOS);
 	return (YEP);
 }

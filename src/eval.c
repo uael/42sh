@@ -44,6 +44,7 @@ static inline int	evalfini(int ret, t_deq *toks, int fd)
 {
 	t_tok	*tok;
 
+	sh_poolclean();
 	if (fd < 0)
 	{
 		sh_varunscope();

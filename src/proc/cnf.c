@@ -32,5 +32,9 @@ inline int		sh_proccnflaunch(t_proc *proc)
 		sh_synerr(proc->u.cnf.ln, proc->u.cnf.it, msg, proc->u.cnf.exe);
 	else
 		ft_putf(STDERR_FILENO, msg, proc->u.cnf.exe);
-	exit(proc->u.cnf.st);
+	if (proc->child)
+		exit(proc->u.cnf.st);
+	proc->state = PROC_COMPLETED;
+	ft_dup2std(proc->scope, STD_FILENOS);
+	return (YEP);
 }

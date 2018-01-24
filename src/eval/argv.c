@@ -65,7 +65,7 @@ inline int		sh_evalargv(t_job *job, t_map *vars, t_deq *toks, char **ln)
 		return (NOP);
 	prc = ft_vecpush((t_vec *)&job->procs);
 	ft_vecctor(&av, sizeof(char *));
-	if (*tok->val == '$' && tok->len > 1)
+	if (*tok->val == '$' && tok->len > 1 && sh_isname(tok->val))
 	{
 		sh_wordexpand((t_sds *)tok);
 		sh_tokexplode(tok, toks);
@@ -93,7 +93,7 @@ inline int		sh_evalargv(t_job *job, t_map *vars, t_deq *toks, char **ln)
 		while (tok)
 			if (tok->id == TOK_WORD)
 			{
-				if (*tok->val == '$' && tok->len > 1)
+				if (*tok->val == '$' && tok->len > 1 && sh_isname(tok->val))
 				{
 					sh_wordexpand((t_sds *)tok);
 					sh_tokexplode(tok, toks);
@@ -115,7 +115,7 @@ inline int		sh_evalargv(t_job *job, t_map *vars, t_deq *toks, char **ln)
 			else
 				break ;
 		*(char **)ft_vecpush(&av) = NULL;
-		prc->argv = av.buf;
+		((t_proc *)ft_vecback((t_vec *)&job->procs))->argv = av.buf;
 	}
 	return (YEP);
 }

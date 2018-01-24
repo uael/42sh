@@ -77,7 +77,9 @@ static int		env_finalize(char *path, char **argv, char **envv)
 	proc.ownenv = 1;
 	sh_jobctor(&job);
 	ft_veccpush((t_vec *)&job.procs, &proc);
-	return (sh_joblaunch(&job, 1));
+	s = sh_joblaunch(&job, 1);
+	job.idx < 0 ? sh_jobdtor(&job) : 0;
+	return (s);
 }
 
 static int		env_rmvar(t_vec *env, char *var)
@@ -119,13 +121,13 @@ inline int		sh_bienv(int ac, char **av, char **env)
 		{
 			if (s == 1 && s == ac)
 				ft_putl(1, env[i]);
-			*(char **)ft_vecpush(&e) = ft_strdup(env[i]);
+			else
+				*(char **)ft_vecpush(&e) = ft_strdup(env[i]);
 		}
 	if (s == 1 && s == ac)
 		return (YEP);
 	*(char **)ft_vecpush(&e) = NULL;
-	if (opt[ENV_U])
-		env_rmvar(&e, opt[ENV_U]);
+	opt[ENV_U] ? env_rmvar(&e, opt[ENV_U]) : 0;
 	if (!*(av + s))
 		return (EXIT_SUCCESS);
 	return (env_finalize(opt[ENV_P] ? opt[ENV_P] : "PATH", av + s, e.buf));

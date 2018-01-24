@@ -33,5 +33,5 @@ int		sh_jobcompleted(t_job *j)
 	while (i < j->procs.len)
 		if ((j->procs.buf + i++)->state != PROC_COMPLETED)
 			return (0);
-	return (1);
+	return (j->next ? sh_jobcompleted(j->next) : 1);
 }

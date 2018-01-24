@@ -12,7 +12,7 @@
 
 #include "ush.h"
 
-#define N_UNSET COLOR_RED COLOR_BOLD "unset: " COLOR_RESET
+#define N_UNSET COLOR_RED COLOR_BOLD "unsetenv: " COLOR_RESET
 
 inline int	sh_biunsetenv(int ac, char **av, char **env)
 {

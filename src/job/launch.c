@@ -25,21 +25,24 @@ static inline void		jobpipe(t_job *job, size_t i, int *fds, int *io)
 		io[STDOUT_FILENO] = fds[1];
 	}
 	else
+	{
+		ft_memset(fds, 0, 2 * sizeof(int));
 		io[STDOUT_FILENO] = STDOUT_FILENO;
+	}
 }
 
-static inline int		jobfork(t_job *job, t_proc *proc, t_bool piped, int fg)
+static inline int		jobfork(t_job *job, t_proc *p, t_bool piped, int fg)
 {
 	pid_t	pid;
 
-	if ((!piped && (proc->kind == PROC_FN || proc->kind == PROC_BOOL))
-		|| !(pid = fork()))
-		return (sh_proclaunch(proc, job->pgid, g_io, fg));
+	p->child = (t_bool)(piped || p->kind == PROC_EXE || p->kind == PROC_SH);
+	if (!p->child || !(pid = fork()))
+		return (sh_proclaunch(p, job->pgid, g_io, fg));
 	else if (pid < 0)
 		sh_exit(THROW(WUT), NULL);
 	else
 	{
-		proc->pid = pid;
+		p->pid = pid;
 		if (g_shinteract)
 		{
 			setpgid(pid, job->pgid);
@@ -69,9 +72,8 @@ static int				sh_joblayer(t_job *job, int fg)
 	job = sh_poolqueue(job);
 	if (fg)
 		return (bang(job->bang, sh_jobfg(job, 0)));
-	sh_jobbg(job, 0);
+	sh_jobbg(job, (int)(i = 0));
 	ft_putf(STDOUT_FILENO, "[%d] ", 1);
-	i = 0;
 	while (i < job->procs.len)
 	{
 		proc = job->procs.buf + i++;

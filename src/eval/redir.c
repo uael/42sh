@@ -19,8 +19,6 @@ inline int		sh_evalredir(t_job *job, t_deq *toks, char **ln)
 	t_tok	*tok;
 
 	tok = sh_tokpeek(toks);
-	if (!job->procs.len)
-		return (sh_evalerr(*ln, tok, UNEXPTD, sh_tokstr(tok)));
 	if (tok->id == '<')
 		return (sh_evalrin(job, toks, ln));
 	if (tok->id == '>' || tok->id == TOK_RPOUT)
@@ -29,11 +27,15 @@ inline int		sh_evalredir(t_job *job, t_deq *toks, char **ln)
 		return (sh_evalcmp(job, toks, ln));
 	if (tok->id == TOK_RAOUT)
 		return (sh_evalraout(job, toks, ln));
+	if (tok->id == TOK_AMPR)
+		return (sh_evalampr(job, toks, ln));
 	if (tok->id == TOK_HEREDOC || tok->id == TOK_HEREDOCT)
 		return (sh_evalheredoc(job, toks, ln));
+	if (!job || !job->procs.len)
+		return (sh_evalerr(*ln, tok, UNEXPTD, sh_tokstr(tok)));
 	if (tok->id == TOK_LAMP)
 		return (sh_evallamp(job, toks, ln));
 	if (tok->id == TOK_RAMP)
 		return (sh_evalramp(job, toks, ln));
-	return (NOP);
+	return (sh_evalerr(*ln, tok, UNEXPTD, sh_tokstr(tok)));
 }

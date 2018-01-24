@@ -14,6 +14,19 @@
 
 #include "ush/pool.h"
 
+static void		updateidxs(void)
+{
+	size_t	i;
+	t_job	*job;
+
+	i = 0;
+	while (i < g_pool->len)
+	{
+		job = g_pool->jobs + i++;
+		job->idx = (int)i;
+	}
+}
+
 static void		jobfini(t_job *job)
 {
 	if (job->bg)
@@ -43,6 +56,7 @@ static void		jobstatus(t_bool *print)
 			if (--i != --g_pool->len)
 				ft_memmove(g_pool->jobs + i, g_pool->jobs + i + 1,
 					sizeof(t_job) * (g_pool->len - i));
+			updateidxs();
 		}
 		else if (sh_jobstopped(job) && !job->notified)
 		{
@@ -90,5 +104,6 @@ inline void		sh_poolclean(void)
 			if (--i != --g_pool->len)
 				ft_memmove(g_pool->jobs + i, g_pool->jobs + i + 1,
 					sizeof(t_job) * (g_pool->len - i));
+			updateidxs();
 		}
 }
