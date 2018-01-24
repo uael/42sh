@@ -12,20 +12,6 @@
 
 #include "ush/eval.h"
 
-static t_bool	isname(char *word)
-{
-	if (!ft_isalpha(*word) && *word != '_')
-		return (0);
-	++word;
-	while (*word != '=')
-	{
-		if (!ft_isalnum(*word) && *word != '_')
-			return (0);
-		++word;
-	}
-	return (1);
-}
-
 static void		assignset(t_map *map, char *var, char *val)
 {
 	uint32_t	it;
@@ -53,7 +39,7 @@ inline int		sh_evalassign(t_deq *toks, t_map *map)
 			ft_sdssht((t_sds *)tok, NULL);
 			break ;
 		}
-		else if (isname(tok->val))
+		else if (sh_isname(tok->val))
 		{
 			st = YEP;
 			*assign = '\0';

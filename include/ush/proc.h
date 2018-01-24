@@ -52,7 +52,7 @@ extern int		sh_proclaunch(t_proc *proc, pid_t pgid, int *io, int fg);
 extern void		sh_procfn(t_proc *proc, t_procfn *fn, char **envv);
 extern int		sh_procfnlaunch(t_proc *proc, pid_t pid);
 extern void		sh_proccnf(t_proc *proc, char *ln, t_tok *tok, int st);
-extern int		sh_proccnflaunch(t_proc *proc);
+extern int		sh_proccnflaunch(t_proc *proc, pid_t pid);
 extern int		sh_procsh(t_proc *proc, t_deq *toks, char *ln);
 extern int		sh_procshlaunch(t_proc *proc, pid_t pid);
 extern void		sh_procbool(t_proc *proc, t_bool boolean);

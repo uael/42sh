@@ -93,5 +93,6 @@ extern int		sh_lexheredoc(int fd, t_tok *tok, char **it, char **ln);
 extern int		sh_lexheredoct(int fd, t_tok *tok, char **it, char **ln);
 extern int		sh_lexreduce(int fd, t_deq *toks, char **it, char **ln);
 extern char		sh_isbracket(char b);
+extern t_bool	sh_isname(char *word);
 
 #endif

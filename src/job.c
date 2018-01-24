@@ -16,6 +16,7 @@ inline void		sh_jobctor(t_job *job)
 {
 	ft_memset(job, 0, sizeof(t_job));
 	ft_vecctor((t_vec *)&job->procs, sizeof(t_proc));
+	job->idx = -1;
 }
 
 inline void		sh_jobdtor(t_job *job)
@@ -23,6 +24,8 @@ inline void		sh_jobdtor(t_job *job)
 	ft_vecdtor((t_vec *)&job->procs, (t_dtor)sh_procdtor);
 	if (job->next)
 	{
+		if (job->next->idx < 0)
+			sh_jobdtor(job->next);
 		free(job->next);
 		job->next = NULL;
 	}

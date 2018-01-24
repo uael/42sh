@@ -29,6 +29,7 @@ typedef enum	e_andor
 
 typedef struct	s_jb
 {
+	int			idx;
 	struct s_jb	*next;
 	t_andor		andor;
 	pid_t		pgid;

@@ -28,7 +28,7 @@ inline void		sh_jobdebug(t_job *job)
 
 	if (!job->procs.len || !job->bg)
 		return ;
-	ft_putf(STDOUT_FILENO, "[%d]  + ", g_scopelvl);
+	ft_putf(STDOUT_FILENO, "[%d]  + ", job->idx + 1);
 	i = 0;
 	while (i < job->procs.len)
 	{

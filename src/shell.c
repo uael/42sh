@@ -134,6 +134,7 @@ int					sh_exit(int exitno, char const *fmt, ...)
 	rl_dtor();
 	sh_envdtor();
 	sh_evaldtor();
+	g_toks->cur = 0;
 	ft_deqdtor(g_toks, (t_dtor)ft_sdsdtor);
 	if (fmt)
 	{

@@ -35,8 +35,8 @@ static inline int		jobfork(t_job *job, t_proc *proc, t_bool piped, int fg)
 {
 	pid_t	pid;
 
-	if ((!piped && (proc->kind == PROC_FN || proc->kind == PROC_BOOL))
-		|| !(pid = fork()))
+	if ((!piped && (proc->kind == PROC_FN || proc->kind == PROC_BOOL ||
+		proc->kind == PROC_CNF)) || !(pid = fork()))
 		return (sh_proclaunch(proc, job->pgid, g_io, fg));
 	else if (pid < 0)
 		sh_exit(THROW(WUT), NULL);
@@ -72,9 +72,8 @@ static int				sh_joblayer(t_job *job, int fg)
 	job = sh_poolqueue(job);
 	if (fg)
 		return (bang(job->bang, sh_jobfg(job, 0)));
-	sh_jobbg(job, 0);
+	sh_jobbg(job, (int)(i = 0));
 	ft_putf(STDOUT_FILENO, "[%d] ", 1);
-	i = 0;
 	while (i < job->procs.len)
 	{
 		proc = job->procs.buf + i++;

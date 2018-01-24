@@ -20,7 +20,7 @@ static inline int	onsemicolon(t_job *job, int fd, t_deq *toks, char **ln)
 	if (job->procs.len)
 	{
 		sh_joblaunch(job, 1);
-		sh_jobctor(job);
+		job->next->idx >= 0 ? sh_jobctor(job) : sh_jobdtor(job);
 	}
 	if ((st = sh_evalandor(job, fd, toks, ln)))
 	{
@@ -40,7 +40,7 @@ static inline int	onamp(t_job *job, int fd, t_deq *toks, char **ln)
 	if (job->procs.len)
 	{
 		sh_joblaunch(job, 0);
-		sh_jobctor(job);
+		job->idx < 0 ? sh_jobdtor(job) : sh_jobctor(job);
 	}
 	if ((st = sh_evalandor(job, fd, toks, ln)))
 	{
@@ -55,7 +55,7 @@ static inline int	oneof(t_job *job)
 	if (job->procs.len)
 	{
 		sh_joblaunch(job, 1);
-		sh_jobctor(job);
+		job->idx < 0 ? sh_jobdtor(job) : sh_jobctor(job);
 	}
 	return (YEP);
 }

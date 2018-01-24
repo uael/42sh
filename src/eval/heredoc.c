@@ -25,7 +25,6 @@ inline int			sh_evalheredoc(t_job *job, t_deq *toks, char **ln)
 	t_tok	*tok;
 	size_t	i;
 	t_tok	*op;
-	t_proc	out;
 	t_proc	*proc;
 
 	(void)ln;
@@ -42,11 +41,11 @@ inline int			sh_evalheredoc(t_job *job, t_deq *toks, char **ln)
 	}
 	else
 	{
-		sh_procfn(&out, ouput, NULL);
-		out.argv = ft_malloc(2 * sizeof(char **));
-		out.argv[0] = ft_strdup(tok->val);
-		out.argv[1] = NULL;
-		ft_veccput((t_vec *)&job->procs, i, &out);
+		proc = ft_vecput((t_vec *)&job->procs, i);
+		sh_procfn(proc, ouput, NULL);
+		proc->argv = ft_malloc(2 * sizeof(char **));
+		proc->argv[0] = ft_strdup(tok->val);
+		proc->argv[1] = NULL;
 	}
 	sh_toknext(toks);
 	return (YEP);
