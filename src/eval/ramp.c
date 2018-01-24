@@ -35,7 +35,7 @@ inline int			sh_evalramp(t_job *job, t_deq *toks, char **ln)
 		redir.to = *tok->val - '0';
 	else
 		return (sh_evalerr(*ln, tok, "ambiguous redirect `%s'", sh_tokstr(op)));
-	ft_veccpush((t_vec *)&proc->redirs, &redir);
+	*(t_redir *)ft_vecpush((t_vec *)&proc->redirs) = redir;
 	sh_toknext(toks);
 	return (YEP);
 }

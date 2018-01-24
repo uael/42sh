@@ -25,12 +25,14 @@ inline t_tok	*sh_toknext(t_deq *toks)
 	return (sh_tokpeek(toks));
 }
 
-static t_tok	*tokapd(t_tok *prev, t_tok *tok, char *beg, char *end)
+static t_tok	tokapd(t_tok *prev, char *beg, char *end)
 {
-	ft_memset(tok, 0, sizeof(t_tok));
-	ft_sdsmpush((t_sds *)tok, beg, end - beg);
-	tok->id = TOK_WORD;
-	tok->pos = prev->pos;
+	t_tok tok;
+
+	ft_memset(&tok, 0, sizeof(t_tok));
+	ft_sdsmpush((t_sds *)&tok, beg, end - beg);
+	tok.id = TOK_WORD;
+	tok.pos = prev->pos;
 	return (tok);
 }
 
@@ -57,7 +59,7 @@ inline void		sh_tokexplode(t_tok *tok, t_deq *into)
 		{
 			while (*end && !ft_strchr(sh_varifs(), *end))
 				++end;
-			ft_deqcput(into, ++i, tokapd(tok, alloca(sizeof(t_tok)), val, end));
+			*(t_tok *)ft_deqput(into, ++i) = tokapd(tok, val, end);
 			val = end;
 		}
 }

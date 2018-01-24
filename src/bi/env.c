@@ -76,7 +76,7 @@ static int		env_finalize(char *path, char **argv, char **envv)
 	}
 	proc.ownenv = 1;
 	sh_jobctor(&job);
-	ft_veccpush((t_vec *)&job.procs, &proc);
+	*(t_proc *)ft_vecpush((t_vec *)&job.procs) = proc;
 	s = sh_joblaunch(&job, 1);
 	job.idx < 0 ? sh_jobdtor(&job) : 0;
 	return (s);
