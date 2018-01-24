@@ -24,7 +24,7 @@
 
 # define YEP (0)
 # define NOP (1)
-# define ERR (2)
+# define OUF (2)
 # define WUT (-1)
 
 # ifndef ELAST

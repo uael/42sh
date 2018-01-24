@@ -64,7 +64,8 @@ static int		exelookup(char **env, char *exe, char *path, char *buf)
 	if (!(st = exetest(ft_strcpy(buf, exe))))
 		return (st);
 	rights = st == PROC_NORIGHTS;
-	if (!(beg = sh_varget(path)) && !(beg = ft_getenv(env, path)))
+	if (!(beg = sh_varget(path)) &&
+		!(beg = ft_getenv(env, path)))
 		return (PROC_NOTFOUND);
 	if (ft_mapget(g_binaries, exe, &i))
 	{

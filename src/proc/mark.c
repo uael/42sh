@@ -31,11 +31,8 @@ inline int		sh_procmark(t_proc *proc, int status)
 					(int)proc->pid, WTERMSIG(status));
 			proc->status = 1;
 		}
-		else if (WTERMSIG(status) == 2)
-		{
+		else if (WTERMSIG(status) == 2 && (proc->status = 130))
 			ft_putc(STDIN_FILENO, '\n');
-			proc->status = 130;
-		}
 		else
 			proc->status = status;
 	}
