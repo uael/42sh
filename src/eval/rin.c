@@ -24,7 +24,7 @@ inline int		sh_evalrin(t_job *job, t_deq *toks, char **ln)
 	op = sh_tokpeek(toks);
 	if ((tok = sh_toknext(toks))->id != TOK_WORD)
 		return (sh_evalerr(*ln, tok, EXPTD, sh_tokstr(tok)));
-	proc = ft_vecback((t_vec *)&job->procs);
+	proc = job && job->procs.len ? ft_vecback((t_vec *)&job->procs) : NULL;
 	if (tok->id == TOK_WORD)
 	{
 		if (ft_isdigit(*op->val))
@@ -33,7 +33,10 @@ inline int		sh_evalrin(t_job *job, t_deq *toks, char **ln)
 			redir.from = STDIN_FILENO;
 		if ((redir.to = open(tok->val, O_RDONLY, 0644)) < 0)
 			return (sh_evalerr(*ln, tok, "%s: %e", tok->val, errno));
-		ft_veccpush((t_vec *)&proc->redirs, &redir);
+		if (proc)
+			ft_veccpush((t_vec *)&proc->redirs, &redir);
+		else
+			g_shstatus = 0;
 		sh_toknext(toks);
 	}
 	return (YEP);

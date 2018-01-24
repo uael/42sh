@@ -46,5 +46,7 @@ inline int		sh_evalsimple(t_job *job, int fd, t_deq *toks, char **ln)
 		else if (st)
 			return (evalexport(&vars));
 	}
+	else if (TOK_ISREDIR(tok->id) && sh_evalredir(NULL, toks, ln) == ERR)
+		return (ERR);
 	return (YEP);
 }
