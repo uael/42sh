@@ -66,8 +66,10 @@ static int				sh_joblayer(t_job **job, int fg)
 	if (!(*job)->procs.len)
 		return (EXIT_FAILURE);
 	if (!(*job)->procs.buf->pid)
+	{
 		return (bang((*job)->bang,
 			(*job)->procs.buf[(*job)->procs.len - 1].status));
+	}
 	*job = sh_poolqueue(*job);
 	if (fg)
 		return (bang((*job)->bang, sh_jobfg(*job, 0)));

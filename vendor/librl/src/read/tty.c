@@ -49,7 +49,7 @@ inline int		rl_rawmode(int fd)
 		if ((st = tcgetattr(fd, &g_orig_mode)) == -1 && errno == EIO)
 			rd_redirect();
 		else if (st == -1)
-				return (THROW(WUT));
+			return (THROW(WUT));
 		g_raw_mode = g_orig_mode;
 		g_raw_mode.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON | OPOST);
 		g_raw_mode.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
