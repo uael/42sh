@@ -26,6 +26,7 @@ inline int		sh_evalrin(t_job *job, t_deq *toks, char **ln)
 	if ((tok = sh_toknext(toks))->id != TOK_WORD && !TOK_ISBOOL(tok->id))
 		return (sh_evalerr(*ln, tok, EXPTD, sh_tokstr(tok)));
 	proc = ft_vecback((t_vec *)&job->procs);
+	sh_wordexpand((t_sds *)tok);
 	sh_toknext(toks);
 	redir.from = ft_isdigit(*op->val) ? *op->val - '0' : STDIN_FILENO;
 	if ((redir.to = open(tok->val, O_RDONLY, 0644)) < 0)

@@ -26,6 +26,7 @@ inline int		sh_evalrout(t_job *job, t_deq *toks, char **ln)
 	if ((tok = sh_toknext(toks))->id != TOK_WORD && !TOK_ISBOOL(tok->id))
 		return (sh_evalerr(*ln, tok, EXPTD, sh_tokstr(tok)));
 	proc = ft_vecback((t_vec *)&job->procs);
+	sh_wordexpand((t_sds *)tok);
 	sh_toknext(toks);
 	if ((redir.to = open(tok->val, O_WRONLY | O_CREAT | O_TRUNC, 0644)) < 0)
 	{

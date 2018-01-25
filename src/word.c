@@ -48,12 +48,6 @@ inline void		sh_wordglob(t_sds *word)
 	(void)word;
 }
 
-inline void		sh_wordexpand(t_sds *word)
-{
-	if (*word->buf == '$')
-		expandvar(word);
-}
-
 static t_bool	isname(char *word)
 {
 	if (!ft_isalpha(*word) && *word != '_')
@@ -66,6 +60,12 @@ static t_bool	isname(char *word)
 		++word;
 	}
 	return (1);
+}
+
+inline void		sh_wordexpand(t_sds *word)
+{
+	if (*word->buf == '$' && word->len > 1 && isname(word->buf + 1))
+		expandvar(word);
 }
 
 inline void		sh_tokexpand(t_tok *tok, t_deq *toks)
