@@ -40,7 +40,12 @@ static void		jobfini(t_job *job)
 			(job->andor == ANDOR_AND && !g_shstatus))
 		{
 			next = job->next;
-			sh_joblaunch(&next, !job->bg);
+			sh_joblaunch(&job->next, !job->bg);
+			if (job->next->idx >= 0)
+			{
+				free(next);
+				job->next = NULL;
+			}
 		}
 	}
 	sh_jobdtor(job);

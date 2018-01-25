@@ -49,5 +49,5 @@ inline int		sh_procshlaunch(t_proc *proc, pid_t pid)
 	g_shpgid = pid;
 	sh_eval(-1, &proc->u.sh.toks, &proc->u.sh.ln);
 	proc->status = g_shstatus;
-	exit(g_shstatus);
+	return (sh_exit(g_shstatus, NULL));
 }

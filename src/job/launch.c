@@ -89,8 +89,8 @@ int						sh_joblaunch(t_job **job, int fg)
 {
 	size_t	i;
 	t_proc	*proc;
-	t_job	*next;
 	int		fds[2];
+	t_job	*next;
 
 	i = 0;
 	ft_memcpy(g_io, STD_FILENOS, 3 * sizeof(int));
@@ -111,5 +111,11 @@ int						sh_joblaunch(t_job **job, int fg)
 		((*job)->andor == ANDOR_AND && !g_shstatus)))
 		return (g_shstatus);
 	next = (*job)->next;
-	return (sh_joblaunch(&next, fg));
+	*fds = sh_joblaunch(&(*job)->next, fg);
+	if ((*job)->next->idx >= 0)
+	{
+		free(next);
+		(*job)->next = NULL;
+	}
+	return (*fds);
 }

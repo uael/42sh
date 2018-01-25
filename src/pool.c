@@ -40,11 +40,8 @@ inline t_job	*sh_poolqueue(t_job *job)
 
 	if (g_pool->len == CHILD_MAX)
 		return (NULL);
-	if (!(new = sh_poolfind(job->pgid)))
-	{
-		new = ft_memcpy(g_pool->jobs + g_pool->len, job, sizeof(t_job));
-		new->idx = (int)g_pool->len++;
-	}
+	new = ft_memcpy(g_pool->jobs + g_pool->len, job, sizeof(t_job));
+	new->idx = (int)g_pool->len++;
 	return (new);
 }
 

@@ -1,1 +1,1 @@
-ls . asd &> out
+ls && ls
