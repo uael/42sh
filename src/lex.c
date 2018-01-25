@@ -15,7 +15,17 @@
 #define UNXPTD_C "Unexpected token `%c' while looking for matching `%c'"
 #define UXPTD "Unexpected closing bracket `%c'"
 
-static inline int	lexerhelp(t_tok *tok, char **it, char **ln)
+static inline int	lexerhelp(int fd, char **i, char **ln)
+{
+	int st;
+
+	*i += (*(*i + 1) == '\n') ? 2 : 3;
+	if (fd >= 0 && (st = rl_catline(fd, -2, ln, i)) < 0)
+		return (st);
+	return (YEP);
+}
+
+static inline int	lexerhelp2(t_tok *tok, char **it, char **ln)
 {
 	tok->pos = (uint16_t)(*it - *ln);
 	++*it;
@@ -49,10 +59,10 @@ static inline int	lex(int fd, t_tok *tok, char **i, char **ln)
 		if (**i && ft_strchr(sh_varifs(), **i))
 			++*i;
 		else if (**i == '\n' || (**i == '\r' && *(*i + 1) == '\n'))
-			return (lexerhelp(tok, i, ln));
-		else if (**i == '\\' && ((*(*i + 1) == '\n' && !*(*i + 2)) || ((*(*i +
-			1) == '\r' && *(*i + 2) == '\n' && !*(*i + 3)))) && (*i += (*(*i +
-			1) == '\n') ? 2 : 3) && fd >= 0 && (st = rl_catline(fd, -2, ln, i)))
+			return (lexerhelp2(tok, i, ln));
+		else if (**i == '\\' && ((*(*i + 1) == '\n' && !*(*i + 2)) ||
+			((*(*i + 1) == '\r' && *(*i + 2) == '\n' && !*(*i + 3)))) &&
+			(st = lexerhelp(fd, i, ln)))
 			return (st);
 		else if (**i == '#')
 			while (**i && (**i != '\n' || (**i != '\r' && *(*i + 1) != '\n')))
@@ -96,17 +106,4 @@ int					sh_lex(int fd, t_deq *toks, char **it, char **ln)
 			return (OUF);
 	}
 	return (tok ? sh_lexreduce(fd, toks, it, ln) : YEP);
-}
-
-int					sh_lexnext(int fd, t_deq *toks, char **ln)
-{
-	char	*it;
-	int		st;
-
-	if (fd < 0)
-		return (NOP);
-	if (!(st = rl_catline(fd, ';', ln, &it)))
-		while (!(st = sh_lex(fd, toks, &it, ln)))
-			;
-	return (st);
 }
