@@ -95,7 +95,10 @@ inline int		sh_procctor(t_proc *proc, char *path, char *exe, char **envv)
 	else if ((st = exelookup(envv, exe, path, buf)))
 		return (st);
 	else
+	{
+		proc->kind = PROC_EXE;
 		proc->u.exe = ft_strdup(buf);
+	}
 	return (YEP);
 }
 

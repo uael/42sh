@@ -47,7 +47,8 @@ SRC_NAME = \
 	lex/reduce.c \
 	main.c \
 	pool.c pool/mark.c pool/notify.c \
-	proc.c proc/cnf.c proc/fn.c proc/launch.c proc/mark.c proc/sh.c \
+	proc.c proc/cnf.c proc/fn.c proc/launch.c proc/mark.c proc/none.c \
+	proc/sh.c \
 	proc/boolean.c \
 	redir.c \
 	shell.c \

@@ -24,20 +24,14 @@ inline int		sh_evalrout(t_job *job, t_deq *toks, char **ln)
 	op = sh_tokpeek(toks);
 	if ((tok = sh_toknext(toks))->id != TOK_WORD)
 		return (sh_evalerr(*ln, tok, EXPTD, sh_tokstr(tok)));
-	proc = job && job->procs.len ? ft_vecback((t_vec *)&job->procs) : NULL;
-	if (tok->id == TOK_WORD)
-	{
-		if (ft_isdigit(*op->val))
-			redir.from = *op->val - '0';
-		else
-			redir.from = STDOUT_FILENO;
-		if ((redir.to = open(tok->val, O_WRONLY | O_CREAT | O_TRUNC, 0644)) < 0)
-			return (sh_evalerr(*ln, tok, "%s: %e", tok->val, errno));
-		if (proc)
-			*(t_redir *)ft_vecpush((t_vec *)&proc->redirs) = redir;
-		else
-			g_shstatus = 0;
-		sh_toknext(toks);
-	}
+	proc = ft_vecback((t_vec *)&job->procs);
+	redir.to = -1;
+	redir.from = ft_isdigit(*op->val) ? *op->val - '0' : STDOUT_FILENO;
+	redir.filename = tok->val;
+	redir.flags = O_WRONLY | O_CREAT | O_TRUNC;
+	redir.tok = tok;
+	redir.ln = *ln;
+	*(t_redir *)ft_vecpush((t_vec *)&proc->redirs) = redir;
+	sh_toknext(toks);
 	return (YEP);
 }

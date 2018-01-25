@@ -25,16 +25,17 @@ inline int			sh_evalramp(t_job *job, t_deq *toks, char **ln)
 	if ((tok = sh_toknext(toks))->id != TOK_WORD)
 		return (sh_evalerr(*ln, tok, EXPTD, sh_tokstr(op), sh_tokstr(tok)));
 	proc = ft_vecback((t_vec *)&job->procs);
-	if (ft_isdigit(*op->val))
-		redir.from = *op->val - '0';
-	else
-		redir.from = STDOUT_FILENO;
+	redir.from = ft_isdigit(*op->val) ? *op->val - '0' : STDOUT_FILENO;
+	redir.filename = NULL;
 	if (ft_strcmp(tok->val, "-") == 0)
 		redir.to = -1;
 	else if (ft_isdigit(*tok->val) && ft_strlen(tok->val) == 1)
 		redir.to = *tok->val - '0';
-	else
-		return (sh_evalerr(*ln, tok, "ambiguous redirect `%s'", sh_tokstr(op)));
+	else if ((redir.filename = tok->val))
+		redir.to = -1;
+	redir.flags = O_WRONLY | O_CREAT | O_TRUNC;
+	redir.tok = tok;
+	redir.ln = *ln;
 	*(t_redir *)ft_vecpush((t_vec *)&proc->redirs) = redir;
 	sh_toknext(toks);
 	return (YEP);

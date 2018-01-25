@@ -12,7 +12,27 @@
 
 #include "ush/redir.h"
 
-inline int		sh_redirect(t_redirs *redirs, int *scope)
+static inline int	redirect(t_redir *r)
+{
+	while (1)
+	{
+		if (r->filename && !ft_strcmp("-", r->filename))
+			r->to = -1;
+		else if (r->filename && (r->to = open(r->filename, r->flags, 0644)) < 0)
+			break ;
+		else if (r->to == -1 && close(r->to))
+			break ;
+		else if (r->to >= 0 && dup2(r->to, r->from) < 0)
+			break ;
+		else if (r->to > 2)
+			close(r->to);
+		return (YEP);
+	}
+	return (!r->tok || !r->ln ? sh_err("%s: %e", r->filename, errno) :
+		sh_evalerr(r->ln, r->tok, "%s: %e", r->filename, errno));
+}
+
+inline int			sh_redirect(t_redirs *redirs, int *scope)
 {
 	size_t	i;
 	t_redir	*redir;
@@ -27,14 +47,7 @@ inline int		sh_redirect(t_redirs *redirs, int *scope)
 	}
 	i = 0;
 	while (i < redirs->len)
-	{
-		redir = redirs->buf + i++;
-		if (redir->to < 0)
-			close(redir->from);
-		else if (dup2(redir->to, redir->from) < 0)
-			return (THROW(WUT));
-		else if (redir->to > 2)
-			close(redir->to);
-	}
+		if (redirect(redirs->buf + i++))
+			return (OUF);
 	return (YEP);
 }

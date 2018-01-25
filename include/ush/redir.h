@@ -18,8 +18,12 @@
 
 typedef struct	s_redir
 {
-	int			from;
 	int			to;
+	int			from;
+	char		*filename;
+	int			flags;
+	t_tok		*tok;
+	char		*ln;
 }				t_redir;
 
 typedef struct	s_redirs
