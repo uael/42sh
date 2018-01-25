@@ -14,25 +14,25 @@
 
 #include "ush/proc.h"
 
-static inline pid_t	prepare(t_proc *proc, pid_t pgid, int *io, int fg)
+static inline pid_t	prepare(t_proc *prc, pid_t pgid, int *io, int fg)
 {
 	pid_t pid;
 
 	pid = getpid();
-	if (proc->close != STDIN_FILENO && proc->close != io[0])
-		close(proc->close);
-	if (ft_dup2std(io, proc->src) ||
-		sh_redirect(&proc->redirs, proc->child ? NULL : proc->scope))
+	prc->close != STDIN_FILENO && prc->close != io[0] ? close(prc->close) : 0;
+	if (ft_dup2std(io, prc->src) ||
+		sh_redirect(&prc->redirs, prc->child ? NULL : prc->scope))
 	{
-		if (proc->child)
+		prc->child ? 0 : ft_dup2std(prc->scope, STD_FILENOS);
+		if (prc->child)
 			exit(EXIT_FAILURE);
+		prc->status = EXIT_FAILURE;
 		return (WUT);
 	}
-	if (proc->child && g_shinteract)
+	if (prc->child && g_shinteract)
 	{
 		setpgid(0, pgid);
-		if (fg)
-			tcsetpgrp(STDIN_FILENO, pgid);
+		fg ? tcsetpgrp(STDIN_FILENO, pgid) : 0;
 		signal(SIGINT, SIG_DFL);
 		signal(SIGQUIT, SIG_DFL);
 		signal(SIGTSTP, SIG_DFL);
@@ -55,6 +55,8 @@ int					sh_proclaunch(t_proc *proc, pid_t pgid, int *io, int fg)
 		return (sh_procfnlaunch(proc));
 	else if (proc->kind == PROC_CNF)
 		return (sh_proccnflaunch(proc));
+	else if (proc->kind == PROC_ERR)
+		return (sh_procerrlaunch(proc));
 	else if (proc->kind == PROC_BOOL)
 		return (sh_procboollaunch(proc));
 	else if (proc->kind == PROC_EXE)

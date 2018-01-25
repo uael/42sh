@@ -20,24 +20,20 @@ inline int		sh_evalrout(t_job *job, t_deq *toks, char **ln)
 	t_proc	*proc;
 	t_redir	redir;
 	t_tok	*op;
+	char 	buf[PATH_MAX];
 
 	op = sh_tokpeek(toks);
 	if ((tok = sh_toknext(toks))->id != TOK_WORD)
 		return (sh_evalerr(*ln, tok, EXPTD, sh_tokstr(tok)));
-	proc = job && job->procs.len ? ft_vecback((t_vec *)&job->procs) : NULL;
-	if (tok->id == TOK_WORD)
+	proc = ft_vecback((t_vec *)&job->procs);
+	sh_toknext(toks);
+	if ((redir.to = open(tok->val, O_WRONLY | O_CREAT | O_TRUNC, 0644)) < 0)
 	{
-		if (ft_isdigit(*op->val))
-			redir.from = *op->val - '0';
-		else
-			redir.from = STDOUT_FILENO;
-		if ((redir.to = open(tok->val, O_WRONLY | O_CREAT | O_TRUNC, 0644)) < 0)
-			return (sh_evalerr(*ln, tok, "%s: %e", tok->val, errno));
-		if (proc)
-			*(t_redir *)ft_vecpush((t_vec *)&proc->redirs) = redir;
-		else
-			g_shstatus = 0;
-		sh_toknext(toks);
+		sh_procerr(proc, ft_strdup(ft_strcat(ft_strcat(
+			ft_strcpy(buf, tok->val), ": "), ft_strerr(errno))), tok, *ln);
+		return (YEP);
 	}
+	redir.from = ft_isdigit(*op->val) ? *op->val - '0' : STDOUT_FILENO;
+	*(t_redir *)ft_vecpush((t_vec *)&proc->redirs) = redir;
 	return (YEP);
 }

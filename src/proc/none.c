@@ -1,36 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ush/redir.h                                        :+:      :+:    :+:   */
+/*   proc/none.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/06 12:00:10 by alucas-          ###   ########.fr       */
+/*   Updated: 2018/01/06 11:10:01 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef USH_REDIR_H
-# define USH_REDIR_H
+#include "ush/proc.h"
 
-# include "lex.h"
-# include "env.h"
-
-typedef struct	s_redir
+inline void		sh_procnone(t_proc *proc)
 {
-	int			to;
-	int			from;
-}				t_redir;
-
-typedef struct	s_redirs
-{
-	t_redir		*buf;
-	size_t		isz;
-	size_t		cap;
-	size_t		len;
-}				t_redirs;
-
-extern int		sh_redirect(t_redirs *redirs, int *scope);
-extern void		sh_redirectclose(t_redirs *redirs);
-
-#endif
+	ft_memset(proc, 0, sizeof(t_proc));
+	proc->kind = PROC_NONE;
+	ft_vecctor((t_vec *)&proc->redirs, sizeof(t_redir));
+	ft_memset(proc->scope, -1, 3 * sizeof(int));
+	ft_memcpy(proc->src, STD_FILENOS, 3 * sizeof(int));
+}

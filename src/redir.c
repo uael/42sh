@@ -29,12 +29,21 @@ inline int		sh_redirect(t_redirs *redirs, int *scope)
 	while (i < redirs->len)
 	{
 		redir = redirs->buf + i++;
-		if (redir->to < 0)
-			close(redir->from);
-		else if (dup2(redir->to, redir->from) < 0)
+		if (redir->to < 0 && close(redir->from))
 			return (THROW(WUT));
-		else if (redir->to > 2)
-			close(redir->to);
+		else if (redir->to >= 0 && dup2(redir->to, redir->from) < 0)
+			return (THROW(WUT));
 	}
 	return (YEP);
+}
+
+inline void		sh_redirectclose(t_redirs *redirs)
+{
+	size_t	i;
+	t_redir	*redir;
+
+	i = 0;
+	while (i < redirs->len)
+		if ((redir = redirs->buf + i++)->to > 2)
+			close(redir->to);
 }
