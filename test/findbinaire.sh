@@ -1,1 +1,0 @@
-/bin/ls && /bin/ls -laF && /bin/ls -l -a -F

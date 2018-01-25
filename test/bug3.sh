@@ -1,1 +1,0 @@
-env -i ./21sh; echo $PATH

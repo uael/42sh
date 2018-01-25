@@ -1,1 +1,0 @@
-echo toto > in ; cat -e >out<in ; cat out ; rm out in

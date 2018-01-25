@@ -15,7 +15,7 @@
 
 # include "librl.h"
 
-# define HIST_MAX (6)
+# define HIST_MAX (250)
 # define HIST_DELTA (5)
 
 extern void		rl_histdtor(void);
