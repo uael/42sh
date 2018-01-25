@@ -19,7 +19,7 @@ inline int			sh_evalampr(t_job *job, t_deq *toks, char **ln)
 	t_tok	*tok;
 	t_proc	*proc;
 	int		fd;
-	char 	buf[PATH_MAX];
+	char	buf[PATH_MAX];
 
 	if ((tok = sh_toknext(toks))->id != TOK_WORD)
 		return (sh_evalerr(*ln, tok, EXPTD, sh_tokstr(tok)));

@@ -20,7 +20,7 @@ inline int		sh_evalrout(t_job *job, t_deq *toks, char **ln)
 	t_proc	*proc;
 	t_redir	redir;
 	t_tok	*op;
-	char 	buf[PATH_MAX];
+	char	buf[PATH_MAX];
 
 	op = sh_tokpeek(toks);
 	if ((tok = sh_toknext(toks))->id != TOK_WORD)
