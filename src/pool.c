@@ -15,12 +15,10 @@
 static t_vec	g_pools_stack = { NULL, sizeof(t_pool), 0, 0 };
 static t_vec	*g_pools = &g_pools_stack;
 t_pool			*g_pool = NULL;
-size_t			g_scopelvl = 0;
 
 inline void		sh_poolscope(void)
 {
 	g_pool = ft_vecpush(g_pools);
-	g_scopelvl = g_pools->len;
 }
 
 /*
@@ -31,11 +29,7 @@ inline void		sh_poolscope(void)
 inline t_bool	sh_poolunscope(void)
 {
 	if (g_pool && ft_vecpop(g_pools, NULL))
-	{
-		g_scopelvl = g_pools->len;
 		return (1);
-	}
-	g_scopelvl = g_pools->len;
 	ft_vecdtor(g_pools, NULL);
 	return (0);
 }

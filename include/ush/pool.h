@@ -22,7 +22,6 @@ typedef struct	s_pool
 }				t_pool;
 
 extern t_pool	*g_pool;
-extern size_t	g_scopelvl;
 
 extern void		sh_poolscope(void);
 extern t_bool	sh_poolunscope(void);

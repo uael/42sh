@@ -73,14 +73,14 @@ static int				sh_joblayer(t_job *job, int fg)
 	if (fg)
 		return (bang(job->bang, sh_jobfg(job, 0)));
 	sh_jobbg(job, (int)(i = 0));
-	ft_putf(STDOUT_FILENO, "[%d] ", job->idx + 1);
+	ft_putf(STDIN_FILENO, "[%d] ", job->idx + 1);
 	while (i < job->procs.len)
 	{
 		proc = job->procs.buf + i++;
-		ft_putf(STDOUT_FILENO, i < job->procs.len ? "%d " : "%d",
+		ft_putf(STDIN_FILENO, i < job->procs.len ? "%d " : "%d",
 			proc->pid);
 	}
-	ft_putf(STDOUT_FILENO, "\n");
+	ft_putf(STDIN_FILENO, "\n");
 	return (bang(job->bang, 0));
 }
 

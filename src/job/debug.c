@@ -28,13 +28,13 @@ inline void		sh_jobdebug(t_job *job)
 
 	if (!job->procs.len || !job->bg)
 		return ;
-	ft_putf(STDOUT_FILENO, "[%d]  + ", job->idx + 1);
+	ft_putf(STDIN_FILENO, "[%d]  + ", job->idx + 1);
 	i = 0;
 	while (i < job->procs.len)
 	{
 		proc = job->procs.buf + i++;
 		if (i != 1)
-			ft_putf(STDOUT_FILENO, "       ");
-		ft_putf(STDOUT_FILENO, "%d %s\n", proc->pid, g_strst[proc->state]);
+			ft_putf(STDIN_FILENO, "       ");
+		ft_putf(STDIN_FILENO, "%d %s\n", proc->pid, g_strst[proc->state]);
 	}
 }
