@@ -54,7 +54,10 @@ static inline int	makeargv(t_job *job, t_vec *av, t_deq *toks, char **ln)
 		else if (TOK_ISREDIR(tok->id))
 		{
 			if (sh_evalredir(job, toks, ln) == OUF)
+			{
+				av ? ft_vecdtor(av, (t_dtor)ft_pfree) : 0;
 				return (OUF);
+			}
 			tok = sh_tokpeek(toks);
 		}
 		else
@@ -62,46 +65,31 @@ static inline int	makeargv(t_job *job, t_vec *av, t_deq *toks, char **ln)
 	return (YEP);
 }
 
-static inline int	makeproc(t_job *job, t_map *vars, t_deq *toks, char **ln)
+inline int			sh_evalargv(t_job *job, t_map *vars, t_deq *toks, char **ln)
 {
 	t_tok	*tok;
 	int		st;
 	t_proc	*prc;
 	t_bool	own;
+	t_vec	av;
 
-	tok = sh_tokpeek(toks);
+	sh_tokexpand(tok = sh_tokpeek(toks), toks);
 	prc = ft_vecback((t_vec *)&job->procs);
 	if (TOK_ISBOOL(tok->id))
 	{
 		sh_procbool(prc, (t_bool)(tok->id == TOK_FALSE));
 		return (makeargv(job, NULL, toks, ln));
 	}
-	else if ((st = sh_procctor(prc, "PATH", tok->val,
-		makeenv(vars, &own))))
+	else if ((st = sh_procctor(prc, "PATH", tok->val, makeenv(vars, &own))))
 	{
 		sh_proccnf(prc, *ln, tok, st);
 		prc->ownenv = own;
-		tok = sh_toknext(toks);
-		while (tok && ISCMDM(tok))
-			tok = sh_toknext(toks);
+		return (makeargv(job, NULL, toks, ln));
 	}
-	else
-		return ((prc->ownenv = own) & YEP);
-	return (NOP);
-}
-
-inline int			sh_evalargv(t_job *job, t_map *vars, t_deq *toks, char **ln)
-{
-	t_vec	av;
-
-	sh_tokexpand(sh_tokpeek(toks), toks);
-	if (!makeproc(job, vars, toks, ln))
-	{
-		ft_vecctor(&av, sizeof(char *));
-		if (makeargv(job, &av, toks, ln) == OUF)
-			return (OUF);
-		*(char **)ft_vecpush(&av) = NULL;
-		((t_proc *)ft_vecback((t_vec *)&job->procs))->argv = av.buf;
-	}
+	ft_vecctor(&av, sizeof(char *));
+	if (makeargv(job, &av, toks, ln) == OUF)
+		return (OUF);
+	*(char **)ft_vecpush(&av) = NULL;
+	((t_proc *)ft_vecback((t_vec *)&job->procs))->argv = av.buf;
 	return (YEP);
 }
