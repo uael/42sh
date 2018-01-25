@@ -10,8 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ush/proc.h"
-#include "ush/job.h"
 #include "ush/pool.h"
 
 static int				g_io[3] = { 0, 0, 0 };
@@ -60,55 +58,56 @@ static inline int		bang(t_bool b, int status)
 	return (status);
 }
 
-static int				sh_joblayer(t_job *job, int fg)
+static int				sh_joblayer(t_job **job, int fg)
 {
 	size_t	i;
 	t_proc	*proc;
 
-	if (!job->procs.len)
+	if (!(*job)->procs.len)
 		return (EXIT_FAILURE);
-	if (!job->procs.buf->pid)
-		return (bang(job->bang, job->procs.buf[job->procs.len - 1].status));
-	job = sh_poolqueue(job);
+	if (!(*job)->procs.buf->pid)
+		return (bang((*job)->bang,
+			(*job)->procs.buf[(*job)->procs.len - 1].status));
+	*job = sh_poolqueue(*job);
 	if (fg)
-		return (bang(job->bang, sh_jobfg(job, 0)));
-	sh_jobbg(job, (int)(i = 0));
-	ft_putf(STDIN_FILENO, "[%d] ", job->idx + 1);
-	while (i < job->procs.len)
+		return (bang((*job)->bang, sh_jobfg(*job, 0)));
+	sh_jobbg(*job, (int)(i = 0));
+	ft_putf(STDIN_FILENO, "[%d] ", (*job)->idx + 1);
+	while (i < (*job)->procs.len)
 	{
-		proc = job->procs.buf + i++;
-		ft_putf(STDIN_FILENO, i < job->procs.len ? "%d " : "%d",
+		proc = (*job)->procs.buf + i++;
+		ft_putf(STDIN_FILENO, i < (*job)->procs.len ? "%d " : "%d",
 			proc->pid);
 	}
 	ft_putf(STDIN_FILENO, "\n");
-	return (bang(job->bang, 0));
+	return (bang((*job)->bang, 0));
 }
 
-int						sh_joblaunch(t_job *job, int fg)
+int						sh_joblaunch(t_job **job, int fg)
 {
 	size_t	i;
 	t_proc	*proc;
+	t_job	*next;
 	int		fds[2];
 
 	i = 0;
-	g_io[STDIN_FILENO] = STDIN_FILENO;
-	g_io[STDOUT_FILENO] = STDOUT_FILENO;
-	g_io[STDERR_FILENO] = STDERR_FILENO;
-	while (i < job->procs.len)
+	ft_memcpy(g_io, STD_FILENOS, 3 * sizeof(int));
+	while (i < (*job)->procs.len)
 	{
-		proc = job->procs.buf + i++;
-		jobpipe(job, i, fds, g_io);
+		proc = (*job)->procs.buf + i++;
+		jobpipe(*job, i, fds, g_io);
 		proc->close = fds[0];
 		proc->state = PROC_RUNNING;
-		if (jobfork(job, proc, (t_bool)(job->procs.len > 1), fg))
-			return (g_shstatus = !job->bang);
+		if (jobfork(*job, proc, (t_bool)((*job)->procs.len > 1), fg))
+			return (g_shstatus = !(*job)->bang);
 		g_io[STDIN_FILENO] != STDIN_FILENO ? close(g_io[STDIN_FILENO]) : 0;
 		g_io[STDOUT_FILENO] != STDOUT_FILENO ? close(g_io[STDOUT_FILENO]) : 0;
 		g_io[STDIN_FILENO] = fds[0];
 	}
 	g_shstatus = sh_joblayer(job, fg);
-	if (!(!g_shinteract || fg) || !((job->andor == ANDOR_OR && g_shstatus) ||
-		(job->andor == ANDOR_AND && !g_shstatus)))
+	if (!(!g_shinteract || fg) || !(((*job)->andor == ANDOR_OR && g_shstatus) ||
+		((*job)->andor == ANDOR_AND && !g_shstatus)))
 		return (g_shstatus);
-	return (sh_joblaunch(job->next, fg));
+	next = (*job)->next;
+	return (sh_joblaunch(&next, fg));
 }

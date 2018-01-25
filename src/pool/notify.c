@@ -29,6 +29,8 @@ static void		updateidxs(void)
 
 static void		jobfini(t_job *job)
 {
+	t_job *next;
+
 	if (job->bg)
 	{
 		g_shstatus = job->procs.buf[job->procs.len - 1].status;
@@ -36,7 +38,10 @@ static void		jobfini(t_job *job)
 			g_shstatus = g_shstatus ? 0 : 1;
 		if ((job->andor == ANDOR_OR && g_shstatus) ||
 			(job->andor == ANDOR_AND && !g_shstatus))
-			sh_joblaunch(job->next, !job->bg);
+		{
+			next = job->next;
+			sh_joblaunch(&next, !job->bg);
+		}
 	}
 	sh_jobdtor(job);
 }
@@ -61,9 +66,9 @@ static void		jobstatus(t_bool *print)
 		else if (sh_jobstopped(job) && !job->notified)
 		{
 			job->bg = 1;
-			if (!*print)
-				ft_puts(STDIN_FILENO, "\x1b[1A\r\x1b[0K^Z\n");
-			*print = 1;
+			if (!*print && g_shinteract)
+				*print = (t_bool)(ft_puts(STDIN_FILENO,
+					"\x1b[1A\r\x1b[0K^Z\n") > 0);
 			sh_jobdebug(job);
 			job->notified = 1;
 		}

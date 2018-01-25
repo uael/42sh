@@ -59,7 +59,7 @@ static int		env_finalize(char *path, char **argv, char **envv)
 	int		s;
 	t_vec	av;
 	t_proc	proc;
-	t_job	job;
+	t_job	*job;
 
 	if ((s = sh_procctor(&proc, path, argv[0], envv)))
 	{
@@ -75,10 +75,10 @@ static int		env_finalize(char *path, char **argv, char **envv)
 		proc.argv = av.buf;
 	}
 	proc.ownenv = 1;
-	sh_jobctor(&job);
-	*(t_proc *)ft_vecpush((t_vec *)&job.procs) = proc;
+	sh_jobctor(job = alloca(sizeof(t_job)));
+	*(t_proc *)ft_vecpush((t_vec *)&job->procs) = proc;
 	s = sh_joblaunch(&job, 1);
-	job.idx < 0 ? sh_jobdtor(&job) : 0;
+	job->idx < 0 ? sh_jobdtor(job) : 0;
 	return (s);
 }
 
