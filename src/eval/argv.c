@@ -67,6 +67,7 @@ static inline int	makeproc(t_job *job, t_map *vars, t_deq *toks, char **ln)
 	t_tok	*tok;
 	int		st;
 	t_proc	*prc;
+	t_bool	own;
 
 	tok = sh_tokpeek(toks);
 	prc = ft_vecback((t_vec *)&job->procs);
@@ -76,15 +77,16 @@ static inline int	makeproc(t_job *job, t_map *vars, t_deq *toks, char **ln)
 		return (makeargv(job, NULL, toks, ln));
 	}
 	else if ((st = sh_procctor(prc, "PATH", tok->val,
-		makeenv(vars, &prc->ownenv))))
+		makeenv(vars, &own))))
 	{
 		sh_proccnf(prc, *ln, tok, st);
+		prc->ownenv = own;
 		tok = sh_toknext(toks);
 		while (tok && ISCMDM(tok))
 			tok = sh_toknext(toks);
 	}
 	else
-		return (YEP);
+		return ((prc->ownenv = own) & YEP);
 	return (NOP);
 }
 

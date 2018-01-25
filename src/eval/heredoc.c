@@ -27,7 +27,10 @@ static void			pipeprev(t_tok *tok, t_proc *prev, t_job *job, size_t i)
 	if (prev->kind == PROC_NONE)
 		proc = prev;
 	else
+	{
+		prev->piped = 1;
 		proc = ft_vecput((t_vec *)&job->procs, i);
+	}
 	sh_procfn(proc, ouput, NULL);
 	proc->argv = ft_malloc(2 * sizeof(char **));
 	proc->argv[0] = ft_strdup(tok->val);

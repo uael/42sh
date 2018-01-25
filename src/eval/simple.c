@@ -34,10 +34,17 @@ static int		evalexport(t_map *vars)
 static int		argverror(t_job *job)
 {
 	t_proc *proc;
+	t_proc *prev;
 
 	proc = ft_vecback((t_vec *)&job->procs);
-	sh_procdtor(proc);
 	ft_vecpop((t_vec *)&job->procs, NULL);
+	if (proc->piped)
+	{
+		prev = ft_vecback((t_vec *)&job->procs);
+		ft_vecpop((t_vec *)&job->procs, NULL);
+		sh_procdtor(prev);
+	}
+	sh_procdtor(proc);
 	if (job->procs.len == 0)
 	{
 		ft_vecdtor((t_vec *)&job->procs, NULL);

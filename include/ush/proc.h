@@ -31,6 +31,7 @@ typedef struct	s_proc
 	char		**envv;
 	t_bool		ownenv;
 	t_bool		child;
+	t_bool		piped;
 	int			scope[3];
 	int			src[3];
 	int			close;
