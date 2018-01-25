@@ -79,7 +79,7 @@ static int		env_finalize(char *path, char **argv, char **envv)
 	*(t_proc *)ft_vecpush((t_vec *)&job->procs) = proc;
 	s = sh_joblaunch(&job, 1);
 	job->idx < 0 ? sh_jobdtor(job) : 0;
-	return (s);
+	return (job->idx < 0 ? 1 : s);
 }
 
 static int		env_rmvar(t_vec *env, char *var)
