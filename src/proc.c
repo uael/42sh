@@ -110,19 +110,21 @@ inline void		sh_procdtor(t_proc *proc)
 	{
 		while (*av)
 			free(*av++);
-		free(proc->argv);
+		ft_pfree((void **)&proc->argv);
 		proc->argv = NULL;
 	}
 	if (proc->ownenv && (av = proc->envv))
 	{
 		while (*av)
 			free(*av++);
-		free(proc->envv);
-		proc->envv = NULL;
+		ft_pfree((void **)&proc->envv);
 	}
+	sh_redirectclose(&proc->redirs);
 	ft_vecdtor((t_vec *)&proc->redirs, NULL);
 	if (proc->kind == PROC_SH)
 		ft_deqdtor(&proc->u.sh.toks, NULL);
 	else if (proc->kind == PROC_EXE)
-		free(proc->u.exe);
+		ft_pfree((void **)&proc->u.exe);
+	else if (proc->kind == PROC_ERR && proc->u.err.msg)
+		ft_pfree((void **)&proc->u.err.msg);
 }

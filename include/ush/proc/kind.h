@@ -15,6 +15,7 @@
 
 # include "sh.h"
 # include "cmderr.h"
+# include "err.h"
 
 typedef enum	e_prockd
 {
@@ -23,6 +24,7 @@ typedef enum	e_prockd
 	PROC_FN,
 	PROC_SH,
 	PROC_CNF,
+	PROC_ERR,
 	PROC_BOOL
 }				t_prockd;
 
@@ -34,6 +36,7 @@ typedef union	u_procu
 	t_procfn	*fn;
 	t_subsh		sh;
 	t_cmderr	cnf;
+	t_err		err;
 	t_bool		boolean;
 }				t_procu;
 

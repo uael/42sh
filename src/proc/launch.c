@@ -55,6 +55,8 @@ int					sh_proclaunch(t_proc *proc, pid_t pgid, int *io, int fg)
 		return (sh_procfnlaunch(proc));
 	else if (proc->kind == PROC_CNF)
 		return (sh_proccnflaunch(proc));
+	else if (proc->kind == PROC_ERR)
+		return (sh_procerrlaunch(proc));
 	else if (proc->kind == PROC_BOOL)
 		return (sh_procboollaunch(proc));
 	else if (proc->kind == PROC_EXE)

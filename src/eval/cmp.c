@@ -20,18 +20,20 @@ inline int			sh_evalcmp(t_job *job, t_deq *toks, char **ln)
 	t_proc	*proc;
 	t_redir	redir;
 	t_tok	*op;
+	char 	buf[PATH_MAX];
 
 	op = sh_tokpeek(toks);
 	if ((tok = sh_toknext(toks))->id != TOK_WORD)
 		return (sh_evalerr(*ln, tok, EXPTD, sh_tokstr(tok)));
-	proc = ft_vecback((t_vec *)&job->procs);
-	redir.to = -1;
-	redir.from = ft_isdigit(*op->val) ? *op->val - '0' : STDIN_FILENO;
-	redir.filename = tok->val;
-	redir.flags = O_RDWR | O_CREAT;
-	redir.tok = tok;
-	redir.ln = *ln;
-	*(t_redir *)ft_vecpush((t_vec *)&proc->redirs) = redir;
 	sh_toknext(toks);
+	proc = ft_vecback((t_vec *)&job->procs);
+	if ((redir.to = open(tok->val, O_RDWR | O_CREAT, 0644)) < 0)
+	{
+		sh_procerr(proc, ft_strdup(ft_strcat(ft_strcat(
+			ft_strcpy(buf, tok->val), ": "), ft_strerr(errno))), tok, *ln);
+		return (YEP);
+	}
+	redir.from = ft_isdigit(*op->val) ? *op->val - '0' : STDIN_FILENO;
+	*(t_redir *)ft_vecpush((t_vec *)&proc->redirs) = redir;
 	return (YEP);
 }

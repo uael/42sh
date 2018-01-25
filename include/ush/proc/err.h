@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ush/redir.h                                        :+:      :+:    :+:   */
+/*   ush/proc/err.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,27 +10,17 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef USH_REDIR_H
-# define USH_REDIR_H
+#ifndef USH_PROC_ERR_H
+# define USH_PROC_ERR_H
 
-# include "lex.h"
-# include "env.h"
+# include "../shell.h"
 
-typedef struct	s_redir
+typedef struct	s_err
 {
-	int			to;
-	int			from;
-}				t_redir;
-
-typedef struct	s_redirs
-{
-	t_redir		*buf;
-	size_t		isz;
-	size_t		cap;
-	size_t		len;
-}				t_redirs;
-
-extern int		sh_redirect(t_redirs *redirs, int *scope);
-extern void		sh_redirectclose(t_redirs *redirs);
+	int			st;
+	char		*msg;
+	char		*it;
+	char		*ln;
+}				t_err;
 
 #endif
