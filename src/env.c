@@ -69,8 +69,8 @@ t_bool			sh_unsetenv(char *var, t_bool m)
 		if ((it = ft_vecat(g_venv, i)) && *it &&
 			ft_strbegw(var, *it) && (*it)[ft_strlen(var)] == '=')
 		{
-			if (ft_vecrem(g_venv, i, it) && m)
-				free(*it);
+			m ? free(*it) : 0;
+			ft_vecrem(g_venv, i, NULL);
 			ft_vecgrow(g_venv, 1);
 			ft_memset(ft_vecend(g_venv), 0, sizeof(char *));
 			g_env = g_venv->buf;
