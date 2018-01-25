@@ -12,7 +12,9 @@
 
 #include "ush/eval.h"
 
-static char			**mev(t_map *vars, t_bool *owned)
+#define ISCMDM(T) ((T)->id==TOK_WORD||TOK_ISBOOL((T)->id)||TOK_ISREDIR((T)->id))
+
+static char			**makeenv(t_map *vars, t_bool *owned)
 {
 	t_vec		*e;
 	char		**envv;
@@ -36,45 +38,23 @@ static char			**mev(t_map *vars, t_bool *owned)
 	return (e->buf);
 }
 
-static int			procbool(t_job *job, t_tok *tok, t_deq *toks, char **ln)
-{
-	tok = sh_toknext(toks);
-	while (tok)
-		if (tok->id == TOK_WORD)
-			tok = sh_toknext(toks);
-		else if (TOK_ISREDIR(tok->id))
-		{
-			if (sh_evalredir(job, toks, ln) == OUF)
-				return (OUF);
-			tok = sh_tokpeek(toks);
-		}
-		else
-			break ;
-	return (YEP);
-}
-
 static inline int	makeargv(t_job *job, t_vec *av, t_deq *toks, char **ln)
 {
 	t_tok *tok;
 
-	*(char **)ft_vecpush(av) = ft_strdup(sh_tokpeek(toks)->val);
+	av ? *(char **)ft_vecpush(av) = ft_strdup(sh_tokpeek(toks)->val) : 0;
 	tok = sh_toknext(toks);
 	while (tok)
-		if (tok->id == TOK_WORD)
+		if (tok->id == TOK_WORD || TOK_ISBOOL(tok->id))
 		{
-			sh_tokexpand(tok, toks);
-			*(char **)ft_vecpush(av) = ft_strdup(tok->val);
+			av ? sh_tokexpand(tok, toks) : 0;
+			av ? *(char **)ft_vecpush(av) = ft_strdup(tok->val) : 0;
 			tok = sh_toknext(toks);
 		}
 		else if (TOK_ISREDIR(tok->id))
 		{
 			if (sh_evalredir(job, toks, ln) == OUF)
-			{
-				free(((t_proc *)ft_vecback((t_vec *)&job->procs))->u.exe);
-				ft_vecdtor(av, (t_dtor)ft_pfree);
-				ft_vecpop((t_vec *)&job->procs, NULL);
 				return (OUF);
-			}
 			tok = sh_tokpeek(toks);
 		}
 		else
@@ -89,21 +69,18 @@ static inline int	makeproc(t_job *job, t_map *vars, t_deq *toks, char **ln)
 	t_proc	*prc;
 
 	tok = sh_tokpeek(toks);
-	prc = ft_vecpush((t_vec *)&job->procs);
-	if (tok->id == TOK_TRUE || tok->id == TOK_FALSE)
+	prc = ft_vecback((t_vec *)&job->procs);
+	if (TOK_ISBOOL(tok->id))
 	{
 		sh_procbool(prc, (t_bool)(tok->id == TOK_FALSE));
-		if (procbool(job, tok, toks, ln) == OUF)
-		{
-			ft_vecpop((t_vec *)&job->procs, NULL);
-			return (OUF);
-		}
+		return (makeargv(job, NULL, toks, ln));
 	}
-	else if ((st = sh_procctor(prc, "PATH", tok->val, mev(vars, &prc->ownenv))))
+	else if ((st = sh_procctor(prc, "PATH", tok->val,
+		makeenv(vars, &prc->ownenv))))
 	{
 		sh_proccnf(prc, *ln, tok, st);
 		tok = sh_toknext(toks);
-		while (tok && (tok->id == TOK_WORD || TOK_ISREDIR(tok->id)))
+		while (tok && ISCMDM(tok))
 			tok = sh_toknext(toks);
 	}
 	else
@@ -113,13 +90,9 @@ static inline int	makeproc(t_job *job, t_map *vars, t_deq *toks, char **ln)
 
 inline int			sh_evalargv(t_job *job, t_map *vars, t_deq *toks, char **ln)
 {
-	t_tok	*tok;
 	t_vec	av;
 
-	if (!(tok = sh_tokpeek(toks)) || (tok->id != TOK_WORD &&
-		!TOK_ISBOOL(tok->id)))
-		return (NOP);
-	sh_tokexpand(tok, toks);
+	sh_tokexpand(sh_tokpeek(toks), toks);
 	if (!makeproc(job, vars, toks, ln))
 	{
 		ft_vecctor(&av, sizeof(char *));

@@ -12,6 +12,8 @@
 
 #include "ush/eval.h"
 
+#define ISCMDM(T) ((T)->id==TOK_WORD||TOK_ISBOOL((T)->id)||TOK_ISREDIR((T)->id))
+
 static int		evalexport(t_map *vars)
 {
 	uint32_t it;
@@ -29,29 +31,42 @@ static int		evalexport(t_map *vars)
 	return (YEP);
 }
 
+static int		argverror(t_job *job)
+{
+	t_proc *proc;
+
+	proc = ft_vecback((t_vec *)&job->procs);
+	sh_procdtor(proc);
+	ft_vecpop((t_vec *)&job->procs, NULL);
+	if (job->procs.len == 0)
+	{
+		ft_vecdtor((t_vec *)&job->procs, NULL);
+		job->procs.isz = sizeof(t_proc);
+	}
+	return (OUF);
+}
+
 inline int		sh_evalsimple(t_job *job, int fd, t_deq *toks, char **ln)
 {
 	t_tok	*tok;
 	t_map	vars;
-	int		st;
 
 	(void)fd;
 	ft_mapctor(&vars, g_strhash, sizeof(char *), sizeof(char *));
-	if ((tok = sh_tokpeek(toks))->id == TOK_WORD || TOK_ISBOOL(tok->id))
-	{
+	if ((tok = sh_tokpeek(toks))->id == TOK_WORD)
 		if (ft_strchr(tok->val, '='))
 			sh_evalassign(toks, &vars);
-		if ((st = sh_evalargv(job, &vars, toks, ln)) == OUF)
-			return (st);
-		else if (st)
-			return (evalexport(&vars));
-	}
-	else if (TOK_ISREDIR(tok->id))
-	{
-		if (!job->procs.len)
-			sh_procnone(ft_vecpush((t_vec *)&job->procs));
+	tok = sh_tokpeek(toks);
+	sh_procnone(ft_vecpush((t_vec *)&job->procs));
+	while (tok && TOK_ISREDIR(tok->id))
 		if (sh_evalredir(job, toks, ln) == OUF)
 			return (OUF);
-	}
-	return (YEP);
+		else
+			tok = sh_tokpeek(toks);
+	if (((t_proc *)ft_vecback((t_vec *)&job->procs))->kind == PROC_ERR)
+		while (tok && ISCMDM(tok))
+			tok = sh_toknext(toks);
+	else if (ISCMDM(tok))
+		return (sh_evalargv(job, &vars, toks, ln) ? argverror(job) : YEP);
+	return (evalexport(&vars));
 }
