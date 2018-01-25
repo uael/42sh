@@ -14,51 +14,14 @@
 
 static int				g_io[3] = { 0, 0, 0 };
 
-static inline void		jobpipe(t_job *job, size_t i, int *fds, int *io)
-{
-	if (i < job->procs.len)
-	{
-		if (pipe(fds) < 0)
-			sh_exit(THROW(WUT), NULL);
-		io[STDOUT_FILENO] = fds[1];
-	}
-	else
-	{
-		ft_memset(fds, 0, 2 * sizeof(int));
-		io[STDOUT_FILENO] = STDOUT_FILENO;
-	}
-}
-
-static inline int		jobfork(t_job *job, t_proc *p, t_bool piped, int fg)
-{
-	pid_t	pid;
-
-	p->child = (t_bool)(piped || p->kind == PROC_EXE || p->kind == PROC_SH);
-	if (!p->child || !(pid = fork()))
-		return (sh_proclaunch(p, job->pgid, g_io, fg));
-	else if (pid < 0)
-		sh_exit(THROW(WUT), NULL);
-	else
-	{
-		p->pid = pid;
-		if (g_shinteract)
-		{
-			setpgid(pid, job->pgid);
-			if (!job->pgid)
-				job->pgid = pid;
-		}
-	}
-	return (YEP);
-}
-
-static inline int		bang(t_bool b, int status)
+static inline int			bang(t_bool b, int status)
 {
 	if (b)
 		return (status ? 0 : 1);
 	return (status);
 }
 
-static int				sh_joblayer(t_job **job, int fg)
+static inline int			joblayer(t_job **job, int fg)
 {
 	size_t	i;
 	t_proc	*proc;
@@ -85,19 +48,59 @@ static int				sh_joblayer(t_job **job, int fg)
 	return (bang((*job)->bang, 0));
 }
 
-int						sh_joblaunch(t_job **job, int fg)
+static inline int			jobfork(t_job *job, t_proc *p, t_bool piped, int fg)
+{
+	pid_t	pid;
+
+	p->child = (t_bool)(piped || p->kind == PROC_EXE || p->kind == PROC_SH);
+	if (!p->child || !(pid = fork()))
+		return (sh_proclaunch(p, job->pgid, g_io, fg));
+	else if (pid < 0)
+		sh_exit(THROW(WUT), NULL);
+	else
+	{
+		p->pid = pid;
+		if (g_shinteract)
+		{
+			setpgid(pid, job->pgid);
+			if (!job->pgid)
+				job->pgid = pid;
+		}
+	}
+	return (YEP);
+}
+
+static inline int			jobnext(t_job **job, int fg)
+{
+	t_job	*next;
+	int		st;
+
+	g_shstatus = joblayer(job, fg);
+	if (!(!g_shinteract || fg) || !(((*job)->andor == ANDOR_OR && g_shstatus) ||
+		((*job)->andor == ANDOR_AND && !g_shstatus)))
+		return (g_shstatus);
+	next = (*job)->next;
+	st = sh_joblaunch(&(*job)->next, fg);
+	if ((*job)->next->idx >= 0)
+	{
+		free(next);
+		(*job)->next = NULL;
+	}
+	return (st);
+}
+
+int							sh_joblaunch(t_job **job, int fg)
 {
 	size_t	i;
 	t_proc	*proc;
 	int		fds[2];
-	t_job	*next;
 
 	i = 0;
 	ft_memcpy(g_io, STD_FILENOS, 3 * sizeof(int));
 	while (i < (*job)->procs.len)
 	{
 		proc = (*job)->procs.buf + i++;
-		jobpipe(*job, i, fds, g_io);
+		sh_jobpipe(*job, i, fds, g_io);
 		proc->close = fds[0];
 		proc->state = PROC_RUNNING;
 		if (jobfork(*job, proc, (t_bool)((*job)->procs.len > 1), fg))
@@ -106,16 +109,5 @@ int						sh_joblaunch(t_job **job, int fg)
 		g_io[STDOUT_FILENO] != STDOUT_FILENO ? close(g_io[STDOUT_FILENO]) : 0;
 		g_io[STDIN_FILENO] = fds[0];
 	}
-	g_shstatus = sh_joblayer(job, fg);
-	if (!(!g_shinteract || fg) || !(((*job)->andor == ANDOR_OR && g_shstatus) ||
-		((*job)->andor == ANDOR_AND && !g_shstatus)))
-		return (g_shstatus);
-	next = (*job)->next;
-	*fds = sh_joblaunch(&(*job)->next, fg);
-	if ((*job)->next->idx >= 0)
-	{
-		free(next);
-		(*job)->next = NULL;
-	}
-	return (*fds);
+	return (jobnext(job, fg));
 }
