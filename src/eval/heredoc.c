@@ -20,11 +20,14 @@ static inline int	ouput(int ac, char **av, char **envv)
 	return (EXIT_SUCCESS);
 }
 
-static void			pipeprev(t_tok *tok, t_job *job, size_t i)
+static void			pipeprev(t_tok *tok, t_proc *prev, t_job *job, size_t i)
 {
 	t_proc *proc;
 
-	proc = ft_vecput((t_vec *)&job->procs, i);
+	if (prev->kind == PROC_NONE)
+		proc = prev;
+	else
+		proc = ft_vecput((t_vec *)&job->procs, i);
 	sh_procfn(proc, ouput, NULL);
 	proc->argv = ft_malloc(2 * sizeof(char **));
 	proc->argv[0] = ft_strdup(tok->val);
@@ -51,7 +54,7 @@ inline int			sh_evalheredoc(t_job *job, t_deq *toks, char **ln)
 		job->procs.buf[i - 1].argv[0] = ft_strdup(tok->val);
 	}
 	else
-		pipeprev(tok, job, i);
+		pipeprev(tok, proc, job, i);
 	sh_toknext(toks);
 	return (YEP);
 }

@@ -54,9 +54,23 @@ inline void		sh_wordexpand(t_sds *word)
 		expandvar(word);
 }
 
+static t_bool	isname(char *word)
+{
+	if (!ft_isalpha(*word) && *word != '_')
+		return (0);
+	++word;
+	while (*word)
+	{
+		if (!ft_isalnum(*word) && *word != '_')
+			return (0);
+		++word;
+	}
+	return (1);
+}
+
 inline void		sh_tokexpand(t_tok *tok, t_deq *toks)
 {
-	if (*tok->val == '$' && tok->len > 1 && sh_isname(tok->val))
+	if (*tok->val == '$' && tok->len > 1 && isname(tok->val + 1))
 	{
 		sh_wordexpand((t_sds *)tok);
 		sh_tokexplode(tok, toks);
