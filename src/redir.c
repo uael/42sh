@@ -20,7 +20,7 @@ static inline int	redirect(t_redir *r)
 			r->to = -1;
 		else if (r->filename && (r->to = open(r->filename, r->flags, 0644)) < 0)
 			break ;
-		else if (r->to == -1 && close(r->to))
+		else if (r->to == -1 && close(r->from))
 			break ;
 		else if (r->to >= 0 && dup2(r->to, r->from) < 0)
 			break ;
