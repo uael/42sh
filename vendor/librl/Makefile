@@ -12,7 +12,7 @@
 
 NAME = librl.a
 CC = gcc
-CFLAGS = -Werror -Wextra -Wall -O3
+CFLAGS = -Werror -Wextra -Wall -g3 -fsanitize=address
 
 SRC_PATH = ./src/
 OBJ_PATH = ./obj/

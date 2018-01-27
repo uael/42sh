@@ -38,7 +38,7 @@ static inline int	lexerhelp2(t_tok *tok, char **it, char **ln)
 
 static inline int	updatestack(t_tok *tok, char *stack, size_t *i, char **ln)
 {
-	if (ft_strchr("({[", tok->id))
+	if (tok->id && ft_strchr("({[", tok->id))
 		stack[(*i)++] = sh_isbracket(tok->id);
 	else if (*i && tok->id == stack[*i - 1])
 		--*i;
@@ -91,17 +91,17 @@ int					sh_lex(int fd, t_deq *toks, char **it, char **ln)
 	!ln ? (ln = it) : 0;
 	while ((tok = ft_deqpush(toks)) && ft_sdsgrow((t_sds *)tok, 1))
 	{
-		if (!(*tok->val = '\0') && !**it)
-		{
-			if (!i && !(tok->id = TOK_END))
-				break ;
-			if ((st = fd < 0 ? NOP : rl_catline(fd, 0, ln, it)))
-				return (st);
-		}
+		*tok->val = '\0';
 		if ((st = lex(fd, tok, it, ln)))
 			return (st);
 		if (!i && (tok->id == TOK_EOL || tok->id == TOK_END))
 			break ;
+		while (i && !tok->id)
+		{
+			if ((st = fd < 0 ? NOP : rl_catline(fd, 0, ln, it)) || (st = lex(fd,
+				tok, it, ln)))
+				return (st);
+		}
 		if (updatestack(tok, stack, &i, ln) == OUF)
 			return (OUF);
 	}

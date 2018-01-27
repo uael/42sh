@@ -8,14 +8,17 @@ echo -n "cmd basic absolute "; (
   /bin/ls | grep "21sh" || exit 1
   /bin/ls -laF | grep "CMakeLists.txt*" || exit 1
   /bin/ls -l -a -F | grep "CMakeLists.txt*" || exit 1
+
   exit 0
-) > /dev/null || echo ${ERROR} || exit 1; echo ${OK}
+) > /dev/null || echo ${ERROR} && exit 1; echo ${OK}
 
 echo -n "cmd basic relative "; (
   ls | grep "21sh" || exit 1
   ls -laF | grep "CMakeLists.txt*" || exit 1
   ls -l -a -F | grep "CMakeLists.txt*" || exit 1
-) > /dev/null || echo ${ERROR} || exit 1; echo ${OK}
+
+  exit 0
+) > /dev/null || echo ${ERROR} && exit 1; echo ${OK}
 
 echo -n "cmd basic absolute no path "; (
   PATH_SAVE=$PATH; unsetenv PATH
@@ -23,7 +26,9 @@ echo -n "cmd basic absolute no path "; (
   /bin/ls -laF | /usr/bin/grep "CMakeLists.txt*" || exit 1
   /bin/ls -l -a -F | /usr/bin/grep "CMakeLists.txt*" || exit 1
   PATH=${PATH_SAVE}
-) > /dev/null || echo ${ERROR} || exit 1; echo ${OK}
+
+  exit 0
+) > /dev/null || echo ${ERROR} && exit 1; echo ${OK}
 
 echo -n "cmd basic absolute no path "; (
   PATH_SAVE=$PATH; unsetenv PATH
@@ -31,7 +36,9 @@ echo -n "cmd basic absolute no path "; (
   ls -laF 2>&1 | /usr/bin/grep "not found" || exit 1
   ls -l -a -F 2>&1 | /usr/bin/grep "not found" || exit 1
   PATH=${PATH_SAVE}
-) > /dev/null || echo ${ERROR} || exit 1; echo ${OK}
+
+  exit 0
+) > /dev/null || echo ${ERROR} && exit 1; echo ${OK}
 
 #ls
 #env | grep "PATH" || exit 1
