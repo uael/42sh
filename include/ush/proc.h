@@ -13,13 +13,39 @@
 #ifndef USH_PROC_H
 # define USH_PROC_H
 
-# include "proc/kind.h"
+# include "proc/bit.h"
+# include "proc/err.h"
+# include "proc/exe.h"
+# include "proc/fn.h"
 # include "proc/sh.h"
-# include "proc/state.h"
 # include "redir.h"
 
-# define PROC_NOTFOUND (127)
-# define PROC_NORIGHTS (126)
+typedef enum	e_procst
+{
+	PROC_COMPLETED,
+	PROC_STOPPED,
+	PROC_RUNNING,
+	PROC_CONTINUED
+}				t_procst;
+
+typedef enum	e_prockd
+{
+	PROC_NONE,
+	PROC_EXE,
+	PROC_FN,
+	PROC_SH,
+	PROC_ERR,
+	PROC_BOOL
+}				t_prockd;
+
+typedef union	u_procu
+{
+	t_procexe	exe;
+	t_procfn	*fn;
+	t_procsh	sh;
+	t_procerr	err;
+	t_procbit	bit;
+}				t_procu;
 
 typedef struct	s_proc
 {
@@ -47,20 +73,9 @@ typedef struct	s_procs
 	size_t		len;
 }				t_procs;
 
-extern int		sh_procctor(t_proc *proc, char *path, char *exe, char **envv);
-extern void		sh_procdtor(t_proc *proc);
+extern void		sh_procctor(t_proc *proc);
+extern void		sh_procdtor(t_proc *p);
 extern int		sh_procmark(t_proc *proc, int status);
 extern int		sh_proclaunch(t_proc *proc, pid_t pgid, int *io, int fg);
-extern void		sh_procfn(t_proc *proc, t_procfn *fn, char **envv);
-extern int		sh_procfnlaunch(t_proc *proc);
-extern void		sh_procerr(t_proc *proc, char *msg, t_tok *tok, char *ln);
-extern int		sh_procerrlaunch(t_proc *proc);
-extern void		sh_proccnf(t_proc *proc, char *ln, t_tok *tok, int st);
-extern int		sh_proccnflaunch(t_proc *proc);
-extern int		sh_procsh(t_proc *proc, t_deq *toks, char *ln);
-extern int		sh_procshlaunch(t_proc *proc, pid_t pid);
-extern void		sh_procbool(t_proc *proc, t_bool boolean);
-extern int		sh_procboollaunch(t_proc *proc);
-extern void		sh_procnone(t_proc *proc);
 
 #endif

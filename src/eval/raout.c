@@ -30,8 +30,8 @@ inline int		sh_evalraout(t_job *job, t_deq *toks, char **ln)
 	sh_toknext(toks);
 	if ((redir.to = open(tok->val, O_WRONLY | O_APPEND, 0644)) < 0)
 	{
-		sh_procerr(proc, ft_strdup(ft_strcat(ft_strcat(
-			ft_strcpy(buf, tok->val), ": "), ft_strerr(errno))), tok, *ln);
+		sh_procerr(proc, ft_strcat(ft_strcat(ft_strcpy(buf, tok->val), ": "),
+			ft_strerr(errno)), *ln, tok->pos);
 		return (YEP);
 	}
 	redir.from = ft_isdigit(*op->val) ? *op->val - '0' : STDOUT_FILENO;

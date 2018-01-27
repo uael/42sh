@@ -31,8 +31,8 @@ inline int		sh_evalrin(t_job *job, t_deq *toks, char **ln)
 	redir.from = ft_isdigit(*op->val) ? *op->val - '0' : STDIN_FILENO;
 	if ((redir.to = open(tok->val, O_RDONLY, 0644)) < 0)
 	{
-		sh_procerr(proc, ft_strdup(ft_strcat(ft_strcat(
-			ft_strcpy(buf, tok->val), ": "), ft_strerr(errno))), tok, *ln);
+		sh_procerr(proc, ft_strcat(ft_strcat(ft_strcpy(buf, tok->val), ": "),
+			ft_strerr(errno)), *ln, tok->pos);
 		return (YEP);
 	}
 	*(t_redir *)ft_vecpush((t_vec *)&proc->redirs) = redir;

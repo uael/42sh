@@ -50,33 +50,33 @@ static inline int	updatestack(t_tok *tok, char *stack, size_t *i, char **ln)
 	return (YEP);
 }
 
-static inline int	lex(int fd, t_tok *tok, char **i, char **ln)
+static inline int	lex(int f, t_tok *t, char **i, char **l)
 {
-	int st;
+	int s;
 
-	tok->len = 0;
+	t->len = 0;
 	while (1)
 		if (**i && ft_strchr(sh_varifs(), **i))
 			++*i;
 		else if (**i == '\n' || (**i == '\r' && *(*i + 1) == '\n'))
-			return (lexerhelp2(tok, i, ln));
+			return (lexerhelp2(t, i, l));
 		else if (**i == '\\' && ((*(*i + 1) == '\n' && !*(*i + 2)) ||
-			((*(*i + 1) == '\r' && *(*i + 2) == '\n' && !*(*i + 3)))) &&
-			(st = lexerhelp(fd, i, ln)))
-			return (st);
+			((*(*i + 1) == '\r' && *(*i + 2) == '\n' && !*(*i + 3)))))
+		{
+			if ((s = lexerhelp(f, i, l)))
+				return (s);
+		}
 		else if (**i == '#')
 			while (**i && (**i != '\n' || (**i != '\r' && *(*i + 1) != '\n')))
 				++*i;
-		else if (!**i && !(tok->id = TOK_END))
-			return ((tok->pos = (uint16_t)(*i - *ln)) & 0);
+		else if (!**i && !(t->id = TOK_END))
+			return ((t->pos = (uint16_t)(*i - *l)) & 0);
 		else
 			break ;
-	tok->pos = (uint16_t)(*i - *ln);
-	ft_isdigit(**i) ? ft_sdscpush((t_sds *)tok, *(*i)++) : 0;
-	if ((st = sh_lexop(fd, tok, i, ln)) != NOP ||
-		(st = sh_lexword(fd, tok, i, ln)) != NOP)
-		return (st);
-	return (sh_synerr(*ln, *i, "Unexpected token `%c'", **i));
+	t->pos = (uint16_t)(*i - *l);
+	ft_isdigit(**i) ? ft_sdscpush((t_sds *)t, *(*i)++) : 0;
+	return (s = sh_lexop(f, t, i, l)) != 1 || (s = sh_lexword(f, t, i, l)) != 1
+		? s : sh_synerr(*l, *i, "Unexpected token `%c'", **i);
 }
 
 int					sh_lex(int fd, t_deq *toks, char **it, char **ln)
@@ -95,7 +95,7 @@ int					sh_lex(int fd, t_deq *toks, char **it, char **ln)
 		{
 			if (!i && !(tok->id = TOK_END))
 				break ;
-			if ((st = fd < 0 ? NOP : rl_catline(fd, -1, ln, it)))
+			if ((st = fd < 0 ? NOP : rl_catline(fd, 0, ln, it)))
 				return (st);
 		}
 		if ((st = lex(fd, tok, it, ln)))

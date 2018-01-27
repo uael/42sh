@@ -12,7 +12,7 @@
 
 #include "ush/eval.h"
 
-#define UNEX "Unexpected token `%s'"
+#define UNEX "1: Unexpected token `%s'"
 
 static t_map		g_binaries_stack =
 {
@@ -24,20 +24,6 @@ t_map				*g_binaries = &g_binaries_stack;
 inline void			sh_evaldtor(void)
 {
 	ft_mapdtor(g_binaries, (t_dtor)ft_pfree, (t_dtor)ft_pfree);
-}
-
-static int			parseeol(t_deq *toks, char **ln)
-{
-	t_tok *tok;
-
-	while ((tok = sh_tokpeek(toks)))
-		if (tok->id == TOK_EOL)
-			ft_deqsht(toks, NULL);
-		else if (tok->id == TOK_END)
-			return (YEP);
-		else
-			return (sh_evalerr(*ln, tok, UNEX, sh_tokstr(tok)));
-	return (YEP);
 }
 
 static inline int	evalfini(int ret, t_deq *toks, int fd)
@@ -69,25 +55,28 @@ static inline int	evalfini(int ret, t_deq *toks, int fd)
 inline int			sh_eval(int fd, t_deq *toks, char **ln)
 {
 	t_tok	*tok;
+	int		st;
 
-	if (fd < 0)
+	st = 0;
+	while (!st)
 	{
-		sh_varscope();
-		sh_poolscope();
+		if (!(tok = sh_tokpeek(toks)))
+			return (evalfini(YEP, toks, fd));
+		while (tok && tok->id == TOK_EOL)
+			tok = sh_toknext(toks);
+		if (!sh_tokpeek(toks))
+			return (evalfini(YEP, toks, fd));
+		if ((st = sh_evallist(fd, toks, ln)) == OUF)
+			return (evalfini(NOP, toks, fd));
+		if (!(tok = sh_tokpeek(toks)))
+			return (evalfini(YEP, toks, fd));
+		if (tok->id == TOK_SEMICOLON)
+			sh_toknext(toks);
+		else if (tok->id == TOK_END)
+			return (evalfini(YEP, toks, fd));
+		else if (tok->id == TOK_EOL && st)
+			st = 0;
 	}
-	if (!(tok = sh_tokpeek(toks)))
-		return (evalfini(YEP, toks, fd));
-	while (tok && tok->id == TOK_EOL)
-		tok = sh_toknext(toks);
-	if (sh_evallist(fd, toks, ln) == OUF)
-		return (evalfini(NOP, toks, fd));
-	if (!(tok = sh_tokpeek(toks)))
-		return (evalfini(YEP, toks, fd));
-	if (tok->id == TOK_SEMICOLON)
-		sh_toknext(toks);
-	else if (tok->id == TOK_END)
-		return (evalfini(YEP, toks, fd));
-	else if (tok->id != TOK_EOL)
-		return (evalfini(sh_evalerr(*ln, tok, UNEX, sh_tokstr(tok)), toks, fd));
-	return (evalfini(parseeol(toks, ln), toks, fd));
+	tok = sh_tokpeek(toks);
+	return (evalfini(sh_evalerr(*ln, tok, UNEX, sh_tokstr(tok)), toks, fd));
 }

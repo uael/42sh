@@ -12,7 +12,7 @@
 
 NAME = librl.a
 CC = gcc
-CFLAGS = -Werror -Wextra -Wall -O2
+CFLAGS = -Werror -Wextra -Wall -O3
 
 SRC_PATH = ./src/
 OBJ_PATH = ./obj/

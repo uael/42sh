@@ -22,7 +22,7 @@ extern TTY		g_shmode;
 extern int		g_shfd;
 extern int		g_shstatus;
 
-extern int		sh_run(int fd);
+extern int		sh_run(int fd, char *ln);
 extern int		sh_exit(int exitno, char const *fmt, ...);
 extern void		sh_complete(t_sds *cmd);
 

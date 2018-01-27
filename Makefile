@@ -12,7 +12,7 @@
 
 NAME = 21sh
 CC = gcc
-CFLAGS = -Werror -Wextra -Wall -O2
+CFLAGS = -Werror -Wextra -Wall -O3
 
 SRC_PATH = ./src/
 OBJ_PATH = ./obj/
@@ -38,8 +38,7 @@ SRC_NAME = \
 	lex/reduce.c \
 	main.c \
 	pool.c pool/mark.c pool/notify.c \
-	proc.c proc/cnf.c proc/err.c proc/fn.c proc/launch.c proc/mark.c \
-	proc/none.c proc/sh.c proc/boolean.c \
+	proc.c proc/bit.c proc/err.c proc/exe.c proc/fn.c proc/sh.c \
 	redir.c \
 	shell.c \
 	tok.c \
@@ -87,6 +86,9 @@ ifneq ($(3TH_PATH),)
 	@$(foreach lib,$(3TH_PATH),$(MAKE) -C $(lib) -j4;)
 endif
 
+test:
+	./test.sh .
+
 re: fclean all
 
-.PHONY: all, 3th, $(NAME), clean, fclean, re
+.PHONY: all, 3th, $(NAME), clean, fclean, re, test

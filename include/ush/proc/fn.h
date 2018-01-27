@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ush/proc/state.h                                   :+:      :+:    :+:   */
+/*   ush/proc/fn.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,17 +10,16 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef USH_PROC_STATE_H
-# define USH_PROC_STATE_H
+#ifndef USH_PROC_FN_H
+# define USH_PROC_FN_H
 
 # include "../shell.h"
 
-typedef enum	e_procst
-{
-	PROC_COMPLETED,
-	PROC_STOPPED,
-	PROC_RUNNING,
-	PROC_CONTINUED
-}				t_procst;
+struct s_proc;
+
+typedef int		(t_procfn)(int ac, char **av, char **envv);
+
+extern void		sh_procfn(struct s_proc *proc, t_procfn *fn, char **envv);
+extern int		sh_procfnlaunch(struct s_proc *proc);
 
 #endif

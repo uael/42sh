@@ -15,12 +15,17 @@
 
 # include "../shell.h"
 
-typedef struct	s_err
+struct s_proc;
+
+typedef struct	s_procerr
 {
 	int			st;
 	char		*msg;
-	char		*it;
 	char		*ln;
-}				t_err;
+	size_t		pos;
+}				t_procerr;
+
+extern t_procerr	*sh_procerr(struct s_proc *pr, char *m, char *ln, size_t p);
+extern int			sh_procerrlaunch(struct s_proc *prc);
 
 #endif
