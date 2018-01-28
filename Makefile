@@ -86,9 +86,17 @@ ifneq ($(3TH_PATH),)
 	@$(foreach lib,$(3TH_PATH),$(MAKE) -C $(lib) -j8;)
 endif
 
-test:
+test: all
 	./test.sh .
+
+valgrind: all
+	@valgrind --leak-check=full --track-origins=yes \
+    --suppressions=./valgrind.supp ./21sh test/bi.sh 2>&1 | \
+    grep "definitely lost:"
+	@valgrind --leak-check=full --track-origins=yes \
+    --suppressions=./valgrind.supp ./21sh test/cmd.sh 2>&1 | \
+    grep "definitely lost:"
 
 re: fclean all
 
-.PHONY: all, 3th, $(NAME), clean, fclean, re, test
+.PHONY: all, 3th, $(NAME), clean, fclean, re, test, valgrind
