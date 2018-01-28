@@ -33,6 +33,7 @@ inline t_job	*sh_poolpush(t_job *job)
 
 	bg = ft_memcpy(g_async->jobs + g_async->len, job, sizeof(t_job));
 	bg->idx = (int)g_async->len++;
+	bg->bg = 1;
 	return (bg);
 }
 
