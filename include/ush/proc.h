@@ -35,7 +35,8 @@ typedef enum	e_prockd
 	PROC_FN,
 	PROC_SH,
 	PROC_ERR,
-	PROC_BOOL
+	PROC_BOOL,
+	PROC_VAR
 }				t_prockd;
 
 typedef union	u_procu

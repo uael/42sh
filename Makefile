@@ -12,7 +12,7 @@
 
 NAME = 21sh
 CC = gcc
-CFLAGS = -Werror -Wextra -Wall -g3 -fsanitize=address
+CFLAGS = -Werror -Wextra -Wall -g3
 
 SRC_PATH = ./src/
 OBJ_PATH = ./obj/
@@ -34,8 +34,8 @@ SRC_NAME = \
 	eval/rout.c eval/simple.c eval/subshell.c \
 	job.c job/bg.c job/cont.c job/debug.c job/fg.c job/mark.c job/launch.c \
 	job/state.c job/wait.c job/pipe.c \
-	lex.c lex/heredoc.c lex/op.c lex/quote.c lex/var.c lex/tok.c lex/word.c \
-	lex/reduce.c \
+	lex.c lex/heredoc.c lex/next.c lex/op.c lex/quote.c lex/var.c lex/tok.c \
+	lex/word.c lex/reduce.c \
 	main.c \
 	pool.c pool/mark.c pool/notify.c \
 	proc.c proc/bit.c proc/err.c proc/exe.c proc/fn.c proc/sh.c \
@@ -83,7 +83,7 @@ endif
 
 3th:
 ifneq ($(3TH_PATH),)
-	@$(foreach lib,$(3TH_PATH),$(MAKE) -C $(lib) -j4;)
+	@$(foreach lib,$(3TH_PATH),$(MAKE) -C $(lib) -j8;)
 endif
 
 test:

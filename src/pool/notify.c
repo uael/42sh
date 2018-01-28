@@ -14,69 +14,28 @@
 
 #include "ush/pool.h"
 
-static void		updateidxs(void)
+static t_bool	jobfini(t_job *job)
 {
-	size_t	i;
-	t_job	*job;
+	t_job	*next;
+	int		st;
 
-	i = 0;
-	while (i < g_pool->len)
+	st = job->procs.buf[job->procs.len - 1].status;
+	if (job->bang)
+		st = st ? 0 : 1;
+	if (!(job->andor == ANDOR_OR && st) && !(job->andor == ANDOR_AND && !st))
 	{
-		job = g_pool->jobs + i++;
-		job->idx = (int)i;
+		sh_jobdtor(job);
+		return (1);
 	}
-}
-
-static void		jobfini(t_job *job)
-{
-	t_job *next;
-
-	if (job->bg)
-	{
-		g_shstatus = job->procs.buf[job->procs.len - 1].status;
-		if (job->bang)
-			g_shstatus = g_shstatus ? 0 : 1;
-		if ((job->andor == ANDOR_OR && g_shstatus) ||
-			(job->andor == ANDOR_AND && !g_shstatus))
-		{
-			next = job->next;
-			sh_joblaunch(&job->next, !job->bg);
-			if (job->next->idx >= 0)
-			{
-				free(next);
-				job->next = NULL;
-			}
-		}
-	}
+	next = job->next;
+	job->next = NULL;
 	sh_jobdtor(job);
-}
-
-static void		jobstatus(t_bool *print)
-{
-	size_t	i;
-	t_job	*job;
-
-	i = 0;
-	while (i < g_pool->len)
-		if (sh_jobcompleted(job = g_pool->jobs + i++))
-		{
-			*print = 1;
-			sh_jobdebug(job);
-			jobfini(job);
-			if (--i != --g_pool->len)
-				ft_memmove(g_pool->jobs + i, g_pool->jobs + i + 1,
-					sizeof(t_job) * (g_pool->len - i));
-			updateidxs();
-		}
-		else if (sh_jobstopped(job) && !job->notified)
-		{
-			job->bg = 1;
-			if (!*print && g_shinteract)
-				*print = (t_bool)(ft_puts(STDIN_FILENO,
-					"\x1b[1A\r\x1b[0K^Z\n") > 0);
-			sh_jobdebug(job);
-			job->notified = 1;
-		}
+	next->idx = job->idx;
+	ft_memcpy(job, next, sizeof(t_job));
+	free(next);
+	job->bg = 1;
+	sh_joblaunch(job, 0);
+	return (0);
 }
 
 inline void		sh_poolnotify(void)
@@ -84,9 +43,9 @@ inline void		sh_poolnotify(void)
 	pid_t	pid;
 	int		status;
 	t_bool	print;
+	size_t	i;
+	t_job	*job;
 
-	if (!g_pool)
-		return ;
 	while (1)
 	{
 		while ((pid = waitpid(WAIT_ANY, &status, WUNTRACED | WNOHANG)) < 0)
@@ -96,24 +55,13 @@ inline void		sh_poolnotify(void)
 			break ;
 	}
 	print = 0;
-	jobstatus(&print);
-	if (print)
-		rl_reprint();
-}
-
-inline void		sh_poolclean(void)
-{
-	size_t	i;
-	t_job	*job;
-
 	i = 0;
-	while (i < g_pool->len)
-		if (sh_jobcompleted(job = g_pool->jobs + i++))
+	while (i < sh_poollen())
+		if (sh_jobcompleted(job = sh_poolget(i++)))
 		{
-			jobfini(job);
-			if (--i != --g_pool->len)
-				ft_memmove(g_pool->jobs + i, g_pool->jobs + i + 1,
-					sizeof(t_job) * (g_pool->len - i));
-			updateidxs();
+			print = 1;
+			sh_jobdebug(job);
+			jobfini(job) ? sh_poolrem(--i, NULL) : 0;
 		}
+	print ? rl_reprint() : 0;
 }

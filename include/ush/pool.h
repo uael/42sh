@@ -21,14 +21,11 @@ typedef struct	s_pool
 	size_t		len;
 }				t_pool;
 
-extern t_pool	*g_pool;
-
-extern void		sh_poolscope(void);
-extern t_bool	sh_poolunscope(void);
-extern t_job	*sh_poolqueue(t_job *job);
-extern t_job	*sh_poolfind(pid_t pgid);
+extern size_t	sh_poollen(void);
+extern t_job	*sh_poolget(size_t idx);
+extern t_job	*sh_poolpush(t_job *job);
+extern t_bool	sh_poolrem(size_t idx, t_job *out);
 extern int		sh_poolmark(pid_t pid, int status);
 extern void		sh_poolnotify(void);
-extern void		sh_poolclean(void);
 
 #endif

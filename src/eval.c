@@ -26,16 +26,10 @@ inline void			sh_evaldtor(void)
 	ft_mapdtor(g_binaries, (t_dtor)ft_pfree, (t_dtor)ft_pfree);
 }
 
-static inline int	evalfini(int ret, t_deq *toks, int fd)
+static inline int	evalfini(int ret, t_deq *toks)
 {
 	t_tok	*tok;
 
-	sh_poolclean();
-	if (fd < 0)
-	{
-		sh_varunscope();
-		sh_poolunscope();
-	}
 	if (ret > 0)
 	{
 		tok = sh_tokpeek(toks);
@@ -49,7 +43,7 @@ static inline int	evalfini(int ret, t_deq *toks, int fd)
 			}
 		return (NOP);
 	}
-	return (ret);
+	return (YEP);
 }
 
 inline int			sh_eval(int fd, t_deq *toks, char **ln)
@@ -61,22 +55,22 @@ inline int			sh_eval(int fd, t_deq *toks, char **ln)
 	while (!st)
 	{
 		if (!(tok = sh_tokpeek(toks)))
-			return (evalfini(YEP, toks, fd));
+			return (evalfini(YEP, toks));
 		while (tok && tok->id == TOK_EOL)
 			tok = sh_toknext(toks);
 		if (!sh_tokpeek(toks))
-			return (evalfini(YEP, toks, fd));
+			return (evalfini(YEP, toks));
 		if ((st = sh_evallist(fd, toks, ln)) == OUF)
-			return (evalfini(NOP, toks, fd));
+			return (evalfini(NOP, toks));
 		if (!(tok = sh_tokpeek(toks)))
-			return (evalfini(YEP, toks, fd));
+			return (evalfini(YEP, toks));
 		if (tok->id == TOK_SEMICOLON)
 			sh_toknext(toks);
 		else if (tok->id == TOK_END)
-			return (evalfini(YEP, toks, fd));
+			return (evalfini(YEP, toks));
 		else if (tok->id == TOK_EOL && st)
 			st = 0;
 	}
 	tok = sh_tokpeek(toks);
-	return (evalfini(sh_evalerr(*ln, tok, UNEX, sh_tokstr(tok)), toks, fd));
+	return (evalfini(sh_evalerr(*ln, tok, UNEX, sh_tokstr(tok)), toks));
 }

@@ -30,11 +30,19 @@ inline void		sh_procfn(t_proc *proc, t_procfn *fn, char **envv)
 inline int		sh_procfnlaunch(t_proc *proc)
 {
 	t_ex_hdl	dfl;
+	t_sds		*word;
 	char		**av;
 
+	ft_sdsctor(word = alloca(sizeof(t_sds)));
 	av = proc->argv;
-	while (*av)
-		++av;
+	while (*++av)
+	{
+		word->len = ft_strlen(*av);
+		word->cap = word->len;
+		word->buf = *av;
+		sh_wordexpand(word);
+		*av = word->buf;
+	}
 	ft_exbind(EXALL, ft_exhdl(exhdl, NULL), &dfl);
 	proc->status = proc->u.fn((int)(av - proc->argv), proc->argv, proc->envv);
 	ft_exbind(EXALL, dfl, NULL);

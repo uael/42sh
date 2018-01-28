@@ -25,7 +25,6 @@ inline void		sh_jobcont(t_job *job, int fg)
 			p->state = PROC_CONTINUED;
 	}
 	sh_jobdebug(job);
-	job->notified = 0;
 	if (fg)
 		sh_jobfg(job, 1);
 	else

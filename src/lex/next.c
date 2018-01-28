@@ -1,40 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pool/mark.c                                        :+:      :+:    :+:   */
+/*   lex/next.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2018/01/06 11:10:01 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/13 08:23:58 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ush/pool.h"
+#include "ush/lex.h"
 
-inline int		sh_poolmark(pid_t pid, int status)
+inline int		sh_lexnext(int fd, t_deq *toks, char **ln)
 {
-	size_t	i;
-	size_t	j;
-	t_job	*job;
-	t_proc	*proc;
+	char	*it;
+	int		st;
 
-	if (pid > 0)
-	{
-		i = 0;
-		while (i < sh_poollen())
-		{
-			j = 0;
-			job = sh_poolget(i++);
-			while (j < job->procs.len)
-				if ((proc = job->procs.buf + j++)->pid == pid)
-				{
-					sh_procmark(proc, status);
-					if (job->bg == 0 && proc->status == PROC_STOPPED)
-						job->bg = 1;
-				}
-		}
+	if (fd < 0)
 		return (NOP);
-	}
-	return ((pid == 0 || errno == ECHILD) ? WUT : THROW(WUT));
+	if (!(st = rl_catline(fd, ';', ln, &it)))
+		while (!(st = sh_lex(fd, toks, &it, ln)))
+			;
+	return (st);
 }

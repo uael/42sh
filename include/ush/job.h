@@ -35,7 +35,6 @@ typedef struct	s_jb
 	pid_t		pgid;
 	char		*command;
 	t_procs		procs;
-	t_bool		notified;
 	t_bool		bang;
 	t_bool		bg;
 	TTY			tmodes;
@@ -46,11 +45,11 @@ extern void		sh_jobdtor(t_job *job);
 extern int		sh_jobstopped(t_job *j);
 extern int		sh_jobcompleted(t_job *j);
 extern void		sh_jobpipe(t_job *job, size_t i, int *fds, int *io);
-extern int		sh_joblaunch(t_job **job, int fg);
+extern int		sh_joblaunch(t_job *job, int fg);
 extern int		sh_jobmark(t_job *job, pid_t pid, int status);
 extern void		sh_jobwait(t_job *job);
 extern int		sh_jobfg(t_job *job, int cont);
-extern void		sh_jobbg(t_job *job, int cont);
+extern int		sh_jobbg(t_job *job, int cont);
 extern void		sh_jobcont(t_job *job, int fg);
 extern void		sh_jobdebug(t_job *job);
 
