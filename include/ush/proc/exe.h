@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ush/proc/cmderr.h                                  :+:      :+:    :+:   */
+/*   ush/proc/exe.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,17 +10,19 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef USH_PROC_CMDERR_H
-# define USH_PROC_CMDERR_H
+#ifndef USH_PROC_EXE_H
+# define USH_PROC_EXE_H
 
 # include "../shell.h"
 
-typedef struct	s_cmderr
-{
-	int			st;
-	char		*ln;
-	char		*it;
-	char		*exe;
-}				t_cmderr;
+# define PROC_NOTFOUND (127)
+# define PROC_NORIGHTS (126)
+
+struct s_proc;
+
+typedef char	*t_procexe;
+
+extern int		sh_procexe(struct s_proc *proc, char *p, char *e, char **envv);
+extern int		sh_procexelaunch(struct s_proc *prc);
 
 #endif

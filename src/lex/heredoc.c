@@ -21,12 +21,12 @@ inline int			sh_lexheredoc(int fd, t_tok *tok, char **it, char **ln)
 	int		st;
 
 	eofl = tok->len;
-	eof = ft_memcpy(ft_malloc(eofl * sizeof(char)), tok->val, tok->len);
+	eof = ft_memdup(tok->val, (tok->len + 1) * sizeof(char));
 	tok->len = 0;
 	while (1)
 		if (!**it && (st = fd < 0 ? NOP : rl_catline(fd, 0, ln, it)))
 			return (st < 0 ? WUT : sh_synerr(*ln, *it, "Unexpected "
-				"EOF while looking for heredoc delimiter `%s'", eof));
+				"EOF while looking for heredoc delimiter `%s'", eof)); // todo: free
 		else if (*ft_sdscpush((t_sds *)tok, *(*it)++) == '\n' && tok->len >=
 			eofl + 1 && (*(*it - (eofl + 2)) == '\n' ||
 			(*it - (eofl + 1)) == *ln) &&
@@ -46,12 +46,12 @@ inline int			sh_lexheredoct(int fd, t_tok *tok, char **it, char **ln)
 	int		st;
 
 	eofl = tok->len;
-	eof = ft_memcpy(ft_malloc(eofl * sizeof(char)), tok->val, tok->len);
+	eof = ft_memdup(tok->val, (tok->len + 1) * sizeof(char));
 	tok->len = 0;
 	while (1)
 	{
 		if (!**it && (st = fd < 0 ? NOP : rl_catline(fd, 0, ln, it)))
-			return (st < 0 ? WUT : sh_synerr(*ln, *it, UXPTDEOF, eof));
+			return (st < 0 ? WUT : sh_synerr(*ln, *it, UXPTDEOF, eof)); // todo: free
 		if (*(*it - 1) == '\n')
 			while (**it == '\t')
 				++*it;

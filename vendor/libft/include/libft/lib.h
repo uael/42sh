@@ -34,7 +34,8 @@
 # define ENIMPL (ELAST + 1)
 # define EBOUND (ENIMPL + 1)
 # define ENOTRM (EBOUND + 1)
-# define FT_ELAST (ENOTRM)
+# define ENOARG (ENOTRM + 1)
+# define FT_ELAST (ENOARG)
 
 struct s_vec;
 

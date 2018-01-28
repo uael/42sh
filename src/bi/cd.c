@@ -13,7 +13,7 @@
 #include <sys/stat.h>
 #include <limits.h>
 
-#include "ush.h"
+#include "ush/bi.h"
 
 #define N_CD COLOR_RED COLOR_BOLD "cd: " COLOR_RESET
 

@@ -17,7 +17,7 @@ inline int		sh_evalsubshell(t_job *job, int fd, t_deq *toks, char **ln)
 	t_proc	proc;
 
 	(void)fd;
-	if (sh_procsh(&proc, toks, *ln))
+	if (sh_procsh(&proc, toks))
 		return (sh_evalerr(*ln, sh_tokpeek(toks), "Empty subshell"));
 	sh_toknext(toks);
 	*(t_proc *)ft_vecpush((t_vec *)&job->procs) = proc;

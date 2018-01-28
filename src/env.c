@@ -39,8 +39,8 @@ inline void		sh_envinit(char **envv)
 		}
 	if (!hasp)
 		*(char **)ft_vecpush(g_venv) = ft_strdup(PATH_DFL);
-	ft_vecgrow(g_venv, 1);
-	ft_memset(ft_vecend(g_venv), 0, sizeof(char *));
+	*(char **)ft_vecpush(g_venv) = NULL;
+	--g_venv->len;
 	g_env = g_venv->buf;
 }
 
@@ -71,8 +71,8 @@ t_bool			sh_unsetenv(char *var, t_bool m)
 		{
 			m ? free(*it) : 0;
 			ft_vecrem(g_venv, i, NULL);
-			ft_vecgrow(g_venv, 1);
-			ft_memset(ft_vecend(g_venv), 0, sizeof(char *));
+			*(char **)ft_vecpush(g_venv) = NULL;
+			--g_venv->len;
 			g_env = g_venv->buf;
 			return (1);
 		}

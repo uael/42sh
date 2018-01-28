@@ -15,10 +15,14 @@
 
 # include "../shell.h"
 
-typedef struct	s_subsh
+struct s_proc;
+
+typedef struct	s_procsh
 {
 	t_deq		toks;
-	char		*ln;
-}				t_subsh;
+}				t_procsh;
+
+extern int		sh_procsh(struct s_proc *proc, t_deq *toks);
+extern int		sh_procshlaunch(struct s_proc *proc, pid_t pid);
 
 #endif

@@ -64,7 +64,7 @@ inline int		sh_evalsimple(t_job *job, int fd, t_deq *toks, char **ln)
 		if (ft_strchr(tok->val, '='))
 			sh_evalassign(toks, &vars);
 	tok = sh_tokpeek(toks);
-	sh_procnone(ft_vecpush((t_vec *)&job->procs));
+	sh_procctor(ft_vecpush((t_vec *)&job->procs));
 	while (tok && TOK_ISREDIR(tok->id))
 		if (sh_evalredir(job, toks, ln) == OUF)
 			return (OUF);

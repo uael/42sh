@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   proc/cnf.c                                         :+:      :+:    :+:   */
+/*   proc/boolean.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,30 +12,18 @@
 
 #include "ush/proc.h"
 
-inline void		sh_proccnf(t_proc *proc, char *ln, t_tok *tok, int st)
+inline void		sh_procbit(t_proc *proc, t_bool bit)
 {
-	proc->kind = PROC_CNF;
-	if ((proc->u.cnf.ln = ln))
-		proc->u.cnf.it = ln + tok->pos;
-	if (tok)
-		proc->u.cnf.exe = tok->val;
-	proc->u.cnf.st = st;
+	sh_procctor(proc);
+	proc->kind = PROC_BOOL;
+	proc->u.bit = bit;
 }
 
-inline int		sh_proccnflaunch(t_proc *proc)
+inline int		sh_procbitlaunch(t_proc *proc)
 {
-	char *msg;
-
-	msg = proc->u.cnf.st == PROC_NORIGHTS ? "%s: permission denied" :
-		"%s: Command not found";
-	if (proc->u.cnf.ln)
-		sh_synerr(proc->u.cnf.ln, proc->u.cnf.it, msg, proc->u.cnf.exe);
-	else
-		ft_putf(STDERR_FILENO, msg, proc->u.cnf.exe);
+	proc->status = proc->u.bit;
 	if (proc->child)
-		exit(proc->u.cnf.st);
-	proc->status = proc->u.cnf.st;
-	proc->state = PROC_COMPLETED;
+		exit(proc->status);
 	ft_dup2std(proc->scope, STD_FILENOS);
 	return (YEP);
 }

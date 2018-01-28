@@ -12,27 +12,31 @@
 
 #include "ush/proc.h"
 
-inline void		sh_procerr(t_proc *proc, char *msg, t_tok *tok, char *ln)
+inline t_procerr	*sh_procerr(t_proc *proc, char *msg, char *ln, size_t pos)
 {
 	if (proc->kind != PROC_ERR && proc->kind != PROC_NONE)
+	{
 		sh_procdtor(proc);
-	ft_memset(proc, 0, sizeof(t_proc));
+		sh_procctor(proc);
+	}
 	proc->kind = PROC_ERR;
-	ft_vecctor((t_vec *)&proc->redirs, sizeof(t_redir));
-	ft_memset(proc->scope, -1, 3 * sizeof(int));
-	ft_memcpy(proc->src, STD_FILENOS, 3 * sizeof(int));
-	if ((proc->u.err.ln = ln) && tok)
-		proc->u.err.it = ln + tok->pos;
-	proc->u.err.msg = msg;
+	if (ln ? proc->u.err.ln = ft_strdup(ln) : 0)
+		proc->u.err.pos = pos;
+	msg ? proc->u.err.msg = ft_strdup(msg) : 0;
 	proc->u.err.st = EXIT_FAILURE;
+	return (&proc->u.err);
 }
 
 inline int		sh_procerrlaunch(t_proc *proc)
 {
-	if (proc->u.err.ln)
-		sh_synerr(proc->u.err.ln, proc->u.err.it, proc->u.err.msg);
-	else
-		ft_putf(STDERR_FILENO, proc->u.err.msg);
+	if (proc->u.err.msg)
+	{
+		if (proc->u.err.ln)
+			sh_synerr(proc->u.err.ln, proc->u.err.ln + proc->u.err.pos,
+				proc->u.err.msg);
+		else
+			ft_putf(STDERR_FILENO, proc->u.err.msg);
+	}
 	if (proc->child)
 		exit(proc->u.err.st);
 	proc->status = proc->u.err.st;

@@ -46,6 +46,6 @@ inline void		ft_setenv(t_vec *env, char *var, char *val)
 	ft_strcpy(*it, var);
 	(!ft_strrchr(*it, '=') ? ft_strcat(*it, "=") : NULL);
 	(val ? ft_strcat(*it, val) : NULL);
-	ft_vecgrow(env, 1);
-	ft_memset(ft_vecend(env), 0, sizeof(char *));
+	*(char **)ft_vecpush(env) = NULL;
+	--env->len;
 }

@@ -16,13 +16,20 @@ static void		assignset(t_map *map, char *var, char *val)
 {
 	uint32_t	it;
 	char		*dvar;
+	t_sds		v;
 
+	ft_sdsctor(&v);
+	ft_sdsapd(&v, val);
+	sh_wordexpand(&v);
 	if (ft_mapget(map, var, &it))
-		((char **)map->vals)[it] = ft_strdup(val);
+		((char **)map->vals)[it] = v.buf;
 	else if (ft_mapput(map, dvar = ft_strdup(var), &it))
-		((char **)map->vals)[it] = ft_strdup(val);
+		((char **)map->vals)[it] = v.buf;
 	else
+	{
 		free(dvar);
+		ft_sdsdtor(&v);
+	}
 }
 
 inline int		sh_evalassign(t_deq *toks, t_map *map)

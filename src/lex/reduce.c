@@ -56,7 +56,7 @@ inline t_bool	sh_isname(char *word)
 	if (!ft_isalpha(*word) && *word != '_')
 		return (0);
 	++word;
-	while (*word != '=')
+	while (*word && *word != '=')
 	{
 		if (!ft_isalnum(*word) && *word != '_')
 			return (0);

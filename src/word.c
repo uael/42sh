@@ -50,15 +50,20 @@ inline void		sh_wordglob(t_sds *word)
 
 static t_bool	isname(char *word)
 {
+	char b;
+
+	b = (char)(*word == '{' ? *word++ : 0);
 	if (!ft_isalpha(*word) && *word != '_')
 		return (0);
 	++word;
-	while (*word)
+	while ((b ? *word != '}' : *word))
 	{
 		if (!ft_isalnum(*word) && *word != '_')
 			return (0);
 		++word;
 	}
+	if (b && *word != '}')
+		return (0);
 	return (1);
 }
 

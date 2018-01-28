@@ -35,7 +35,7 @@ inline t_procfn	*sh_bifn(char const *exe)
 	if (!ft_strcmp(exe, "setenv"))
 		return (sh_bisetenv);
 	if (!ft_strcmp(exe, "unset"))
-		return (sh_biunset);
+		return ((t_procfn *)sh_biunset);
 	if (!ft_strcmp(exe, "unsetenv"))
 		return (sh_biunsetenv);
 	return (NULL);
