@@ -47,7 +47,10 @@ inline int		sh_procfnlaunch(t_proc *proc)
 	proc->status = proc->u.fn((int)(av - proc->argv), proc->argv, proc->envv);
 	ft_exbind(EXALL, dfl, NULL);
 	if (proc->child)
-		exit(proc->status);
+	{
+		sh_procdtor(proc);
+		sh_exit(proc->status, NULL);
+	}
 	proc->state = PROC_COMPLETED;
 	ft_dup2std(proc->scope, STD_FILENOS);
 	return (YEP);

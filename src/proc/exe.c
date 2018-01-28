@@ -105,7 +105,7 @@ inline int		sh_procexelaunch(struct s_proc *prc)
 	{
 		sh_err(st == PROC_NORIGHTS ? "%s: permission denied\n" :
 			"%s: Command not found\n", prc->argv[0]);
-		exit(st);
+		return (sh_exit(st, NULL));
 	}
 	ft_sdsctor(word = alloca(sizeof(t_sds)));
 	av = prc->argv;
@@ -119,5 +119,6 @@ inline int		sh_procexelaunch(struct s_proc *prc)
 	}
 	execve(buf, prc->argv, prc->envv);
 	sh_err("%s: permission denied\n", prc->argv[0]);
-	exit(PROC_NORIGHTS);
+	sh_procdtor(prc);
+	return (sh_exit(st, NULL));
 }

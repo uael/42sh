@@ -23,7 +23,10 @@ inline int		sh_procbitlaunch(t_proc *proc)
 {
 	proc->status = proc->u.bit;
 	if (proc->child)
-		exit(proc->status);
+	{
+		sh_procdtor(proc);
+		sh_exit(proc->status, NULL);
+	}
 	ft_dup2std(proc->scope, STD_FILENOS);
 	return (YEP);
 }

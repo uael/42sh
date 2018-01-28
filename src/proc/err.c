@@ -38,7 +38,10 @@ inline int		sh_procerrlaunch(t_proc *proc)
 			ft_putf(STDERR_FILENO, proc->u.err.msg);
 	}
 	if (proc->child)
-		exit(proc->u.err.st);
+	{
+		sh_procdtor(proc);
+		sh_exit(proc->u.err.st, NULL);
+	}
 	proc->status = proc->u.err.st;
 	proc->state = PROC_COMPLETED;
 	ft_dup2std(proc->scope, STD_FILENOS);
