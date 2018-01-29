@@ -29,9 +29,9 @@ static inline int	lexone(int fd, t_tok *tok, char **it, char **ln)
 			return (st);
 		else if (**it && ft_strchr(sh_varifs(), **it))
 			++*it;
-		else if (ISEOL(*it) && ++*it)
+		else if (ISEOL(*it))
 		{
-			sh_tokpos(tok, *it, *ln)->id = TOK_EOL;
+			sh_tokpos(tok, ++*it, *ln)->id = TOK_EOL;
 			ft_sdscpush((t_sds *)tok, '\n');
 			return (YEP);
 		}
