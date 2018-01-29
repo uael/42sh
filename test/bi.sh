@@ -21,14 +21,6 @@ echo -n "cd complex "; (
   A=/tmp/a; B=/tmp/b
   P=$PWD
 
-  cd /Users; \
-    echo $PWD | grep "/Users" || exit 1; \
-    echo $OLDPWD | grep ${P} || exit 1; \
-    cd -; echo $PWD; \
-    echo $PWD | grep ${P} || exit 1; \
-    echo $OLDPWD | grep "/Users" || exit 1; \
-    echo $PWD | grep ${P} || exit 1
-
   cd /tmp; \
     echo $PWD | grep "/tmp" || exit 1; \
     echo $OLDPWD | grep ${P} || exit 1; \
