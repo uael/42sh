@@ -39,7 +39,7 @@ SRC_NAME = \
 	eval.c eval/ampr.c eval/andor.c eval/argv.c eval/assign.c eval/cmd.c \
 	eval/cmp.c eval/compound.c eval/heredoc.c eval/lamp.c eval/list.c \
 	eval/pipeline.c eval/ramp.c eval/raout.c eval/redir.c eval/rin.c \
-	eval/rout.c eval/simple.c eval/subshell.c \
+	eval/rout.c eval/sep.c eval/simple.c eval/subshell.c \
 	job.c job/bg.c job/cont.c job/debug.c job/fg.c job/mark.c job/launch.c \
 	job/state.c job/wait.c job/pipe.c \
 	lex.c lex/heredoc.c lex/next.c lex/op.c lex/quote.c lex/var.c lex/tok.c \

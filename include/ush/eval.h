@@ -39,5 +39,10 @@ extern int		sh_evalheredoc(t_job *job, t_deq *toks, char **ln);
 extern int		sh_evallamp(t_job *job, t_deq *toks, char **ln);
 extern int		sh_evalramp(t_job *job, t_deq *toks, char **ln);
 extern int		sh_evalampr(t_job *job, t_deq *toks, char **ln);
+extern int		sh_evalnewlines(t_deq *toks);
+extern int		sh_evallinebreak(t_deq *toks);
+extern int		sh_evalsepop(t_deq *toks);
+extern int		sh_evalsep(t_deq *toks);
+extern int		sh_evalsepseq(t_deq *toks);
 
 #endif
