@@ -112,9 +112,8 @@ inline int			sh_run(int fd, char *ln)
 			sh_eval(fd, g_toks, &ln) ? g_shstatus = 1 : 0;
 			ft_deqclean(g_toks, (t_dtor)ft_sdsdtor);
 		}
-		if (st < 0)
+		if (st < 0 || ((st == OUF ? g_shstatus = 1 : 0) && !g_shinteract))
 			break ;
-		st == OUF ? g_shstatus = 1 : 0;
 	}
 	rl_finalize(fd);
 	return (st < 0 ? (g_shstatus = EXIT_FAILURE) : g_shstatus);
