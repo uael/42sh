@@ -6,7 +6,7 @@ WARNING="\033[34m[ℹ]\033[0m"
 
 function padme {
   S="$1"
-  line='.............................'
+  line='                       '
   printf "%s %s" "$S" "${line:${#S}}"
 }
 
@@ -42,6 +42,12 @@ else
   PROJECT_PATH=$1
 fi
 
+if [ -z "$2" ];then
+  EXE=${PROJECT_PATH}/21sh
+else
+  EXE=${PROJECT_PATH}/$2
+fi
+
 function dotest {
   local test=$3
   local test_out="./out/$(basename "${test%.*}").out"
@@ -57,10 +63,8 @@ function dotest {
 }
 
 mkdir -p out
-job "Make" "make all" "make -C${PROJECT_PATH}"
 for test in ./test/*.sh; do
-  job "Test" "$(basename "${test%.*}")" "dotest ${PROJECT_PATH}/21sh \
-    /bin/bash ${test}"
+  job "Test" "$(basename "${test%.*}")" "dotest ${EXE} /bin/bash ${test}"
 done
 
 rm ${OUT}

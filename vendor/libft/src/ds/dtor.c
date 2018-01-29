@@ -50,9 +50,9 @@ void		ft_mapdtor(t_map *self, t_dtor kdtor, t_dtor vdtor)
 				++it;
 			}
 		}
-		free(self->bucks);
-		free(self->keys);
-		free(self->vals);
+		ft_pfree((void **)&self->bucks);
+		ft_pfree(&self->keys);
+		ft_pfree(&self->vals);
 	}
 }
 

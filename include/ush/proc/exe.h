@@ -22,7 +22,7 @@ struct s_proc;
 
 typedef char	*t_procexe;
 
-extern int		sh_procexe(struct s_proc *proc, char *p, char *e, char **envv);
+extern void		sh_procexe(struct s_proc *proc, char *p, char *e, char **envv);
 extern int		sh_procexelaunch(struct s_proc *prc);
 
 #endif

@@ -30,7 +30,7 @@ echo -n "cmd basic absolute no path "; (
   exit 0
 ) > /dev/null || echo ${ERROR} && exit 1; echo ${OK}
 
-echo -n "cmd basic absolute no path "; (
+echo -n "cmd basic relative no path "; (
   PATH_SAVE=$PATH; unsetenv PATH
   ls 2>&1 | /usr/bin/grep "not found" || exit 1
   ls -laF 2>&1 | /usr/bin/grep "not found" || exit 1

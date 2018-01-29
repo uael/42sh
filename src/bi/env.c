@@ -54,34 +54,22 @@ static int		env_parse_opts(char **av, void **o, t_vec *e)
 	return (i);
 }
 
-#define MSG1(E, B) ft_strcat(ft_strcpy(B, E), ": permission denied")
-#define MSG2(E, B) ft_strcat(ft_strcpy(B, E), ": Command not found")
-#define MSG(ST, E, B) (ST)==PROC_NORIGHTS?MSG1(E,B):MSG2(E,B)
-
 static int		env_finalize(char *path, char **argv, char **envv)
 {
-	int		st;
 	t_vec	av;
 	t_proc	proc;
 	t_job	*job;
-	char	buf[PATH_MAX];
 
-	if ((st = sh_procexe(&proc, path, argv[0], envv)))
-		sh_procerr(&proc, MSG(st, argv[0], buf), NULL, 0)->st = st;
-	else
-	{
-		ft_vecctor(&av, sizeof(char *));
-		while (*argv)
-			*(char **)ft_vecpush(&av) = ft_strdup(*argv++);
-		*(char **)ft_vecpush(&av) = NULL;
-		proc.argv = av.buf;
-	}
+	sh_procexe(&proc, path, argv[0], envv);
+	ft_vecctor(&av, sizeof(char *));
+	while (*argv)
+		*(char **)ft_vecpush(&av) = ft_strdup(*argv++);
+	*(char **)ft_vecpush(&av) = NULL;
+	proc.argv = av.buf;
 	proc.ownenv = 1;
 	sh_jobctor(job = alloca(sizeof(t_job)));
 	*(t_proc *)ft_vecpush((t_vec *)&job->procs) = proc;
-	st = sh_joblaunch(&job, 1);
-	job->idx < 0 ? sh_jobdtor(job) : 0;
-	return (job->idx < 0 ? 1 : st);
+	return (sh_joblaunch(job, 1));
 }
 
 static int		env_rmvar(t_vec *env, char *var)

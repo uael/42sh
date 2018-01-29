@@ -1,32 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   proc/boolean.c                                     :+:      :+:    :+:   */
+/*   lex/next.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2018/01/06 11:10:01 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/13 08:23:58 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ush/proc.h"
+#include "ush/lex.h"
 
-inline void		sh_procbit(t_proc *proc, t_bool bit)
+inline int		sh_lexnext(int fd, t_deq *toks, char **ln)
 {
-	sh_procctor(proc);
-	proc->kind = PROC_BOOL;
-	proc->u.bit = bit;
-}
+	char	*it;
+	int		st;
 
-inline int		sh_procbitlaunch(t_proc *proc)
-{
-	proc->status = proc->u.bit;
-	if (proc->child)
-	{
-		sh_procdtor(proc);
-		sh_exit(proc->status, NULL);
-	}
-	ft_dup2std(proc->scope, STD_FILENOS);
-	return (YEP);
+	if (fd < 0)
+		return (NOP);
+	if (!(st = rl_catline(fd, ';', ln, &it)))
+		while (!(st = sh_lex(fd, toks, &it, ln)))
+			;
+	return (st);
 }

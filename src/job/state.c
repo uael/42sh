@@ -16,13 +16,19 @@ int		sh_jobstopped(t_job *j)
 {
 	t_proc	*p;
 	size_t	i;
+	int		s;
 
 	i = 0;
+	s = 0;
 	while (i < j->procs.len)
-		if ((p = j->procs.buf + i++)->state != PROC_COMPLETED &&
-			p->state != PROC_STOPPED)
-			return (0);
-	return (1);
+		if ((p = j->procs.buf + i++)->state != PROC_COMPLETED)
+		{
+			if (p->state != PROC_STOPPED)
+				return (0);
+			++s;
+		}
+
+	return (s > 0);
 }
 
 int		sh_jobcompleted(t_job *j)

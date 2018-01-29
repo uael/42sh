@@ -21,33 +21,6 @@ static inline int			bang(t_bool b, int status)
 	return (status);
 }
 
-static inline int			joblayer(t_job **job, int fg)
-{
-	size_t	i;
-	t_proc	*proc;
-
-	if (!(*job)->procs.len)
-		return (EXIT_FAILURE);
-	if (!(*job)->procs.buf->pid)
-	{
-		return (bang((*job)->bang,
-			(*job)->procs.buf[(*job)->procs.len - 1].status));
-	}
-	*job = sh_poolqueue(*job);
-	if (fg)
-		return (bang((*job)->bang, sh_jobfg(*job, 0)));
-	sh_jobbg(*job, (int)(i = 0));
-	ft_putf(STDIN_FILENO, "[%d] ", (*job)->idx + 1);
-	while (i < (*job)->procs.len)
-	{
-		proc = (*job)->procs.buf + i++;
-		ft_putf(STDIN_FILENO, i < (*job)->procs.len ? "%d " : "%d",
-			proc->pid);
-	}
-	ft_putf(STDIN_FILENO, "\n");
-	return (bang((*job)->bang, 0));
-}
-
 static inline int			jobfork(t_job *job, t_proc *p, t_bool piped, int fg)
 {
 	pid_t	pid;
@@ -70,41 +43,61 @@ static inline int			jobfork(t_job *job, t_proc *p, t_bool piped, int fg)
 	return (YEP);
 }
 
-static inline int			jobnext(t_job **job, int fg)
+static inline int			jobnext(t_job *job, int fg)
 {
 	t_job	*next;
+	t_proc	*proc;
+	size_t	i;
 	int		st;
 
-	g_shstatus = joblayer(job, fg);
-	if (!(!g_shinteract || fg) || !(((*job)->andor == ANDOR_OR && g_shstatus) ||
-		((*job)->andor == ANDOR_AND && !g_shstatus)))
-		return (g_shstatus);
-	next = (*job)->next;
-	st = sh_joblaunch(&(*job)->next, fg);
-	if ((*job)->next->idx >= 0)
+	if (!job->procs.len)
+		st = EXIT_FAILURE;
+	else if (!job->procs.buf->pid)
+		st = bang(job->bang, job->procs.buf[job->procs.len - 1].status);
+	else if (!fg)
 	{
-		free(next);
-		(*job)->next = NULL;
+		st = bang(job->bang, sh_jobbg(job, (int)(i = 0)));
+		ft_putf(STDIN_FILENO, "[%d] ", job->idx + 1);
+		while (i < job->procs.len)
+		{
+			proc = job->procs.buf + i++;
+			ft_putf(STDIN_FILENO, i < job->procs.len ? "%d " : "%d", proc->pid);
+		}
+		ft_putf(STDIN_FILENO, "\n");
+		return (st);
 	}
-	return (st);
+	else
+		st = bang(job->bang, sh_jobfg(job, 0));
+	if (!(job->andor == ANDOR_OR && st) && !(job->andor == ANDOR_AND && !st))
+	{
+		sh_jobdtor(job);
+		return (st);
+	}
+	next = job->next;
+	job->next = NULL;
+	sh_jobdtor(job);
+	ft_memcpy(job, next, sizeof(t_job));
+	free(next);
+	return (sh_joblaunch(job, fg));
 }
 
-int							sh_joblaunch(t_job **job, int fg)
+int							sh_joblaunch(t_job *job, int fg)
 {
 	size_t	i;
 	t_proc	*proc;
 	int		fds[2];
 
 	i = 0;
+	job->bg = (t_bool)!fg;
 	ft_memcpy(g_io, STD_FILENOS, 3 * sizeof(int));
-	while (i < (*job)->procs.len)
+	while (i < job->procs.len)
 	{
-		proc = (*job)->procs.buf + i++;
-		sh_jobpipe(*job, i, fds, g_io);
+		proc = job->procs.buf + i++;
+		sh_jobpipe(job, i, fds, g_io);
 		proc->close = fds[0];
 		proc->state = PROC_RUNNING;
-		if (jobfork(*job, proc, (t_bool)((*job)->procs.len > 1), fg))
-			return (g_shstatus = !(*job)->bang);
+		if (jobfork(job, proc, (t_bool)(job->procs.len > 1), fg))
+			return (!job->bang);
 		g_io[STDIN_FILENO] != STDIN_FILENO ? close(g_io[STDIN_FILENO]) : 0;
 		g_io[STDOUT_FILENO] != STDOUT_FILENO ? close(g_io[STDOUT_FILENO]) : 0;
 		g_io[STDIN_FILENO] = fds[0];

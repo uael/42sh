@@ -12,12 +12,12 @@
 
 #include <signal.h>
 
-#include "ush/job.h"
 #include "ush/pool.h"
 
 inline int		sh_jobfg(t_job *job, int cont)
 {
-	int st;
+	int		st;
+	t_job	*bg;
 
 	job->bg = 0;
 	if (g_shinteract)
@@ -29,12 +29,22 @@ inline int		sh_jobfg(t_job *job, int cont)
 			sh_err("kill (SIGCONT): %e\n", errno);
 	}
 	sh_jobwait(job);
-	st = job->procs.buf[job->procs.len - 1].status;
 	if (g_shinteract)
 	{
 		tcsetpgrp(STDIN_FILENO, g_shpgid);
 		tcgetattr(STDIN_FILENO, &job->tmodes);
 		tcsetattr(STDIN_FILENO, TCSADRAIN, &g_shmode);
 	}
+	if (sh_jobstopped(job))
+	{
+		bg = sh_poolpush(job);
+		if (g_shinteract)
+			ft_puts(STDIN_FILENO, "\r\x1b[0K^Z\n");
+		sh_jobdebug(bg);
+		st = g_shstatus;
+		sh_jobctor(job);
+	}
+	else
+		st = job->procs.buf[job->procs.len - 1].status;
 	return (st);
 }

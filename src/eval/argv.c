@@ -13,11 +13,6 @@
 #include "ush/eval.h"
 
 #define ISCMDM(T) ((T)->id==TOK_WORD||TOK_ISBOOL((T)->id)||TOK_ISREDIR((T)->id))
-#define MSG1(E, B) ft_strcat(ft_strcpy(B, E), ": permission denied")
-#define MSG2(E, B) ft_strcat(ft_strcpy(B, E), ": Command not found")
-#define MSG(ST, E, B) ft_strdup((ST)==PROC_NORIGHTS?MSG1(E,B):MSG2(E,B))
-
-static char			g_buf[PATH_MAX];
 
 static char			**makeenv(t_map *vars, t_bool *owned)
 {
@@ -73,7 +68,6 @@ static inline int	makeargv(t_job *job, t_vec *av, t_deq *toks, char **ln)
 inline int			sh_evalargv(t_job *job, t_map *vars, t_deq *toks, char **ln)
 {
 	t_tok	*tok;
-	int		st;
 	t_proc	*prc;
 	t_bool	own;
 	t_vec	av;
@@ -85,12 +79,8 @@ inline int			sh_evalargv(t_job *job, t_map *vars, t_deq *toks, char **ln)
 		sh_procbit(prc, (t_bool)(tok->id == TOK_FALSE));
 		return (makeargv(job, NULL, toks, ln));
 	}
-	else if ((st = sh_procexe(prc, "PATH", tok->val, makeenv(vars, &own))))
-	{
-		sh_procerr(prc, MSG(st, tok->val, g_buf), *ln, tok->pos)->st = st;
-		prc->ownenv = own;
-		return (makeargv(job, NULL, toks, ln));
-	}
+	sh_procexe(prc, "PATH", tok->val, makeenv(vars, &own));
+	prc->ownenv = own;
 	ft_vecctor(&av, sizeof(char *));
 	if (makeargv(job, &av, toks, ln) == OUF)
 		return (OUF);

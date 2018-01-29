@@ -19,15 +19,13 @@ inline int		sh_poolmark(pid_t pid, int status)
 	t_job	*job;
 	t_proc	*proc;
 
-	if (!g_pool)
-		return (NOP);
 	if (pid > 0)
 	{
 		i = 0;
-		while (i < g_pool->len)
+		while (i < sh_poollen())
 		{
 			j = 0;
-			job = g_pool->jobs + i++;
+			job = sh_poolget(i++);
 			while (j < job->procs.len)
 				if ((proc = job->procs.buf + j++)->pid == pid)
 				{

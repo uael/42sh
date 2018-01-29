@@ -76,11 +76,9 @@ static int		exelookup(char **env, char *exe, char *path, char *buf)
 	return (exelookuppath(beg, exe, rights, buf));
 }
 
-inline int		sh_procexe(t_proc *proc, char *path, char *exe, char **envv)
+inline void		sh_procexe(t_proc *proc, char *path, char *exe, char **envv)
 {
-	int			st;
 	t_procfn	*bi;
-	char		buf[PATH_MAX + 1];
 
 	sh_procctor(proc);
 	proc->envv = envv;
@@ -89,18 +87,38 @@ inline int		sh_procexe(t_proc *proc, char *path, char *exe, char **envv)
 		proc->u.fn = bi;
 		proc->kind = PROC_FN;
 	}
-	else if ((st = exelookup(envv, exe, path, buf)))
-		return (st);
 	else
 	{
 		proc->kind = PROC_EXE;
-		proc->u.exe = ft_strdup(buf);
+		proc->u.exe = ft_strdup(path);
 	}
-	return (YEP);
 }
 
 inline int		sh_procexelaunch(struct s_proc *prc)
 {
-	execve(prc->u.exe, prc->argv, prc->envv);
-	return (sh_exit(EXIT_FAILURE, NULL));
+	t_sds	*word;
+	char	**av;
+	int		st;
+	char 	buf[PATH_MAX + 1];
+
+	if ((st = exelookup(prc->envv, prc->argv[0], prc->u.exe, buf)))
+	{
+		sh_err(st == PROC_NORIGHTS ? "%s: permission denied\n" :
+			"%s: Command not found\n", prc->argv[0]);
+		return (sh_exit(st, NULL));
+	}
+	ft_sdsctor(word = alloca(sizeof(t_sds)));
+	av = prc->argv;
+	while (*++av)
+	{
+		word->len = ft_strlen(*av);
+		word->cap = word->len;
+		word->buf = *av;
+		sh_wordexpand(word);
+		*av = word->buf;
+	}
+	execve(buf, prc->argv, prc->envv);
+	sh_err("%s: permission denied\n", prc->argv[0]);
+	sh_procdtor(prc);
+	return (sh_exit(st, NULL));
 }

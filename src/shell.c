@@ -14,9 +14,7 @@
 #include <term.h>
 
 #include "ush/shell.h"
-#include "ush/pool.h"
 #include "ush/eval.h"
-#include "ush/var.h"
 
 t_bool				g_shinteract = 0;
 pid_t				g_shpgid;
@@ -105,7 +103,6 @@ inline int			sh_run(int fd, char *ln)
 
 	sh_init(fd);
 	sh_varscope();
-	sh_poolscope();
 	while (!(st = rl_getline(fd, sh_prompt(SH_PROMPT(), buf), &ln)))
 	{
 		it = ln;
@@ -121,7 +118,6 @@ inline int			sh_run(int fd, char *ln)
 		st == OUF ? g_shstatus = 1 : 0;
 	}
 	sh_varunscope();
-	sh_poolunscope();
 	rl_finalize(fd);
 	return (st < 0 ? (g_shstatus = EXIT_FAILURE) : g_shstatus);
 }

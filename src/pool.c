@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pool.c                                             :+:      :+:    :+:   */
+/*   pool.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,49 +12,48 @@
 
 #include "ush/pool.h"
 
-static t_vec	g_pools_stack = { NULL, sizeof(t_pool), 0, 0 };
-static t_vec	*g_pools = &g_pools_stack;
-t_pool			*g_pool = NULL;
+static t_pool	g_async_stack;
+static t_pool	*g_async = &g_async_stack;
 
-inline void		sh_poolscope(void)
+inline size_t	sh_poollen(void)
 {
-	g_pool = ft_vecpush(g_pools);
+	return (g_async->len);
 }
 
-/*
-** TODO(42sh): Check for running jobs
-** https://github.com/uael/21sh/issues/80
-*/
-
-inline t_bool	sh_poolunscope(void)
+inline t_job	*sh_poolget(size_t idx)
 {
-	if (g_pool && ft_vecpop(g_pools, NULL))
-		return (1);
-	ft_vecdtor(g_pools, NULL);
-	return (0);
-}
-
-inline t_job	*sh_poolqueue(t_job *job)
-{
-	t_job	*new;
-
-	if (g_pool->len == CHILD_MAX)
+	if (idx > g_async->len)
 		return (NULL);
-	new = ft_memcpy(g_pool->jobs + g_pool->len, job, sizeof(t_job));
-	new->idx = (int)g_pool->len++;
-	return (new);
+	return (g_async->jobs + idx);
 }
 
-inline t_job	*sh_poolfind(pid_t pgid)
+inline t_job	*sh_poolpush(t_job *job)
 {
-	size_t	i;
-	t_job	*job;
+	t_job *bg;
 
-	if (!g_pool)
-		return (NULL);
-	i = 0;
-	while (i < g_pool->len)
-		if ((job = g_pool->jobs + i++)->pgid == pgid)
-			return (job);
-	return (NULL);
+	bg = ft_memcpy(g_async->jobs + g_async->len, job, sizeof(t_job));
+	bg->idx = (int)g_async->len++;
+	bg->bg = 1;
+	return (bg);
+}
+
+inline t_bool	sh_poolrem(size_t idx, t_job *out)
+{
+	t_job *job;
+
+	if (idx > g_async->len)
+		return (0);
+	if (out)
+		ft_memcpy(out, g_async + idx, sizeof(t_job));
+	if (--g_async->len)
+	{
+		ft_memmove(g_async->jobs + idx, g_async->jobs + idx + 1,
+			sizeof(t_job) * (g_async->len - idx));
+		while (idx < g_async->len)
+		{
+			job = g_async->jobs + idx++;
+			job->idx = (int)idx;
+	}
+		}
+	return (1);
 }
