@@ -1,4 +1,4 @@
-#!../21sh.san
+#!.${EXE}.san
 
 OK="[✔]"
 ERROR="[✖]"
@@ -30,7 +30,7 @@ eoF2
 ) > /dev/null || echo ${ERROR} && exit 1; echo ${OK}
 
 echo -n "heredoc subshell"; (
-  env -i ./21sh <<EOL > /dev/null
+  env -i ${EXE} <<EOL > /dev/null
     (env | grep --color=always PATH) || exit 1
     (env | wc -l | grep --color=always 1) || exit 1
     (env | grep --color=always "PATH=usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:.") || exit 1
@@ -41,7 +41,7 @@ EOL
 
 
 echo -n "heredoc multiple subshell "; (
-  env -i ./21sh <<EOL
+  env -i ${EXE} <<EOL
     (env | grep --color=always PATH) > /dev/null || exit 1
     (env | wc -l | grep --color=always 1) > /dev/null || exit 1
     (env | grep --color=always "PATH=usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:.") > /dev/null || exit 1
@@ -49,7 +49,7 @@ echo -n "heredoc multiple subshell "; (
     exit 0
 EOL
   (
-    env -i ./21sh <<EOL
+    env -i ${EXE} <<EOL
       (env | grep --color=always PATH) > /dev/null || exit 1
       (env | wc -l | grep --color=always 1) > /dev/null || exit 1
       (env | grep --color=always "PATH=usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:.") > /dev/null || exit 1
@@ -57,7 +57,7 @@ EOL
       exit 0
 EOL
     (
-      env -i ./21sh <<EOL
+      env -i ${EXE} <<EOL
         (env | grep --color=always PATH) > /dev/null || exit 1
         (env | wc -l | grep --color=always 1) > /dev/null || exit 1
         (env | grep --color=always "PATH=usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:.") > /dev/null || exit 1
@@ -65,7 +65,7 @@ EOL
         exit 0
 EOL
       (
-        env -i ./21sh <<EOL
+        env -i ${EXE} <<EOL
           (env | grep --color=always PATH) > /dev/null || exit 1
           (env | wc -l | grep --color=always 1) > /dev/null || exit 1
           (env | grep --color=always "PATH=usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:.") > /dev/null || exit 1

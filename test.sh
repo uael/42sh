@@ -36,16 +36,16 @@ function job {
   fi
 }
 
-if [ -z "$1" ];then
+if [ -z "$1" ]; then
   PROJECT_PATH='.'
 else
   PROJECT_PATH=$1
 fi
 
 if [ -z "$2" ];then
-  EXE=${PROJECT_PATH}/21sh
+  export EXE=${PROJECT_PATH}/21sh
 else
-  EXE=${PROJECT_PATH}/$2
+  export EXE=${PROJECT_PATH}/$2
 fi
 
 function dotest {

@@ -12,12 +12,12 @@
 
 #include "ush.h"
 
-static int	unsetexhdl(int rcode, void *arg)
-{
-	static char const *usage = "usage: unset [NAME ...]\n"
-		"\tThe unset builtin command is used to unset values and attributes\n"
-		"\tof shell variables.\n";
+static char const	*g_usage = "usage: unset [NAME ...]\n"
+"\tThe unset builtin command is used to unset values and attributes\n"
+"\tof shell variables.\n";
 
+static int			unsetexhdl(int rcode, void *arg)
+{
 	if (!errno || errno == EBADF || errno == EIO)
 		return (rcode);
 	if (arg)
@@ -26,14 +26,14 @@ static int	unsetexhdl(int rcode, void *arg)
 	else
 		ft_putf(STDERR_FILENO, COLOR_BRED"unset: "COLOR_RESET"%e\n", errno);
 	if (errno == ENOARG)
-		ft_puts(STDERR_FILENO, usage);
+		ft_puts(STDERR_FILENO, g_usage);
 	if (errno == ENOMEM)
 		sh_exit(EXIT_FAILURE, NULL);
 	errno = 0;
 	return (rcode);
 }
 
-inline int	sh_biunset(int ac, char **av)
+inline int			sh_biunset(int ac, char **av)
 {
 	ft_exbind(EXALL, ft_exhdl(unsetexhdl, NULL), NULL);
 	if (ac == 1)
