@@ -62,9 +62,10 @@ static int		exelookup(char **env, char *exe, char *path, char *buf)
 	uint32_t	i;
 
 	st = 0;
+	if (ft_strchr(exe, '/'))
+		return (exetest(ft_strcpy(buf, exe)));
 	beg = sh_varget(path, env);
-	if (((beg && !ft_strlen(beg)) || ft_strchr(exe, '/')) &&
-		!(st = exetest(ft_strcpy(buf, exe))))
+	if (beg && !ft_strlen(beg) && !(st = exetest(ft_strcpy(buf, exe))))
 		return (st);
 	rights = st == PROC_NORIGHTS;
 	if (!beg)
@@ -105,8 +106,8 @@ inline int		sh_procexelaunch(struct s_proc *prc)
 
 	if ((st = exelookup(prc->envv, prc->argv[0], prc->u.exe, buf)))
 	{
-		sh_err(st == PROC_NORIGHTS ? "%s: permission denied\n" :
-			"%s: Command not found\n", prc->argv[0]);
+		sh_err(st == PROC_NOTFOUND && !ft_strchr(prc->argv[0], '/') ?
+			"%s: Command not found\n" : "%s: %e\n", prc->argv[0], errno);
 		return (sh_exit(st, NULL));
 	}
 	ft_sdsctor(word = alloca(sizeof(t_sds)));
@@ -120,7 +121,7 @@ inline int		sh_procexelaunch(struct s_proc *prc)
 		*av = word->buf;
 	}
 	execve(buf, prc->argv, prc->envv);
-	sh_err("%s: permission denied\n", prc->argv[0]);
+	sh_err("%s: %e\n", errno);
 	sh_procdtor(prc);
 	exit(st);
 }

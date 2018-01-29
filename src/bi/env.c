@@ -41,11 +41,11 @@ static int		env_parse_opts(char **av, void **o, t_vec *e)
 				if (*a == 'i' && !(*((uint8_t *)o[0]) & ENV_I))
 					*((uint8_t *)o[0]) |= ENV_I;
 				else if (*a == 'i')
-					return (ft_retf(0, N_ENV"%c: "M_DUP"\n", *a));
+					return (ft_retf(NOP, N_ENV"%c: "M_DUP"\n", *a) & 0);
 				else if (ft_strchr("Pu", *a))
 					env_get_opt(*a, *(a + 1) ? a + 1 : av[++i], (char **)o[1]);
 				else
-					return (ft_retf(0, N_ENV"%c: %e\n", *a, EINVAL));
+					return (ft_retf(NOP, N_ENV"%c: %e\n", *a, EINVAL) & 0);
 		}
 		else if (ft_strchr(a, '='))
 			*(char **)ft_vecpush(e) = ft_strdup(a);
