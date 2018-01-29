@@ -112,7 +112,7 @@ inline int			sh_run(int fd, char *ln)
 			sh_eval(fd, g_toks, &ln) ? g_shstatus = 1 : 0;
 			ft_deqclean(g_toks, (t_dtor)ft_sdsdtor);
 		}
-		if (st < 0 || ((st == OUF ? g_shstatus = 1 : 0) && !g_shinteract))
+		if (st < 0 || ((st == OUF ? (g_shstatus = 1) : 0) && !g_shinteract))
 			break ;
 	}
 	rl_finalize(fd);
