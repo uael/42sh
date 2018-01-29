@@ -1,5 +1,3 @@
-#!.${EXE}
-
 OK="[✔]"
 ERROR="[✖]"
 WARNING="[ℹ]"
@@ -54,6 +52,7 @@ echo -n "env "; (
 
   env -i ${EXE} <<EOL
 env | grep --color=always PATH || exit 1
+env | grep --color=always HOME && exit 1
 env | wc -l | grep --color=always 1 || exit 1
 env | grep --color=always "PATH=usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:." || exit 1
 echo $PATH | grep --color=always "usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:." || exit 1

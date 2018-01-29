@@ -1,5 +1,3 @@
-#!.${EXE}.san
-
 OK="[✔]"
 ERROR="[✖]"
 WARNING="[ℹ]"

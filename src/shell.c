@@ -102,7 +102,6 @@ inline int			sh_run(int fd, char *ln)
 	char	buf[PATH_MAX];
 
 	sh_init(fd);
-	sh_varscope();
 	while (!(st = rl_getline(fd, sh_prompt(SH_PROMPT(), buf), &ln)))
 	{
 		it = ln;
@@ -117,7 +116,6 @@ inline int			sh_run(int fd, char *ln)
 			break ;
 		st == OUF ? g_shstatus = 1 : 0;
 	}
-	sh_varunscope();
 	rl_finalize(fd);
 	return (st < 0 ? (g_shstatus = EXIT_FAILURE) : g_shstatus);
 }
@@ -134,6 +132,7 @@ int					sh_exit(int exitno, char const *fmt, ...)
 		rl_finalize(g_shfd);
 	rl_dtor();
 	sh_envdtor();
+	sh_vardtor();
 	sh_evaldtor();
 	g_toks->cur = 0;
 	ft_deqdtor(g_toks, (t_dtor)ft_sdsdtor);

@@ -14,6 +14,11 @@
 
 inline int	rl_editreturn(void)
 {
+	if (g_eln->idx != g_eln->str.len)
+	{
+		g_eln->idx = (uint16_t)g_eln->str.len;
+		rl_editprint();
+	}
 	ft_sdscpush(&g_eln->str, '\n');
 	ft_write(STDIN_FILENO, "\n", 1);
 	return (NOP);

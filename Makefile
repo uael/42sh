@@ -31,7 +31,7 @@ R3TH_NAME = rl ft
 D3TH_NAME = $(addsuffix .dev, $(R3TH_NAME))
 S3TH_NAME = $(addsuffix .san, $(R3TH_NAME))
 SRC_NAME = \
-	bi.c bi/cd.c bi/echo.c bi/env.c bi/exit.c bi/export.c bi/set.c bi/setenv.c \
+	bi.c bi/cd.c bi/echo.c bi/env.c bi/exit.c bi/export.c bi/setenv.c \
 	bi/unset.c bi/unsetenv.c bi/fg.c bi/bg.c bi/jobs.c \
 	comp.c \
 	env.c \
@@ -50,7 +50,7 @@ SRC_NAME = \
 	redir.c \
 	shell.c \
 	tok.c \
-	var.c var/ifs.c \
+	var.c \
 	word.c
 
 SRC = $(addprefix $(SRC_PATH), $(SRC_NAME))

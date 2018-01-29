@@ -30,8 +30,6 @@ inline t_procfn	*sh_bifn(char const *exe)
 		return (sh_bifg);
 	if (!ft_strcmp(exe, "jobs"))
 		return (sh_bijobs);
-	if (!ft_strcmp(exe, "set"))
-		return (sh_biset);
 	if (!ft_strcmp(exe, "setenv"))
 		return (sh_bisetenv);
 	if (!ft_strcmp(exe, "unset"))
