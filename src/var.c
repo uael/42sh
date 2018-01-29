@@ -46,13 +46,13 @@ inline void		sh_varset(char *var, char *val)
 		free(dvar);
 }
 
-inline char		*sh_varget(char *var)
+inline char		*sh_varget(char *var, char **envv)
 {
 	uint32_t	it;
 
 	if (ft_mapget(g_locals, var, &it))
 		return (((char **)g_locals->vals)[it]);
-	return (sh_getenv(var));
+	return (envv ? ft_getenv(envv, var) : NULL);
 }
 
 inline char		*sh_varifs(void)

@@ -19,7 +19,7 @@
 
 extern void		sh_vardtor(void);
 extern void		sh_varset(char *var, char *val);
-extern char		*sh_varget(char *var);
+extern char		*sh_varget(char *var, char **envv);
 extern char		*sh_varifs(void);
 
 #endif

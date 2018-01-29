@@ -16,7 +16,7 @@ static inline void		export(char *var, char *val)
 {
 	char *local;
 
-	if ((local = sh_varget(var)) && !val)
+	if ((local = sh_varget(var, NULL)) && !val)
 		val = local;
 	sh_setenv(var, val);
 	if (local)

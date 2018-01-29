@@ -32,7 +32,7 @@ static void		expandvar(t_sds *word)
 	}
 	*end = '\0';
 	word->len = 0;
-	if ((end = sh_varget(var)))
+	if ((end = sh_varget(var, g_env)))
 		ft_sdsapd(word, end);
 	else
 		*word->buf = '\0';
