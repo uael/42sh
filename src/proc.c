@@ -10,6 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <signal.h>
+
 #include "ush/proc.h"
 
 inline void			sh_procctor(t_proc *proc)

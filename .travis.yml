@@ -3,8 +3,7 @@ language: c
 dist: trusty
 
 script:
-  - make testsan
-  - make valgrind
+  - make san && make testsan
 
 matrix:
   include:
