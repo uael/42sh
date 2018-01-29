@@ -17,6 +17,7 @@
 
 # define PROC_NOTFOUND (127)
 # define PROC_NORIGHTS (126)
+# define PROC_ISDIR (1)
 
 struct s_proc;
 

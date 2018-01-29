@@ -24,6 +24,8 @@ static int		exetest(char *exe)
 		return (PROC_NOTFOUND);
 	if (!(s.st_mode & (S_IFREG | S_IXUSR)))
 		return (PROC_NOTFOUND);
+	if (S_ISDIR(s.st_mode))
+		return (PROC_ISDIR);
 	if (access(exe, X_OK) != 0)
 		return (PROC_NORIGHTS);
 	return (YEP);
@@ -41,7 +43,8 @@ static int		exelookuppath(char *pvar, char *exe, int rights, char *buf)
 		sep = ft_strchr(pvar, ':');
 		len = sep ? (size_t)(sep - pvar) : ft_strlen(pvar);
 		ft_strncpy(buf, pvar, len)[len] = '\0';
-		if (!(st = exetest(ft_pathcat(buf, exe))) || st == PROC_NORIGHTS)
+		if (!(st = exetest(ft_pathcat(buf, exe))) || st == PROC_NORIGHTS ||
+			st == PROC_ISDIR)
 		{
 			ft_mapput(g_binaries, ft_strdup(exe), &i);
 			((char **)g_binaries->vals)[i] = ft_strdup(buf);
@@ -99,29 +102,20 @@ inline void		sh_procexe(t_proc *proc, char *path, char *exe, char **envv)
 
 inline int		sh_procexelaunch(struct s_proc *prc)
 {
-	t_sds	*word;
-	char	**av;
 	int		st;
 	char 	buf[PATH_MAX + 1];
 
 	if ((st = exelookup(prc->envv, prc->argv[0], prc->u.exe, buf)))
 	{
-		sh_err(st == PROC_NOTFOUND && !ft_strchr(prc->argv[0], '/') ?
+		if (st == PROC_ISDIR)
+			sh_err("%s: Is a directory\n", prc->argv[0]);
+		else
+			sh_err(st == PROC_NOTFOUND && !ft_strchr(prc->argv[0], '/') ?
 			"%s: Command not found\n" : "%s: %e\n", prc->argv[0], errno);
-		return (sh_exit(st, NULL));
-	}
-	ft_sdsctor(word = alloca(sizeof(t_sds)));
-	av = prc->argv;
-	while (*++av)
-	{
-		word->len = ft_strlen(*av);
-		word->cap = word->len;
-		word->buf = *av;
-		sh_wordexpand(word);
-		*av = word->buf;
+		exit(st);
 	}
 	execve(buf, prc->argv, prc->envv);
-	sh_err("%s: %e\n", errno);
+	sh_err("%s: %e\n", prc->argv[0], errno);
 	sh_procdtor(prc);
 	exit(st);
 }
