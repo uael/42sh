@@ -120,5 +120,5 @@ inline int		sh_procexelaunch(struct s_proc *prc)
 	execve(buf, prc->argv, prc->envv);
 	sh_err("%s: permission denied\n", prc->argv[0]);
 	sh_procdtor(prc);
-	return (sh_exit(st, NULL));
+	exit(st);
 }

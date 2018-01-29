@@ -15,7 +15,7 @@ CC = gcc
 CFLAGS = -Werror -Wextra -Wall
 RCFLAGS = $(CFLAGS) -O3
 DCFLAGS = $(CFLAGS) -g3 -DDEBUG
-SCFLAGS = $(CFLAGS) -fsanitize=address
+SCFLAGS = $(DCFLAGS) -fsanitize=address
 
 SRC_PATH = ./src/
 OBJ_PATH = ./obj/
@@ -124,7 +124,7 @@ $(DOBJ_PATH)%.o: $(SRC_PATH)%.c
 $(SOBJ_PATH)%.o: $(SRC_PATH)%.c
 	@mkdir -p $(shell dirname $@)
 	@printf  "\r%-25s\033[34m[$<]\033[0m\n" "$(NAME).san:"
-	@$(CC) $(RCFLAGS) $(INC) -MMD -MP -c $< -o $@
+	@$(CC) $(SCFLAGS) $(INC) -MMD -MP -c $< -o $@
 	@printf "\033[A\033[2K"
 
 clean:

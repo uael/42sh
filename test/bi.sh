@@ -52,5 +52,11 @@ echo -n "env "; (
   unsetenv FOO
   env | grep "FOO=bar" && exit 1
 
+  env -i ./21sh <<EOL
+env | grep --color=always PATH || exit 1
+env | wc -l | grep --color=always 1 || exit 1
+env | grep --color=always "PATH=usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:." || exit 1
+echo $PATH | grep --color=always "usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:." || exit 1
+EOL
   exit 0
 ) > /dev/null || echo ${ERROR} && exit 1; echo ${OK}

@@ -15,7 +15,7 @@ CC = gcc
 CFLAGS = -Werror -Wextra -Wall
 RCFLAGS = $(CFLAGS) -O3
 DCFLAGS = $(CFLAGS) -g3 -DDEBUG
-SCFLAGS = $(CFLAGS) -fsanitize=address
+SCFLAGS = $(DCFLAGS) -fsanitize=address
 
 SRC_PATH = ./src/
 OBJ_PATH = ./obj/

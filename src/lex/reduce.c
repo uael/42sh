@@ -21,14 +21,14 @@ inline int		sh_lexreduce(int fd, t_deq *toks, char **it, char **ln)
 	prev = NULL;
 	tok = (t_tok *)ft_deqbeg(toks) - 1;
 	end = ft_deqend(toks);
-	while (++tok < end)
+	while (++tok < end && tok->id != TOK_EOL && tok->id != TOK_END)
 	{
 		if (tok->id == TOK_WORD && prev)
 		{
 			if (prev->id == TOK_HEREDOC && sh_lexheredoc(fd, tok, it, ln))
-				return (WUT);
+				return (OUF);
 			if (prev->id == TOK_HEREDOCT && sh_lexheredoct(fd, tok, it, ln))
-				return (WUT);
+				return (OUF);
 		}
 		else if (prev && (prev->id == TOK_HEREDOC || prev->id == TOK_HEREDOCT))
 			return (sh_synerr(*ln, *ln + tok->pos, "Expected `%s' after "
@@ -40,7 +40,7 @@ inline int		sh_lexreduce(int fd, t_deq *toks, char **it, char **ln)
 	return (YEP);
 }
 
-inline char		sh_isbracket(char b)
+inline char		sh_rbracket(char b)
 {
 	if (b == '[')
 		return (']');

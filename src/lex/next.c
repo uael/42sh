@@ -12,14 +12,14 @@
 
 #include "ush/lex.h"
 
-inline int		sh_lexnext(int fd, t_deq *toks, char **ln)
+inline int		sh_lexnext(int fd, t_deq *toks, char c, char **ln)
 {
 	char	*it;
 	int		st;
 
 	if (fd < 0)
 		return (NOP);
-	if (!(st = rl_catline(fd, ';', ln, &it)))
+	if (!(st = rl_catline(fd, c, ln, &it)))
 		while (!(st = sh_lex(fd, toks, &it, ln)))
 			;
 	return (st);

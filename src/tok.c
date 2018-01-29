@@ -25,6 +25,17 @@ inline t_tok	*sh_toknext(t_deq *toks)
 	return (sh_tokpeek(toks));
 }
 
+inline t_tok	*sh_tokpos(t_tok *tok, char const *it, char const *ln)
+{
+	char *pos;
+
+	pos = (char *)it;
+	while (pos > ln && !ISEOL(pos - 1))
+		--pos;
+	tok->pos = (uint16_t)(it - pos);
+	return (tok);
+}
+
 static t_tok	tokapd(t_tok *prev, char *beg, char *end)
 {
 	t_tok tok;

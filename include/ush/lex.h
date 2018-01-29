@@ -66,6 +66,10 @@ enum			e_tok
 	TOK_RCURLY = '}',
 };
 
+# define ISREOL(IT) (*(IT) == '\n')
+# define ISWEOL(IT) (*(IT) == '\r' && *((IT) + 1) == '\n')
+# define ISEOL(IT) (ISREOL(IT) || ISWEOL(IT))
+
 # define TOK_ISREDIR_1(ID) ((ID)==TOK_RIN||(ID)==TOK_ROUT)
 # define TOK_ISREDIR_2(ID) ((ID)!=TOK_EOL&&((ID)>=TOK_HEREDOC&&(ID)<=TOK_AMPR))
 # define TOK_ISREDIR(ID) (TOK_ISREDIR_1(ID)||TOK_ISREDIR_2(ID))
@@ -87,12 +91,14 @@ extern int		sh_lex(int fd, t_deq *toks, char **it, char **ln);
 extern int		sh_lexvar(int fd, t_tok *tok, char **it, char **ln);
 extern int		sh_lexop(int fd, t_tok *tok, char **it, char **ln);
 extern int		sh_lexquote(int fd, t_tok *tok, char **it, char **ln);
+extern int		sh_lexbquote(int fd, char **it, char **ln);
 extern int		sh_lexword(int fd, t_tok *tok, char **it, char **ln);
 extern int		sh_lexheredoc(int fd, t_tok *tok, char **it, char **ln);
 extern int		sh_lexheredoct(int fd, t_tok *tok, char **it, char **ln);
 extern int		sh_lexreduce(int fd, t_deq *toks, char **it, char **ln);
+extern int		sh_lexnext(int fd, t_deq *toks, char c, char **ln);
 extern void		sh_tokexpand(t_tok *tok, t_deq *toks);
-extern char		sh_isbracket(char b);
+extern char		sh_rbracket(char b);
 extern t_bool	sh_isname(char *word);
 
 #endif

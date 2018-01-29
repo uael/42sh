@@ -40,7 +40,7 @@ inline int		sh_procerrlaunch(t_proc *proc)
 	if (proc->child)
 	{
 		sh_procdtor(proc);
-		sh_exit(proc->u.err.st, NULL);
+		exit(proc->u.err.st);
 	}
 	proc->status = proc->u.err.st;
 	proc->state = PROC_COMPLETED;

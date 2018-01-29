@@ -11,33 +11,12 @@
 /* ************************************************************************** */
 
 #include "ush/eval.h"
-#include "ush/proc.h"
-#include "ush/tok.h"
 
-inline int		sh_procsh(t_proc *proc, t_deq *toks)
+inline void		sh_procsh(t_proc *proc)
 {
-	int		stack;
-	t_tok	*tok;
-
-	stack = 0;
 	sh_procctor(proc);
 	ft_deqctor(&proc->u.sh.toks, sizeof(t_tok));
-	if (toks)
-	{
-		while ((tok = sh_toknext(toks))->id != ')' && !stack)
-		{
-			if (tok->id == '(')
-				++stack;
-			else if (tok->id == ')')
-				--stack;
-			*(t_tok *)ft_deqpush(&proc->u.sh.toks) = *tok;
-		}
-		if (!proc->u.sh.toks.len)
-			return (NOP);
-		(*(t_tok *)ft_deqpush(&proc->u.sh.toks)).id = TOK_END;
-	}
 	proc->kind = PROC_SH;
-	return (YEP);
 }
 
 inline int		sh_procshlaunch(t_proc *proc, pid_t pid)
@@ -49,5 +28,5 @@ inline int		sh_procshlaunch(t_proc *proc, pid_t pid)
 	ln = NULL;
 	g_shstatus = sh_eval(-1, &proc->u.sh.toks, &ln);
 	proc->status = g_shstatus;
-	return (sh_exit(g_shstatus, NULL));
+	exit(g_shstatus);
 }

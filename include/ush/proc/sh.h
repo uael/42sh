@@ -22,7 +22,7 @@ typedef struct	s_procsh
 	t_deq		toks;
 }				t_procsh;
 
-extern int		sh_procsh(struct s_proc *proc, t_deq *toks);
+extern void		sh_procsh(struct s_proc *proc);
 extern int		sh_procshlaunch(struct s_proc *proc, pid_t pid);
 
 #endif
