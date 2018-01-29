@@ -12,6 +12,8 @@
 
 #include "ush/lex.h"
 
+static int			g_st;
+
 static inline int	opm(t_tok *tok, char **it, uint8_t len, uint8_t id)
 {
 	tok->id = id;
@@ -19,24 +21,10 @@ static inline int	opm(t_tok *tok, char **it, uint8_t len, uint8_t id)
 	return (YEP);
 }
 
-static inline int	opnext(int fd, char **it, char **ln)
-{
-	int	st;
-
-	while (*++*it == '\\' && ((*(*it + 1) == '\n' && !*(*it + 2)) ||
-		((*(*it + 1) == '\r' && *(*it + 2) == '\2' && !*(*it + 3)))))
-	{
-		*it += (*(*it + 1) == '\n') ? 2 : 3;
-		if (fd >= 0 && (st = rl_catline(fd, -2, ln, it)))
-			return (st);
-	}
-	return (YEP);
-}
-
 static inline int	opright(int fd, t_tok *tok, char **it, char **ln)
 {
-	if (opnext(fd, it, ln))
-		return (WUT);
+	if (++*it && (g_st = sh_lexbquote(fd, it, ln)))
+		return (g_st);
 	if (**it == '>' && ++*it)
 		return (opm(tok, it, 2, TOK_RAOUT));
 	if (**it == '&' && ++*it)
@@ -48,12 +36,12 @@ static inline int	opright(int fd, t_tok *tok, char **it, char **ln)
 
 static inline int	opleft(int fd, t_tok *tok, char **it, char **ln)
 {
-	if (opnext(fd, it, ln))
-		return (WUT);
+	if (++*it && (g_st = sh_lexbquote(fd, it, ln)))
+		return (g_st);
 	if (**it == '<')
 	{
-		if (opnext(fd, it, ln))
-			return (WUT);
+		if (++*it && (g_st = sh_lexbquote(fd, it, ln)))
+			return (g_st);
 		if (**it == '-' && ++*it)
 			return (opm(tok, it, 3, TOK_HEREDOCT));
 		return (opm(tok, it, 2, TOK_HEREDOC));
@@ -75,8 +63,8 @@ inline int			sh_lexop(int fd, t_tok *tok, char **it, char **ln)
 		return (NOP);
 	if (**it == '&')
 	{
-		if (opnext(fd, it, ln))
-			return (WUT);
+		if (++*it && (g_st = sh_lexbquote(fd, it, ln)))
+			return (g_st);
 		if (**it == '&' && ++*it)
 			return (opm(tok, it, 2, TOK_LAND));
 		if (**it == '>' && ++*it)
@@ -85,8 +73,8 @@ inline int			sh_lexop(int fd, t_tok *tok, char **it, char **ln)
 	}
 	if (**it == '|')
 	{
-		if (opnext(fd, it, ln))
-			return (WUT);
+		if (++*it && (g_st = sh_lexbquote(fd, it, ln)))
+			return (g_st);
 		if (**it == '|' && ++*it)
 			return (opm(tok, it, 2, TOK_LOR));
 		return (opm(tok, it, 1, '|'));

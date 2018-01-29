@@ -42,6 +42,7 @@
 # define TC_ED_CUP TC_ED "\x1b[0;0H"
 
 # define RL_EXIT 3
+# define RL_CLR 4
 
 typedef struct	s_editln
 {

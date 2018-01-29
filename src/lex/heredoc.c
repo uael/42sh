@@ -39,8 +39,8 @@ inline int			sh_lexheredoc(int fd, t_tok *tok, char **it, char **ln)
 	tok->len = 0;
 	st = 0;
 	while (!st)
-		if (!**it && (fd >= 0 && (st = rl_catline(fd, 0, ln, it))))
-			st = st < 0 ? WUT : sh_synerr(*ln, *it, UXPTDEOF, eof);
+		if (!**it && (fd < 0 || (st = rl_catline(fd, 0, ln, it))))
+			st = st < 0 || fd != 0 ? sh_synerr(*ln, *it, UXPTDEOF, eof) : OUF;
 		else
 		{
 			if (ISWEOL(*it))
@@ -63,13 +63,13 @@ inline int			sh_lexheredoct(int fd, t_tok *tok, char **it, char **ln)
 	tok->len = 0;
 	st = 0;
 	while (!st)
-		if (!**it && (fd >= 0 && (st = rl_catline(fd, 0, ln, it))))
-			st = st < 0 ? WUT : sh_synerr(*ln, *it, UXPTDEOF, eof);
+		if (!**it && (fd < 0 || (st = rl_catline(fd, 0, ln, it))))
+			st = st < 0 || fd != 0 ? sh_synerr(*ln, *it, UXPTDEOF, eof) : OUF;
 		else
 		{
 			if (ISWEOL(*it))
 				++*it;
-			if (*(*it - 1) == '\n')
+			if (*it == *ln || (*(*it - 1) == '\n'))
 				while (**it == '\t')
 					++*it;
 			if (!heredoc(tok, eof, eofl, it))

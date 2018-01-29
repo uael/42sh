@@ -29,8 +29,8 @@ inline int			sh_lexvar(int fd, t_tok *tok, char **it, char **ln)
 		return (sh_synerr(*ln, *it, "Expected alpha _ or '{' got `%c'", **it));
 	while (ft_sdscpush((t_sds *)tok, *(*it)++))
 		if (brace == '{' && !**it &&
-			(st = fd < 0 ? NOP : rl_catline(fd, 0, ln, it)))
-			return (st < 0 ? WUT : sh_synerr(*ln, *it, UNPXTD));
+			(fd < 0 || (st = rl_catline(fd, 0, ln, it))))
+			return (st < 0 || fd != 0 ? sh_synerr(*ln, *it, UNPXTD) : OUF);
 		else if (!**it)
 			break ;
 		else if (!ft_isalnum(**it) && **it != '_')

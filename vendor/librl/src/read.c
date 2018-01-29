@@ -24,7 +24,7 @@ void			rd_sigwinch(int signo)
 {
 	(void)signo;
 	rl_screenget(g_screen);
-	if (g_mode == RL_INSERT)
+	if (g_mode != RL_OFF && g_mode != RL_NONE)
 		rl_editprint();
 }
 
@@ -60,7 +60,7 @@ int				rl_getline(int fd, char *prompt, char **ln)
 		*ln = len > 1 ? rl_histadd(buf, len) : buf;
 	g_screen_init = 1;
 	rl_offmode(fd);
-	return (st);
+	return (st <= 0 ? st : OUF);
 }
 
 int				rl_catline(int fd, char c, char **ln, char **it)
@@ -80,8 +80,8 @@ int				rl_catline(int fd, char c, char **ln, char **it)
 	if (!g_screen_init && rl_screenget(g_screen) < 0)
 		st = WUT;
 	else if (!(st = rl_editln("\033[31m>\033[0m ", &len, &buf, 1)))
-		*it = len > 1 ? rl_histcat(buf, len, c, ln) : buf;
+		*it = len ? rl_histcat(buf, len, c, ln) : buf;
 	g_screen_init = 1;
 	rl_offmode(fd);
-	return (st);
+	return (st <= 0 ? st : OUF);
 }

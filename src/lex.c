@@ -20,57 +20,33 @@
 static char			g_stack[1000] = { 0 };
 static int			g_stack_idx;
 
-
-static inline int	lexeol(t_tok *tok, char **it, char **ln)
-{
-	++*it;
-	sh_tokpos(tok, *it, *ln)->id = TOK_EOL;
-	ft_sdscpush((t_sds *)tok, '\n');
-	return (YEP);
-}
-
-static inline int	lexend(t_tok *tok, char **it, char **ln)
-{
-	sh_tokpos(tok, *it, *ln)->id = TOK_END;
-	return (YEP);
-}
-
-static inline int	lexbquote(int fd, char **it, char **ln)
-{
-	int st;
-
-	*it += ISREOL(*it + 1) ? 2 : 3;
-	if (fd >= 0 && (st = rl_catline(fd, -2, ln, it)) < 0)
-		return (st);
-	return (YEP);
-}
-
 static inline int	lexone(int fd, t_tok *tok, char **it, char **ln)
 {
 	int		st;
 
 	while (1)
-		if (**it == '\\' && ((ISREOL(*it + 1) && !*(*it + 2)) ||
-			((ISWEOL(*it + 1) && !*(*it + 3)))) && (st = lexbquote(fd, it, ln)))
+		if ((st = sh_lexbquote(fd, it, ln)))
 			return (st);
 		else if (**it && ft_strchr(sh_varifs(), **it))
 			++*it;
-		else if (ISEOL(*it))
-			return (lexeol(tok, it, ln));
+		else if (ISEOL(*it) && ++*it)
+		{
+			sh_tokpos(tok, *it, *ln)->id = TOK_EOL;
+			ft_sdscpush((t_sds *)tok, '\n');
+			return (YEP);
+		}
 		else if (**it == '#')
 			while (**it && !ISEOL(*it))
 				++*it;
 		else if (!**it)
-			return (lexend(tok, it, ln));
+			return (sh_tokpos(tok, *it, *ln)->id = TOK_END);
 		else
 			break ;
 	sh_tokpos(tok, *it, *ln);
 	ft_isdigit(**it) ? ft_sdscpush((t_sds *)tok, *(*it)++) : 0;
-	if ((st = sh_lexop(fd, tok, it, ln)) != NOP)
-		return (st);
-	if ((st = sh_lexword(fd, tok, it, ln)) != NOP)
-		return (st);
-	return (sh_synerr(*ln, *it, "Unexpected token `%c'", **it));
+	return (st = sh_lexop(fd, tok, it, ln)) != NOP ||
+		(st = sh_lexword(fd, tok, it, ln)) != NOP
+		? st : sh_synerr(*ln, *it, "Unexpected token `%c'", **it);
 }
 
 static inline int	lexline(int fd, t_deq *toks, char **it, char **ln)
@@ -122,7 +98,8 @@ int					sh_lex(int fd, t_deq *toks, char **it, char **ln)
 		toks->cur = sve;
 		if (!g_stack_idx)
 			return (YEP);
-		if (!**it && (fd < 0 || rl_catline(fd, 0, ln, it) < 0))
-			return (sh_synerr(*ln, *it, UXTDE, g_stack[g_stack_idx - 1]));
+		if (!**it && (fd < 0 || (st = rl_catline(fd, 0, ln, it))))
+			return (st < 0 || fd != 0 ?
+				sh_synerr(*ln, *it, UXTDE, g_stack[g_stack_idx - 1]) : OUF);
 	}
 }
