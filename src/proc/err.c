@@ -20,9 +20,9 @@ inline t_procerr	*sh_procerr(t_proc *proc, char *msg, char *ln, size_t pos)
 		sh_procctor(proc);
 	}
 	proc->kind = PROC_ERR;
-	if (ln ? proc->u.err.ln = ft_strdup(ln) : 0)
+	if (ln ? (proc->u.err.ln = ft_strdup(ln)) : 0)
 		proc->u.err.pos = pos;
-	msg ? proc->u.err.msg = ft_strdup(msg) : 0;
+	msg ? (proc->u.err.msg = ft_strdup(msg)) : 0;
 	proc->u.err.st = EXIT_FAILURE;
 	return (&proc->u.err);
 }
