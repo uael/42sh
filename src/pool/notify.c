@@ -19,7 +19,7 @@ static t_bool	jobfini(t_job *job)
 	t_job	*next;
 	int		st;
 
-	st = job->procs.buf[job->procs.len - 1].status;
+	st = !job->procs.len ? 1 : job->procs.buf[job->procs.len - 1].status;
 	if (job->bang)
 		st = st ? 0 : 1;
 	if (!(job->andor == ANDOR_OR && st) && !(job->andor == ANDOR_AND && !st))

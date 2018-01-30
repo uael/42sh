@@ -12,7 +12,7 @@
 
 #include "ush/eval.h"
 
-#define UNEX "1: Unexpected token `%s'"
+#define UNEX "parse error: Unexpected token `%s'"
 
 static t_map		g_binaries_stack =
 {
@@ -54,22 +54,13 @@ inline int			sh_eval(int fd, t_deq *toks, char **ln)
 	st = 0;
 	while (!st)
 	{
-		if (!(tok = sh_tokpeek(toks)))
-			return (evalfini(YEP, toks));
-		while (tok && tok->id == TOK_EOL)
-			tok = sh_toknext(toks);
+		sh_evallinebreak(toks);
 		if (!sh_tokpeek(toks))
 			return (evalfini(YEP, toks));
 		if ((st = sh_evallist(fd, toks, ln)) == OUF)
 			return (evalfini(NOP, toks));
-		if (!(tok = sh_tokpeek(toks)))
+		if (!(tok = sh_tokpeek(toks)) || tok->id == TOK_END)
 			return (evalfini(YEP, toks));
-		if (tok->id == TOK_SEMICOLON)
-			sh_toknext(toks);
-		else if (tok->id == TOK_END)
-			return (evalfini(YEP, toks));
-		else if (tok->id == TOK_EOL && st)
-			st = 0;
 	}
 	tok = sh_tokpeek(toks);
 	return (evalfini(sh_evalerr(*ln, tok, UNEX, sh_tokstr(tok)), toks));

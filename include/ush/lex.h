@@ -75,6 +75,7 @@ enum			e_tok
 # define TOK_ISREDIR(ID) (TOK_ISREDIR_1(ID)||TOK_ISREDIR_2(ID))
 # define TOK_ISBOOL(ID) ((ID)==TOK_TRUE||(ID)==TOK_FALSE)
 # define TOK_ISEND(ID) ((ID)==TOK_EOL||(ID)==TOK_END)
+# define TOK_ISSEP(ID) ((ID)==TOK_SEMICOLON||(ID)==TOK_AMP)
 
 typedef struct	s_tok
 {

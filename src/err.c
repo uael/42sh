@@ -18,7 +18,10 @@ static t_ofs	*g_cerr = &g_cerr_stack;
 
 int			sh_verr(char const *fmt, va_list ap)
 {
-	ft_ofswrf(g_cerr, COLOR_BRED"ush: "COLOR_RESET);
+	if (isatty(STDERR_FILENO))
+		ft_ofswrf(g_cerr, COLOR_BRED"ush: "COLOR_RESET);
+	else
+		ft_ofswrf(g_cerr, "ush: ");
 	ft_ofsvwrf(g_cerr, fmt, ap);
 	ft_ofsflush(g_cerr);
 	return (WUT);
@@ -49,7 +52,8 @@ int			sh_synerr(char const *ln, char const *it, char const *fmt, ...)
 			it = ft_strchr(ln, 0);
 		while (++ln <= it)
 			ft_ofswrc(g_cerr, ' ');
-		ft_ofswrs(g_cerr, COLOR_BRED"^"COLOR_RESET"\n");
+		ft_ofswrs(g_cerr, isatty(STDERR_FILENO) ? COLOR_BRED"^"COLOR_RESET"\n"
+			: "^\n");
 	}
 	ft_ofsflush(g_cerr);
 	return (OUF);
@@ -73,7 +77,8 @@ int			sh_evalerr(char const *ln, t_tok *tok, char const *fmt, ...)
 			it = (char *)(ln + tok->pos);
 		while (++ln <= it)
 			ft_ofswrc(g_cerr, ' ');
-		ft_ofswrs(g_cerr, COLOR_BRED"^"COLOR_RESET"\n");
+		ft_ofswrs(g_cerr, isatty(STDERR_FILENO) ? COLOR_BRED"^"COLOR_RESET"\n"
+			: "^\n");
 	}
 	ft_ofsflush(g_cerr);
 	return (OUF);

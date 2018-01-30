@@ -13,7 +13,7 @@
 #include "ush/eval.h"
 
 #define UNXPTD "Unexpected bang `%s' for empty pipeline"
-#define EXPTD "Expected <pipeline> got `%s'"
+#define UEH "Expected <pipeline> got `%s'"
 
 static inline int	pipelineerr(int st, t_tok *tok, t_bool bang, char *ln)
 {
@@ -63,7 +63,7 @@ inline int			sh_evalandor(t_job *job, int fd, t_deq *toks, char **ln)
 		else if (tok->id == TOK_LAND || tok->id == TOK_LOR)
 		{
 			if (separator(toks, &right, tok))
-				return (sh_evalerr(*ln, tok, EXPTD, sh_tokstr(tok)));
+				return (sh_evalerr(*ln, tok, UEH, sh_tokstr(tok)));
 			if ((st = sh_evalpipeline(&right, fd, toks, ln)))
 				return (pipelineerr(st, tok, right.bang, *ln));
 			job = jobaddnext(&right, job, (t_bool)(tok->id == TOK_LAND));

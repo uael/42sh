@@ -12,7 +12,7 @@
 
 #include "ush/eval.h"
 
-#define EXPTD "Expected `<word>' after redirection `%s' got `%s'"
+#define UEH "Expected `<word>' after redirection `%s' got `%s'"
 
 inline int			sh_evalampr(t_job *job, t_deq *toks, char **ln)
 {
@@ -22,7 +22,7 @@ inline int			sh_evalampr(t_job *job, t_deq *toks, char **ln)
 	char	buf[PATH_MAX];
 
 	if ((tok = sh_toknext(toks))->id != TOK_WORD && !TOK_ISBOOL(tok->id))
-		return (sh_evalerr(*ln, tok, EXPTD, sh_tokstr(tok)));
+		return (sh_evalerr(*ln, tok, UEH, sh_tokstr(tok)));
 	sh_wordexpand((t_sds *)tok);
 	sh_toknext(toks);
 	proc = ft_vecback((t_vec *)&job->procs);

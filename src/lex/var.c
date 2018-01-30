@@ -13,8 +13,8 @@
 #include "ush/lex.h"
 #include "ush/var.h"
 
-#define UNPXTD "Unexpected EOF while looking for matching `}'"
-#define EXPTD "Expected letter _ or '}' got `%c'"
+#define UEE "parse error: Unexpected EOF while looking for matching `}'"
+#define UEH "parse error: Expected letter _ or '}' got `%c'"
 
 inline int			sh_lexvar(int fd, t_tok *tok, char **it, char **ln)
 {
@@ -30,13 +30,13 @@ inline int			sh_lexvar(int fd, t_tok *tok, char **it, char **ln)
 	while (ft_sdscpush((t_sds *)tok, *(*it)++))
 		if (brace == '{' && !**it &&
 			(fd < 0 || (st = rl_catline(fd, 0, ln, it))))
-			return (st < 0 || fd != 0 ? sh_synerr(*ln, *it, UNPXTD) : OUF);
+			return (st < 0 || fd != 0 ? sh_synerr(*ln, *it, UEE) : OUF);
 		else if (!**it)
 			break ;
 		else if (!ft_isalnum(**it) && **it != '_')
 		{
 			if (brace == '{' && **it != '}')
-				return (sh_synerr(*ln, *it, EXPTD, **it));
+				return (sh_synerr(*ln, *it, UEH, **it));
 			if (brace == '{')
 				ft_sdscpush((t_sds *)tok, *(*it)++);
 			break ;

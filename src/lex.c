@@ -13,9 +13,9 @@
 #include "ush/lex.h"
 #include "ush/tok.h"
 
-#define UXTDC "Unexpected token `%c' while looking for matching `%c'"
-#define UXTDE "Unexpected EOF while looking for matching `%c'"
-#define UXTD "Unexpected closing bracket `%c'"
+#define UEB "parse error: Unexpected token `%c' while looking for matching `%c'"
+#define UEE "parse error: Unexpected EOF while looking for matching `%c'"
+#define UEC "parse error: Unexpected closing bracket `%c'"
 
 static char			g_stack[1000] = { 0 };
 static int			g_stack_idx;
@@ -70,8 +70,8 @@ static inline int	lexline(int fd, t_deq *toks, char **it, char **ln)
 			--g_stack_idx;
 		else if (ft_strchr(")}]", tok->id) &&
 			(!g_stack_idx || tok->id != g_stack[g_stack_idx - 1]))
-			return (g_stack_idx ? sh_synerr(*ln, *ln + tok->pos, UXTDC, tok->id,
-				g_stack[g_stack_idx - 1]) : sh_synerr(*ln, *ln + tok->pos, UXTD,
+			return (g_stack_idx ? sh_synerr(*ln, *ln + tok->pos, UEB, tok->id,
+				g_stack[g_stack_idx - 1]) : sh_synerr(*ln, *ln + tok->pos, UEC,
 				tok->id));
 	}
 	return (YEP);
@@ -100,6 +100,6 @@ int					sh_lex(int fd, t_deq *toks, char **it, char **ln)
 			return (YEP);
 		if (!**it && (fd < 0 || (st = rl_catline(fd, 0, ln, it))))
 			return (st < 0 || fd != 0 ?
-				sh_synerr(*ln, *it, UXTDE, g_stack[g_stack_idx - 1]) : OUF);
+				sh_synerr(*ln, *it, UEE, g_stack[g_stack_idx - 1]) : OUF);
 	}
 }

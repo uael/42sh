@@ -12,8 +12,8 @@
 
 #include "ush/lex.h"
 
-#define EXPTD "Expected `%s' after heredoc `%s' got `%s'"
-#define UEXPD "Unexpected empty command between semicolons"
+#define UEH "parse error: Expected `%s' after heredoc `%s' got `%s'"
+#define EXS "parse error: Unexpected empty command between `%s'"
 
 inline int		sh_lexreduce(int fd, t_deq *toks, char **it, char **ln)
 {
@@ -34,10 +34,10 @@ inline int		sh_lexreduce(int fd, t_deq *toks, char **it, char **ln)
 				return (OUF);
 		}
 		else if (prev && (prev->id == TOK_HEREDOC || prev->id == TOK_HEREDOCT))
-			return (sh_synerr(*ln, *ln + tok->pos, EXPTD, sh_tokidstr(TOK_WORD),
+			return (sh_synerr(*ln, *ln + tok->pos, UEH, sh_tokidstr(TOK_WORD),
 			sh_tokidstr(prev->id), sh_tokidstr(tok->id)));
-		else if (prev && prev->id == TOK_SEMICOLON && tok->id == TOK_SEMICOLON)
-			return (sh_synerr(*ln, *ln + tok->pos, UEXPD));
+		else if (prev && prev->id == tok->id && TOK_ISSEP(tok->id))
+			return (sh_synerr(*ln, *ln + tok->pos, EXS, sh_tokstr(tok)));
 		prev = tok;
 	}
 	return (YEP);
