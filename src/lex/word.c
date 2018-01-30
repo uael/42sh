@@ -23,27 +23,37 @@ static inline uint8_t	wordid(char const *s, size_t l)
 	return (TOK_WORD);
 }
 
-inline int				sh_lexword(int fd, t_tok *tok, char **it, char **ln)
+static inline int		inhib(t_tok *tok, char **it)
+{
+	ft_sdscpush((t_sds *)tok, *(*it)++);
+	return (0);
+}
+
+inline int				sh_lexword(int fd, t_tok *t, char **it, char **ln)
 {
 	char	*beg;
 	int		st;
+	int		bs;
 
 	beg = *it;
-	st = 0;
+	ft_initf("%i%i", &st, &bs);
 	while (**it && !st)
-		if (ft_isspace(**it) || ft_strchr("><&|!;(){}", **it))
+		if (!bs && (ft_isspace(**it) || ft_strchr("><&|!;(){}", **it)))
 			break ;
+		else if (!bs && (st = sh_lexbslash(fd, it, ln)))
+			break ;
+		else if (bs)
+			bs = inhib(t, it);
+		else if ((bs = **it == '\\'))
+			++*it;
 		else if ((**it == '\'' || **it == '"'))
-			st = sh_lexquote(fd, tok, it, ln);
-		else if ((st = sh_lexbslash(fd, it, ln)))
-			break ;
+			st = sh_lexquote(fd, t, it, ln);
 		else if (**it == '$')
-			st = sh_lexvar(fd, tok, it, ln);
+			st = sh_lexvar(fd, t, it, ln);
 		else
-			ft_sdscpush((t_sds *)tok, *(*it)++);
-	if (st || (!tok->len && beg == *it))
+			ft_sdscpush((t_sds *)t, *(*it)++);
+	if (st || (!t->len && beg == *it))
 		return (st ? st : NOP);
-	if ((tok->id = wordid(tok->val, tok->len)) == TOK_WORD)
-		sh_wordglob((t_sds *)tok);
+	(t->id = wordid(t->val, t->len)) == TOK_WORD ? sh_wordglob((t_sds *)t) : 0;
 	return (YEP);
 }

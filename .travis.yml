@@ -10,6 +10,11 @@ matrix:
     # default
     - os: linux
     - os: osx
+      script:
+        - git clone https://github.com/we-sh/42ShellTester.git st
+        - make san
+        - bash st/42ShellTester.sh --filter minishell $PWD/21sh.san
+        - bash st/42ShellTester.sh --filter 21sh $PWD/21sh.san
 
     # osx
     - os: osx

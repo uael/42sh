@@ -29,11 +29,13 @@ function job {
   pid=$!
   spinner ${pid}
   wait ${pid}
-  if [[ $? != 0 ]]; then
-      echo -e "${ERROR} $(cat ${OUT})"
+  local RET=$?
+  if [[ $RET != 0 ]]; then
+    echo -e "${ERROR} $(cat ${OUT})"
   else
-      echo -e "${OK}"
+    echo -e "${OK}"
   fi
+  return $RET
 }
 
 if [ -z "$1" ]; then
@@ -63,8 +65,14 @@ function dotest {
 }
 
 mkdir -p out
+ECODE=0
 for test in ./test/*.sh; do
   job "Test" "$(basename "${test%.*}")" "dotest ${EXE} /bin/bash ${test}"
+  RET=$?
+  if [[ $RET != 0 ]]; then
+    ECODE=$RET
+  fi
 done
 
 rm ${OUT}
+exit $ECODE

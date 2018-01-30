@@ -20,9 +20,9 @@ echo -n "cmd basic relative "; (
 
 echo -n "cmd basic absolute no path "; (
   PATH_SAVE=$PATH; unsetenv PATH
-  /bin/ls | /usr/bin/grep "21sh" || exit 1
-  /bin/ls -laF | /usr/bin/grep "CMakeLists.txt*" || exit 1
-  /bin/ls -l -a -F | /usr/bin/grep "CMakeLists.txt*" || exit 1
+  /bin/ls || exit 1
+  /bin/ls -laF || exit 1
+  /bin/ls -l -a -F || exit 1
   PATH=${PATH_SAVE}
 
   exit 0

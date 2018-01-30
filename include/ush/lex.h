@@ -93,7 +93,7 @@ extern int		sh_lexvar(int fd, t_tok *tok, char **it, char **ln);
 extern int		sh_lexop(int fd, t_tok *tok, char **it, char **ln);
 extern int		sh_lexquote(int fd, t_tok *tok, char **it, char **ln);
 extern int		sh_lexbslash(int fd, char **it, char **ln);
-extern int		sh_lexword(int fd, t_tok *tok, char **it, char **ln);
+extern int		sh_lexword(int fd, t_tok *t, char **it, char **ln);
 extern int		sh_lexheredoc(int fd, t_tok *tok, char **it, char **ln);
 extern int		sh_lexheredoct(int fd, t_tok *tok, char **it, char **ln);
 extern int		sh_lexreduce(int fd, t_deq *toks, char **it, char **ln);
