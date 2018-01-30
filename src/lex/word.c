@@ -25,7 +25,7 @@ static inline uint8_t	wordid(char const *s, size_t l)
 
 static inline int		inhib(t_tok *tok, char **it)
 {
-	ft_sdscpush((t_sds *)tok, *(*it)++);
+	ft_sdscpush((t_sds *)tok, **it != '$' ? *(*it)++ : (char)'\\');
 	return (0);
 }
 

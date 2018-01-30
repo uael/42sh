@@ -13,7 +13,7 @@
 #include "ush/lex.h"
 
 #define UEC "parse error: Unexpected EOF while looking for matching `%c'"
-#define DQUOT(IT) ft_strchr("\\\n\"$", *(IT))
+#define DQUOT(IT) ft_strchr("\\\n\"", *(IT))
 #define QUOTE(IT) (*(IT) == '\'' && (*((IT) + 1) == '\''))
 
 static inline int	inhib(char quote, t_tok *tok, char **it)

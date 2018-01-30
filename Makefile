@@ -50,9 +50,9 @@ SRC_NAME = \
 	prompt.c \
 	redir.c \
 	shell.c \
-	tok.c \
+	tok.c tok/expand.c \
 	var.c \
-	word.c
+	word.c word/expand.c
 
 SRC = $(addprefix $(SRC_PATH), $(SRC_NAME))
 ROBJ = $(addprefix $(ROBJ_PATH), $(OBJ_NAME))
