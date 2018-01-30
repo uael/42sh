@@ -32,7 +32,10 @@ int					g_shfd = -1;
 inline uint8_t	sh_scope(void)
 {
 	if (g_shlvl == SHLVL_MAX)
-		sh_exit(EXIT_FAILURE, "Too many shell level\n");
+	{
+		sh_err("Too many shell level\n");
+		exit(EXIT_FAILURE);
+	}
 	g_sh = g_lvls + g_shlvl++;
 	return (g_shlvl);
 }
@@ -40,7 +43,10 @@ inline uint8_t	sh_scope(void)
 inline uint8_t	sh_unscope(void)
 {
 	if (g_shlvl == 1)
-		sh_exit(EXIT_FAILURE, "Already at minimum shell level\n");
+	{
+		sh_err("Already at minimum shell level\n");
+		exit(EXIT_FAILURE);
+	}
 	g_sh = g_lvls + --g_shlvl;
 	return (g_shlvl);
 }
