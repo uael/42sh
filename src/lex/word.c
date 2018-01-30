@@ -35,7 +35,7 @@ inline int				sh_lexword(int fd, t_tok *tok, char **it, char **ln)
 			break ;
 		else if ((**it == '\'' || **it == '"'))
 			st = sh_lexquote(fd, tok, it, ln);
-		else if ((st = sh_lexbquote(fd, it, ln)))
+		else if ((st = sh_lexbslash(fd, it, ln)))
 			break ;
 		else if (**it == '$')
 			st = sh_lexvar(fd, tok, it, ln);

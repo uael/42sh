@@ -45,7 +45,7 @@ inline int	sh_lexquote(int fd, t_tok *tok, char **it, char **ln)
 	return (YEP);
 }
 
-inline int	sh_lexbquote(int fd, char **it, char **ln)
+inline int	sh_lexbslash(int fd, char **it, char **ln)
 {
 	int st;
 

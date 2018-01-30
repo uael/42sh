@@ -25,7 +25,7 @@ static inline int	lexone(int fd, t_tok *tok, char **it, char **ln)
 	int		st;
 
 	while (1)
-		if ((st = sh_lexbquote(fd, it, ln)))
+		if ((st = sh_lexbslash(fd, it, ln)))
 			return (st);
 		else if (**it && ft_strchr(sh_varifs(), **it))
 			++*it;
