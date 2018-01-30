@@ -29,7 +29,7 @@ uint8_t				g_shlvl;
 TTY					g_shmode;
 int					g_shfd = -1;
 
-inline uint8_t	sh_scope(void)
+inline uint8_t		sh_scope(void)
 {
 	if (g_shlvl == SHLVL_MAX)
 	{
@@ -40,7 +40,7 @@ inline uint8_t	sh_scope(void)
 	return (g_shlvl);
 }
 
-inline uint8_t	sh_unscope(void)
+inline uint8_t		sh_unscope(void)
 {
 	if (g_shlvl == 1)
 	{
