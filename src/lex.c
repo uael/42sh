@@ -83,7 +83,7 @@ int					sh_lex(int fd, t_deq *toks, char **it, char **ln)
 	size_t	sve;
 	size_t	cur;
 
-	if (!**it)
+	if (!*it || !**it)
 		return (NOP);
 	g_stack_idx = 0;
 	sve = toks->cur;

@@ -15,34 +15,32 @@
 
 #define UEE "parse error: Unexpected EOF while looking for matching `}'"
 #define UEH "parse error: Expected letter _ or '}' got `%c'"
+#define UEC "parse error: Expected closing '}' got `%c'"
 
-static inline int	varspecial(t_tok *tok, char **it, char brace)
+static inline int	varspecial(int fd, t_tok *tok, char **it, char **ln)
 {
-	char *var;
+	int		st;
+	char	*var;
+	t_bool	brace;
 
-	if (ft_strchr("@*#?-$!", *(var = brace == '{' ? *it + 1 : *it)))
-	{
-		if (brace == '{' && (*(var + 1) != '}' || !ft_isspace(*(var + 2))))
-			return (0);
-		else if (!ft_isspace(*(var + 1)))
-			return (0);
-		var += brace == '{' ? 2 : 1;
-	}
-	else if (ft_isdigit(*var))
-	{
+	var = *it;
+	brace = (t_bool)(*var == '{' && ++var);
+	if (!*var)
+		return (NOP);
+	if (ft_strchr("@*#?-$!", *var))
 		++var;
+	else if (ft_isdigit(*var) && ++var)
 		while (*var && ft_isdigit(*var))
 			++var;
-		if (brace == '{' ? (*var != '}' || !ft_isspace(*(var + 1))) :
-			!ft_isspace(*var))
-			return (0);
-		var += brace == '{' ? 1 : 0;
-	}
 	else
-		return (0);
-	while (*it != var)
-		ft_sdscpush((t_sds *)tok, *(*it)++);
-	return (1);
+		return (NOP);
+	ft_sdsmpush((t_sds *)tok, *it, var - *it);
+	*it += var - *it;
+	st = 0;
+	if (brace && !*var && (fd < 0 || (st = rl_catline(fd, 0, ln, it))))
+		return (st < 0 || fd != 0 ? sh_synerr(*ln, *it, UEE) : OUF);
+	return (brace && **it != '}' ? sh_synerr(*ln, *it, UEC, **it) :
+		((brace && ++*it) & 0));
 }
 
 inline int			sh_lexvar(int fd, t_tok *tok, char **it, char **ln)
@@ -51,9 +49,10 @@ inline int			sh_lexvar(int fd, t_tok *tok, char **it, char **ln)
 	int		st;
 
 	ft_sdscpush((t_sds *)tok, *(*it)++);
-	if ((brace = **it) == '(' || ft_strchr(sh_varifs(), brace) ||
-		ft_isspace(brace) || varspecial(tok, it, brace))
-		return (YEP);
+	st = 0;
+	if (ft_strchr(sh_varifs(), brace = **it) || ft_isspace(brace) ||
+		!(st = varspecial(fd, tok, it, ln)) || st > NOP)
+		return (st);
 	if (!ft_isalpha(brace) && brace != '_' && brace != '{')
 		return (sh_synerr(*ln, *it, "Expected alpha _ or '{' got `%c'", **it));
 	while (ft_sdscpush((t_sds *)tok, *(*it)++))

@@ -15,8 +15,10 @@
 
 static size_t	getvar(char *from, char *to)
 {
-	t_bool bracket;
+	t_bool	bracket;
+	char	*beg;
 
+	beg = to;
 	if ((bracket = (t_bool)(*from == '{')))
 		++from;
 	if (ft_isalpha(*from))
@@ -25,42 +27,64 @@ static size_t	getvar(char *from, char *to)
 	else if (ft_isdigit(*from))
 		while (ft_isdigit(*from))
 			*to++ = *from++;
-	else if (ft_strchr())
-		*to++ = *from++;
+	else if (ft_strchr("@*#?-$!", *from))
+		*to++ = *from;
+	else
+		return (0);
+	*to = '\0';
+	return (to - beg + (bracket ? 2 : 0));
+}
 
+static size_t	expandn(t_sds *word, size_t from, int n)
+{
+	char	buf[20];
+	size_t	l;
+
+	l = ft_intstr(buf, n, 10);
+	ft_sdsmput(word, from - 1, buf, l);
+	return (l);
+}
+
+static size_t	expandspecial(t_sds *word, char *var, size_t from)
+{
+	int		i;
+	size_t	len;
+
+	len = 0;
+	if (ft_isdigit(*var) && (i = (int)ft_atoi(var)) < g_sh->ac)
+		ft_sdsmput(word, from - 1, g_sh->av[i], len = ft_strlen(g_sh->av[i]));
+	else if (*var == '#')
+		len = expandn(word, from, g_sh->ac);
+	else if (*var == '?')
+		len = expandn(word, from, g_sh->status);
+	else if (*var == '$')
+		len = expandn(word, from, g_sh->pid);
+	else if (*var == '!')
+		len = expandn(word, from, g_sh->ppid);
+	return (len);
 }
 
 static char		*expandvar(t_sds *word, size_t from)
 {
-	char		*var;
-	char		*end;
-	char		name[PATH_MAX];
-	char		*nptr;
-	t_bool		bracket;
+	char	var[PATH_MAX];
+	char 	*val;
+	size_t	len;
 
-	var = word->buf + from;
-	while (*(var - 1) != '$')
-		++var;
-	if ((bracket = (t_bool)(*var == '{')))
-		++var;
-	end = var;
-	nptr = name;
-	while (*end)
+	if ((len = getvar(word->buf + from, var)))
 	{
-		if ((bracket && *end == '}') || !ft_isalnum(*end))
-			break ;
-		*nptr++ = *end++;
+		ft_sdsnrem(word, from - 1, len + 1, NULL);
+		if ((val = sh_varget(var, g_env)))
+			ft_sdsmput(word, from - 1, val, len = ft_strlen(val));
+		else if (ft_isdigit(*var) || (len == 1 && ft_strchr("@*#?-$!", *var)))
+			len = expandspecial(word, var, from);
+		else
+			len = 0;
+		return (word->buf + from - 1 + len);
 	}
-	*nptr = '\0';
-	word->len = from;
-	if ((end = sh_varget(var, g_env)))
-		ft_sdsapd(word, end);
-	else
-		word->buf[from] = '\0';
-	return (NULL);
+	return (word->buf + from);
 }
 
-inline void		sh_wordexpand(t_sds *word)
+inline int		sh_wordexpand(t_sds *word)
 {
 	char	*dollar;
 	char	*beg;
@@ -80,4 +104,5 @@ inline void		sh_wordexpand(t_sds *word)
 		else
 			beg = expandvar(word, ++dollar - word->buf);
 	}
+	return (beg != word->buf);
 }

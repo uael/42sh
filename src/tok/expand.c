@@ -53,9 +53,6 @@ inline void		sh_tokexplode(t_tok *tok, t_deq *into)
 
 inline void		sh_tokexpand(t_tok *tok, t_deq *toks)
 {
-	if (*tok->val == '$' && tok->len > 1)
-	{
-		sh_wordexpand((t_sds *)tok);
+	if (sh_wordexpand((t_sds *)tok))
 		sh_tokexplode(tok, toks);
-	}
 }

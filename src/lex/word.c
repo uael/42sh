@@ -48,7 +48,7 @@ inline int				sh_lexword(int fd, t_tok *t, char **it, char **ln)
 			++*it;
 		else if ((**it == '\'' || **it == '"'))
 			st = sh_lexquote(fd, t, it, ln);
-		else if (**it == '$')
+		else if (**it == '$' && (*it == *ln || *(*it - 1) != '\\'))
 			st = sh_lexvar(fd, t, it, ln);
 		else
 			ft_sdscpush((t_sds *)t, *(*it)++);

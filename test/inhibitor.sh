@@ -22,7 +22,6 @@ echo 'a\\tb'
 echo 'a\b'
 echo 'a\\b'
 echo 'a\\\b'
-echo 'a\$b'
 echo 'a\	b'
 echo 'a\
 b'
@@ -44,4 +43,4 @@ f     \
 g      \
 h       \
 i\\j\\k\\l
-echo \a\b\c\d\$\	\'\"\\
+echo \a\b\c\d\$\ \'\"\\

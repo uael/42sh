@@ -33,7 +33,8 @@ inline int			sh_lexquote(int fd, t_tok *tok, char **it, char **ln)
 
 	bs = 0;
 	quote = *(*it)++;
-	while (1)
+	st = 0;
+	while (!st)
 		if (!bs && quote == '"' && (st = sh_lexbslash(fd, it, ln)))
 			return (st);
 		else if (!**it && (fd < 0 || (st = rl_catline(fd, 0, ln, it))))
@@ -44,9 +45,11 @@ inline int			sh_lexquote(int fd, t_tok *tok, char **it, char **ln)
 			break ;
 		else if ((bs = **it == '\\'))
 			++*it;
+		else if (**it == '$' && (*it == *ln || *(*it - 1) != '\\'))
+			st = sh_lexvar(fd, tok, it, ln);
 		else
 			ft_sdscpush((t_sds *)tok, *(*it)++);
-	return (YEP);
+	return (st);
 }
 
 inline int			sh_lexbslash(int fd, char **it, char **ln)
