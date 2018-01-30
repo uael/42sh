@@ -47,6 +47,7 @@ SRC_NAME = \
 	main.c \
 	pool.c pool/mark.c pool/notify.c \
 	proc.c proc/bit.c proc/err.c proc/exe.c proc/fn.c proc/sh.c \
+	prompt.c \
 	redir.c \
 	shell.c \
 	tok.c \
@@ -202,6 +203,15 @@ valgrind: all
       grep "definitely lost:"
 	@valgrind --leak-check=full --track-origins=yes \
       --suppressions=./valgrind.supp ./21sh test/cmd.sh 2>&1 | \
+      grep "definitely lost:"
+	@valgrind --leak-check=full --track-origins=yes \
+      --suppressions=./valgrind.supp ./21sh test/heredoc.sh 2>&1 | \
+      grep "definitely lost:"
+	@valgrind --leak-check=full --track-origins=yes \
+      --suppressions=./valgrind.supp ./21sh test/inhibitor.sh 2>&1 | \
+      grep "definitely lost:"
+	@valgrind --leak-check=full --track-origins=yes \
+      --suppressions=./valgrind.supp ./21sh test/separator.sh 2>&1 | \
       grep "definitely lost:"
 
 re: fclean all

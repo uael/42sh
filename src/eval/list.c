@@ -22,7 +22,7 @@ static inline int	onsemicolon(t_job *job, int fd, t_deq *toks, char **ln)
 	sh_toknext(toks);
 	if (job->procs.len)
 	{
-		g_shstatus = sh_joblaunch(job, 1);
+		g_sh->status = sh_joblaunch(job, 1);
 		sh_jobctor(job);
 	}
 	tok = sh_tokpeek(toks);
@@ -44,7 +44,7 @@ static inline int	onamp(t_job *job, int fd, t_deq *toks, char **ln)
 	sh_toknext(toks);
 	if (job->procs.len)
 	{
-		g_shstatus = sh_joblaunch(sh_poolpush(job), 0);
+		g_sh->status = sh_joblaunch(sh_poolpush(job), 0);
 		sh_jobctor(job);
 	}
 	tok = sh_tokpeek(toks);
@@ -60,7 +60,7 @@ static inline int	oneof(t_job *job)
 {
 	if (job->procs.len)
 	{
-		g_shstatus = sh_joblaunch(job, 1);
+		g_sh->status = sh_joblaunch(job, 1);
 		sh_jobctor(job);
 	}
 	return (YEP);

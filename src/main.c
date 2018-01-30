@@ -35,10 +35,13 @@ int			main(int ac, char **av, char **envv)
 	st = EXIT_SUCCESS;
 	ft_exbind(EXALL, ft_exhdl(exhdl, NULL), NULL);
 	sh_envinit(envv);
+	sh_scope();
 	if (!*++av)
 		return (sh_exit(sh_run(g_shfd = STDIN_FILENO, NULL), NULL));
 	else if (ac > 1)
 	{
+		g_sh->ac = ac - 1;
+		g_sh->av = av;
 		ft_exbind(0, ft_exhdl(exhdl, *av), NULL);
 		if ((g_shfd = open(*av, O_RDONLY, S_IRGRP | S_IRUSR)) < 0)
 			THROW(WUT);

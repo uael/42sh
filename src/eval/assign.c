@@ -51,7 +51,7 @@ inline int		sh_evalassign(t_deq *toks, t_map *map)
 			st = YEP;
 			*assign = '\0';
 			assignset(map, tok->val, assign + 1);
-			g_shstatus = 0;
+			g_sh->status = 0;
 			if (!(tok = sh_toknext(toks)) || tok->id != TOK_WORD)
 				break ;
 		}

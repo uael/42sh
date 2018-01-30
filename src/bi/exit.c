@@ -25,7 +25,7 @@ inline int	sh_biexit(int ac, char **av, char **env)
 	(void)env;
 	if (ac > 2)
 		return (ft_retf(128, N_EXIT"%e\n", E2BIG));
-	ac < 2 ? sh_exit(g_shstatus, NULL) : 0;
+	ac < 2 ? sh_exit(g_sh->status, NULL) : 0;
 	a = av[1];
 	if (!(i = ft_strlen(a)) || i > 19)
 		return (sh_exit(128, N_EXIT"%s: %s\n", a, M_NREQ));
