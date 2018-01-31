@@ -13,19 +13,39 @@
 #include "ush.h"
 
 #define ENV_I (1 << 0)
-#define ENV_P (0)
-#define ENV_U (1)
 #define M_DUP "Duplicate option"
-#define N_ENV COLOR_RED COLOR_BOLD "env: " COLOR_RESET
-#define EHELP1 "usage: env [-iv] [-P utilpath] [-u name]\n"
+#define N_ENV "env: "
+#define EHELP1 "usage: env [-i] [-P utilpath] [-u name]\n"
 #define EHELP EHELP1 "           [name=value ...] [utility [argument ...]]\n"
 
-static void		env_get_opt(char o, char *a, char **opt)
+static int		envrmvar(t_vec *env, char *var)
+{
+	size_t	i;
+	char	**it;
+
+	if (!env->len)
+		return (0);
+	i = 0;
+	while (i < ft_veclen(env))
+		if ((it = ft_vecat(env, i)) && *it &&
+			ft_strbegw(var, *it) && (*it)[ft_strlen(var)] == '=')
+		{
+			ft_vecrem(env, i, it);
+			free(*it);
+			g_env = env->buf;
+			return (1);
+		}
+		else
+			++i;
+	return (0);
+}
+
+static void		envgetopt(char o, char *a, char **alt, t_vec *e)
 {
 	if (o == 'P')
-		opt[ENV_P] = a;
-	else if (o == 'u')
-		opt[ENV_U] = a;
+		*alt = a;
+	else if (!ft_strchr(a, '='))
+		envrmvar(e, a);
 }
 
 static int		env_parse_opts(char **av, void **o, t_vec *e)
@@ -43,7 +63,10 @@ static int		env_parse_opts(char **av, void **o, t_vec *e)
 				else if (*a == 'i')
 					return (ft_retf(NOP, N_ENV"%c: "M_DUP"\n", *a) & 0);
 				else if (ft_strchr("Pu", *a))
-					env_get_opt(*a, *(a + 1) ? a + 1 : av[++i], (char **)o[1]);
+				{
+					envgetopt(*a, *(a + 1) ? a + 1 : av[++i], (char **)o[1], e);
+					break ;
+				}
 				else
 					return (ft_retf(NOP, N_ENV"%c: %e\n", *a, EINVAL) & 0);
 		}
@@ -72,53 +95,31 @@ static int		env_finalize(char *path, char **argv, char **envv)
 	return (sh_joblaunch(job, 1));
 }
 
-static int		env_rmvar(t_vec *env, char *var)
-{
-	size_t	i;
-	char	**it;
-
-	if (!env->len)
-		return (0);
-	i = 0;
-	while (i < ft_veclen(env))
-		if ((it = ft_vecat(env, i)) && *it &&
-			ft_strbegw(var, *it) && (*it)[ft_strlen(var)] == '=')
-		{
-			ft_vecrem(env, i, it);
-			free(*it);
-			g_env = env->buf;
-			return (1);
-		}
-		else
-			++i;
-	return (0);
-}
-
 inline int		sh_bienv(int ac, char **av, char **env)
 {
 	int		i;
 	int		s;
 	uint8_t	flag;
-	char	*opt[2];
+	char	*alt;
 	t_vec	e;
 
 	ft_vecctor(&e, sizeof(char *));
-	ft_memset(opt, flag = 0, 2 * sizeof(char *));
-	if ((s = env_parse_opts(av, (void *[2]){&flag, opt}, &e)) <= 0)
+	alt = NULL;
+	if ((s = env_parse_opts(av, (void *[2]){&flag, &alt}, &e)) <= 0)
 		return (ft_retf(NOP, EHELP));
-	if ((s == (i = -1) + 2 && s == ac) || !(flag & ENV_I))
+	i = (ac & 0) -1;
+	if (!(flag & ENV_I))
 		while (env[++i])
-		{
-			if (s == 1 && s == ac)
-				ft_putl(1, env[i]);
-			else
-				*(char **)ft_vecpush(&e) = ft_strdup(env[i]);
-		}
-	if (s == 1 && s == ac)
-		return (YEP);
+			*(char **)ft_vecpush(&e) = ft_strdup(env[i]);
 	*(char **)ft_vecpush(&e) = NULL;
-	opt[ENV_U] ? env_rmvar(&e, opt[ENV_U]) : 0;
 	if (!*(av + s))
+	{
+		i = -1;
+		env = e.buf;
+		while (env[++i])
+			ft_putl(STDOUT_FILENO, env[i]);
+		free(e.buf);
 		return (EXIT_SUCCESS);
-	return (env_finalize(opt[ENV_P] ? opt[ENV_P] : "PATH", av + s, e.buf));
+	}
+	return (env_finalize(alt ? alt : "PATH", av + s, e.buf));
 }

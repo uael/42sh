@@ -15,18 +15,25 @@
 
 #include "ush/bi.h"
 
-#define N_CD COLOR_RED COLOR_BOLD "cd: " COLOR_RESET
+#define N_CD "cd: "
+#define USAGE "cd: usage: cd [-L|-P] [dir]\n"
+
+static int		g_hyphen = 0;
 
 static char		*cd_path(int ac, char **av, char **env, t_bool p)
 {
 	char *envv;
 
+	g_hyphen = 0;
 	if ((ac == 1 + p) && (envv = ft_getenv(env, "HOME")))
 		return (ft_strdup(envv));
 	if (ac == 2 + p)
 	{
 		if (ft_strcmp(av[1 + p], "-") == 0 && (envv = ft_getenv(env, "OLDPWD")))
+		{
+			g_hyphen = 1;
 			return (ft_strdup(envv));
+		}
 		else if (ft_strcmp(av[1 + p], "-L") == 0 &&
 			(envv = ft_getenv(env, "HOME")))
 			return (ft_strdup(envv));
@@ -54,18 +61,23 @@ static int		cd_test(char *path)
 	return (YEP);
 }
 
-static int		cd_chdir(char *path)
+static int		cd_chdir(char *real, char **envv)
 {
-	int	st;
+	int		st;
+	char	*pwd;
 
-	if (chdir(path))
+	if (chdir(real))
 	{
-		st = ft_retf(NOP, N_CD"%s: %e\n", path, errno);
-		free(path);
+		st = ft_retf(NOP, N_CD"%s: %e\n", real, errno);
+		free(real);
 		return (st);
 	}
-	sh_setenv("PWD", path);
-	free(path);
+	if (g_hyphen)
+		ft_putl(STDOUT_FILENO, real);
+	if ((pwd = ft_getenv(envv, "PWD")))
+		sh_setenv("OLDPWD", pwd);
+	sh_setenv("PWD", real);
+	free(real);
 	return (YEP);
 }
 
@@ -74,23 +86,23 @@ inline int		sh_bicd(int ac, char **av, char **env)
 	char	buf[PATH_MAX + 1];
 	char	*path;
 	char	*pwd;
-	t_bool	optp;
+	t_bool	p;
 
-	optp = (t_bool)(ac == 3 && ft_strcmp("-P", av[1]) == 0);
+	p = (t_bool)(ac == 3 && ft_strcmp("-P", av[1]) == 0);
 	if (ac > 3)
 		return (ft_retf(NOP, N_CD"%e\n", E2BIG));
-	if (ac == 3 && !optp && ft_strcmp("-L", av[1]) != 0)
-		return (ft_retf(NOP, N_CD"%e '%s'\n", EINVAL, av[1]));
+	if ((ac == 3 || (ac > 1 && *av[1] == '-' && *(av[1] + 1))) && !p &&
+		ft_strcmp("-L", av[1]))
+		return (ft_retf(NOP, N_CD"-%c: invalid option\n"USAGE, *(av[1] + 1)));
 	if (!(path = cd_path(ac, av, env, (t_bool)(ac == 3))))
 		return (ft_retf(NOP, N_CD"%s\n", "Environ is empty"));
 	if (cd_test(path))
 		return (NOP);
-	if ((pwd = ft_getenv(env, "PWD")))
-		sh_setenv("OLDPWD", pwd);
-	if (ft_pathabs(path, buf, !optp && pwd ? pwd : NULL))
+	pwd = ft_getenv(env, "PWD");
+	if (ft_pathabs(path, buf, !p && pwd ? pwd : NULL))
 	{
 		free(path);
 		path = ft_strdup(buf);
 	}
-	return (cd_chdir(path));
+	return (cd_chdir(path, env));
 }
