@@ -34,7 +34,7 @@ static inline int			jobfork(t_job *job, t_proc *p, t_bool piped, int fg)
 	{
 		p->pid = pid;
 		g_sh->ppid = pid;
-		if (g_sh->interact)
+		if (g_sh->tty)
 		{
 			setpgid(pid, job->pgid);
 			if (!job->pgid)

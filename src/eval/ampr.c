@@ -21,7 +21,7 @@ inline int			sh_evalampr(t_job *job, t_deq *toks, char **ln)
 	int		fd;
 	char	buf[PATH_MAX];
 
-	if ((tok = sh_toknext(toks))->id != TOK_WORD && !TOK_ISBOOL(tok->id))
+	if (!(tok = sh_toknext(toks)) || !TOK_ISWORD(tok->id))
 		return (sh_evalerr(*ln, tok, UEH, sh_tokstr(tok)));
 	sh_wordexpand((t_sds *)tok);
 	sh_toknext(toks);

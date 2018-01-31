@@ -41,7 +41,7 @@ inline int			sh_lexheredoc(int fd, t_tok *tok, char **it, char **ln)
 	st = 0;
 	while (!st)
 		if (!**it && (fd < 0 || (st = rl_catline(fd, 0, ln, it))))
-			st = st < 0 || !g_sh->interact ?
+			st = st < 0 || !g_sh->tty ?
 				sh_synerr(*ln, *it, UEE"`%s'", eof) : OUF;
 		else
 		{
@@ -66,7 +66,7 @@ inline int			sh_lexheredoct(int fd, t_tok *tok, char **it, char **ln)
 	st = 0;
 	while (!st)
 		if (!**it && (fd < 0 || (st = rl_catline(fd, 0, ln, it))))
-			st = st < 0 || !g_sh->interact ?
+			st = st < 0 || !g_sh->tty ?
 				sh_synerr(*ln, *it, UEE"`%s'", eof) : OUF;
 		else
 		{

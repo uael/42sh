@@ -58,7 +58,7 @@ static inline pid_t	prepare(t_proc *prc, pid_t pgid, int *io, int fg)
 		prc->status = EXIT_FAILURE;
 		return (WUT);
 	}
-	if (prc->child && g_sh->interact)
+	if (prc->child && g_sh->tty)
 	{
 		setpgid(0, pgid);
 		fg ? tcsetpgrp(STDIN_FILENO, pgid) : 0;

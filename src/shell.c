@@ -59,7 +59,7 @@ static inline void	sh_init(int fd)
 	char	buf[PATH_MAX];
 
 	g_sh->pid = getpgrp();
-	if (!(g_sh->interact = (t_bool)isatty(fd)))
+	if (!(g_sh->tty = (t_bool)isatty(fd)))
 		return ;
 	while (tcgetpgrp(fd) != g_sh->pid)
 		kill(-g_sh->pid, SIGTTIN);
@@ -96,7 +96,8 @@ inline int			sh_run(int fd, char *ln)
 		while (!(st = sh_lex(fd, g_toks, &it, &ln)))
 		{
 			sh_eval(fd, g_toks, &ln) ? g_sh->status = 1 : 0;
-			ft_deqclean(g_toks, (t_dtor)ft_sdsdtor);
+			g_toks->cur = g_toks->len;
+			ft_deqclean(g_toks, (t_dtor)sh_tokdtor);
 		}
 		if (st < 0 || ((st == OUF ? (g_sh->status = 1) : 0) && !g_sh->status))
 			break ;
@@ -111,7 +112,7 @@ int					sh_exit(int exitno, char const *fmt, ...)
 	char	*home;
 	char	buf[PATH_MAX];
 
-	if (g_sh->interact && (home = sh_getenv("HOME")))
+	if (g_sh->tty && (home = sh_getenv("HOME")))
 		rl_histsave(ft_pathcat(ft_strcpy(buf, home), ".ushst"));
 	if (g_shfd >= 0)
 		rl_finalize(g_shfd);
@@ -119,8 +120,6 @@ int					sh_exit(int exitno, char const *fmt, ...)
 	sh_envdtor();
 	sh_vardtor();
 	sh_evaldtor();
-	g_toks->cur = 0;
-	ft_deqdtor(g_toks, (t_dtor)ft_sdsdtor);
 	if (fmt)
 	{
 		va_start(ap, fmt);

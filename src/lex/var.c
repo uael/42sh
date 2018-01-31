@@ -38,27 +38,24 @@ static inline int	varspecial(int fd, t_tok *tok, char **it, char **ln)
 	*it += var - *it;
 	st = 0;
 	if (brace && !*var && (fd < 0 || (st = rl_catline(fd, 0, ln, it))))
-		return (st < 0 || !g_sh->interact ? sh_synerr(*ln, *it, UEE) : OUF);
+		return (st < 0 || !g_sh->tty ? sh_synerr(*ln, *it, UEE) : OUF);
 	return (brace && **it != '}' ? sh_synerr(*ln, *it, UEC, **it) :
 		((brace && ++*it) & 0));
 }
 
-inline int			sh_lexvar(int fd, t_tok *tok, char **it, char **ln)
+static inline int	varuser(int fd, t_tok *tok, char **it, char **ln)
 {
 	char	brace;
 	int		st;
 
-	ft_sdscpush((t_sds *)tok, *(*it)++);
 	st = 0;
-	if (ft_strchr(sh_varifs(), brace = **it) || ft_isspace(brace) ||
-		!(st = varspecial(fd, tok, it, ln)) || st > NOP)
-		return (st);
+	brace = **it;
 	if (!ft_isalpha(brace) && brace != '_' && brace != '{')
 		return (sh_synerr(*ln, *it, "Expected alpha _ or '{' got `%c'", **it));
 	while (ft_sdscpush((t_sds *)tok, *(*it)++))
 		if (brace == '{' && !**it &&
 			(fd < 0 || (st = rl_catline(fd, 0, ln, it))))
-			return (st < 0 || !g_sh->interact ? sh_synerr(*ln, *it, UEE) : OUF);
+			return (st < 0 || !g_sh->tty ? sh_synerr(*ln, *it, UEE) : OUF);
 		else if (!**it)
 			break ;
 		else if (!ft_isalnum(**it) && **it != '_')
@@ -69,5 +66,20 @@ inline int			sh_lexvar(int fd, t_tok *tok, char **it, char **ln)
 				ft_sdscpush((t_sds *)tok, *(*it)++);
 			break ;
 		}
+	return (YEP);
+}
+
+inline int			sh_lexvar(int fd, t_tok *tok, char **it, char **ln)
+{
+	int		st;
+
+	if (**it != '$')
+		return (NOP);
+	ft_sdscpush((t_sds *)tok, *(*it)++);
+	if ((st = varspecial(fd, tok, it, ln)) > NOP)
+		return (st);
+	if (st && (st = varuser(fd, tok, it, ln)))
+		return (st);
+	tok->id = TOK_VAR;
 	return (YEP);
 }

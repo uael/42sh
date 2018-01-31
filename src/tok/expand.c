@@ -51,8 +51,44 @@ inline void		sh_tokexplode(t_tok *tok, t_deq *into)
 		}
 }
 
-inline void		sh_tokexpand(t_tok *tok, t_deq *toks)
+static void		tokswap(t_tok *a, t_tok *b)
 {
-	if (sh_wordexpand((t_sds *)tok))
-		sh_tokexplode(tok, toks);
+	t_tok c;
+
+	c = *a;
+	*a = *b;
+	*b = c;
+}
+
+inline t_tok	*sh_tokexpand(t_deq *toks, int ex)
+{
+	t_tok	*orig;
+	t_tok	*tok;
+
+	tok = sh_tokpeek(toks);
+	orig = tok;
+	while (1)
+	{
+		if (((tok->spec & TSPEC_DQUOTE) || (tok->spec & TSPEC_SQUOTE)) && ex)
+			ex = 0;
+		if (tok->id == TOK_VAR)
+			sh_wordexpand((t_sds *)tok);
+		if (tok != orig)
+		{
+			ft_sdsapd((t_sds *)orig, tok->val);
+			tokswap(tok, orig);
+			orig = sh_toknext(toks);
+		}
+		if (ft_deqlen(toks) > 1)
+		{
+			tok = ft_deqat(toks, 1);
+			if (!TOK_ISWORD(tok->id) || !(tok->spec & TSPEC_CONTINUOUS))
+				break ;
+		}
+		else
+			break ;
+	}
+	if (ex)
+		sh_tokexplode(orig, toks);
+	return (sh_tokpeek(toks));
 }

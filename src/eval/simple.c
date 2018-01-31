@@ -12,8 +12,6 @@
 
 #include "ush/eval.h"
 
-#define ISCMDM(T) ((T)->id==TOK_WORD||TOK_ISBOOL((T)->id)||TOK_ISREDIR((T)->id))
-
 static int		evalexport(t_map *vars)
 {
 	uint32_t it;
@@ -60,9 +58,12 @@ inline int		sh_evalsimple(t_job *job, int fd, t_deq *toks, char **ln)
 
 	(void)fd;
 	ft_mapctor(&vars, g_strhash, sizeof(char *), sizeof(char *));
-	if ((tok = sh_tokpeek(toks))->id == TOK_WORD)
+	if (sh_tokpeek(toks)->id == TOK_WORD)
+	{
+		tok = sh_tokexpand(toks, 0);
 		if (ft_strchr(tok->val, '='))
 			sh_evalassign(toks, &vars);
+	}
 	tok = sh_tokpeek(toks);
 	sh_procctor(ft_vecpush((t_vec *)&job->procs));
 	while (tok && TOK_ISREDIR(tok->id))
@@ -71,9 +72,9 @@ inline int		sh_evalsimple(t_job *job, int fd, t_deq *toks, char **ln)
 		else
 			tok = sh_tokpeek(toks);
 	if (((t_proc *)ft_vecback((t_vec *)&job->procs))->kind == PROC_ERR)
-		while (tok && ISCMDM(tok))
+		while (tok && TOK_ISCMDM(tok->id))
 			tok = sh_toknext(toks);
-	else if (ISCMDM(tok))
+	else if (TOK_ISCMDM(tok->id))
 		return (sh_evalargv(job, &vars, toks, ln) ? argverror(job) : YEP);
 	return (evalexport(&vars));
 }

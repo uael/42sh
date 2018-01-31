@@ -216,6 +216,15 @@ valgrind: all
 	@valgrind --leak-check=full --track-origins=yes \
       --suppressions=./valgrind.supp ./21sh test/locals.sh 2>&1 | \
       grep "definitely lost:"
+	@valgrind --leak-check=full --track-origins=yes \
+      --suppressions=./valgrind.supp ./21sh test/error_01.sh 2>&1 | \
+      grep "definitely lost:"
+	@valgrind --leak-check=full --track-origins=yes \
+      --suppressions=./valgrind.supp ./21sh test/error_02.sh 2>&1 | \
+      grep "definitely lost:"
+	@valgrind --leak-check=full --track-origins=yes \
+      --suppressions=./valgrind.supp ./21sh test/error_03.sh 2>&1 | \
+      grep "definitely lost:"
 
 re: fclean all
 

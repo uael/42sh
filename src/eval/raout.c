@@ -23,7 +23,7 @@ inline int		sh_evalraout(t_job *job, t_deq *toks, char **ln)
 	char	buf[PATH_MAX];
 
 	op = sh_tokpeek(toks);
-	if ((tok = sh_toknext(toks))->id != TOK_WORD && !TOK_ISBOOL(tok->id))
+	if (!(tok = sh_toknext(toks)) || !TOK_ISWORD(tok->id))
 		return (sh_evalerr(*ln, tok, UEH, sh_tokstr(tok)));
 	proc = ft_vecback((t_vec *)&job->procs);
 	sh_wordexpand((t_sds *)tok);

@@ -88,18 +88,11 @@ inline int		sh_wordexpand(t_sds *word)
 {
 	char	*dollar;
 	char	*beg;
-	size_t	len;
 
 	beg = word->buf;
 	while ((dollar = ft_strchr(beg, '$')))
 	{
-		len = (word->buf + word->len) - dollar;
-		if (dollar > word->buf && *(dollar - 1) == '\\')
-		{
-			ft_sdsrem(word, (dollar - word->buf) - 1, NULL);
-			beg = word->buf + (dollar - word->buf);
-		}
-		else if (!len)
+		if (!((word->buf + word->len) - dollar))
 			break ;
 		else
 			beg = expandvar(word, ++dollar - word->buf);

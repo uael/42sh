@@ -40,7 +40,7 @@ typedef struct	s_scope
 	uint16_t	opts;
 	pid_t		pid;
 	pid_t		ppid;
-	t_bool		interact;
+	t_bool		tty;
 }				t_scope;
 
 extern t_scope	*g_sh;

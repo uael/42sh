@@ -51,6 +51,7 @@ enum			e_tok
 	TOK_TRUE,
 	TOK_FALSE,
 	TOK_NOT = '!',
+	TOK_VAR = TOK_NOT + 1,
 	TOK_AMP = '&',
 	TOK_LPAR = '(',
 	TOK_RPAR = ')',
@@ -74,8 +75,17 @@ enum			e_tok
 # define TOK_ISREDIR_2(ID) ((ID)!=TOK_EOL&&((ID)>=TOK_HEREDOC&&(ID)<=TOK_AMPR))
 # define TOK_ISREDIR(ID) (TOK_ISREDIR_1(ID)||TOK_ISREDIR_2(ID))
 # define TOK_ISBOOL(ID) ((ID)==TOK_TRUE||(ID)==TOK_FALSE)
+# define TOK_ISWORD(ID) (TOK_ISBOOL(ID)||(ID)==TOK_WORD||(ID)==TOK_VAR)
 # define TOK_ISEND(ID) ((ID)==TOK_EOL||(ID)==TOK_END)
 # define TOK_ISSEP(ID) ((ID)==TOK_SEMICOLON||(ID)==TOK_AMP)
+# define TOK_ISCMDM(ID) (TOK_ISWORD(ID)||TOK_ISREDIR(ID))
+
+enum			e_tspec
+{
+	TSPEC_CONTINUOUS = 1 << 1,
+	TSPEC_SQUOTE = 1 << 2,
+	TSPEC_DQUOTE = 1 << 3
+};
 
 typedef struct	s_tok
 {
@@ -84,7 +94,10 @@ typedef struct	s_tok
 	size_t		len;
 	uint16_t	pos;
 	uint8_t		id;
+	char		spec;
 }				t_tok;
+
+extern t_deq	*g_lextoks;
 
 extern char		*sh_tokidstr(uint8_t id);
 extern char		*sh_tokstr(t_tok *tok);
@@ -92,14 +105,13 @@ extern char		*sh_tokstr(t_tok *tok);
 extern int		sh_lex(int fd, t_deq *toks, char **it, char **ln);
 extern int		sh_lexvar(int fd, t_tok *tok, char **it, char **ln);
 extern int		sh_lexop(int fd, t_tok *tok, char **it, char **ln);
-extern int		sh_lexquote(int fd, t_tok *tok, char **it, char **ln);
+extern int		sh_lexquote(int fd, t_tok **tok, char **it, char **ln);
 extern int		sh_lexbslash(int fd, char **it, char **ln);
 extern int		sh_lexword(int fd, t_tok *t, char **it, char **ln);
 extern int		sh_lexheredoc(int fd, t_tok *tok, char **it, char **ln);
 extern int		sh_lexheredoct(int fd, t_tok *tok, char **it, char **ln);
 extern int		sh_lexreduce(int fd, t_deq *toks, char **it, char **ln);
 extern int		sh_lexnext(int fd, t_deq *toks, char c, char **ln);
-extern void		sh_tokexpand(t_tok *tok, t_deq *toks);
 extern char		sh_rbracket(char b);
 extern t_bool	sh_isname(char *word);
 

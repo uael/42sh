@@ -34,9 +34,9 @@ static void		assignset(t_map *map, char *var, char *val)
 
 inline int		sh_evalassign(t_deq *toks, t_map *map)
 {
-	t_tok		*tok;
 	char		*assign;
 	int			st;
+	t_tok		*tok;
 
 	st = NOP;
 	tok = sh_tokpeek(toks);
@@ -54,6 +54,7 @@ inline int		sh_evalassign(t_deq *toks, t_map *map)
 			g_sh->status = 0;
 			if (!(tok = sh_toknext(toks)) || tok->id != TOK_WORD)
 				break ;
+			tok = sh_tokexpand(toks, 0);
 		}
 		else
 			break ;

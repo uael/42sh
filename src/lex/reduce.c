@@ -26,7 +26,7 @@ inline int		sh_lexreduce(int fd, t_deq *toks, char **it, char **ln)
 	end = ft_deqend(toks);
 	while (++tok < end && tok->id != TOK_EOL && tok->id != TOK_END)
 	{
-		if (tok->id == TOK_WORD && prev)
+		if (TOK_ISWORD(tok->id) && prev)
 		{
 			if (prev->id == TOK_HEREDOC && sh_lexheredoc(fd, tok, it, ln))
 				return (OUF);
@@ -34,7 +34,7 @@ inline int		sh_lexreduce(int fd, t_deq *toks, char **it, char **ln)
 				return (OUF);
 		}
 		else if (prev && (prev->id == TOK_HEREDOC || prev->id == TOK_HEREDOCT))
-			return (sh_synerr(*ln, *ln + tok->pos, UEH, sh_tokidstr(TOK_WORD),
+			return (sh_synerr(*ln, *ln + tok->pos, UEH, sh_tokstr(tok),
 			sh_tokidstr(prev->id), sh_tokidstr(tok->id)));
 		else if (prev && prev->id == tok->id && TOK_ISSEP(tok->id))
 			return (sh_synerr(*ln, *ln + tok->pos, EXS, sh_tokstr(tok)));

@@ -1,3 +1,4 @@
+echo sdf${HOME}${HOME}
 echo sdf${HOME}
 echo ${HOME}
 echo "sdf${HOME}"
@@ -62,4 +63,3 @@ echo sdf$OOPSe$OOPSghj
 echo $OOPSf$OOPShjk
 echo "sdf$OOPSg$OOPShjkl"
 echo "$OOPSh$OOPShjkl"
-

@@ -27,7 +27,7 @@ inline int		sh_procshlaunch(t_proc *proc)
 	sh = g_sh;
 	sh_scope();
 	ft_memcpy(g_sh, sh, sizeof(t_scope));
-	g_sh->interact = 0;
+	g_sh->tty = 0;
 	sh_eval(-1, &proc->u.sh.toks, &ln) ? (g_sh->status = 1) : 0;
 	proc->status = g_sh->status;
 	sh_unscope();
