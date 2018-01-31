@@ -36,7 +36,8 @@ static inline int		pushvar(int fd, t_tok **t, char **it, char **ln)
 	t_tok	*var;
 
 	prev = *t;
-	prev->id = TOK_WORD;
+	if (prev->id != TOK_VAR)
+		prev->id = TOK_WORD;
 	var = (*t)->len ? ft_deqpush(g_lextoks) : prev;
 	var->len = 0;
 	if ((*t)->len)

@@ -15,6 +15,10 @@ matrix:
         - make san
         - bash st/42ShellTester.sh --filter minishell $PWD/21sh.san
         - bash st/42ShellTester.sh --filter 21sh $PWD/21sh.san
+        - bash st/42ShellTester.sh --filter subshell $PWD/21sh.san
+        - bash st/42ShellTester.sh --filter quote $PWD/21sh.san | grep "Total failed tests: 12"
+        - bash st/42ShellTester.sh --filter escape $PWD/21sh.san | grep "Total failed tests: 2"
+        - bash st/42ShellTester.sh --filter local-variable $PWD/21sh.san | grep "Total failed tests: 1"
 
     # osx
     - os: osx
