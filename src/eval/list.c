@@ -91,5 +91,5 @@ inline int			sh_evallist(int fd, t_deq *toks, char **ln)
 		else if (tok->id == TOK_END || tok->id == TOK_EOL)
 			return (oneof(&job));
 		else
-			return (ft_dtor(YEP, (t_dtor)sh_jobdtor, &job, NULL));
+			return (ft_dtor(NOP, (t_dtor)sh_jobdtor, &job, NULL));
 }

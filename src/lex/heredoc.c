@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "ush/lex.h"
+#include "ush/shell.h"
 
 #define UEE "parse error: Unexpected EOF while looking for heredoc delimiter "
 
@@ -40,7 +41,8 @@ inline int			sh_lexheredoc(int fd, t_tok *tok, char **it, char **ln)
 	st = 0;
 	while (!st)
 		if (!**it && (fd < 0 || (st = rl_catline(fd, 0, ln, it))))
-			st = st < 0 || fd != 0 ? sh_synerr(*ln, *it, UEE"`%s'", eof) : OUF;
+			st = st < 0 || !g_sh->interact ?
+				sh_synerr(*ln, *it, UEE"`%s'", eof) : OUF;
 		else
 		{
 			if (ISWEOL(*it))
@@ -64,7 +66,8 @@ inline int			sh_lexheredoct(int fd, t_tok *tok, char **it, char **ln)
 	st = 0;
 	while (!st)
 		if (!**it && (fd < 0 || (st = rl_catline(fd, 0, ln, it))))
-			st = st < 0 || fd != 0 ? sh_synerr(*ln, *it, UEE"`%s'", eof) : OUF;
+			st = st < 0 || !g_sh->interact ?
+				sh_synerr(*ln, *it, UEE"`%s'", eof) : OUF;
 		else
 		{
 			if (ISWEOL(*it))

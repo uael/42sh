@@ -45,9 +45,8 @@ int			sh_synerr(char const *ln, char const *it, char const *fmt, ...)
 	sh_verr(fmt, ap);
 	va_end(ap);
 	ft_ofswrc(g_cerr, '\n');
-	if (ln)
+	if (ln && ft_ofswrs(g_cerr, ln))
 	{
-		ft_ofswrs(g_cerr, ln);
 		if (!it)
 			it = ft_strchr(ln, 0);
 		while (++ln <= it)
@@ -68,9 +67,8 @@ int			sh_evalerr(char const *ln, t_tok *tok, char const *fmt, ...)
 	sh_verr(fmt, ap);
 	va_end(ap);
 	ft_ofswrc(g_cerr, '\n');
-	if (ln)
+	if (ln && ft_ofswrs(g_cerr, ln))
 	{
-		ft_ofswrs(g_cerr, ln);
 		if (!tok)
 			it = ft_strchr(ln, 0);
 		else

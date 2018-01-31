@@ -12,8 +12,8 @@
 
 #include "ush/lex.h"
 
-#define UEH "parse error: Expected `%s' after heredoc `%s' got `%s'"
-#define EXS "parse error: Unexpected empty command between `%s'"
+#define UEH "syntax error: Expected `%s' after heredoc `%s' got `%s'"
+#define EXS "syntax error: Unexpected empty command between `%s'"
 
 inline int		sh_lexreduce(int fd, t_deq *toks, char **it, char **ln)
 {

@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "ush/lex.h"
-#include "ush/var.h"
+#include "ush/shell.h"
 
 #define UEE "parse error: Unexpected EOF while looking for matching `}'"
 #define UEH "parse error: Expected letter _ or '}' got `%c'"
@@ -38,7 +38,7 @@ static inline int	varspecial(int fd, t_tok *tok, char **it, char **ln)
 	*it += var - *it;
 	st = 0;
 	if (brace && !*var && (fd < 0 || (st = rl_catline(fd, 0, ln, it))))
-		return (st < 0 || fd != 0 ? sh_synerr(*ln, *it, UEE) : OUF);
+		return (st < 0 || !g_sh->interact ? sh_synerr(*ln, *it, UEE) : OUF);
 	return (brace && **it != '}' ? sh_synerr(*ln, *it, UEC, **it) :
 		((brace && ++*it) & 0));
 }
@@ -58,7 +58,7 @@ inline int			sh_lexvar(int fd, t_tok *tok, char **it, char **ln)
 	while (ft_sdscpush((t_sds *)tok, *(*it)++))
 		if (brace == '{' && !**it &&
 			(fd < 0 || (st = rl_catline(fd, 0, ln, it))))
-			return (st < 0 || fd != 0 ? sh_synerr(*ln, *it, UEE) : OUF);
+			return (st < 0 || !g_sh->interact ? sh_synerr(*ln, *it, UEE) : OUF);
 		else if (!**it)
 			break ;
 		else if (!ft_isalnum(**it) && **it != '_')

@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "ush/lex.h"
+#include "ush/shell.h"
 #include "ush/tok.h"
 
 #define UEB "parse error: Unexpected token `%c' while looking for matching `%c'"
@@ -99,7 +100,7 @@ int					sh_lex(int fd, t_deq *toks, char **it, char **ln)
 		if (!g_stack_idx)
 			return (YEP);
 		if (!**it && (fd < 0 || (st = rl_catline(fd, 0, ln, it))))
-			return (st < 0 || fd != 0 ?
+			return (st < 0 || !g_sh->interact ?
 				sh_synerr(*ln, *it, UEE, g_stack[g_stack_idx - 1]) : OUF);
 	}
 }

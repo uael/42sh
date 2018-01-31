@@ -226,7 +226,10 @@ int					rl_editln(char const *p, size_t *sz, char **ln, t_bool cat)
 		}
 		else if (rl_editinsert(*key))
 			break ;
-	*sz = g_eln->str.len;
-	*ln = g_eln->str.buf;
+	if (!st || st == NOP || st == RL_CLR)
+	{
+		*sz = g_eln->str.len;
+		*ln = g_eln->str.buf;
+	}
 	return (st == NOP ? YEP : st);
 }

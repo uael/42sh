@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "ush/lex.h"
+#include "ush/shell.h"
 
 #define UEC "parse error: Unexpected EOF while looking for matching `%c'"
 #define DQUOT(IT) ft_strchr("\\\n\"", *(IT))
@@ -38,7 +39,8 @@ inline int			sh_lexquote(int fd, t_tok *tok, char **it, char **ln)
 		if (!bs && quote == '"' && (st = sh_lexbslash(fd, it, ln)))
 			return (st);
 		else if (!**it && (fd < 0 || (st = rl_catline(fd, 0, ln, it))))
-			return (st < 0 || fd != 0 ? sh_synerr(*ln, *it, UEC, quote) : OUF);
+			return (st < 0 || !g_sh->interact ?
+				sh_synerr(*ln, *it, UEC, quote) : OUF);
 		else if (bs)
 			bs = inhib(quote, tok, it);
 		else if (**it == quote && ++*it)
