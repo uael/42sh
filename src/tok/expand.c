@@ -100,5 +100,6 @@ inline t_tok	*sh_tokexpand(t_deq *toks, int explode)
 	if (!explode || orig->len || (orig->spec & TSPEC_DQUOTE) ||
 		(orig->spec & TSPEC_SQUOTE))
 		return (sh_tokpeek(toks));
-	return (sh_toknext(toks));
+	sh_toknext(toks);
+	return (sh_tokexpand(toks, explode));
 }
