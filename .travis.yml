@@ -2,32 +2,12 @@ sudo: false
 language: c
 dist: trusty
 
-script:
-  - make san && make testsan
-
 matrix:
   include:
-    # default
-    - os: linux
     - os: osx
       script:
         - git clone https://github.com/we-sh/42ShellTester.git st
         - make san
+        - make testsan
         - bash st/42ShellTester.sh --filter minishell $PWD/21sh.san
         - bash st/42ShellTester.sh --filter 21sh $PWD/21sh.san
-
-    # osx
-    - os: osx
-      osx_image: xcode7.3
-      compiler: clang
-    - os: osx
-      osx_image: xcode8.3
-      compiler: clang
-
-    # gcc
-    - os: linux
-      compiler: gcc
-
-    # clang
-    - os: linux
-      compiler: clang
