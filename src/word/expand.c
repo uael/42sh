@@ -21,8 +21,9 @@ static size_t	getvar(char *from, char *to)
 	beg = to;
 	if ((bracket = (t_bool)(*from == '{')))
 		++from;
-	if (ft_isalpha(*from))
-		while (*from && ft_isalnum(*from) && (!bracket || *from != '}'))
+	if (*from == '_' || ft_isalpha(*from))
+		while (*from && (*from == '_' || ft_isalnum(*from)) &&
+			(!bracket || *from != '}'))
 			*to++ = *from++;
 	else if (ft_isdigit(*from))
 		while (ft_isdigit(*from))

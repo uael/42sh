@@ -29,7 +29,7 @@ static inline int		inhib(t_tok *tok, char **it)
 	return (0);
 }
 
-static inline int		var(int fd, t_tok **t, char **it, char **ln)
+static inline int		pushvar(int fd, t_tok **t, char **it, char **ln)
 {
 	int		st;
 	t_tok	*prev;
@@ -90,7 +90,7 @@ inline int				sh_lexword(int fd, t_tok *t, char **it, char **ln)
 			st = sh_lexquote(fd, &t, it, ln);
 		else if (**it == '$' && *(*it + 1) && !ft_isspace(*(*it + 1)) &&
 			!ft_strchr(sh_varifs(), *(*it + 1)))
-			st = var(fd, &t, it, ln);
+			st = pushvar(fd, &t, it, ln);
 		else
 			ft_sdscpush((t_sds *)t, *(*it)++);
 	return (wordfini(st, t));

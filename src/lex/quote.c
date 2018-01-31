@@ -26,7 +26,7 @@ static inline int	inhib(char quote, t_tok *tok, char **it)
 	return (0);
 }
 
-static inline int	var(int fd, t_tok **t, char **it, char **ln)
+static inline int	pushvar(int fd, t_tok **t, char **it, char **ln)
 {
 	int		st;
 	t_tok	*prev;
@@ -77,7 +77,7 @@ inline int			sh_lexquote(int fd, t_tok **tok, char **it, char **ln)
 			++*it;
 		else if (q == '"' && **it == '$' && *(*it + 1) &&
 			!ft_isspace(*(*it + 1)) && !ft_strchr(sh_varifs(), *(*it + 1)))
-			st = var(fd, tok, it, ln);
+			st = pushvar(fd, tok, it, ln);
 		else
 			ft_sdscpush((t_sds *)*tok, *(*it)++);
 	return (st);

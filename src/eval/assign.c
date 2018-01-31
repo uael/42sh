@@ -20,7 +20,6 @@ static void		assignset(t_map *map, char *var, char *val)
 
 	ft_sdsctor(&v);
 	ft_sdsapd(&v, val);
-	sh_wordexpand(&v);
 	if (ft_mapget(map, var, &it))
 		((char **)map->vals)[it] = v.buf;
 	else if (ft_mapput(map, dvar = ft_strdup(var), &it))

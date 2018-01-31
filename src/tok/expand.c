@@ -64,9 +64,11 @@ inline t_tok	*sh_tokexpand(t_deq *toks, int ex)
 {
 	t_tok	*orig;
 	t_tok	*tok;
+	int		apd;
 
 	tok = sh_tokpeek(toks);
 	orig = tok;
+	apd = 0;
 	while (1)
 	{
 		if (((tok->spec & TSPEC_DQUOTE) || (tok->spec & TSPEC_SQUOTE)) && ex)
@@ -84,11 +86,12 @@ inline t_tok	*sh_tokexpand(t_deq *toks, int ex)
 			tok = ft_deqat(toks, 1);
 			if (!TOK_ISWORD(tok->id) || !(tok->spec & TSPEC_CONTINUOUS))
 				break ;
+			apd = 1;
 		}
 		else
 			break ;
 	}
-	if (ex)
+	if (ex && apd)
 		sh_tokexplode(orig, toks);
 	return (sh_tokpeek(toks));
 }

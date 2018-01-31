@@ -23,7 +23,7 @@ inline int			sh_evalampr(t_job *job, t_deq *toks, char **ln)
 
 	if (!(tok = sh_toknext(toks)) || !TOK_ISWORD(tok->id))
 		return (sh_evalerr(*ln, tok, UEH, sh_tokstr(tok)));
-	sh_wordexpand((t_sds *)tok);
+	tok = sh_tokexpand(toks, 0);
 	sh_toknext(toks);
 	proc = ft_vecback((t_vec *)&job->procs);
 	if ((fd = open(tok->val, O_WRONLY | O_CREAT | O_TRUNC, 0644)) < 0)
