@@ -25,8 +25,8 @@ inline int			sh_evalramp(t_job *job, t_deq *toks, char **ln)
 	op = sh_tokpeek(toks);
 	if (!(tok = sh_toknext(toks)) || !TOK_ISWORD(tok->id))
 		return (sh_evalerr(*ln, tok, UEH, sh_tokstr(op), sh_tokstr(tok)));
-	tok = sh_tokexpand(toks, 0);
-	sh_toknext(toks);
+	if (!(tok = sh_redirword(job, toks, *ln)))
+		return (YEP);
 	proc = ft_vecback((t_vec *)&job->procs);
 	if (ft_strcmp(tok->val, "-") == 0)
 		r.to = -1;

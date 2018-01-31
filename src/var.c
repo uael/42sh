@@ -51,7 +51,9 @@ inline void		sh_varset(char *var, char *val)
 	uint32_t	it;
 	char		*dvar;
 
-	if (!val)
+	if (val && sh_getenv(var))
+		sh_setenv(var, val);
+	else if (!val)
 	{
 		if (ft_mapget(g_locals, var, &it))
 		{
