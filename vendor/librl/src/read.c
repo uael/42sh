@@ -60,6 +60,8 @@ int				rl_getline(int fd, char *prompt, char **ln)
 		*ln = len > 1 ? rl_histadd(buf, len) : buf;
 	g_screen_init = 1;
 	rl_offmode(fd);
+	if (st == RL_CLR)
+		st = YEP;
 	return (st <= 0 ? st : OUF);
 }
 

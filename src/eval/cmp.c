@@ -23,10 +23,10 @@ inline int			sh_evalcmp(t_job *job, t_deq *toks, char **ln)
 	char	buf[PATH_MAX];
 
 	op = sh_tokpeek(toks);
-	if ((tok = sh_toknext(toks))->id != TOK_WORD && !TOK_ISBOOL(tok->id))
+	if (!(tok = sh_toknext(toks)) || !TOK_ISWORD(tok->id))
 		return (sh_evalerr(*ln, tok, UEH, sh_tokstr(tok)));
-	sh_wordexpand((t_sds *)tok);
-	sh_toknext(toks);
+	if (!(tok = sh_redirword(job, toks, *ln)))
+		return (YEP);
 	proc = ft_vecback((t_vec *)&job->procs);
 	if ((redir.to = open(tok->val, O_RDWR | O_CREAT, 0644)) < 0)
 	{

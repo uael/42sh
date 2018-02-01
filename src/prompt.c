@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   word.c                                             :+:      :+:    :+:   */
+/*   shell.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,14 +10,44 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ush/word.h"
+#include "ush/shell.h"
 
-/*
-** TODO(42sh): Handle pathname expansion, glob
-** https://github.com/uael/21sh/issues/29
-*/
-
-inline void		sh_wordglob(t_sds *word)
+static char		*promptreduce(char *p, char *r, char *home)
 {
-	(void)word;
+	while (*p)
+		if (*p == '/' && *(p + 1) && (home = ft_strchr(p + 1, '/')))
+		{
+			*r++ = *p++;
+			*r++ = *p;
+			p = home;
+		}
+		else
+			*r++ = *p++;
+	return (r);
+}
+
+inline char		*sh_prompt(char *prompt, char *buf)
+{
+	size_t	l;
+	char	cwd[PATH_MAX + 1];
+	char	*p;
+	char	*r;
+	char	*home;
+
+	if (!(p = getcwd(cwd, PATH_MAX)))
+	{
+		THROW(WUT);
+		return (NULL);
+	}
+	if ((home = sh_getenv("HOME")) && ft_strbegw(home, p))
+	{
+		if (p[l = ft_strlen(home)] != '\0')
+			ft_memmove(p + 1, p + l, (ft_strlen(p) - l + 1) * sizeof(char));
+		else
+			p[1] = '\0';
+		*p = '~';
+	}
+	r = buf;
+	ft_strcpy(promptreduce(p, r, home), prompt);
+	return (buf);
 }

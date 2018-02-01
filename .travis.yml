@@ -8,3 +8,4 @@ script:
   - make testsan
   - bash st/42ShellTester.sh --filter minishell $PWD/21sh.san
   - bash st/42ShellTester.sh --filter 21sh $PWD/21sh.san
+  - bash st/42ShellTester.sh --filter subshell $PWD/21sh.san

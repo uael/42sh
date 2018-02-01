@@ -12,7 +12,7 @@
 
 #include "ush/eval.h"
 
-#define UNEX "parse error: Unexpected token `%s'"
+#define UNEX "syntax error: Unexpected token `%s'"
 
 static t_map		g_binaries_stack =
 {

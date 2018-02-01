@@ -48,9 +48,6 @@ inline void			sh_procdtor(t_proc *p)
 
 static inline pid_t	prepare(t_proc *prc, pid_t pgid, int *io, int fg)
 {
-	pid_t pid;
-
-	pid = getpid();
 	prc->close != STDIN_FILENO && prc->close != io[0] ? close(prc->close) : 0;
 	if (ft_dup2std(io, prc->src) ||
 		sh_redirect(&prc->redirs, prc->child ? NULL : prc->scope))
@@ -61,7 +58,7 @@ static inline pid_t	prepare(t_proc *prc, pid_t pgid, int *io, int fg)
 		prc->status = EXIT_FAILURE;
 		return (WUT);
 	}
-	if (prc->child && g_shinteract)
+	if (prc->child && g_sh->tty)
 	{
 		setpgid(0, pgid);
 		fg ? tcsetpgrp(STDIN_FILENO, pgid) : 0;
@@ -72,17 +69,15 @@ static inline pid_t	prepare(t_proc *prc, pid_t pgid, int *io, int fg)
 		signal(SIGTTOU, SIG_DFL);
 		signal(SIGCHLD, SIG_DFL);
 	}
-	return (pid);
+	return (YEP);
 }
 
 int					sh_proclaunch(t_proc *proc, pid_t pgid, int *io, int fg)
 {
-	pid_t		pid;
-
-	if ((pid = prepare(proc, pgid, io, fg)) < 0)
+	if ((prepare(proc, pgid, io, fg)))
 		return (NOP);
 	if (proc->kind == PROC_SH)
-		return (sh_procshlaunch(proc, pid));
+		return (sh_procshlaunch(proc));
 	else if (proc->kind == PROC_FN)
 		return (sh_procfnlaunch(proc));
 	else if (proc->kind == PROC_ERR)

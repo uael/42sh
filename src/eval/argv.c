@@ -45,11 +45,11 @@ static inline int	makeargv(t_job *job, t_vec *av, t_deq *toks, char **ln)
 	av ? *(char **)ft_vecpush(av) = ft_strdup(sh_tokpeek(toks)->val) : 0;
 	tok = sh_toknext(toks);
 	while (tok)
-		if (tok->id == TOK_WORD || TOK_ISBOOL(tok->id))
+		if (TOK_ISWORD(tok->id))
 		{
-			av ? sh_tokexpand(tok, toks) : 0;
-			av ? *(char **)ft_vecpush(av) = ft_strdup(tok->val) : 0;
-			tok = sh_toknext(toks);
+			if (av && (tok = sh_tokexpand(toks, 1)) && TOK_ISWORD(tok->id))
+				*(char **)ft_vecpush(av) = ft_strdup(tok->val);
+			TOK_ISWORD(tok->id) ? tok = sh_toknext(toks) : 0;
 		}
 		else if (TOK_ISREDIR(tok->id))
 		{
@@ -72,7 +72,8 @@ inline int			sh_evalargv(t_job *job, t_map *vars, t_deq *toks, char **ln)
 	t_bool	own;
 	t_vec	av;
 
-	sh_tokexpand(tok = sh_tokpeek(toks), toks);
+	if (!(tok = sh_tokexpand(toks, 1)) || !TOK_ISWORD(tok->id))
+		return (NOP);
 	prc = ft_vecback((t_vec *)&job->procs);
 	if (TOK_ISBOOL(tok->id))
 	{

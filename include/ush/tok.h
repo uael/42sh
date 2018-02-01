@@ -15,9 +15,11 @@
 
 # include "lex.h"
 
+extern void		sh_tokdtor(t_tok *tok);
 extern t_tok	*sh_tokpeek(t_deq *toks);
 extern t_tok	*sh_toknext(t_deq *toks);
 extern t_tok	*sh_tokpos(t_tok *tok, char const *it, char const *ln);
+extern t_tok	*sh_tokexpand(t_deq *toks, int explode);
 extern void		sh_tokexplode(t_tok *tok, t_deq *into);
 
 #endif

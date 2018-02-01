@@ -25,6 +25,12 @@ inline t_tok	*sh_toknext(t_deq *toks)
 	return (sh_tokpeek(toks));
 }
 
+inline void		sh_tokdtor(t_tok *tok)
+{
+	ft_sdsdtor((t_sds *)tok);
+	ft_memset(tok, 0, sizeof(t_tok));
+}
+
 inline t_tok	*sh_tokpos(t_tok *tok, char const *it, char const *ln)
 {
 	char *pos;
@@ -34,43 +40,4 @@ inline t_tok	*sh_tokpos(t_tok *tok, char const *it, char const *ln)
 		--pos;
 	tok->pos = (uint16_t)(it - pos);
 	return (tok);
-}
-
-static t_tok	tokapd(t_tok *prev, char *beg, char *end)
-{
-	t_tok tok;
-
-	ft_memset(&tok, 0, sizeof(t_tok));
-	ft_sdsmpush((t_sds *)&tok, beg, end - beg);
-	tok.id = TOK_WORD;
-	tok.pos = prev->pos;
-	return (tok);
-}
-
-inline void		sh_tokexplode(t_tok *tok, t_deq *into)
-{
-	char	*val;
-	char	*end;
-	size_t	i;
-
-	while (tok->len && ft_strchr(sh_varifs(), *tok->val))
-		ft_sdssht((t_sds *)tok, NULL);
-	val = tok->val;
-	while (*val && !ft_strchr(sh_varifs(), *val))
-		++val;
-	if (!*val)
-		return ;
-	*val = '\0';
-	tok->len = val++ - tok->val;
-	i = 0;
-	while (*val)
-		if (ft_strchr(sh_varifs(), *val))
-			++val;
-		else if (*(end = val))
-		{
-			while (*end && !ft_strchr(sh_varifs(), *end))
-				++end;
-			*(t_tok *)ft_deqput(into, ++i) = tokapd(tok, val, end);
-			val = end;
-		}
 }

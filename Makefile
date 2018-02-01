@@ -47,11 +47,12 @@ SRC_NAME = \
 	main.c \
 	pool.c pool/mark.c pool/notify.c \
 	proc.c proc/bit.c proc/err.c proc/exe.c proc/fn.c proc/sh.c \
+	prompt.c \
 	redir.c \
 	shell.c \
-	tok.c \
+	tok.c tok/expand.c \
 	var.c \
-	word.c
+	word.c word/expand.c
 
 SRC = $(addprefix $(SRC_PATH), $(SRC_NAME))
 ROBJ = $(addprefix $(ROBJ_PATH), $(OBJ_NAME))
@@ -202,6 +203,27 @@ valgrind: all
       grep "definitely lost:"
 	@valgrind --leak-check=full --track-origins=yes \
       --suppressions=./valgrind.supp ./21sh test/cmd.sh 2>&1 | \
+      grep "definitely lost:"
+	@valgrind --leak-check=full --track-origins=yes \
+      --suppressions=./valgrind.supp ./21sh test/heredoc.sh 2>&1 | \
+      grep "definitely lost:"
+	@valgrind --leak-check=full --track-origins=yes \
+      --suppressions=./valgrind.supp ./21sh test/inhibitor.sh 2>&1 | \
+      grep "definitely lost:"
+	@valgrind --leak-check=full --track-origins=yes \
+      --suppressions=./valgrind.supp ./21sh test/separator.sh 2>&1 | \
+      grep "definitely lost:"
+	@valgrind --leak-check=full --track-origins=yes \
+      --suppressions=./valgrind.supp ./21sh test/locals.sh 2>&1 | \
+      grep "definitely lost:"
+	@valgrind --leak-check=full --track-origins=yes \
+      --suppressions=./valgrind.supp ./21sh test/error_01.sh 2>&1 | \
+      grep "definitely lost:"
+	@valgrind --leak-check=full --track-origins=yes \
+      --suppressions=./valgrind.supp ./21sh test/error_02.sh 2>&1 | \
+      grep "definitely lost:"
+	@valgrind --leak-check=full --track-origins=yes \
+      --suppressions=./valgrind.supp ./21sh test/error_03.sh 2>&1 | \
       grep "definitely lost:"
 
 re: fclean all

@@ -23,6 +23,6 @@ typedef struct	s_procsh
 }				t_procsh;
 
 extern void		sh_procsh(struct s_proc *proc);
-extern int		sh_procshlaunch(struct s_proc *proc, pid_t pid);
+extern int		sh_procshlaunch(struct s_proc *proc);
 
 #endif

@@ -23,11 +23,11 @@ inline int		sh_evalrin(t_job *job, t_deq *toks, char **ln)
 	char	buf[PATH_MAX];
 
 	op = sh_tokpeek(toks);
-	if ((tok = sh_toknext(toks))->id != TOK_WORD && !TOK_ISBOOL(tok->id))
+	if (!(tok = sh_toknext(toks)) || !TOK_ISWORD(tok->id))
 		return (sh_evalerr(*ln, tok, UEH, sh_tokstr(tok)));
+	if (!(tok = sh_redirword(job, toks, *ln)))
+		return (YEP);
 	proc = ft_vecback((t_vec *)&job->procs);
-	sh_wordexpand((t_sds *)tok);
-	sh_toknext(toks);
 	redir.from = ft_isdigit(*op->val) ? *op->val - '0' : STDIN_FILENO;
 	if ((redir.to = open(tok->val, O_RDONLY, 0644)) < 0)
 	{

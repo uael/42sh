@@ -16,84 +16,70 @@
 #include "ush/shell.h"
 #include "ush/eval.h"
 
-t_bool				g_shinteract = 0;
-pid_t				g_shpgid;
-TTY					g_shmode;
-int					g_shfd = -1;
-int					g_shstatus = 0;
+#define SH_PROMPT() (g_sh->status==0?" \033[32m❯\033[0m ":" \033[31m❯\033[0m ")
 
 static t_deq		g_stack_toks = { NULL, sizeof(t_tok), 0, 0, 0 };
 static t_deq		*g_toks = &g_stack_toks;
+static t_scope		g_lvls[SHLVL_MAX] =
+{
+	{ 0, NULL, 0, 0, 0, 0, 0 }
+};
+t_scope				*g_sh;
+uint8_t				g_shlvl;
+TTY					g_shmode;
+int					g_shfd = -1;
+
+inline uint8_t		sh_scope(void)
+{
+	if (g_shlvl == SHLVL_MAX)
+	{
+		sh_err("Too many shell level\n");
+		rl_dtor();
+		exit(EXIT_FAILURE);
+	}
+	g_sh = g_lvls + g_shlvl++;
+	return (g_shlvl);
+}
+
+inline uint8_t		sh_unscope(void)
+{
+	if (g_shlvl == 1)
+	{
+		sh_err("Already at minimum shell level\n");
+		rl_dtor();
+		exit(EXIT_FAILURE);
+	}
+	g_sh = g_lvls + --g_shlvl;
+	return (g_shlvl);
+}
 
 static inline void	sh_init(int fd)
 {
 	char	*home;
 	char	buf[PATH_MAX];
 
-	g_shpgid = getpgrp();
-	if (!(g_shinteract = (t_bool)isatty(fd)))
+	g_sh->pid = getpgrp();
+	if (!(g_sh->tty = (t_bool)isatty(fd)))
 		return ;
-	while (tcgetpgrp(fd) != g_shpgid)
-		kill(-g_shpgid, SIGTTIN);
+	while (tcgetpgrp(fd) != g_sh->pid)
+		kill(-g_sh->pid, SIGTTIN);
 	signal(SIGINT, SIG_IGN);
 	signal(SIGQUIT, SIG_IGN);
 	signal(SIGTSTP, SIG_IGN);
 	signal(SIGTTIN, SIG_IGN);
 	signal(SIGTTOU, SIG_IGN);
 	signal(SIGCHLD, SIG_DFL);
-	g_shpgid = getpid();
-	if (setpgid(g_shpgid, g_shpgid) < 0)
+	g_sh->pid = getpid();
+	if (setpgid(g_sh->pid, g_sh->pid) < 0)
 		sh_exit(EXIT_FAILURE, "Couldn't put the shell in its own process "
 			"group");
-	tcsetpgrp(fd, g_shpgid);
+	tcsetpgrp(fd, g_sh->pid);
 	tcgetattr(fd, &g_shmode);
 	rl_hook(sh_poolnotify);
 	rl_complete(sh_complete);
 	if ((home = sh_getenv("HOME")))
 		rl_histload(ft_pathcat(ft_strcpy(buf, home), ".ushst"));
 }
-
-static char			*prompt_help(char *p, char *r, char *home)
-{
-	while (*p)
-		if (*p == '/' && *(p + 1) && (home = ft_strchr(p + 1, '/')))
-		{
-			*r++ = *p++;
-			*r++ = *p;
-			p = home;
-		}
-		else
-			*r++ = *p++;
-	return (r);
-}
-
-static char			*sh_prompt(char *prompt, char *buf)
-{
-	size_t	l;
-	char	cwd[PATH_MAX + 1];
-	char	*p;
-	char	*r;
-	char	*home;
-
-	if (!(p = getcwd(cwd, PATH_MAX)))
-	{
-		THROW(WUT);
-		return (NULL);
-	}
-	if ((home = sh_getenv("HOME")) && ft_strbegw(home, p))
-	{
-		if (p[l = ft_strlen(home)] != '\0')
-			ft_memmove(p + 1, p + l, (ft_strlen(p) - l + 1) * sizeof(char));
-		else
-			p[1] = '\0';
-		*p = '~';
-	}
-	r = buf;
-	ft_strcpy(prompt_help(p, r, home), prompt);
-	return (buf);
-}
-
-#define SH_PROMPT() (g_shstatus==0?" \033[32m❯\033[0m ":" \033[31m❯\033[0m ")
 
 inline int			sh_run(int fd, char *ln)
 {
@@ -109,14 +95,15 @@ inline int			sh_run(int fd, char *ln)
 		g_toks->cur = 0;
 		while (!(st = sh_lex(fd, g_toks, &it, &ln)))
 		{
-			sh_eval(fd, g_toks, &ln) ? g_shstatus = 1 : 0;
-			ft_deqclean(g_toks, (t_dtor)ft_sdsdtor);
+			sh_eval(fd, g_toks, &ln) ? g_sh->status = 1 : 0;
+			g_toks->cur = g_toks->len;
+			ft_deqclean(g_toks, (t_dtor)sh_tokdtor);
 		}
-		if (st < 0 || ((st == OUF ? (g_shstatus = 1) : 0) && !g_shinteract))
+		if (st < 0 || ((st == OUF ? (g_sh->status = 1) : 0) && !g_sh->status))
 			break ;
 	}
 	rl_finalize(fd);
-	return (st < 0 ? (g_shstatus = EXIT_FAILURE) : g_shstatus);
+	return (st < 0 ? (g_sh->status = EXIT_FAILURE) : g_sh->status);
 }
 
 int					sh_exit(int exitno, char const *fmt, ...)
@@ -125,7 +112,7 @@ int					sh_exit(int exitno, char const *fmt, ...)
 	char	*home;
 	char	buf[PATH_MAX];
 
-	if (g_shinteract && (home = sh_getenv("HOME")))
+	if (g_sh->tty && (home = sh_getenv("HOME")))
 		rl_histsave(ft_pathcat(ft_strcpy(buf, home), ".ushst"));
 	if (g_shfd >= 0)
 		rl_finalize(g_shfd);
@@ -133,8 +120,6 @@ int					sh_exit(int exitno, char const *fmt, ...)
 	sh_envdtor();
 	sh_vardtor();
 	sh_evaldtor();
-	g_toks->cur = 0;
-	ft_deqdtor(g_toks, (t_dtor)ft_sdsdtor);
 	if (fmt)
 	{
 		va_start(ap, fmt);

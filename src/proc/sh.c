@@ -19,14 +19,18 @@ inline void		sh_procsh(t_proc *proc)
 	proc->kind = PROC_SH;
 }
 
-inline int		sh_procshlaunch(t_proc *proc, pid_t pid)
+inline int		sh_procshlaunch(t_proc *proc)
 {
-	char *ln;
+	char	*ln;
+	t_scope	*sh;
 
-	g_shinteract = 0;
-	g_shpgid = pid;
-	ln = NULL;
-	g_shstatus = sh_eval(-1, &proc->u.sh.toks, &ln);
-	proc->status = g_shstatus;
-	exit(g_shstatus);
+	sh = g_sh;
+	sh_scope();
+	ft_memcpy(g_sh, sh, sizeof(t_scope));
+	g_sh->tty = 0;
+	sh_eval(-1, &proc->u.sh.toks, &ln) ? (g_sh->status = 1) : 0;
+	proc->status = g_sh->status;
+	sh_unscope();
+	sh_procdtor(proc);
+	exit(proc->status);
 }

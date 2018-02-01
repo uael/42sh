@@ -17,7 +17,7 @@
 inline int		sh_jobbg(t_job *job, int cont)
 {
 	job->bg = 1;
-	g_shstatus = 0;
+	g_sh->status = 0;
 	if (cont && kill(-job->pgid, SIGCONT) < 0)
 		sh_err("kill (SIGCONT): %e\n", errno);
 	return (0);

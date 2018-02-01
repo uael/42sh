@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "ush/lex.h"
+#include "ush/shell.h"
 #include "ush/tok.h"
 
 #define UEB "parse error: Unexpected token `%c' while looking for matching `%c'"
@@ -19,6 +20,7 @@
 
 static char			g_stack[1000] = { 0 };
 static int			g_stack_idx;
+t_deq				*g_lextoks;
 
 static inline int	lexone(int fd, t_tok *tok, char **it, char **ln)
 {
@@ -60,6 +62,7 @@ static inline int	lexline(int fd, t_deq *toks, char **it, char **ln)
 		ft_sdsgrow((t_sds *)(tok = ft_deqpush(toks)), 1);
 		*tok->val = '\0';
 		tok->len = 0;
+		tok->spec = 0;
 		if ((st = lexone(fd, tok, it, ln)))
 			return (st);
 		if (tok->id == TOK_EOL || tok->id == TOK_END)
@@ -83,9 +86,10 @@ int					sh_lex(int fd, t_deq *toks, char **it, char **ln)
 	size_t	sve;
 	size_t	cur;
 
-	if (!**it)
+	if (!*it || !**it)
 		return (NOP);
 	g_stack_idx = 0;
+	g_lextoks = toks;
 	sve = toks->cur;
 	while (1)
 	{
@@ -99,7 +103,7 @@ int					sh_lex(int fd, t_deq *toks, char **it, char **ln)
 		if (!g_stack_idx)
 			return (YEP);
 		if (!**it && (fd < 0 || (st = rl_catline(fd, 0, ln, it))))
-			return (st < 0 || fd != 0 ?
+			return (st < 0 || !g_sh->tty ?
 				sh_synerr(*ln, *it, UEE, g_stack[g_stack_idx - 1]) : OUF);
 	}
 }
