@@ -108,7 +108,7 @@ inline int		sh_bienv(int ac, char **av, char **ev)
 	alt = NULL;
 	if ((s = env_parse_opts(av, (void *[2]){&flag, &alt}, &ve)) <= 0)
 		return (ft_retf(NOP, EHELP));
-	i = (ac & 0) -1;
+	i = (ac & 0) - 1;
 	if (!(flag & ENV_I))
 		while (ev[++i])
 			*(char **)ft_vecpush(&ve) = ft_strdup(ev[i]);

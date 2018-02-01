@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lex/spec.c                                        :+:      :+:    :+:   */
+/*   lex/spec.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -36,8 +36,7 @@ static inline int	pushvar(int fd, t_tok **t, char **it, char **ln)
 	if (prev->id != TOK_VAR)
 		prev->id = TOK_WORD;
 	var = (*t)->len ? ft_deqpush(g_lextoks) : prev;
-	var->len = 0;
-	if ((*t)->len)
+	if (!(var->len = 0) && (*t)->len)
 		var->spec |= TSPEC_CONTINUOUS;
 	var->spec |= TSPEC_DQUOTE;
 	if (!(st = sh_lexvar(fd, var, it, ln)))

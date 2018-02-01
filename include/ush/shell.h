@@ -16,7 +16,7 @@
 # include "lex.h"
 # include "env.h"
 
-#define SHLVL_MAX 255
+# define SHLVL_MAX 255
 
 enum			e_opts
 {

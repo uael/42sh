@@ -68,7 +68,7 @@ static size_t	expandspecial(t_sds *word, char *var, size_t from)
 static char		*expandvar(t_sds *word, size_t from)
 {
 	char	var[PATH_MAX];
-	char 	*val;
+	char	*val;
 	size_t	len;
 
 	if ((len = getvar(word->buf + from, var)))

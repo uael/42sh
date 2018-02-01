@@ -60,6 +60,36 @@ static void		tokswap(t_tok *a, t_tok *b)
 	*b = c;
 }
 
+/*
+inline static void	sh_tokhelp(t_tok *orig, t_deq *toks, int *ex, int *apd)
+{
+	t_tok *tok;
+
+	tok = sh_tokpeek(toks);
+	while (1)
+	{
+		if (((tok->spec & TSPEC_DQUOTE) || (tok->spec & TSPEC_SQUOTE)) && *ex)
+			*ex = 0;
+		if (tok->id == TOK_VAR && (*apd = 1))
+			sh_wordexpand((t_sds *)tok);
+		if (tok != orig)
+		{
+			ft_sdsapd((t_sds *)orig, tok->val);
+			tokswap(tok, orig);
+			orig = sh_toknext(toks);
+		}
+		if (ft_deqlen(toks) > 1)
+		{
+			tok = ft_deqat(toks, 1);
+			if (!TOK_ISWORD(tok->id) || !(tok->spec & TSPEC_CONTINUOUS))
+				break;
+		}
+		else
+			break;
+	}
+}
+*/
+
 inline t_tok	*sh_tokexpand(t_deq *toks, int explode)
 {
 	t_tok	*orig;
@@ -75,11 +105,8 @@ inline t_tok	*sh_tokexpand(t_deq *toks, int explode)
 	{
 		if (((tok->spec & TSPEC_DQUOTE) || (tok->spec & TSPEC_SQUOTE)) && ex)
 			ex = 0;
-		if (tok->id == TOK_VAR)
-		{
+		if (tok->id == TOK_VAR && (apd = 1))
 			sh_wordexpand((t_sds *)tok);
-			apd = 1;
-		}
 		if (tok != orig)
 		{
 			ft_sdsapd((t_sds *)orig, tok->val);

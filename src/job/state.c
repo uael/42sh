@@ -27,7 +27,6 @@ int		sh_jobstopped(t_job *j)
 				return (0);
 			++s;
 		}
-
 	return (s > 0);
 }
 

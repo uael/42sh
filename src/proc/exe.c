@@ -103,7 +103,7 @@ inline void		sh_procexe(t_proc *proc, char *path, char *exe, char **envv)
 inline int		sh_procexelaunch(struct s_proc *prc)
 {
 	int		st;
-	char 	buf[PATH_MAX + 1];
+	char	buf[PATH_MAX + 1];
 
 	if ((st = exelookup(prc->envv, prc->argv[0], prc->u.exe, buf)))
 	{

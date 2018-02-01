@@ -17,13 +17,13 @@
 
 struct s_proc;
 
-typedef struct	s_procerr
+typedef struct		s_procerr
 {
-	int			st;
-	char		*msg;
-	char		*ln;
-	size_t		pos;
-}				t_procerr;
+	int				st;
+	char			*msg;
+	char			*ln;
+	size_t			pos;
+}					t_procerr;
 
 extern t_procerr	*sh_procerr(struct s_proc *pr, char *m, char *ln, size_t p);
 extern int			sh_procerrlaunch(struct s_proc *prc);
