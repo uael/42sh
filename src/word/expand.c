@@ -26,9 +26,9 @@ static size_t	getvar(char *from, char *to)
 			(!bracket || *from != '}'))
 			*to++ = *from++;
 	else if (ft_isdigit(*from))
-		while (ft_isdigit(*from))
+		while (*from && ft_isdigit(*from))
 			*to++ = *from++;
-	else if (ft_strchr("@*#?-$!", *from))
+	else if (ft_strchr("#?$!", *from))
 		*to++ = *from;
 	else
 		return (0);
@@ -52,7 +52,7 @@ static size_t	expandspecial(t_sds *word, char *var, size_t from)
 	size_t	len;
 
 	len = 0;
-	if (ft_isdigit(*var) && (i = (int)ft_atoi(var)) < g_sh->ac)
+	if (ft_isdigit(*var) && (i = (int)ft_atoi(var)) < g_sh->ac && i >= 0)
 		ft_sdsmput(word, from - 1, g_sh->av[i], len = ft_strlen(g_sh->av[i]));
 	else if (*var == '#')
 		len = expandn(word, from, g_sh->ac);
@@ -76,7 +76,7 @@ static char		*expandvar(t_sds *word, size_t from)
 		ft_sdsnrem(word, from - 1, len + 1, NULL);
 		if ((val = sh_varget(var, g_env)))
 			ft_sdsmput(word, from - 1, val, len = ft_strlen(val));
-		else if (ft_isdigit(*var) || (len == 1 && ft_strchr("@*#?-$!", *var)))
+		else if (ft_isdigit(*var) || (len == 1 && ft_strchr("#?$!", *var)))
 			len = expandspecial(word, var, from);
 		else
 			len = 0;

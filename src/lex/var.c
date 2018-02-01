@@ -27,7 +27,7 @@ static inline int	varspecial(int fd, t_tok *tok, char **it, char **ln)
 	brace = (t_bool)(*var == '{' && ++var);
 	if (!*var)
 		return (NOP);
-	if (ft_strchr("@*#?-$!", *var))
+	if (ft_strchr("#?$!", *var))
 		++var;
 	else if (ft_isdigit(*var) && ++var)
 		while (*var && ft_isdigit(*var))
