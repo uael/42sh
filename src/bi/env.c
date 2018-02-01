@@ -95,31 +95,31 @@ static int		env_finalize(char *path, char **argv, char **envv)
 	return (sh_joblaunch(job, 1));
 }
 
-inline int		sh_bienv(int ac, char **av, char **env)
+inline int		sh_bienv(int ac, char **av, char **ev)
 {
 	int		i;
 	int		s;
 	uint8_t	flag;
 	char	*alt;
-	t_vec	e;
+	t_vec	ve;
 
-	ft_vecctor(&e, sizeof(char *));
+	ft_vecctor(&ve, sizeof(char *));
+	flag = 0;
 	alt = NULL;
-	if ((s = env_parse_opts(av, (void *[2]){&flag, &alt}, &e)) <= 0)
+	if ((s = env_parse_opts(av, (void *[2]){&flag, &alt}, &ve)) <= 0)
 		return (ft_retf(NOP, EHELP));
 	i = (ac & 0) -1;
 	if (!(flag & ENV_I))
-		while (env[++i])
-			*(char **)ft_vecpush(&e) = ft_strdup(env[i]);
-	*(char **)ft_vecpush(&e) = NULL;
-	if (!*(av + s))
+		while (ev[++i])
+			*(char **)ft_vecpush(&ve) = ft_strdup(ev[i]);
+	*(char **)ft_vecpush(&ve) = NULL;
+	if (!*(av + s) && (i = -1))
 	{
-		i = -1;
-		env = e.buf;
-		while (env[++i])
-			ft_putl(STDOUT_FILENO, env[i]);
-		free(e.buf);
+		ev = ve.buf;
+		while (ev[++i])
+			(void)(ft_putl(STDOUT_FILENO, ev[i]) && ft_pfree((void **)&ev[i]));
+		free(ve.buf);
 		return (EXIT_SUCCESS);
 	}
-	return (env_finalize(alt ? alt : "PATH", av + s, e.buf));
+	return (env_finalize(alt ? alt : "PATH", av + s, ve.buf));
 }

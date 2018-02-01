@@ -53,14 +53,11 @@ extern int		ft_fatal(int no, t_dtor dtor, void *arg, char const *msg, ...);
 extern int		ft_retf(int no, char const *msg, ...);
 extern int		ft_szret(int no, char const *msg, ...);
 
-extern void		ft_pfree(void **pptr);
+extern int		ft_pfree(void **pptr);
 extern void		ft_clean(void *ptr);
 
 extern char		*ft_join(char const *s1, char const *s2, char n);
 extern char		*ft_getenv(char **env, char *var);
 extern void		ft_setenv(struct s_vec *env, char *var, char *val);
-extern int		ft_initf(char const *fmt, ...);
-
-# define GC(T) __attribute__((__cleanup__(ft_clean))) T
 
 #endif

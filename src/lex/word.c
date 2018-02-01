@@ -75,10 +75,11 @@ static inline int		wordfini(int st, t_tok *t)
 
 inline int				sh_lexword(int fd, t_tok *t, char **it, char **ln)
 {
-	int		st;
-	int		bs;
+	int st;
+	int bs;
 
-	ft_initf("%i%i", &st, &bs);
+	st = 0;
+	bs = 0;
 	while (**it && !st)
 		if (!bs && (ft_isspace(**it) || ft_strchr("><&|!;(){}", **it) ||
 			(st = sh_lexbslash(fd, it, ln))))

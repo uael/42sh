@@ -13,12 +13,13 @@
 #include "libft/lib.h"
 #include "libft/io.h"
 
-inline void	ft_pfree(void **ptr)
+inline int	ft_pfree(void **ptr)
 {
 	if (!ptr)
-		return ;
+		return (YEP);
 	free(*ptr);
 	*ptr = NULL;
+	return (YEP);
 }
 
 int			ft_dtor(int code, t_dtor dtor, void *arg, char const *msg, ...)
