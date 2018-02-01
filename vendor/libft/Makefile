@@ -50,7 +50,7 @@ SRC_NAME = \
 	math/v3.c math/v3_2.c math/eq.c math/eq_2.c \
 	mem/alloc.c \
 	str/mem.c str/mem_2.c str/str.c str/str_2.c str/str_3.c str/str_4.c \
-	str/str_5.c \
+	str/str_5.c str/str_6.c\
 	get_opt/getoptlong.c get_opt/getoptlonglong.c get_opt/getopt.c \
 
 SRC = $(addprefix $(SRC_PATH), $(SRC_NAME))

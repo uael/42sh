@@ -14,6 +14,7 @@
 # define USH_BI_H
 
 # include "proc.h"
+# include "ush/bi/read.h"
 
 extern t_procfn	*sh_bifn(char const *exe);
 
@@ -28,5 +29,7 @@ extern int		sh_biexport(int ac, char **av, char **env);
 extern int		sh_bibg(int ac, char **av, char **env);
 extern int		sh_bifg(int ac, char **av, char **env);
 extern int		sh_bijobs(int ac, char **av, char **env);
+extern int		sh_biread(int ac, char **av, char **env);
+extern int		sh_bihistory(int ac, char **av, char **env);
 
 #endif

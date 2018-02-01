@@ -52,5 +52,8 @@ extern char		*ft_strrchr(char const *s, int c);
 extern char		*ft_strstr(char const *haystack, char const *needle);
 extern size_t	ft_strword(char const *s, char c, char e);
 extern char		*ft_strscpy(char **dst, size_t *n, char *src);
+extern char		*ft_strtok(char *str, const char *delim);
+extern size_t	ft_strspn(const char *s1, const char *s2);
+extern size_t	ft_strcspn(const char *s1, const char *s2)	;
 
 #endif

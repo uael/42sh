@@ -12,7 +12,7 @@
 
 #include "libft/str.h"
 
-inline char	*ft_strnchr(char const *s, int c, size_t n)
+inline char		*ft_strnchr(char const *s, int c, size_t n)
 {
 	if (c == 0)
 		while (n--)
@@ -26,7 +26,7 @@ inline char	*ft_strnchr(char const *s, int c, size_t n)
 	return (NULL);
 }
 
-inline char	*ft_strscpy(char **dst, size_t *n, char *src)
+inline char		*ft_strscpy(char **dst, size_t *n, char *src)
 {
 	while (*src && *n)
 	{
@@ -38,7 +38,7 @@ inline char	*ft_strscpy(char **dst, size_t *n, char *src)
 	return (src);
 }
 
-inline char	*ft_strendw(char const *s1, char const *s2)
+inline char		*ft_strendw(char const *s1, char const *s2)
 {
 	char const *s3;
 	char const *s4;
@@ -55,4 +55,31 @@ inline char	*ft_strendw(char const *s1, char const *s2)
 		--s2;
 	}
 	return (s2 == s4 ? (char *)s3 : NULL);
+}
+
+inline char		*ft_strtok(char *s, const char *sep)
+{
+	static char *p;
+
+	if (!s && !(s = p))
+		return (NULL);
+	s += ft_strspn(s, sep);
+	if (!*s)
+		return (p = 0);
+	p = s + ft_strcspn(s, sep);
+	if (*p)
+		*p++ = 0;
+	else
+		p = 0;
+	return (s);
+}
+
+inline size_t	ft_strspn(const char *s1, const char *s2)
+{
+	size_t ret;
+
+	ret = 0;
+	while (*s1 && ft_strchr(s2, *s1++))
+		ret++;
+	return (ret);
 }

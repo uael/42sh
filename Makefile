@@ -33,6 +33,8 @@ S3TH_NAME = $(addsuffix .san, $(R3TH_NAME))
 SRC_NAME = \
 	bi.c bi/cd.c bi/echo.c bi/env.c bi/exit.c bi/export.c bi/setenv.c \
 	bi/unset.c bi/unsetenv.c bi/fg.c bi/bg.c bi/jobs.c \
+	bi/read/readget.c bi/read/readterm.c \
+	bi/read.c bi/history.c\
 	comp.c \
 	env.c \
 	err.c \
