@@ -48,6 +48,7 @@ int				rl_getline(int fd, char *prompt, char **ln)
 	int			st;
 	uint16_t	col;
 
+	len = 0;
 	if (fd != 0 || !isatty(fd) || rl_rawmode(fd))
 		return (rl_readnotty(fd, ln));
 	if (!rl_screenpos(NULL, &col) && col > 1)
@@ -56,8 +57,8 @@ int				rl_getline(int fd, char *prompt, char **ln)
 	signal(SIGWINCH, rd_sigwinch);
 	if (!g_screen_init && rl_screenget(g_screen) < 0)
 		st = WUT;
-	else if (!(st = rl_editln(prompt, &len, &buf, 0)))
-		*ln = len > 1 ? rl_histadd(buf, len) : buf;
+	else if (!(st = rl_editln(prompt, &len, &buf, 0)) || st == RL_CLR)
+		*ln = len > 1 && st != RL_CLR ? rl_histadd(buf, len) : buf;
 	g_screen_init = 1;
 	rl_offmode(fd);
 	if (st == RL_CLR)
