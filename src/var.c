@@ -63,7 +63,10 @@ inline void		sh_varset(char *var, char *val)
 		}
 	}
 	else if (ft_mapget(g_locals, var, &it))
+	{
+		free(((char **)g_locals->vals)[it]);
 		((char **)g_locals->vals)[it] = ft_strdup(val);
+	}
 	else if (ft_mapput(g_locals, dvar = ft_strdup(var), &it))
 		((char **)g_locals->vals)[it] = ft_strdup(val);
 	else
