@@ -12,7 +12,7 @@
 
 #include "ush/lex.h"
 
-#define UEH "syntax error: Expected `%s' after heredoc `%s' got `%s'"
+#define UEH "syntax error: Expected `<word>' after heredoc `%s' got `%s'"
 #define EXS "syntax error: Unexpected empty command between `%s'"
 
 inline int		sh_lexreduce(int fd, t_deq *toks, char **it, char **ln)
@@ -24,7 +24,7 @@ inline int		sh_lexreduce(int fd, t_deq *toks, char **it, char **ln)
 	prev = NULL;
 	tok = (t_tok *)ft_deqbeg(toks) - 1;
 	end = ft_deqend(toks);
-	while (++tok < end && tok->id != TOK_EOL && tok->id != TOK_END)
+	while (++tok < end)
 	{
 		if (TOK_ISWORD(tok->id) && prev)
 		{
@@ -33,12 +33,13 @@ inline int		sh_lexreduce(int fd, t_deq *toks, char **it, char **ln)
 			if (prev->id == TOK_HEREDOCT && sh_lexheredoct(fd, tok, it, ln))
 				return (OUF);
 		}
-		else if (prev && (prev->id == TOK_HEREDOC || prev->id == TOK_HEREDOCT))
-			return (sh_synerr(*ln, *ln + tok->pos, UEH, sh_tokstr(tok),
-			sh_tokidstr(prev->id), sh_tokidstr(tok->id)));
+		else if (prev && TOK_ISHDOC(prev->id))
+			return (sh_synerr(*ln, *ln + tok->pos, UEH, sh_tokstr(prev),
+			sh_tokstr(tok)));
 		else if (prev && prev->id == tok->id && TOK_ISSEP(tok->id))
 			return (sh_synerr(*ln, *ln + tok->pos, EXS, sh_tokstr(tok)));
-		prev = tok;
+		if ((prev = tok)->id == TOK_END || tok->id == TOK_EOL)
+			break ;
 	}
 	return (YEP);
 }
