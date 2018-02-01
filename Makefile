@@ -197,12 +197,14 @@ testdev: dev
 testsan: san
 	@./test.sh . 21sh.san
 
-TESTS=$(wildcard ./test/*.sh)
 valgrind: all
-	$(foreach t,$(TESTS), \
-		@valgrind --leak-check=full --track-origins=yes \
-			--suppressions=./valgrind.supp ./21sh $(t) 2>&1 | \
-			grep "definitely lost: [1-9]" || printf "%-30s\033[32m[✔]\033[0m\n" "leaks: $(t)";)
+	@./valgrind.sh . 21sh
+
+valgrinddev: all
+	@./valgrind.sh . 21sh.dev
+
+valgrindsan: all
+	@./valgrind.sh . 21sh.san
 
 re: fclean all
 
