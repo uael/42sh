@@ -45,7 +45,7 @@ static inline int		pushvar(int fd, t_tok **t, char **it, char **ln)
 	if (!(st = sh_lexvar(fd, var, it, ln)))
 	{
 		var->pos = prev->pos;
-		if (!ft_isspace(**it) && !ft_strchr("><&|!;(){}", **it) &&
+		if (!ft_isspace(**it) && !ft_strchr(OPCH, **it) &&
 			!(st = sh_lexbslash(fd, it, ln)))
 		{
 			ft_sdsgrow((t_sds *)(*t = ft_deqpush(g_lextoks)), 1);
@@ -65,9 +65,8 @@ static inline int		wordfini(int st, t_tok *t)
 		t->spec = 0;
 		return (st ? st : NOP);
 	}
-	if (t->id != TOK_VAR && !t->spec &&
-		(t->id = wordid(t->val, t->len)) == TOK_WORD)
-		sh_wordglob((t_sds *)t);
+	if (t->id != TOK_VAR && !t->spec)
+		t->id = wordid(t->val, t->len);
 	else if (t->id != TOK_VAR)
 		t->id = TOK_WORD;
 	return (YEP);
@@ -81,7 +80,7 @@ inline int				sh_lexword(int fd, t_tok *t, char **it, char **ln)
 	st = 0;
 	bs = 0;
 	while (**it && !st)
-		if (!bs && (ft_isspace(**it) || ft_strchr("><&|!;(){}", **it) ||
+		if (!bs && (ft_isspace(**it) || ft_strchr(OPCH, **it) ||
 			(st = sh_lexbslash(fd, it, ln))))
 			break ;
 		else if (bs)

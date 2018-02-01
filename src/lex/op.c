@@ -79,5 +79,5 @@ inline int			sh_lexop(int fd, t_tok *tok, char **it, char **ln)
 			return (opm(tok, it, 2, TOK_LOR));
 		return (opm(tok, it, 1, '|'));
 	}
-	return (ft_strchr("!;(){}", **it) ? opm(tok, it, 1, (uint8_t)*(*it)++) : 1);
+	return (ft_strchr(SYNCH, **it) ? opm(tok, it, 1, (uint8_t)*(*it)++) : 1);
 }

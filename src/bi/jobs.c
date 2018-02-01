@@ -12,7 +12,7 @@
 
 #include "ush.h"
 
-#define JOBS COLOR_BRED"jobs: "COLOR_RESET
+#define JOBS "jobs: "
 
 inline int	sh_bijobs(int ac, char **av, char **env)
 {

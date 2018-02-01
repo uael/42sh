@@ -12,8 +12,6 @@
 
 #include "ush/eval.h"
 
-#define ISCMDM(T) ((T)->id==TOK_WORD||TOK_ISBOOL((T)->id)||TOK_ISREDIR((T)->id))
-
 static char			**makeenv(t_map *vars, t_bool *owned)
 {
 	t_vec		*e;

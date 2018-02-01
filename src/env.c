@@ -46,39 +46,16 @@ inline void		sh_envinit(char **envv)
 
 inline char		*sh_getenv(char *var)
 {
-	char	**it;
-	char	*val;
-
-	it = g_env;
-	while (*it && (!ft_strbegw(var, *it) || (*it)[ft_strlen(var)] != '='))
-		++it;
-	if (!*it || !(val = ft_strchr(*it, '=')))
-		return (NULL);
-	return (val + 1);
+	return (ft_getenv(g_env, var));
 }
 
 t_bool			sh_unsetenv(char *var, t_bool m)
 {
-	size_t	i;
-	char	**it;
+	t_bool ret;
 
-	if (!g_venv->len)
-		return (0);
-	i = 0;
-	while (i < ft_veclen(g_venv))
-		if ((it = ft_vecat(g_venv, i)) && *it &&
-			ft_strbegw(var, *it) && (*it)[ft_strlen(var)] == '=')
-		{
-			m ? free(*it) : 0;
-			ft_vecrem(g_venv, i, NULL);
-			*(char **)ft_vecpush(g_venv) = NULL;
-			--g_venv->len;
-			g_env = g_venv->buf;
-			return (1);
-		}
-		else
-			++i;
-	return (0);
+	if ((ret = ft_unsetenv(g_venv, var, m)))
+		g_env = g_venv->buf;
+	return (ret);
 }
 
 void			sh_setenv(char *var, char *val)

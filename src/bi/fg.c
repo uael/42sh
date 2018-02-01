@@ -12,7 +12,7 @@
 
 #include "ush.h"
 
-#define FG COLOR_BRED"fg: "COLOR_RESET
+#define FG "fg: "
 
 static void	fg(size_t idx)
 {

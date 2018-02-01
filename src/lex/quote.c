@@ -43,8 +43,7 @@ static inline int	pushvar(int fd, t_tok **t, char **it, char **ln)
 	if (!(st = sh_lexvar(fd, var, it, ln)))
 	{
 		var->pos = prev->pos;
-		if (!ft_isspace(**it) && !ft_strchr("><&|!;(){}", **it) &&
-			!(st = sh_lexbslash(fd, it, ln)) && **it != '"')
+		if (**it != '"')
 		{
 			ft_sdsgrow((t_sds *)(*t = ft_deqpush(g_lextoks)), 1);
 			(*t)->len = 0;

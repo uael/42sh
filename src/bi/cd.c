@@ -15,7 +15,7 @@
 
 #include "ush/bi.h"
 
-#define N_CD "cd: "
+#define CD "cd: "
 #define USAGE "cd: usage: cd [-L|-P] [dir]\n"
 
 static int		g_hyphen = 0;
@@ -51,13 +51,13 @@ static int		cd_test(char *path)
 	struct stat	s;
 
 	if (!*path || lstat(path, &s) != 0)
-		return (ft_retf(NOP, N_CD"%s: %e\n", path, errno));
+		return (ft_retf(NOP, CD"%s: %e\n", path, errno));
 	if (!S_ISDIR(s.st_mode) && !S_ISLNK(s.st_mode))
-		return (ft_retf(NOP, N_CD"%s: %e\n", path, ENOTDIR));
+		return (ft_retf(NOP, CD"%s: %e\n", path, ENOTDIR));
 	if (!S_ISLNK(s.st_mode) && access(path, R_OK) != 0)
-		return (ft_retf(NOP, N_CD"%s: %e\n", path, errno));
+		return (ft_retf(NOP, CD"%s: %e\n", path, errno));
 	if (access(path, X_OK) != 0)
-		return (ft_retf(NOP, N_CD"%s: %e\n", path, errno));
+		return (ft_retf(NOP, CD"%s: %e\n", path, errno));
 	return (YEP);
 }
 
@@ -68,7 +68,7 @@ static int		cd_chdir(char *real, char **envv)
 
 	if (chdir(real))
 	{
-		st = ft_retf(NOP, N_CD"%s: %e\n", real, errno);
+		st = ft_retf(NOP, CD"%s: %e\n", real, errno);
 		free(real);
 		return (st);
 	}
@@ -90,12 +90,12 @@ inline int		sh_bicd(int ac, char **av, char **env)
 
 	p = (t_bool)(ac == 3 && ft_strcmp("-P", av[1]) == 0);
 	if (ac > 3)
-		return (ft_retf(NOP, N_CD"%e\n", E2BIG));
+		return (ft_retf(NOP, CD"%e\n", E2BIG));
 	if ((ac == 3 || (ac > 1 && *av[1] == '-' && *(av[1] + 1))) && !p &&
 		ft_strcmp("-L", av[1]))
-		return (ft_retf(NOP, N_CD"-%c: invalid option\n"USAGE, *(av[1] + 1)));
+		return (ft_retf(NOP, CD"-%c: invalid option\n"USAGE, *(av[1] + 1)));
 	if (!(path = cd_path(ac, av, env, (t_bool)(ac == 3))))
-		return (ft_retf(NOP, N_CD"%s\n", "Environ is empty"));
+		return (ft_retf(NOP, CD"%s\n", "Environ is empty"));
 	if (cd_test(path))
 		return (NOP);
 	pwd = ft_getenv(env, "PWD");

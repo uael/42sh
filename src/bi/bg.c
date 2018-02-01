@@ -12,7 +12,7 @@
 
 #include "ush.h"
 
-#define BG COLOR_BRED"bg: "COLOR_RESET
+#define BG "bg: "
 
 inline int	sh_bibg(int ac, char **av, char **env)
 {

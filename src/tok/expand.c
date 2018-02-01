@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "ush/tok.h"
+#include "ush/eval.h"
 
 static t_tok	tokapd(t_tok *prev, char *beg, char *end)
 {
@@ -67,10 +68,13 @@ inline t_tok	*sh_tokexpand(t_deq *toks, int explode)
 	int		apd;
 	int		ex;
 
-	ex = explode;
 	tok = sh_tokpeek(toks);
-	orig = tok;
+	if (tok->id == '`')
+		orig = sh_evalbackquote(toks);
+	else
+		orig = tok;
 	apd = 0;
+	ex = explode;
 	while (1)
 	{
 		if (((tok->spec & TSPEC_DQUOTE) || (tok->spec & TSPEC_SQUOTE)) && ex)

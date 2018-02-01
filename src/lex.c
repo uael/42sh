@@ -18,8 +18,8 @@
 #define UEE "parse error: Unexpected EOF while looking for matching `%c'"
 #define UEC "parse error: Unexpected closing bracket `%c'"
 
-static char			g_stack[1000] = { 0 };
-static int			g_stack_idx;
+static char			g_stk[1000] = { 0 };
+static int			g_sidx;
 t_deq				*g_lextoks;
 
 static inline int	lexone(int fd, t_tok *tok, char **it, char **ln)
@@ -67,14 +67,14 @@ static inline int	lexline(int fd, t_deq *toks, char **it, char **ln)
 			return (st);
 		if (tok->id == TOK_EOL || tok->id == TOK_END)
 			break ;
-		if (ft_strchr("([{", tok->id))
-			g_stack[g_stack_idx++] = sh_rbracket(tok->id);
-		else if (g_stack_idx && tok->id == g_stack[g_stack_idx - 1])
-			--g_stack_idx;
-		else if (ft_strchr(")}]", tok->id) &&
-			(!g_stack_idx || tok->id != g_stack[g_stack_idx - 1]))
-			return (g_stack_idx ? sh_synerr(*ln, *ln + tok->pos, UEB, tok->id,
-				g_stack[g_stack_idx - 1]) : sh_synerr(*ln, *ln + tok->pos, UEC,
+		if (ft_strchr("([{`", tok->id) && (!g_sidx || g_stk[g_sidx - 1] != '`'))
+			g_stk[g_sidx++] = sh_rbracket(tok->id);
+		else if (g_sidx && tok->id == g_stk[g_sidx - 1])
+			--g_sidx;
+		else if (ft_strchr(")}]`", tok->id) &&
+			(!g_sidx || tok->id != g_stk[g_sidx - 1]))
+			return (g_sidx ? sh_synerr(*ln, *ln + tok->pos, UEB, tok->id,
+				g_stk[g_sidx - 1]) : sh_synerr(*ln, *ln + tok->pos, UEC,
 				tok->id));
 	}
 	return (YEP);
@@ -88,7 +88,7 @@ int					sh_lex(int fd, t_deq *toks, char **it, char **ln)
 
 	if (!*it || !**it)
 		return (NOP);
-	g_stack_idx = 0;
+	g_sidx = 0;
 	g_lextoks = toks;
 	sve = toks->cur;
 	while (1)
@@ -100,10 +100,10 @@ int					sh_lex(int fd, t_deq *toks, char **it, char **ln)
 		if ((st = sh_lexreduce(fd, toks, it, ln)))
 			return (st);
 		toks->cur = sve;
-		if (!g_stack_idx)
+		if (!g_sidx)
 			return (YEP);
 		if (!**it && (fd < 0 || (st = rl_catline(fd, 0, ln, it))))
 			return (st < 0 || !g_sh->tty ?
-				sh_synerr(*ln, *it, UEE, g_stack[g_stack_idx - 1]) : OUF);
+				sh_synerr(*ln, *it, UEE, g_stk[g_sidx - 1]) : OUF);
 	}
 }

@@ -51,6 +51,8 @@ inline char		sh_rbracket(char b)
 		return ('}');
 	if (b == '(')
 		return (')');
+	if (b == '`')
+		return ('`');
 	return (0);
 }
 

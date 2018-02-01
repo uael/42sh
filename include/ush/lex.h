@@ -62,10 +62,14 @@ enum			e_tok
 	TOK_ROUT = '>',
 	TOK_LBRACKET = '[',
 	TOK_RBRACKET = ']',
+	TOK_BQUOTE = '`',
 	TOK_LCURLY = '{',
 	TOK_PIPE = '|',
 	TOK_RCURLY = '}',
 };
+
+# define SYNCH "!;(){}`"
+# define OPCH SYNCH"><&|"
 
 # define ISREOL(IT) (*(IT) == '\n')
 # define ISWEOL(IT) (*(IT) == '\r' && *((IT) + 1) == '\n')
@@ -75,7 +79,7 @@ enum			e_tok
 # define TOK_ISREDIR_2(ID) ((ID)!=TOK_EOL&&((ID)>=TOK_HEREDOC&&(ID)<=TOK_AMPR))
 # define TOK_ISREDIR(ID) (TOK_ISREDIR_1(ID)||TOK_ISREDIR_2(ID))
 # define TOK_ISBOOL(ID) ((ID)==TOK_TRUE||(ID)==TOK_FALSE)
-# define TOK_ISWORD(ID) (TOK_ISBOOL(ID)||(ID)==TOK_WORD||(ID)==TOK_VAR)
+# define TOK_ISWORD(I) (TOK_ISBOOL(I)||(I)==TOK_WORD||(I)==TOK_VAR||(I)=='`')
 # define TOK_ISEND(ID) ((ID)==TOK_EOL||(ID)==TOK_END)
 # define TOK_ISSEP(ID) ((ID)==TOK_SEMICOLON||(ID)==TOK_AMP)
 # define TOK_ISCMDM(ID) (TOK_ISWORD(ID)||TOK_ISREDIR(ID))

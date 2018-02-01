@@ -49,3 +49,26 @@ inline void		ft_setenv(t_vec *env, char *var, char *val)
 	*(char **)ft_vecpush(env) = NULL;
 	--env->len;
 }
+
+inline t_bool	ft_unsetenv(t_vec *env, char *var, t_bool delm)
+{
+	size_t	i;
+	char	**it;
+
+	if (!env->len)
+		return (0);
+	i = 0;
+	while (i < ft_veclen(env))
+		if ((it = ft_vecat(env, i)) && *it &&
+			ft_strbegw(var, *it) && (*it)[ft_strlen(var)] == '=')
+		{
+			delm ? free(*it) : 0;
+			ft_vecrem(env, i, NULL);
+			*(char **)ft_vecpush(env) = NULL;
+			--env->len;
+			return (1);
+		}
+		else
+			++i;
+	return (0);
+}

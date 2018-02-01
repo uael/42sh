@@ -33,11 +33,8 @@ static int		scorepath(char *path, char *cpath)
 	while (*cpathit && *pathit)
 		if (*cpathit != *pathit)
 			++cpathit;
-		else
-		{
-			if ((cpathit++ - cpath) <= (pathit++ - path))
-				score += PATH_MAX - (cpathit - cpath - 1);
-		}
+		else if ((cpathit++ - cpath) <= (pathit++ - path))
+			score += PATH_MAX - (cpathit - cpath - 1);
 	if ((score -= ft_strlen(cpath) - ft_strlen(path)) <= 0)
 		return (0);
 	return (score);
@@ -72,9 +69,9 @@ static int		candidatedir(char *path, char *in, int sc, char *buf)
 
 static int		candidatepath(char *path, char *pvar, int score, char *buf)
 {
-	char		*sep;
-	size_t		len;
-	char		pbuf[PATH_MAX];
+	char	*sep;
+	size_t	len;
+	char	pbuf[PATH_MAX];
 
 	if (!pvar)
 		return (score);
@@ -93,7 +90,7 @@ static int		candidatepath(char *path, char *pvar, int score, char *buf)
 
 static char		*completepath(char *sep, char *path, char *buf)
 {
-	char		dir[PATH_MAX];
+	char dir[PATH_MAX];
 
 	if (sep == path)
 		ft_strcpy(dir, "/");
@@ -110,11 +107,11 @@ static char		*completepath(char *sep, char *path, char *buf)
 
 inline void		sh_complete(t_sds *cmd)
 {
-	char	*word;
-	char	*end;
-	char	cwd[PATH_MAX];
-	char	*in;
-	char	match[PATH_MAX];
+	char *word;
+	char *end;
+	char cwd[PATH_MAX];
+	char *in;
+	char match[PATH_MAX];
 
 	end = cmd->len ? cmd->buf + cmd->len - 1 : cmd->buf;
 	word = end;
