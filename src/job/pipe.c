@@ -22,7 +22,8 @@ inline void		sh_jobpipe(t_job *job, size_t i, int *fds, int *io)
 	}
 	else
 	{
-		ft_memset(fds, 0, 2 * sizeof(int));
+		fds[0] = 0;
+		fds[1] = 0;
 		io[STDOUT_FILENO] = STDOUT_FILENO;
 	}
 }
