@@ -200,10 +200,10 @@ testsan: san
 valgrind: all
 	@./valgrind.sh . 21sh
 
-valgrinddev: all
+valgrinddev: dev
 	@./valgrind.sh . 21sh.dev
 
-valgrindsan: all
+valgrindsan: san
 	@./valgrind.sh . 21sh.san
 
 re: fclean all
