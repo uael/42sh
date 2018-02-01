@@ -12,7 +12,7 @@
 
 #include "ush/tok.h"
 
-static t_tok	tokapd(t_tok *prev, char *beg, char *end)
+static t_tok		tokapd(t_tok *prev, char *beg, char *end)
 {
 	t_tok tok;
 
@@ -23,7 +23,7 @@ static t_tok	tokapd(t_tok *prev, char *beg, char *end)
 	return (tok);
 }
 
-inline void		sh_tokexplode(t_tok *tok, t_deq *into)
+inline void			sh_tokexplode(t_tok *tok, t_deq *into)
 {
 	char	*val;
 	char	*end;
@@ -51,7 +51,7 @@ inline void		sh_tokexplode(t_tok *tok, t_deq *into)
 		}
 }
 
-static void		tokswap(t_tok *a, t_tok *b)
+static void			tokswap(t_tok *a, t_tok *b)
 {
 	t_tok c;
 
@@ -60,58 +60,22 @@ static void		tokswap(t_tok *a, t_tok *b)
 	*b = c;
 }
 
-/*
-inline static void	sh_tokhelp(t_tok *orig, t_deq *toks, int *ex, int *apd)
+static inline void	exroutine(t_tok **orig, t_deq *toks, int *ex, int *apd)
 {
 	t_tok *tok;
 
-	tok = sh_tokpeek(toks);
+	tok = *orig;
 	while (1)
 	{
 		if (((tok->spec & TSPEC_DQUOTE) || (tok->spec & TSPEC_SQUOTE)) && *ex)
 			*ex = 0;
 		if (tok->id == TOK_VAR && (*apd = 1))
 			sh_wordexpand((t_sds *)tok);
-		if (tok != orig)
+		if (tok != *orig)
 		{
-			ft_sdsapd((t_sds *)orig, tok->val);
-			tokswap(tok, orig);
-			orig = sh_toknext(toks);
-		}
-		if (ft_deqlen(toks) > 1)
-		{
-			tok = ft_deqat(toks, 1);
-			if (!TOK_ISWORD(tok->id) || !(tok->spec & TSPEC_CONTINUOUS))
-				break;
-		}
-		else
-			break;
-	}
-}
-*/
-
-inline t_tok	*sh_tokexpand(t_deq *toks, int explode)
-{
-	t_tok	*orig;
-	t_tok	*tok;
-	int		apd;
-	int		ex;
-
-	ex = explode;
-	tok = sh_tokpeek(toks);
-	orig = tok;
-	apd = 0;
-	while (1)
-	{
-		if (((tok->spec & TSPEC_DQUOTE) || (tok->spec & TSPEC_SQUOTE)) && ex)
-			ex = 0;
-		if (tok->id == TOK_VAR && (apd = 1))
-			sh_wordexpand((t_sds *)tok);
-		if (tok != orig)
-		{
-			ft_sdsapd((t_sds *)orig, tok->val);
-			tokswap(tok, orig);
-			orig = sh_toknext(toks);
+			ft_sdsapd((t_sds *)*orig, tok->val);
+			tokswap(tok, *orig);
+			*orig = sh_toknext(toks);
 		}
 		if (ft_deqlen(toks) > 1)
 		{
@@ -122,6 +86,18 @@ inline t_tok	*sh_tokexpand(t_deq *toks, int explode)
 		else
 			break ;
 	}
+}
+
+inline t_tok		*sh_tokexpand(t_deq *toks, int explode)
+{
+	t_tok	*orig;
+	int		apd;
+	int		ex;
+
+	ex = explode;
+	orig = sh_tokpeek(toks);
+	apd = 0;
+	exroutine(&orig, toks, &ex, &apd);
 	if (ex && apd)
 		sh_tokexplode(orig, toks);
 	if (!explode || orig->len || (orig->spec & TSPEC_DQUOTE) ||

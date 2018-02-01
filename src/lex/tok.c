@@ -43,6 +43,7 @@ static char			*g_tokidsstr[] =
 	[TOK_WHILE] = "while",
 	[TOK_WORD] = "<word>",
 	[TOK_NOT] = "!",
+	[TOK_VAR] = "<var>",
 	[TOK_AMP] = "&",
 	[TOK_LPAR] = "(",
 	[TOK_RPAR] = ")",

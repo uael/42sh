@@ -46,7 +46,7 @@ inline void			sh_procdtor(t_proc *p)
 	p->kind == PROC_ERR && p->u.err.ln ? ft_pfree((void **)&p->u.err.ln) : 0;
 }
 
-static inline pid_t	prepare(t_proc *prc, pid_t pgid, int *io, int fg)
+static inline int	prepare(t_proc *prc, pid_t pgid, int *io, int fg)
 {
 	prc->close != STDIN_FILENO && prc->close != io[0] ? close(prc->close) : 0;
 	if (ft_dup2std(io, prc->src) ||
