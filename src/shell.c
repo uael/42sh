@@ -114,7 +114,7 @@ int					sh_exit(int exitno, char const *fmt, ...)
 	if (g_shfd >= 0)
 		rl_finalize(g_shfd);
 	g_toks->cur = 0;
-	ft_deqdtor(g_toks, (t_dtor)sh_tokdtor);
+	ft_deqdtor(g_toks, NULL);
 	rl_dtor();
 	sh_envdtor();
 	sh_vardtor();
