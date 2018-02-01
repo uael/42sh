@@ -82,30 +82,48 @@ $(LIB).dev.a: $(LIB).dev
 
 $(LIB).san.a: $(LIB).san
 
-$(LIB): 3th $(ROBJ)
+$(LIB): $(ROBJ)
+ifneq ($(3TH_PATH),)
+	@$(foreach lib,$(3TH_PATH),$(MAKE) -C $(lib);)
+endif
 	@ar -rc $(LIB).a $(ROBJ)
 	@ranlib $(LIB).a
 	@printf  "%-30s\033[32m[✔]\033[0m\n" "$(LIB): lib"
 
-$(LIB).dev: 3thdev $(DOBJ)
+$(LIB).dev: $(DOBJ)
+ifneq ($(3TH_PATH),)
+	@$(foreach lib,$(3TH_PATH),$(MAKE) -C $(lib) dev;)
+endif
 	@ar -rc $(LIB).dev.a $(DOBJ)
 	@ranlib $(LIB).dev.a
 	@printf  "%-30s\033[32m[✔]\033[0m\n" "$(LIB).dev: lib"
 
-$(LIB).san: 3thsan $(SOBJ)
+$(LIB).san: $(SOBJ)
+ifneq ($(3TH_PATH),)
+	@$(foreach lib,$(3TH_PATH),$(MAKE) -C $(lib) san;)
+endif
 	@ar -rc $(LIB).san.a $(SOBJ)
 	@ranlib $(LIB).san.a
 	@printf  "%-30s\033[32m[✔]\033[0m\n" "$(LIB).san: lib"
 
-$(EXE): 3th $(ROBJ)
+$(EXE): $(ROBJ)
+ifneq ($(3TH_PATH),)
+	@$(foreach lib,$(3TH_PATH),$(MAKE) -C $(lib);)
+endif
 	@$(CC) $(RCFLAGS) $(LNK) $(INC) $(ROBJ) -o $(EXE) $(R3TH)
 	@printf  "%-30s\033[32m[✔]\033[0m\n" "$(EXE): exe"
 
-$(EXE).dev: 3thdev $(DOBJ)
+$(EXE).dev: $(DOBJ)
+ifneq ($(3TH_PATH),)
+	@$(foreach lib,$(3TH_PATH),$(MAKE) -C $(lib) dev;)
+endif
 	@$(CC) $(DCFLAGS) $(LNK) $(INC) $(DOBJ) -o $(EXE).dev $(D3TH)
 	@printf  "%-30s\033[32m[✔]\033[0m\n" "$(EXE).dev: exe"
 
-$(EXE).san: 3thsan $(SOBJ)
+$(EXE).san: $(SOBJ)
+ifneq ($(3TH_PATH),)
+	@$(foreach lib,$(3TH_PATH),$(MAKE) -C $(lib) san;)
+endif
 	@$(CC) $(SCFLAGS) $(LNK) $(INC) $(SOBJ) -o $(EXE).san $(S3TH)
 	@printf  "%-30s\033[32m[✔]\033[0m\n" "$(EXE).san: exe"
 
@@ -118,7 +136,7 @@ $(ROBJ_PATH)%.o: $(SRC_PATH)%.c
 $(DOBJ_PATH)%.o: $(SRC_PATH)%.c
 	@mkdir -p $(shell dirname $@)
 	@printf  "\r%-30s\033[34m[$<]\033[0m\n" "$(NAME).dev:"
-	@$(CC) $(DCFLAGS) $(INC) -MMD -MP -c $< -o $@
+	@$(CC) $(RCFLAGS) $(INC) -MMD -MP -c $< -o $@
 	@printf "\033[A\033[2K"
 
 $(SOBJ_PATH)%.o: $(SRC_PATH)%.c
@@ -172,21 +190,6 @@ else
 endif
 	@printf  "%-30s\033[32m[✔]\033[0m\n" "$(NAME).san: $@"
 
-3th:
-ifneq ($(3TH_PATH),)
-	@$(foreach lib,$(3TH_PATH),$(MAKE) -C $(lib);)
-endif
-
-3thdev:
-ifneq ($(3TH_PATH),)
-	@$(foreach lib,$(3TH_PATH),$(MAKE) -C $(lib) dev;)
-endif
-
-3thsan:
-ifneq ($(3TH_PATH),)
-	@$(foreach lib,$(3TH_PATH),$(MAKE) -C $(lib) san;)
-endif
-
 re: fclean all
 
 redev: fcleandev dev
@@ -197,5 +200,5 @@ resan: fcleansan san
 -include $(DDEP)
 -include $(SDEP)
 
-.PHONY: all, dev, san, 3th, $(NAME), clean, fclean, cleandev, fcleandev, \
+.PHONY: all, dev, san, $(NAME), clean, fclean, cleandev, fcleandev, \
   cleansan, fcleansan, re, redev, resan
