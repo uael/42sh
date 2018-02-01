@@ -97,7 +97,10 @@ inline int		sh_bicd(int ac, char **av, char **env)
 	if (!(path = cd_path(ac, av, env, (t_bool)(ac == 3))))
 		return (ft_retf(NOP, N_CD"%s\n", "Environ is empty"));
 	if (cd_test(path))
+	{
+		free(path);
 		return (NOP);
+	}
 	pwd = ft_getenv(env, "PWD");
 	if (ft_pathabs(path, buf, !p && pwd ? pwd : NULL))
 	{

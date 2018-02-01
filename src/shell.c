@@ -22,7 +22,7 @@ static t_deq		g_stack_toks = { NULL, sizeof(t_tok), 0, 0, 0 };
 static t_deq		*g_toks = &g_stack_toks;
 static t_scope		g_lvls[SHLVL_MAX] =
 {
-	{ 0, NULL, 0, 0, 0, 0, 0 }
+	{ 0, NULL, 0, 0, 0, 0 }
 };
 t_scope				*g_sh;
 uint8_t				g_shlvl;

@@ -1,3 +1,4 @@
+cd 21sh 2>&1 | grep -o "cd: 21sh: Not a directory"
 P=$PWD
 cd ////
 cd ///
