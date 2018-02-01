@@ -36,8 +36,9 @@ inline char		*sh_prompt(char *prompt, char *buf)
 
 	if (!(p = getcwd(cwd, PATH_MAX)))
 	{
-		THROW(WUT);
-		return (NULL);
+		if (!(p = sh_getenv("HOME")) || chdir(p))
+			return (ft_strcpy(buf, prompt));
+		ft_putl(STDIN_FILENO, "No pwd, going to your home..");
 	}
 	if ((home = sh_getenv("HOME")) && ft_strbegw(home, p))
 	{
