@@ -32,5 +32,5 @@ inline int		sh_procshlaunch(t_proc *proc)
 	proc->status = g_sh->status;
 	sh_unscope();
 	sh_procdtor(proc);
-	exit(proc->status);
+	return (sh_exit(proc->status, NULL));
 }

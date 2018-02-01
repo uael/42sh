@@ -41,7 +41,7 @@ inline int		sh_procfnlaunch(t_proc *proc)
 	if (proc->child)
 	{
 		sh_procdtor(proc);
-		exit(proc->status);
+		sh_exit(proc->status, NULL);
 	}
 	proc->state = PROC_COMPLETED;
 	ft_dup2std(proc->scope, STD_FILENOS);

@@ -112,10 +112,10 @@ inline int		sh_procexelaunch(struct s_proc *prc)
 		else
 			sh_err(st == PROC_NOTFOUND && !ft_strchr(prc->argv[0], '/') ?
 			"%s: Command not found\n" : "%s: %e\n", prc->argv[0], errno);
-		exit(st);
+		sh_exit(st, NULL);
 	}
 	execve(buf, prc->argv, prc->envv);
 	sh_err("%s: %e\n", prc->argv[0], errno);
 	sh_procdtor(prc);
-	exit(st);
+	return (sh_exit(st, NULL));
 }

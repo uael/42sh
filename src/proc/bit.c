@@ -25,7 +25,7 @@ inline int		sh_procbitlaunch(t_proc *proc)
 	if (proc->child)
 	{
 		sh_procdtor(proc);
-		exit(proc->status);
+		sh_exit(proc->status, NULL);
 	}
 	ft_dup2std(proc->scope, STD_FILENOS);
 	return (YEP);
