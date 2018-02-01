@@ -86,51 +86,51 @@ $(LIB).san.a: $(LIB).san
 $(LIB): 3th $(ROBJ)
 	@ar -rc $(LIB).a $(ROBJ)
 	@ranlib $(LIB).a
-	@printf  "%-25s\033[32m[✔]\033[0m\n" "$(LIB): lib"
+	@printf  "%-30s\033[32m[✔]\033[0m\n" "$(LIB): lib"
 
 $(LIB).dev: 3thdev $(DOBJ)
 	@ar -rc $(LIB).dev.a $(DOBJ)
 	@ranlib $(LIB).dev.a
-	@printf  "%-25s\033[32m[✔]\033[0m\n" "$(LIB).dev: lib"
+	@printf  "%-30s\033[32m[✔]\033[0m\n" "$(LIB).dev: lib"
 
 $(LIB).san: 3thsan $(SOBJ)
 	@ar -rc $(LIB).san.a $(SOBJ)
 	@ranlib $(LIB).san.a
-	@printf  "%-25s\033[32m[✔]\033[0m\n" "$(LIB).san: lib"
+	@printf  "%-30s\033[32m[✔]\033[0m\n" "$(LIB).san: lib"
 
 $(EXE): 3th $(ROBJ)
 	@$(CC) $(RCFLAGS) $(LNK) $(INC) $(ROBJ) -o $(EXE) $(R3TH)
-	@printf  "%-25s\033[32m[✔]\033[0m\n" "$(EXE): exe"
+	@printf  "%-30s\033[32m[✔]\033[0m\n" "$(EXE): exe"
 
 $(EXE).dev: 3thdev $(DOBJ)
 	@$(CC) $(DCFLAGS) $(LNK) $(INC) $(DOBJ) -o $(EXE).dev $(D3TH)
-	@printf  "%-25s\033[32m[✔]\033[0m\n" "$(EXE).dev: exe"
+	@printf  "%-30s\033[32m[✔]\033[0m\n" "$(EXE).dev: exe"
 
 $(EXE).san: 3thsan $(SOBJ)
 	@$(CC) $(SCFLAGS) $(LNK) $(INC) $(SOBJ) -o $(EXE).san $(S3TH)
-	@printf  "%-25s\033[32m[✔]\033[0m\n" "$(EXE).san: exe"
+	@printf  "%-30s\033[32m[✔]\033[0m\n" "$(EXE).san: exe"
 
 $(ROBJ_PATH)%.o: $(SRC_PATH)%.c
 	@mkdir -p $(shell dirname $@)
-	@printf  "\r%-25s\033[34m[$<]\033[0m\n" "$(NAME):"
+	@printf  "\r%-30s\033[34m[$<]\033[0m\n" "$(NAME):"
 	@$(CC) $(RCFLAGS) $(INC) -MMD -MP -c $< -o $@
 	@printf "\033[A\033[2K"
 
 $(DOBJ_PATH)%.o: $(SRC_PATH)%.c
 	@mkdir -p $(shell dirname $@)
-	@printf  "\r%-25s\033[34m[$<]\033[0m\n" "$(NAME).dev:"
+	@printf  "\r%-30s\033[34m[$<]\033[0m\n" "$(NAME).dev:"
 	@$(CC) $(RCFLAGS) $(INC) -MMD -MP -c $< -o $@
 	@printf "\033[A\033[2K"
 
 $(SOBJ_PATH)%.o: $(SRC_PATH)%.c
 	@mkdir -p $(shell dirname $@)
-	@printf  "\r%-25s\033[34m[$<]\033[0m\n" "$(NAME).san:"
+	@printf  "\r%-30s\033[34m[$<]\033[0m\n" "$(NAME).san:"
 	@$(CC) $(SCFLAGS) $(INC) -MMD -MP -c $< -o $@
 	@printf "\033[A\033[2K"
 
 clean:
 	@rm -rf $(ROBJ_PATH)
-	@printf  "%-25s\033[32m[✔]\033[0m\n" "$(NAME): $@"
+	@printf  "%-30s\033[32m[✔]\033[0m\n" "$(NAME): $@"
 
 fclean: clean
 ifneq ($(3TH_PATH),)
@@ -141,11 +141,11 @@ ifneq ($(LIB),)
 else
 	@rm -f $(EXE)
 endif
-	@printf  "%-25s\033[32m[✔]\033[0m\n" "$(NAME): $@"
+	@printf  "%-30s\033[32m[✔]\033[0m\n" "$(NAME): $@"
 
 cleandev:
 	@rm -rf $(DOBJ_PATH)
-	@printf  "%-25s\033[32m[✔]\033[0m\n" "$(NAME).dev: $@"
+	@printf  "%-30s\033[32m[✔]\033[0m\n" "$(NAME).dev: $@"
 
 fcleandev: cleandev
 ifneq ($(3TH_PATH),)
@@ -156,11 +156,11 @@ ifneq ($(LIB),)
 else
 	@rm -f $(EXE).dev
 endif
-	@printf  "%-25s\033[32m[✔]\033[0m\n" "$(NAME).dev: $@"
+	@printf  "%-30s\033[32m[✔]\033[0m\n" "$(NAME).dev: $@"
 
 cleansan:
 	@rm -rf $(SOBJ_PATH)
-	@printf  "%-25s\033[32m[✔]\033[0m\n" "$(NAME).san: $@"
+	@printf  "%-30s\033[32m[✔]\033[0m\n" "$(NAME).san: $@"
 
 fcleansan: cleansan
 ifneq ($(3TH_PATH),)
@@ -171,7 +171,7 @@ ifneq ($(LIB),)
 else
 	@rm -f $(EXE).san
 endif
-	@printf  "%-25s\033[32m[✔]\033[0m\n" "$(NAME).san: $@"
+	@printf  "%-30s\033[32m[✔]\033[0m\n" "$(NAME).san: $@"
 
 3th:
 ifneq ($(3TH_PATH),)
@@ -197,46 +197,12 @@ testdev: dev
 testsan: san
 	@./test.sh . 21sh.san
 
+TESTS=$(wildcard ./test/*.sh)
 valgrind: all
-	@valgrind --leak-check=full --track-origins=yes \
-      --suppressions=./valgrind.supp ./21sh test/bi.sh 2>&1 | \
-      grep "definitely lost:"
-	@valgrind --leak-check=full --track-origins=yes \
-      --suppressions=./valgrind.supp ./21sh test/cmd.sh 2>&1 | \
-      grep "definitely lost:"
-	@valgrind --leak-check=full --track-origins=yes \
-      --suppressions=./valgrind.supp ./21sh test/heredoc.sh 2>&1 | \
-      grep "definitely lost:"
-	@valgrind --leak-check=full --track-origins=yes \
-      --suppressions=./valgrind.supp ./21sh test/inhibitor.sh 2>&1 | \
-      grep "definitely lost:"
-	@valgrind --leak-check=full --track-origins=yes \
-      --suppressions=./valgrind.supp ./21sh test/separator.sh 2>&1 | \
-      grep "definitely lost:"
-	@valgrind --leak-check=full --track-origins=yes \
-      --suppressions=./valgrind.supp ./21sh test/locals.sh 2>&1 | \
-      grep "definitely lost:"
-	@valgrind --leak-check=full --track-origins=yes \
-      --suppressions=./valgrind.supp ./21sh test/error_01.sh 2>&1 | \
-      grep "definitely lost:"
-	@valgrind --leak-check=full --track-origins=yes \
-      --suppressions=./valgrind.supp ./21sh test/error_02.sh 2>&1 | \
-      grep "definitely lost:"
-	@valgrind --leak-check=full --track-origins=yes \
-      --suppressions=./valgrind.supp ./21sh test/error_03.sh 2>&1 | \
-      grep "definitely lost:"
-	@valgrind --leak-check=full --track-origins=yes \
-      --suppressions=./valgrind.supp ./21sh test/submit.sh 2>&1 | \
-      grep "definitely lost:"
-	@valgrind --leak-check=full --track-origins=yes \
-      --suppressions=./valgrind.supp ./21sh test/subshells.sh 2>&1 | \
-      grep "definitely lost:"
-	@valgrind --leak-check=full --track-origins=yes \
-      --suppressions=./valgrind.supp ./21sh test/echo.sh 2>&1 | \
-      grep "definitely lost:"
-	@valgrind --leak-check=full --track-origins=yes \
-      --suppressions=./valgrind.supp ./21sh test/env.sh 2>&1 | \
-      grep "definitely lost:"
+	$(foreach t,$(TESTS), \
+		@valgrind --leak-check=full --track-origins=yes \
+			--suppressions=./valgrind.supp ./21sh $(t) 2>&1 | \
+			grep "definitely lost: [1-9]" || printf "%-30s\033[32m[✔]\033[0m\n" "leaks: $(t)";)
 
 re: fclean all
 

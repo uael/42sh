@@ -6,7 +6,7 @@ WARNING="\033[34m[ℹ]\033[0m"
 
 function padme {
   S="$1"
-  line='                       '
+  line='                            '
   printf "%s %s" "$S" "${line:${#S}}"
 }
 
