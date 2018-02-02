@@ -27,7 +27,7 @@ inline int		sh_vardump(char **envv)
 	it = 0;
 	if (envv)
 		while (*envv)
-			ft_putl(1, *envv++);
+			ft_putl(STDOUT_FILENO, *envv++);
 	while (it < g_locals->cap)
 	{
 		if (BUCKET_ISPOPULATED(g_locals->bucks, it))
