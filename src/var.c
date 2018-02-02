@@ -33,7 +33,7 @@ inline int		sh_vardump(char **envv)
 		if (BUCKET_ISPOPULATED(g_locals->bucks, it))
 		{
 			val = ((char **)g_locals->vals)[it];
-			ft_putf(STDOUT_FILENO, ft_strlen(val) ? "%s=''" : "%s=%s",
+			ft_putf(STDOUT_FILENO, ft_strlen(val) ? "%s=%s\n" : "%s=''\n",
 				((char **)g_locals->keys)[it], val);
 		}
 		++it;
