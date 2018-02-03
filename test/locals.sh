@@ -1,3 +1,4 @@
+echo $OOPSf$OOPS
 echo sdf${HOME}${HOME}
 echo sdf${HOME}
 echo ${HOME}

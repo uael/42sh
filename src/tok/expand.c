@@ -103,7 +103,7 @@ inline t_tok		*sh_tokexpand(t_deq *toks, int explode)
 	if (ex && apd)
 		sh_tokexplode(orig, toks);
 	if (!explode || orig->len || (orig->spec & TSPEC_DQUOTE) ||
-		(orig->spec & TSPEC_SQUOTE))
+		(orig->spec & TSPEC_SQUOTE) || !TOK_ISWORD(orig->id))
 		return (sh_tokpeek(toks));
 	sh_toknext(toks);
 	return (sh_tokexpand(toks, explode));
