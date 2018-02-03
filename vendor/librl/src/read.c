@@ -53,7 +53,7 @@ int				rl_getline(int fd, char *prompt, char **ln)
 		return (rl_readnotty(fd, ln));
 	if (!rl_screenpos(NULL, &col) && col > 1)
 		ft_puts(STDIN_FILENO, TC_MR"%"TC_ME"\n");
-	ft_puts(STDIN_FILENO, prompt);
+	ft_putf(STDIN_FILENO, "\033[0m%s", prompt);
 	signal(SIGWINCH, rd_sigwinch);
 	if (!g_screen_init && rl_screenget(g_screen) < 0)
 		st = WUT;
@@ -78,7 +78,7 @@ int				rl_catline(int fd, char c, char **ln, char **it)
 		*ln = *it;
 		return (st);
 	}
-	ft_puts(STDIN_FILENO, "\033[31m>\033[0m ");
+	ft_puts(STDIN_FILENO, "\033[0m\033[31m>\033[0m ");
 	signal(SIGWINCH, rd_sigwinch);
 	if (!g_screen_init && rl_screenget(g_screen) < 0)
 		st = WUT;
