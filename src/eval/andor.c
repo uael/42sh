@@ -12,13 +12,22 @@
 
 #include "ush/eval.h"
 
-#define UNXPTD "Unexpected bang `%s' for empty pipeline"
-#define UEH "Expected <pipeline> got `%s'"
+#define UNXPTD "syntax error: Unexpected bang `%s' for empty pipeline"
+#define UEH "syntax error: Expected <pipeline> got `%s'"
+#define UEP "syntax error: Missing right operand after `%s'"
+#define EBANG 1 << 1
+#define EINSQ 1 << 2
 
-static inline int	pipelineerr(int st, t_tok *tok, t_bool bang, char *ln)
+static inline int	pipelineerr(int st, t_tok *tok, int flags, char *ln)
 {
-	if (st == NOP && bang)
+	if (st == NOP && (flags & EBANG))
 		return (sh_evalerr(ln, tok, UNXPTD, sh_tokstr(tok)));
+	if (st == NOP && (flags & EINSQ))
+	{
+		if (tok->id == TOK_LAND || tok->id == TOK_LOR)
+			return (sh_evalerr(ln, tok, UEP, sh_tokstr(tok)));
+		return (sh_evalerr(ln, tok, UEH, sh_tokstr(tok)));
+	}
 	return (st);
 }
 
@@ -56,16 +65,19 @@ inline int			sh_evalandor(t_job *job, int fd, t_deq *toks, char **ln)
 		return (NOP);
 	tok->id == TOK_NOT && (job->bang = 1) ? sh_toknext(toks) : 0;
 	if ((st = sh_evalpipeline(job, fd, toks, ln)))
-		return (pipelineerr(st, tok, job->bang, *ln));
+		return (pipelineerr(st, tok, job->bang ? EBANG : 0, *ln));
 	while (1)
 		if (!(tok = sh_tokpeek(toks)))
 			return (NOP);
 		else if (tok->id == TOK_LAND || tok->id == TOK_LOR)
 		{
 			if (separator(toks, &right, tok))
-				return (sh_evalerr(*ln, tok, UEH, sh_tokstr(tok)));
+				return (sh_evalerr(*ln, tok, UEP, sh_tokstr(tok)));
 			if ((st = sh_evalpipeline(&right, fd, toks, ln)))
-				return (pipelineerr(st, tok, right.bang, *ln));
+			{
+				return (pipelineerr(st, sh_tokpeek(toks),
+					(right.bang ? EBANG : 0) | EINSQ, *ln));
+			}
 			job = jobaddnext(&right, job, (t_bool)(tok->id == TOK_LAND));
 		}
 		else
