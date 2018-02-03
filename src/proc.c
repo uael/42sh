@@ -15,6 +15,15 @@
 #include "ush/proc.h"
 #include "ush/tok.h"
 
+static int		(*g_procs[6])(t_proc *proc) =
+{
+	[PROC_EXE] = sh_procexelaunch,
+	[PROC_FN] = sh_procfnlaunch,
+	[PROC_SH] = sh_procshlaunch,
+	[PROC_ERR] = sh_procerrlaunch,
+	[PROC_BIT] = sh_procbitlaunch
+};
+
 inline void			sh_procctor(t_proc *proc)
 {
 	ft_memset(proc, 0, sizeof(t_proc));
@@ -76,17 +85,7 @@ int					sh_proclaunch(t_proc *proc, pid_t pgid, int *io, int fg)
 {
 	if ((prepare(proc, pgid, io, fg)))
 		return (NOP);
-	if (proc->kind == PROC_SH)
-		return (sh_procshlaunch(proc));
-	else if (proc->kind == PROC_FN)
-		return (sh_procfnlaunch(proc));
-	else if (proc->kind == PROC_ERR)
-		return (sh_procerrlaunch(proc));
-	else if (proc->kind == PROC_BOOL)
-		return (sh_procbitlaunch(proc));
-	else if (proc->kind == PROC_EXE)
-		return (sh_procexelaunch(proc));
-	return (YEP);
+	return (proc->kind == 0 ? YEP : g_procs[proc->kind](proc));
 }
 
 inline int			sh_procmark(t_proc *proc, int status)

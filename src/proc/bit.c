@@ -15,7 +15,7 @@
 inline void		sh_procbit(t_proc *proc, t_bool bit)
 {
 	sh_procctor(proc);
-	proc->kind = PROC_BOOL;
+	proc->kind = PROC_BIT;
 	proc->u.bit = bit;
 }
 
