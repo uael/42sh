@@ -94,8 +94,6 @@ inline int			sh_run(int fd, char *ln)
 		g_toks->cur = 0;
 		while (!(st = sh_lex(fd, g_toks, &it, &ln)))
 			sh_eval(fd, g_toks, &ln) ? g_sh->status = 1 : 0;
-		g_toks->cur = g_toks->len;
-		ft_deqclean(g_toks, (t_dtor)sh_tokdtor);
 		if (st < 0 || ((st == OUF ? (g_sh->status = 1) : 0) && !g_sh->status))
 			break ;
 	}
@@ -114,7 +112,7 @@ int					sh_exit(int exitno, char const *fmt, ...)
 	if (g_shfd >= 0)
 		rl_finalize(g_shfd);
 	g_toks->cur = 0;
-	ft_deqdtor(g_toks, NULL);
+	ft_deqdtor(g_toks, (t_dtor)sh_tokdtor);
 	rl_dtor();
 	sh_envdtor();
 	sh_vardtor();

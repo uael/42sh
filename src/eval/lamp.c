@@ -38,7 +38,7 @@ inline int			sh_evallamp(t_job *job, t_deq *toks, char **ln)
 			ft_strerr(errno)), *ln, tok->pos);
 		return (YEP);
 	}
-	r.from = ft_isdigit(*op->val) ? *op->val - '0' : STDIN_FILENO;
+	r.from = op->val && ft_isdigit(*op->val) ? *op->val - '0' : STDIN_FILENO;
 	*(t_redir *)ft_vecpush((t_vec *)&proc->redirs) = r;
 	return (YEP);
 }

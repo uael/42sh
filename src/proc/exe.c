@@ -96,7 +96,7 @@ inline void		sh_procexe(t_proc *proc, char *path, char *exe, char **envv)
 	else
 	{
 		proc->kind = PROC_EXE;
-		proc->u.exe = ft_strdup(path);
+		proc->u.exe = path;
 	}
 }
 

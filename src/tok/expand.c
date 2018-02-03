@@ -74,6 +74,7 @@ static inline void	exroutine(t_tok **orig, t_deq *toks, int *ex, int *apd)
 		if (tok != *orig)
 		{
 			ft_sdsapd((t_sds *)*orig, tok->val);
+			sh_tokdtor(tok);
 			tokswap(tok, *orig);
 			*orig = sh_toknext(toks);
 		}
@@ -95,7 +96,8 @@ inline t_tok		*sh_tokexpand(t_deq *toks, int explode)
 	int		ex;
 
 	ex = explode;
-	orig = sh_tokpeek(toks);
+	if (!(orig = sh_tokpeek(toks)))
+		return (NULL);
 	apd = 0;
 	exroutine(&orig, toks, &ex, &apd);
 	if (ex && apd)

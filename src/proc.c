@@ -13,6 +13,7 @@
 #include <signal.h>
 
 #include "ush/proc.h"
+#include "ush/tok.h"
 
 inline void			sh_procctor(t_proc *proc)
 {
@@ -40,8 +41,7 @@ inline void			sh_procdtor(t_proc *p)
 	}
 	sh_redirectclose(&p->redirs);
 	ft_vecdtor((t_vec *)&p->redirs, NULL);
-	p->kind == PROC_SH ? ft_deqdtor(&p->u.sh.toks, NULL) : 0;
-	p->kind == PROC_EXE ? ft_pfree((void **)&p->u.exe) : 0;
+	p->kind == PROC_SH ? ft_deqdtor(&p->u.sh.toks, (t_dtor)sh_tokdtor) : 0;
 	p->kind == PROC_ERR && p->u.err.msg ? ft_pfree((void **)&p->u.err.msg) : 0;
 	p->kind == PROC_ERR && p->u.err.ln ? ft_pfree((void **)&p->u.err.ln) : 0;
 }

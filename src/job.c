@@ -14,12 +14,14 @@
 
 inline void		sh_jobctor(t_job *job)
 {
+	ft_putf(0, "Licorne debut %d\n", job);
 	ft_memset(job, 0, sizeof(t_job));
 	ft_vecctor((t_vec *)&job->procs, sizeof(t_proc));
 }
 
 inline void		sh_jobdtor(t_job *job)
 {
+	ft_putf(0, "Licorne %d\n", job);
 	ft_vecdtor((t_vec *)&job->procs, (t_dtor)sh_procdtor);
 	if (job->next)
 	{

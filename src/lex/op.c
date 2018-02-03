@@ -12,45 +12,64 @@
 
 #include "ush/lex.h"
 
-static int			g_st;
-
-static inline int	opm(t_tok *tok, char **it, uint8_t len, uint8_t id)
-{
-	tok->id = id;
-	ft_sdsmpush((t_sds *)tok, *it - len, len);
-	return (YEP);
-}
-
 static inline int	opright(int fd, t_tok *tok, char **it, char **ln)
 {
-	if (++*it && (g_st = sh_lexbslash(fd, it, ln)))
-		return (g_st);
+	int st;
+
+	if (++*it && (st = sh_lexbslash(fd, it, ln)))
+		return (st);
 	if (**it == '>' && ++*it)
-		return (opm(tok, it, 2, TOK_RAOUT));
+		return ((tok->id = TOK_RAOUT) & 0);
 	if (**it == '&' && ++*it)
-		return (opm(tok, it, 2, TOK_RAMP));
+		return ((tok->id = TOK_RAMP) & 0);
 	if (**it == '|' && ++*it)
-		return (opm(tok, it, 2, TOK_RPOUT));
-	return (opm(tok, it, 1, '>'));
+		return ((tok->id = TOK_RPOUT) & 0);
+	return ((tok->id = '>') & 0);
 }
 
 static inline int	opleft(int fd, t_tok *tok, char **it, char **ln)
 {
-	if (++*it && (g_st = sh_lexbslash(fd, it, ln)))
-		return (g_st);
+	int st;
+
+	if (++*it && (st = sh_lexbslash(fd, it, ln)))
+		return (st);
 	if (**it == '<')
 	{
-		if (++*it && (g_st = sh_lexbslash(fd, it, ln)))
-			return (g_st);
+		if (++*it && (st = sh_lexbslash(fd, it, ln)))
+			return (st);
 		if (**it == '-' && ++*it)
-			return (opm(tok, it, 3, TOK_HEREDOCT));
-		return (opm(tok, it, 2, TOK_HEREDOC));
+			return ((tok->id = TOK_HEREDOCT) & 0);
+		return ((tok->id = TOK_HEREDOC) & 0);
 	}
 	if (**it == '>' && ++*it)
-		return (opm(tok, it, 2, TOK_CMP));
+		return ((tok->id = TOK_CMP) & 0);
 	if (**it == '&' && ++*it)
-		return (opm(tok, it, 2, TOK_LAMP));
-	return (opm(tok, it, 1, '<'));
+		return ((tok->id = TOK_LAMP) & 0);
+	return ((tok->id = '<') & 0);
+}
+
+static inline int	opand(int fd, t_tok *tok, char **it, char **ln)
+{
+	int st;
+
+	if (++*it && (st = sh_lexbslash(fd, it, ln)))
+		return (st);
+	if (**it == '&' && ++*it)
+		return ((tok->id = TOK_LAND) & 0);
+	if (**it == '>' && ++*it)
+		return ((tok->id = TOK_AMPR) & 0);
+	return ((tok->id = '&') & 0);
+}
+
+static inline int	opor(int fd, t_tok *tok, char **it, char **ln)
+{
+	int st;
+
+	if (++*it && (st = sh_lexbslash(fd, it, ln)))
+		return (st);
+	if (**it == '|' && ++*it)
+		return ((tok->id = TOK_LOR) & 0);
+	return ((tok->id = '|') & 0);
 }
 
 inline int			sh_lexop(int fd, t_tok *tok, char **it, char **ln)
@@ -62,22 +81,8 @@ inline int			sh_lexop(int fd, t_tok *tok, char **it, char **ln)
 	if (tok->len)
 		return (NOP);
 	if (**it == '&')
-	{
-		if (++*it && (g_st = sh_lexbslash(fd, it, ln)))
-			return (g_st);
-		if (**it == '&' && ++*it)
-			return (opm(tok, it, 2, TOK_LAND));
-		if (**it == '>' && ++*it)
-			return (opm(tok, it, 2, TOK_AMPR));
-		return (opm(tok, it, 1, '&'));
-	}
+		return (opand(fd, tok, it, ln));
 	if (**it == '|')
-	{
-		if (++*it && (g_st = sh_lexbslash(fd, it, ln)))
-			return (g_st);
-		if (**it == '|' && ++*it)
-			return (opm(tok, it, 2, TOK_LOR));
-		return (opm(tok, it, 1, '|'));
-	}
-	return (ft_strchr("!;(){}", **it) ? opm(tok, it, 1, (uint8_t)*(*it)++) : 1);
+		return (opor(fd, tok, it, ln));
+	return (ft_strchr("!;()", **it) ? (tok->id = *(uint8_t *)(*it)++) & 0 : 1);
 }
