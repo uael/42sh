@@ -34,8 +34,7 @@ inline uint8_t		sh_scope(void)
 	if (g_shlvl == SHLVL_MAX)
 	{
 		sh_err("Too many shell level\n");
-		rl_dtor();
-		exit(EXIT_FAILURE);
+		sh_exit(EXIT_FAILURE, NULL);
 	}
 	g_sh = g_lvls + g_shlvl++;
 	return (g_shlvl);
@@ -47,7 +46,7 @@ inline uint8_t		sh_unscope(void)
 	{
 		sh_err("Already at minimum shell level\n");
 		rl_dtor();
-		exit(EXIT_FAILURE);
+		sh_exit(EXIT_FAILURE, NULL);
 	}
 	g_sh = g_lvls + --g_shlvl;
 	return (g_shlvl);
@@ -94,11 +93,9 @@ inline int			sh_run(int fd, char *ln)
 		g_toks->len = 0;
 		g_toks->cur = 0;
 		while (!(st = sh_lex(fd, g_toks, &it, &ln)))
-		{
 			sh_eval(fd, g_toks, &ln) ? g_sh->status = 1 : 0;
-			g_toks->cur = g_toks->len;
-			ft_deqclean(g_toks, (t_dtor)sh_tokdtor);
-		}
+		g_toks->cur = g_toks->len;
+		ft_deqclean(g_toks, (t_dtor)sh_tokdtor);
 		if (st < 0 || ((st == OUF ? (g_sh->status = 1) : 0) && !g_sh->status))
 			break ;
 	}
@@ -116,6 +113,8 @@ int					sh_exit(int exitno, char const *fmt, ...)
 		rl_histsave(ft_pathcat(ft_strcpy(buf, home), ".ushst"));
 	if (g_shfd >= 0)
 		rl_finalize(g_shfd);
+	g_toks->cur = 0;
+	ft_deqdtor(g_toks, NULL);
 	rl_dtor();
 	sh_envdtor();
 	sh_vardtor();

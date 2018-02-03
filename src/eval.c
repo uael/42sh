@@ -41,9 +41,10 @@ static inline int	evalfini(int ret, t_deq *toks)
 				sh_toknext(toks);
 				break ;
 			}
-		return (NOP);
 	}
-	return (YEP);
+	toks->cur = toks->len;
+	ft_deqclean(toks, (t_dtor)sh_tokdtor);
+	return (ret ? NOP : YEP);
 }
 
 inline int			sh_eval(int fd, t_deq *toks, char **ln)

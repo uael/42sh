@@ -54,7 +54,7 @@ static inline int	prepare(t_proc *prc, pid_t pgid, int *io, int fg)
 	{
 		prc->child ? 0 : ft_dup2std(prc->scope, STD_FILENOS);
 		if (prc->child)
-			exit(EXIT_FAILURE);
+			sh_exit(EXIT_FAILURE, NULL);
 		prc->status = EXIT_FAILURE;
 		return (WUT);
 	}
