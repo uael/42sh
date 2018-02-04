@@ -26,6 +26,7 @@
    fun:xpc_atfork_child
    fun:libSystem_atfork_child
    fun:fork
+   fun:sh_procfork
    fun:sh_joblaunch
    fun:sh_evallist
    fun:sh_eval
@@ -40,6 +41,7 @@
    fun:_notify_fork_child
    fun:libSystem_atfork_child
    fun:fork
+   fun:sh_procfork
    fun:sh_joblaunch
    fun:sh_evallist
    fun:sh_eval
@@ -56,6 +58,7 @@
    fun:_notify_fork_child
    fun:libSystem_atfork_child
    fun:fork
+   fun:sh_procfork
    fun:sh_joblaunch
    fun:sh_evallist
    fun:sh_eval
@@ -88,6 +91,7 @@
    fun:xpc_atfork_child
    fun:libSystem_atfork_child
    fun:fork
+   fun:sh_procfork
    fun:sh_joblaunch
    fun:sh_evallist
    fun:sh_eval
