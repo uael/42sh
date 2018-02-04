@@ -68,7 +68,7 @@ enum			e_tok
 	TOK_RCURLY = '}',
 };
 
-# define SYNCH "!;(){}`"
+# define SYNCH "!;()`"
 # define OPCH SYNCH"><&|"
 
 # define ISREOL(IT) (*(IT) == '\n')

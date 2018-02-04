@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <wait.h>
+#include <sys/wait.h>
 
 #include "ush/eval.h"
 
@@ -48,14 +48,15 @@ char			*readproc(t_proc *p, t_sds *out)
 	p->close = fds[0];
 	p->state = PROC_RUNNING;
 	if (!(pid = fork()))
+	{
 		sh_proclaunch(p, 0, io, 1);
+		return (NULL);
+	}
 	else if (pid < 0)
 		sh_exit(THROW(WUT), NULL);
 	p->pid = pid;
 	g_sh->ppid = pid;
-	if (g_sh->tty)
-		setpgid(pid, 0);
-	waitpid(pid, &ret, WUNTRACED);
+	waitpid(-pid, &ret, WUNTRACED);
 	return (readfd0(fds, out));
 }
 
@@ -66,11 +67,15 @@ inline t_tok	*sh_evalbackquote(t_deq *toks)
 
 	sh_procsh(&proc);
 	while ((tok = sh_toknext(toks))->id != '`')
+	{
 		*(t_tok *)ft_deqpush(&proc.u.sh.toks) = *tok;
-	*tok->val = '\0';
+		tok->cap = 0;
+		tok->val = NULL;
+	}
+	(*(t_tok *)ft_deqpush(&proc.u.sh.toks)).id = TOK_END;
+	tok->val ? *tok->val = '\0' : 0;
 	tok->len = 0;
 	tok->id = TOK_WORD;
-	tok->spec |= TSPEC_DQUOTE;
 	if (proc.u.sh.toks.len)
 		readproc(&proc, (t_sds *)tok);
 	sh_procdtor(&proc);

@@ -84,5 +84,5 @@ inline int			sh_lexop(int fd, t_tok *tok, char **it, char **ln)
 		return (opand(fd, tok, it, ln));
 	if (**it == '|')
 		return (opor(fd, tok, it, ln));
-	return (ft_strchr("!;()", **it) ? (tok->id = *(uint8_t *)(*it)++) & 0 : 1);
+	return (ft_strchr(SYNCH, **it) ? (tok->id = *(uint8_t *)(*it)++) & 0 : 1);
 }

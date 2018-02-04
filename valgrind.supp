@@ -34,6 +34,22 @@
    <insert_a_suppression_name_here>
    Memcheck:Leak
    match-leak-kinds: definite
+   fun:calloc
+   fun:class_createInstance
+   fun:_os_object_alloc_realized
+   fun:_xpc_pipe_create
+   fun:xpc_atfork_child
+   fun:libSystem_atfork_child
+   fun:fork
+   fun:readproc
+   fun:sh_evalbackquote
+   fun:sh_tokexpand
+   fun:sh_evalargv
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: definite
    fun:malloc
    fun:_nc_table_new
    fun:_notify_init_globals
@@ -59,6 +75,23 @@
    fun:sh_joblaunch
    fun:sh_evallist
    fun:sh_eval
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:_nc_table_new
+   fun:_notify_init_globals
+   fun:_os_once
+   fun:_os_alloc_once
+   fun:_notify_fork_child
+   fun:libSystem_atfork_child
+   fun:fork
+   fun:readproc
+   fun:sh_evalbackquote
+   fun:sh_tokexpand
+   fun:sh_evalargv
 }
 {
    <insert_a_suppression_name_here>
@@ -92,6 +125,22 @@
    fun:sh_evallist
    fun:sh_eval
    fun:sh_run
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:calloc
+   fun:class_createInstance
+   fun:_os_object_alloc_realized
+   fun:_xpc_pipe_create
+   fun:xpc_atfork_child
+   fun:libSystem_atfork_child
+   fun:fork
+   fun:readproc
+   fun:sh_evalbackquote
+   fun:sh_tokexpand
+   fun:sh_evalargv
 }
 {
    <insert_a_suppression_name_here>
