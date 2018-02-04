@@ -23,12 +23,6 @@ static inline uint8_t	wordid(char const *s, size_t l)
 	return (TOK_WORD);
 }
 
-static inline int		inhib(t_tok *tok, char **it)
-{
-	ft_sdscpush((t_sds *)tok, *(*it)++);
-	return (0);
-}
-
 static inline int		pushvar(int fd, t_tok **t, char **it, char **ln)
 {
 	int		st;
@@ -84,7 +78,7 @@ inline int				sh_lexword(int fd, t_tok *t, char **it, char **ln)
 			(st = sh_lexbslash(fd, it, ln))))
 			break ;
 		else if (bs)
-			bs = inhib(t, it);
+			(void)(ft_sdscpush((t_sds *)t, *(*it)++) && (bs = 0));
 		else if ((bs = **it == '\\'))
 			++*it;
 		else if ((**it == '\'' || **it == '"'))

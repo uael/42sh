@@ -14,15 +14,27 @@
 
 #include "ush/eval.h"
 
-#define BUF_SIZE	4096
+#define BUFS 4096
 
-static char		*readfd0(int *fds, t_sds *out)
+static char inline	*readproc(t_proc *p, t_sds *out)
 {
+	int		fds[2];
+	int		io[3];
+	int		status;
 	ssize_t	ret;
-	char	buf[BUF_SIZE + 1];
+	char	buf[BUFS + 1];
 
+	ft_memcpy(io, STD_FILENOS, 3 * sizeof(int));
+	if (pipe(fds) < 0)
+		sh_exit(THROW(WUT), NULL);
+	io[STDOUT_FILENO] = fds[1];
+	p->close = fds[0];
+	p->child = 1;
+	if (sh_procfork(p, NULL, io, 1))
+		return (NULL);
+	waitpid(-p->pid, &status, WUNTRACED);
 	close(fds[1]);
-	while ((ret = read(fds[0], buf, BUF_SIZE)) > 0)
+	while ((ret = read(fds[0], buf, BUFS)) > 0)
 	{
 		buf[ret] = 0;
 		ft_sdsmpush(out, buf, (size_t)ret);
@@ -33,51 +45,29 @@ static char		*readfd0(int *fds, t_sds *out)
 	return (out->buf);
 }
 
-char			*readproc(t_proc *p, t_sds *out)
-{
-	int			ret;
-	int			pid;
-	int			fds[2];
-	int			io[3];
-
-	ft_memcpy(io, STD_FILENOS, 3 * sizeof(int));
-	if (pipe(fds) < 0)
-		sh_exit(THROW(WUT), NULL);
-	io[STDOUT_FILENO] = fds[1];
-	p->child = 1;
-	p->close = fds[0];
-	p->state = PROC_RUNNING;
-	if (!(pid = fork()))
-	{
-		sh_proclaunch(p, 0, io, 1);
-		return (NULL);
-	}
-	else if (pid < 0)
-		sh_exit(THROW(WUT), NULL);
-	p->pid = pid;
-	g_sh->ppid = pid;
-	waitpid(-pid, &ret, WUNTRACED);
-	return (readfd0(fds, out));
-}
-
-inline t_tok	*sh_evalbackquote(t_deq *toks)
+inline t_tok		*sh_evalbackquote(t_tok *orig, t_deq *toks)
 {
 	t_proc	proc;
 	t_tok	*tok;
+	size_t	i;
 
 	sh_procsh(&proc);
-	while ((tok = sh_toknext(toks))->id != '`')
+	tok = orig;
+	++tok;
+	while (tok->id != '`')
 	{
 		*(t_tok *)ft_deqpush(&proc.u.sh.toks) = *tok;
-		tok->cap = 0;
-		tok->val = NULL;
+		i = (tok - (t_tok *)toks->buf) - toks->cur;
+		ft_deqrem(toks, i, NULL);
+		tok = ft_deqat(toks, i);
 	}
+	ft_deqrem(toks, (tok - (t_tok *)toks->buf) - toks->cur, NULL);
 	(*(t_tok *)ft_deqpush(&proc.u.sh.toks)).id = TOK_END;
-	tok->val ? *tok->val = '\0' : 0;
-	tok->len = 0;
-	tok->id = TOK_WORD;
+	orig->val ? *orig->val = '\0' : 0;
+	orig->len = 0;
+	orig->id = TOK_WORD;
 	if (proc.u.sh.toks.len)
-		readproc(&proc, (t_sds *)tok);
+		readproc(&proc, (t_sds *)orig);
 	sh_procdtor(&proc);
-	return (tok);
+	return (orig);
 }

@@ -53,7 +53,7 @@ inline void			sh_tokexplode(t_tok *tok, t_deq *into)
 		}
 }
 
-static void			tokswap(t_tok *a, t_tok *b)
+static inline void	tokswap(t_tok *a, t_tok *b)
 {
 	t_tok c;
 
@@ -71,8 +71,8 @@ static inline void	exroutine(t_tok **orig, t_deq *toks, int *ex, int *apd)
 	{
 		if (((tok->spec & TSPEC_DQUOTE) || (tok->spec & TSPEC_SQUOTE)) && *ex)
 			*ex = 0;
-		if (tok->id == TOK_VAR && (*apd = 1))
-			sh_wordexpand((t_sds *)tok);
+		tok->id == TOK_VAR && (*apd = 1) ? sh_wordexpand((t_sds *)tok) : 0;
+		tok->id == '`' && (*apd = 1) ? (tok = sh_evalbackquote(tok, toks)) : 0;
 		if (tok != *orig)
 		{
 			ft_sdsapd((t_sds *)*orig, tok->val);
@@ -101,11 +101,6 @@ inline t_tok		*sh_tokexpand(t_deq *toks, int explode)
 	if (!(tok = sh_tokpeek(toks)))
 		return (NULL);
 	apd = 0;
-	if (tok->id == '`')
-	{
-		tok = sh_evalbackquote(toks);
-		apd = 1;
-	}
 	exroutine(&tok, toks, &ex, &apd);
 	if (ex && apd && tok->len)
 	{

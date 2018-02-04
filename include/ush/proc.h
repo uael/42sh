@@ -76,6 +76,7 @@ typedef struct	s_procs
 extern void		sh_procctor(t_proc *proc);
 extern void		sh_procdtor(t_proc *p);
 extern int		sh_procmark(t_proc *proc, int status);
+extern int		sh_procfork(t_proc *p, pid_t *pgid, int *io, int fg);
 extern int		sh_proclaunch(t_proc *proc, pid_t pgid, int *io, int fg);
 
 #endif

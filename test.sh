@@ -57,7 +57,10 @@ function dotest {
   if [ ! -f ${test_expected} ]; then
     test_expected="./out/$(basename "${test%.*}").ex"
     rm -f ${test_expected}
+    E=${EXE}
+    export EXE=$2
     $2 ${test} &> ${test_expected}
+    EXE=${E}
   fi
   rm -f ${test_out}
   $1 ${test} &> ${test_out}
