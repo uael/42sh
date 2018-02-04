@@ -29,7 +29,7 @@ inline void		ft_setenv(t_vec *env, char *var, char *val)
 {
 	char **it;
 
-	if (!env->len || !(it = ft_vecbeg(env)))
+	if (!(it = ft_vecbeg(env)))
 		return ;
 	while (it != ft_vecend(env))
 		if (!*it || !ft_strbegw(var, *it) || (*it)[ft_strlen(var)] != '=')
