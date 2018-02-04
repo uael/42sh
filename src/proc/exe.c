@@ -96,14 +96,14 @@ inline void		sh_procexe(t_proc *proc, char *path, char *exe, char **envv)
 	else
 	{
 		proc->kind = PROC_EXE;
-		proc->u.exe = ft_strdup(path);
+		proc->u.exe = path;
 	}
 }
 
 inline int		sh_procexelaunch(struct s_proc *prc)
 {
 	int		st;
-	char 	buf[PATH_MAX + 1];
+	char	buf[PATH_MAX + 1];
 
 	if ((st = exelookup(prc->envv, prc->argv[0], prc->u.exe, buf)))
 	{
@@ -112,10 +112,10 @@ inline int		sh_procexelaunch(struct s_proc *prc)
 		else
 			sh_err(st == PROC_NOTFOUND && !ft_strchr(prc->argv[0], '/') ?
 			"%s: Command not found\n" : "%s: %e\n", prc->argv[0], errno);
-		exit(st);
+		sh_exit(st, NULL);
 	}
 	execve(buf, prc->argv, prc->envv);
 	sh_err("%s: %e\n", prc->argv[0], errno);
 	sh_procdtor(prc);
-	exit(st);
+	return (sh_exit(st, NULL));
 }

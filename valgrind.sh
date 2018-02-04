@@ -38,6 +38,14 @@ function job {
   return $RET
 }
 
+function dovalgrind {
+  valgrind --leak-check=full \
+    --track-origins=yes --suppressions=./valgrind.supp $1 $2 \
+    &> ${OUT}
+  ! cat ${OUT} | grep "definitely lost: [1-9]"
+  return $?
+}
+
 if [ -z "$1" ]; then
   PROJECT_PATH='.'
 else
@@ -50,24 +58,10 @@ else
   export EXE=${PROJECT_PATH}/$2
 fi
 
-function dotest {
-  local test=$3
-  local test_out="./out/$(basename "${test%.*}").out"
-  local test_expected="./test/$(basename "${test%.*}").ex"
-  if [ ! -f ${test_expected} ]; then
-    test_expected="./out/$(basename "${test%.*}").ex"
-    rm -f ${test_expected}
-    $2 ${test} &> ${test_expected}
-  fi
-  rm -f ${test_out}
-  $1 ${test} &> ${test_out}
-  diff ${test_out} ${test_expected}
-}
-
 mkdir -p out
 ECODE=0
 for test in ./test/*.sh; do
-  job "Test" "$(basename "${test%.*}")" "dotest ${EXE} /bin/bash ${test}"
+  job "Leaks" "$(basename "${test%.*}")" "dovalgrind ${EXE} ${test}"
   RET=$?
   if [[ $RET != 0 ]]; then
     ECODE=$RET

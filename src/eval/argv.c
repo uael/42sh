@@ -12,7 +12,18 @@
 
 #include "ush/eval.h"
 
-static char			**makeenv(t_map *vars, t_bool *owned)
+static inline int	own(t_vec *av, t_tok *tok)
+{
+	if (av)
+	{
+		*(char **)ft_vecpush(av) = tok->val;
+		tok->val = NULL;
+		tok->cap = 0;
+	}
+	return (YEP);
+}
+
+static inline char	**makeenv(t_map *vars, t_bool *owned)
 {
 	t_vec		*e;
 	char		**envv;
@@ -40,20 +51,20 @@ static inline int	makeargv(t_job *job, t_vec *av, t_deq *toks, char **ln)
 {
 	t_tok *tok;
 
-	av ? *(char **)ft_vecpush(av) = ft_strdup(sh_tokpeek(toks)->val) : 0;
+	own(av, sh_tokpeek(toks));
 	tok = sh_toknext(toks);
 	while (tok)
 		if (TOK_ISWORD(tok->id))
 		{
 			if (av && (tok = sh_tokexpand(toks, 1)) && TOK_ISWORD(tok->id))
-				*(char **)ft_vecpush(av) = ft_strdup(tok->val);
-			TOK_ISWORD(tok->id) ? tok = sh_toknext(toks) : 0;
+				own(av, tok);
+			tok && TOK_ISWORD(tok->id) ? tok = sh_toknext(toks) : 0;
 		}
 		else if (TOK_ISREDIR(tok->id))
 		{
 			if (sh_evalredir(job, toks, ln) == OUF)
 			{
-				av ? ft_vecdtor(av, (t_dtor)ft_pfree) : 0;
+				av ? ft_vecdtor(av, NULL) : 0;
 				return (OUF);
 			}
 			tok = sh_tokpeek(toks);

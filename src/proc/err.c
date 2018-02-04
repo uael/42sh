@@ -27,7 +27,7 @@ inline t_procerr	*sh_procerr(t_proc *proc, char *msg, char *ln, size_t pos)
 	return (&proc->u.err);
 }
 
-inline int		sh_procerrlaunch(t_proc *proc)
+inline int			sh_procerrlaunch(t_proc *proc)
 {
 	if (proc->u.err.msg)
 	{
@@ -40,7 +40,7 @@ inline int		sh_procerrlaunch(t_proc *proc)
 	if (proc->child)
 	{
 		sh_procdtor(proc);
-		exit(proc->u.err.st);
+		sh_exit(proc->u.err.st, NULL);
 	}
 	proc->status = proc->u.err.st;
 	proc->state = PROC_COMPLETED;

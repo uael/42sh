@@ -28,6 +28,7 @@ inline int		sh_evalsubshell(t_job *job, int fd, t_deq *toks, char **ln)
 		else if (tok->id == ')')
 			--stack;
 		*(t_tok *)ft_deqpush(&proc.u.sh.toks) = *tok;
+		tok->val = NULL;
 	}
 	if (!proc.u.sh.toks.len)
 		return (sh_evalerr(*ln, sh_tokpeek(toks), "Empty subshell"));

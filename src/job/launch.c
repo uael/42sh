@@ -44,11 +44,27 @@ static inline int			jobfork(t_job *job, t_proc *p, t_bool piped, int fg)
 	return (YEP);
 }
 
+static inline int			jobhelp(t_job *job)
+{
+	size_t	i;
+	t_proc	*proc;
+	int		st;
+
+	i = 0;
+	st = bang(job->bang, sh_jobbg(job, (int)i));
+	ft_putf(STDIN_FILENO, "[%d] ", job->idx + 1);
+	while (i < job->procs.len)
+	{
+		proc = job->procs.buf + i++;
+		ft_putf(STDIN_FILENO, i < job->procs.len ? "%d " : "%d", proc->pid);
+	}
+	ft_putf(STDIN_FILENO, "\n");
+	return (st);
+}
+
 static inline int			jobnext(t_job *job, int fg)
 {
 	t_job	*next;
-	t_proc	*proc;
-	size_t	i;
 	int		st;
 
 	if (!job->procs.len)
@@ -56,17 +72,7 @@ static inline int			jobnext(t_job *job, int fg)
 	else if (!job->procs.buf->pid)
 		st = bang(job->bang, job->procs.buf[job->procs.len - 1].status);
 	else if (!fg)
-	{
-		st = bang(job->bang, sh_jobbg(job, (int)(i = 0)));
-		ft_putf(STDIN_FILENO, "[%d] ", job->idx + 1);
-		while (i < job->procs.len)
-		{
-			proc = job->procs.buf + i++;
-			ft_putf(STDIN_FILENO, i < job->procs.len ? "%d " : "%d", proc->pid);
-		}
-		ft_putf(STDIN_FILENO, "\n");
-		return (st);
-	}
+		return (jobhelp(job));
 	else
 		st = bang(job->bang, sh_jobfg(job, 0));
 	if (!(job->andor == ANDOR_OR && st) && !(job->andor == ANDOR_AND && !st))

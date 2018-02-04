@@ -77,7 +77,7 @@ inline char			*sh_tokstr(t_tok *tok)
 		return (g_tokidsstr[TOK_END]);
 	if (tok->id > TOK_RCURLY)
 		return ("<unknown>");
-	if (tok->len)
+	if (tok->len > 1)
 		return (tok->val);
 	return ((ret = g_tokidsstr[tok->id]) ? ret : "<unknown>");
 }

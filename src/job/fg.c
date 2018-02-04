@@ -14,10 +14,21 @@
 
 #include "ush/pool.h"
 
-inline int		sh_jobfg(t_job *job, int cont)
+inline static void	sh_jobhelp(t_job *job, int *st)
+{
+	t_job	*bg;
+
+	bg = sh_poolpush(job);
+	if (g_sh->tty)
+		ft_puts(STDIN_FILENO, "\r\x1b[0K^Z\n");
+	sh_jobdebug(bg);
+	*st = g_sh->status;
+	sh_jobctor(job);
+}
+
+inline int			sh_jobfg(t_job *job, int cont)
 {
 	int		st;
-	t_job	*bg;
 
 	job->bg = 0;
 	if (g_sh->tty)
@@ -37,12 +48,7 @@ inline int		sh_jobfg(t_job *job, int cont)
 	}
 	if (sh_jobstopped(job))
 	{
-		bg = sh_poolpush(job);
-		if (g_sh->tty)
-			ft_puts(STDIN_FILENO, "\r\x1b[0K^Z\n");
-		sh_jobdebug(bg);
-		st = g_sh->status;
-		sh_jobctor(job);
+		sh_jobhelp(job, &st);
 	}
 	else
 		st = job->procs.buf[job->procs.len - 1].status;

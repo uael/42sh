@@ -82,6 +82,7 @@ enum			e_tok
 # define TOK_ISWORD(I) (TOK_ISBOOL(I)||(I)==TOK_WORD||(I)==TOK_VAR||(I)=='`')
 # define TOK_ISEND(ID) ((ID)==TOK_EOL||(ID)==TOK_END)
 # define TOK_ISSEP(ID) ((ID)==TOK_SEMICOLON||(ID)==TOK_AMP)
+# define TOK_ISHDOC(ID) ((ID)==TOK_HEREDOC||(ID)==TOK_HEREDOCT)
 # define TOK_ISCMDM(ID) (TOK_ISWORD(ID)||TOK_ISREDIR(ID))
 
 enum			e_tspec

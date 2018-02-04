@@ -25,4 +25,4 @@
 ) | echo | echo | echo | ls
 
 FOO=BITE;(FOO=BAR; (FOO=BAZ; echo $FOO) | grep BAZ; echo $FOO | grep BAR)
-
+(FOO=BITE;(FOO=BAR; (FOO=BAZ; echo $FOO) | grep BAZ; echo $FOO | grep BAR))

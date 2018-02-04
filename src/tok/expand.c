@@ -13,7 +13,7 @@
 #include "ush/tok.h"
 #include "ush/eval.h"
 
-static t_tok	tokapd(t_tok *prev, char *beg, char *end)
+static t_tok		tokapd(t_tok *prev, char *beg, char *end)
 {
 	t_tok tok;
 
@@ -24,7 +24,7 @@ static t_tok	tokapd(t_tok *prev, char *beg, char *end)
 	return (tok);
 }
 
-inline void		sh_tokexplode(t_tok *tok, t_deq *into)
+inline void			sh_tokexplode(t_tok *tok, t_deq *into)
 {
 	char	*val;
 	char	*end;
@@ -52,7 +52,7 @@ inline void		sh_tokexplode(t_tok *tok, t_deq *into)
 		}
 }
 
-static void		tokswap(t_tok *a, t_tok *b)
+static void			tokswap(t_tok *a, t_tok *b)
 {
 	t_tok c;
 
@@ -61,34 +61,23 @@ static void		tokswap(t_tok *a, t_tok *b)
 	*b = c;
 }
 
-inline t_tok	*sh_tokexpand(t_deq *toks, int explode)
+static inline void	exroutine(t_tok **orig, t_deq *toks, int *ex, int *apd)
 {
-	t_tok	*orig;
-	t_tok	*tok;
-	int		apd;
-	int		ex;
+	t_tok *tok;
 
-	tok = sh_tokpeek(toks);
-	if (tok->id == '`')
-		orig = sh_evalbackquote(toks);
-	else
-		orig = tok;
-	apd = 0;
-	ex = explode;
+	tok = *orig;
 	while (1)
 	{
-		if (((tok->spec & TSPEC_DQUOTE) || (tok->spec & TSPEC_SQUOTE)) && ex)
-			ex = 0;
-		if (tok->id == TOK_VAR)
-		{
+		if (((tok->spec & TSPEC_DQUOTE) || (tok->spec & TSPEC_SQUOTE)) && *ex)
+			*ex = 0;
+		if (tok->id == TOK_VAR && (*apd = 1))
 			sh_wordexpand((t_sds *)tok);
-			apd = 1;
-		}
-		if (tok != orig)
+		if (tok != *orig)
 		{
-			ft_sdsapd((t_sds *)orig, tok->val);
-			tokswap(tok, orig);
-			orig = sh_toknext(toks);
+			ft_sdsapd((t_sds *)*orig, tok->val);
+			sh_tokdtor(tok);
+			tokswap(tok, *orig);
+			*orig = sh_toknext(toks);
 		}
 		if (ft_deqlen(toks) > 1)
 		{
@@ -99,10 +88,25 @@ inline t_tok	*sh_tokexpand(t_deq *toks, int explode)
 		else
 			break ;
 	}
+}
+
+inline t_tok		*sh_tokexpand(t_deq *toks, int explode)
+{
+	t_tok	*orig;
+	int		apd;
+	int		ex;
+
+	ex = explode;
+	if (!(orig = sh_tokpeek(toks)))
+		return (NULL);
+	if (orig->id == '`')
+		orig = sh_evalbackquote(toks);
+	apd = 0;
+	exroutine(&orig, toks, &ex, &apd);
 	if (ex && apd)
 		sh_tokexplode(orig, toks);
 	if (!explode || orig->len || (orig->spec & TSPEC_DQUOTE) ||
-		(orig->spec & TSPEC_SQUOTE))
+		(orig->spec & TSPEC_SQUOTE) || !TOK_ISWORD(orig->id))
 		return (sh_tokpeek(toks));
 	sh_toknext(toks);
 	return (sh_tokexpand(toks, explode));

@@ -27,13 +27,13 @@ inline int		sh_vardump(char **envv)
 	it = 0;
 	if (envv)
 		while (*envv)
-			ft_putl(1, *envv++);
+			ft_putl(STDOUT_FILENO, *envv++);
 	while (it < g_locals->cap)
 	{
 		if (BUCKET_ISPOPULATED(g_locals->bucks, it))
 		{
 			val = ((char **)g_locals->vals)[it];
-			ft_putf(STDOUT_FILENO, ft_strlen(val) ? "%s=''" : "%s=%s",
+			ft_putf(STDOUT_FILENO, ft_strlen(val) ? "%s=%s\n" : "%s=''\n",
 				((char **)g_locals->keys)[it], val);
 		}
 		++it;
@@ -63,7 +63,10 @@ inline void		sh_varset(char *var, char *val)
 		}
 	}
 	else if (ft_mapget(g_locals, var, &it))
+	{
+		free(((char **)g_locals->vals)[it]);
 		((char **)g_locals->vals)[it] = ft_strdup(val);
+	}
 	else if (ft_mapput(g_locals, dvar = ft_strdup(var), &it))
 		((char **)g_locals->vals)[it] = ft_strdup(val);
 	else

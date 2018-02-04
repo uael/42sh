@@ -74,7 +74,7 @@ inline int		sh_evalsimple(t_job *job, int fd, t_deq *toks, char **ln)
 	if (((t_proc *)ft_vecback((t_vec *)&job->procs))->kind == PROC_ERR)
 		while (tok && TOK_ISCMDM(tok->id))
 			tok = sh_toknext(toks);
-	else if (TOK_ISCMDM(tok->id))
+	else if (tok && TOK_ISCMDM(tok->id))
 		return (sh_evalargv(job, &vars, toks, ln) ? argverror(job) : YEP);
 	return (evalexport(&vars));
 }

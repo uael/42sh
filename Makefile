@@ -15,7 +15,7 @@ CC = gcc
 CFLAGS = -Werror -Wextra -Wall
 RCFLAGS = $(CFLAGS) -O3
 DCFLAGS = $(CFLAGS) -g3 -DDEBUG
-SCFLAGS = $(DCFLAGS) -fsanitize=address
+SCFLAGS = $(DCFLAGS) -fsanitize=address -fsanitize=undefined
 
 SRC_PATH = ./src/
 OBJ_PATH = ./obj/
@@ -83,54 +83,72 @@ $(LIB).dev.a: $(LIB).dev
 
 $(LIB).san.a: $(LIB).san
 
-$(LIB): 3th $(ROBJ)
+$(LIB): $(ROBJ)
+ifneq ($(3TH_PATH),)
+	@$(foreach lib,$(3TH_PATH),$(MAKE) -C $(lib);)
+endif
 	@ar -rc $(LIB).a $(ROBJ)
 	@ranlib $(LIB).a
-	@printf  "%-25s\033[32m[✔]\033[0m\n" "$(LIB): lib"
+	@printf  "%-30s\033[32m[✔]\033[0m\n" "$(LIB): lib"
 
-$(LIB).dev: 3thdev $(DOBJ)
+$(LIB).dev: $(DOBJ)
+ifneq ($(3TH_PATH),)
+	@$(foreach lib,$(3TH_PATH),$(MAKE) -C $(lib) dev;)
+endif
 	@ar -rc $(LIB).dev.a $(DOBJ)
 	@ranlib $(LIB).dev.a
-	@printf  "%-25s\033[32m[✔]\033[0m\n" "$(LIB).dev: lib"
+	@printf  "%-30s\033[32m[✔]\033[0m\n" "$(LIB).dev: lib"
 
-$(LIB).san: 3thsan $(SOBJ)
+$(LIB).san: $(SOBJ)
+ifneq ($(3TH_PATH),)
+	@$(foreach lib,$(3TH_PATH),$(MAKE) -C $(lib) san;)
+endif
 	@ar -rc $(LIB).san.a $(SOBJ)
 	@ranlib $(LIB).san.a
-	@printf  "%-25s\033[32m[✔]\033[0m\n" "$(LIB).san: lib"
+	@printf  "%-30s\033[32m[✔]\033[0m\n" "$(LIB).san: lib"
 
-$(EXE): 3th $(ROBJ)
+$(EXE): $(ROBJ)
+ifneq ($(3TH_PATH),)
+	@$(foreach lib,$(3TH_PATH),$(MAKE) -C $(lib);)
+endif
 	@$(CC) $(RCFLAGS) $(LNK) $(INC) $(ROBJ) -o $(EXE) $(R3TH)
-	@printf  "%-25s\033[32m[✔]\033[0m\n" "$(EXE): exe"
+	@printf  "%-30s\033[32m[✔]\033[0m\n" "$(EXE): exe"
 
-$(EXE).dev: 3thdev $(DOBJ)
+$(EXE).dev: $(DOBJ)
+ifneq ($(3TH_PATH),)
+	@$(foreach lib,$(3TH_PATH),$(MAKE) -C $(lib) dev;)
+endif
 	@$(CC) $(DCFLAGS) $(LNK) $(INC) $(DOBJ) -o $(EXE).dev $(D3TH)
-	@printf  "%-25s\033[32m[✔]\033[0m\n" "$(EXE).dev: exe"
+	@printf  "%-30s\033[32m[✔]\033[0m\n" "$(EXE).dev: exe"
 
-$(EXE).san: 3thsan $(SOBJ)
+$(EXE).san: $(SOBJ)
+ifneq ($(3TH_PATH),)
+	@$(foreach lib,$(3TH_PATH),$(MAKE) -C $(lib) san;)
+endif
 	@$(CC) $(SCFLAGS) $(LNK) $(INC) $(SOBJ) -o $(EXE).san $(S3TH)
-	@printf  "%-25s\033[32m[✔]\033[0m\n" "$(EXE).san: exe"
+	@printf  "%-30s\033[32m[✔]\033[0m\n" "$(EXE).san: exe"
 
 $(ROBJ_PATH)%.o: $(SRC_PATH)%.c
 	@mkdir -p $(shell dirname $@)
-	@printf  "\r%-25s\033[34m[$<]\033[0m\n" "$(NAME):"
+	@printf  "\r%-30s\033[34m[$<]\033[0m\n" "$(NAME):"
 	@$(CC) $(RCFLAGS) $(INC) -MMD -MP -c $< -o $@
 	@printf "\033[A\033[2K"
 
 $(DOBJ_PATH)%.o: $(SRC_PATH)%.c
 	@mkdir -p $(shell dirname $@)
-	@printf  "\r%-25s\033[34m[$<]\033[0m\n" "$(NAME).dev:"
-	@$(CC) $(RCFLAGS) $(INC) -MMD -MP -c $< -o $@
+	@printf  "\r%-30s\033[34m[$<]\033[0m\n" "$(NAME).dev:"
+	@$(CC) $(DCFLAGS) $(INC) -MMD -MP -c $< -o $@
 	@printf "\033[A\033[2K"
 
 $(SOBJ_PATH)%.o: $(SRC_PATH)%.c
 	@mkdir -p $(shell dirname $@)
-	@printf  "\r%-25s\033[34m[$<]\033[0m\n" "$(NAME).san:"
+	@printf  "\r%-30s\033[34m[$<]\033[0m\n" "$(NAME).san:"
 	@$(CC) $(SCFLAGS) $(INC) -MMD -MP -c $< -o $@
 	@printf "\033[A\033[2K"
 
 clean:
 	@rm -rf $(ROBJ_PATH)
-	@printf  "%-25s\033[32m[✔]\033[0m\n" "$(NAME): $@"
+	@printf  "%-30s\033[32m[✔]\033[0m\n" "$(NAME): $@"
 
 fclean: clean
 ifneq ($(3TH_PATH),)
@@ -141,11 +159,11 @@ ifneq ($(LIB),)
 else
 	@rm -f $(EXE)
 endif
-	@printf  "%-25s\033[32m[✔]\033[0m\n" "$(NAME): $@"
+	@printf  "%-30s\033[32m[✔]\033[0m\n" "$(NAME): $@"
 
 cleandev:
 	@rm -rf $(DOBJ_PATH)
-	@printf  "%-25s\033[32m[✔]\033[0m\n" "$(NAME).dev: $@"
+	@printf  "%-30s\033[32m[✔]\033[0m\n" "$(NAME).dev: $@"
 
 fcleandev: cleandev
 ifneq ($(3TH_PATH),)
@@ -156,11 +174,11 @@ ifneq ($(LIB),)
 else
 	@rm -f $(EXE).dev
 endif
-	@printf  "%-25s\033[32m[✔]\033[0m\n" "$(NAME).dev: $@"
+	@printf  "%-30s\033[32m[✔]\033[0m\n" "$(NAME).dev: $@"
 
 cleansan:
 	@rm -rf $(SOBJ_PATH)
-	@printf  "%-25s\033[32m[✔]\033[0m\n" "$(NAME).san: $@"
+	@printf  "%-30s\033[32m[✔]\033[0m\n" "$(NAME).san: $@"
 
 fcleansan: cleansan
 ifneq ($(3TH_PATH),)
@@ -171,22 +189,13 @@ ifneq ($(LIB),)
 else
 	@rm -f $(EXE).san
 endif
-	@printf  "%-25s\033[32m[✔]\033[0m\n" "$(NAME).san: $@"
+	@printf  "%-30s\033[32m[✔]\033[0m\n" "$(NAME).san: $@"
 
-3th:
-ifneq ($(3TH_PATH),)
-	@$(foreach lib,$(3TH_PATH),$(MAKE) -C $(lib);)
-endif
+re: fclean all
 
-3thdev:
-ifneq ($(3TH_PATH),)
-	@$(foreach lib,$(3TH_PATH),$(MAKE) -C $(lib) dev;)
-endif
+redev: fcleandev dev
 
-3thsan:
-ifneq ($(3TH_PATH),)
-	@$(foreach lib,$(3TH_PATH),$(MAKE) -C $(lib) san;)
-endif
+resan: fcleansan san
 
 test: all
 	@./test.sh . 21sh
@@ -198,44 +207,17 @@ testsan: san
 	@./test.sh . 21sh.san
 
 valgrind: all
-	@valgrind --leak-check=full --track-origins=yes \
-      --suppressions=./valgrind.supp ./21sh test/bi.sh 2>&1 | \
-      grep "definitely lost:"
-	@valgrind --leak-check=full --track-origins=yes \
-      --suppressions=./valgrind.supp ./21sh test/cmd.sh 2>&1 | \
-      grep "definitely lost:"
-	@valgrind --leak-check=full --track-origins=yes \
-      --suppressions=./valgrind.supp ./21sh test/heredoc.sh 2>&1 | \
-      grep "definitely lost:"
-	@valgrind --leak-check=full --track-origins=yes \
-      --suppressions=./valgrind.supp ./21sh test/inhibitor.sh 2>&1 | \
-      grep "definitely lost:"
-	@valgrind --leak-check=full --track-origins=yes \
-      --suppressions=./valgrind.supp ./21sh test/separator.sh 2>&1 | \
-      grep "definitely lost:"
-	@valgrind --leak-check=full --track-origins=yes \
-      --suppressions=./valgrind.supp ./21sh test/locals.sh 2>&1 | \
-      grep "definitely lost:"
-	@valgrind --leak-check=full --track-origins=yes \
-      --suppressions=./valgrind.supp ./21sh test/error_01.sh 2>&1 | \
-      grep "definitely lost:"
-	@valgrind --leak-check=full --track-origins=yes \
-      --suppressions=./valgrind.supp ./21sh test/error_02.sh 2>&1 | \
-      grep "definitely lost:"
-	@valgrind --leak-check=full --track-origins=yes \
-      --suppressions=./valgrind.supp ./21sh test/error_03.sh 2>&1 | \
-      grep "definitely lost:"
+	@./valgrind.sh . 21sh
 
-re: fclean all
+valgrinddev: dev
+	@./valgrind.sh . 21sh.dev
 
-redev: fcleandev dev
-
-resan: fcleansan san
+valgrindsan: san
+	@./valgrind.sh . 21sh.san
 
 -include $(RDEP)
 -include $(DDEP)
 -include $(SDEP)
 
-.PHONY: all, dev, san, 3th, 3thdev, 3thsan, $(NAME), clean, fclean, cleandev, \
-  fcleandev, cleansan, fcleansan, re, redev, resan, test, testdev, testsan, \
-  valgrind
+.PHONY: all, dev, san, $(NAME), clean, fclean, cleandev, fcleandev, cleansan, \
+  fcleansan, re, redev, resan, test, testdev, testsan, valgrind

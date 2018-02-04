@@ -33,8 +33,10 @@ static void			pipeprev(t_tok *tok, t_proc *prev, t_job *job, size_t i)
 	}
 	sh_procfn(proc, ouput, NULL);
 	proc->argv = ft_malloc(2 * sizeof(char **));
-	proc->argv[0] = ft_strdup(tok->val);
+	proc->argv[0] = tok->val;
 	proc->argv[1] = NULL;
+	tok->val = NULL;
+	tok->cap = 0;
 }
 
 inline int			sh_evalheredoc(t_job *job, t_deq *toks, char **ln)
@@ -49,12 +51,14 @@ inline int			sh_evalheredoc(t_job *job, t_deq *toks, char **ln)
 	tok = sh_toknext(toks);
 	i = job->procs.len - 1;
 	proc = ft_vecat((t_vec *)&job->procs, i);
-	if (ft_isdigit(*op->val))
+	if (op->val && ft_isdigit(*op->val))
 		proc->src[STDIN_FILENO] = *op->val - '0';
 	if (i > 0 && job->procs.buf[i - 1].u.fn == ouput)
 	{
 		free(job->procs.buf[i - 1].argv[0]);
-		job->procs.buf[i - 1].argv[0] = ft_strdup(tok->val);
+		job->procs.buf[i - 1].argv[0] = tok->val;
+		tok->val = NULL;
+		tok->cap = 0;
 	}
 	else
 		pipeprev(tok, proc, job, i);

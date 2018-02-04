@@ -32,23 +32,19 @@ static inline int	lexone(int fd, t_tok *tok, char **it, char **ln)
 		else if (**it && ft_strchr(sh_varifs(), **it))
 			++*it;
 		else if (ISEOL(*it))
-		{
-			sh_tokpos(tok, ++*it, *ln)->id = TOK_EOL;
-			ft_sdscpush((t_sds *)tok, '\n');
-			return (YEP);
-		}
+			return ((sh_tokpos(tok, ++*it, *ln)->id = TOK_EOL) & 0);
 		else if (**it == '#')
 			while (**it && !ISEOL(*it))
 				++*it;
 		else if (!**it)
-			return (sh_tokpos(tok, *it, *ln)->id = TOK_END);
+			return ((sh_tokpos(tok, *it, *ln)->id = TOK_END) & 0);
 		else
 			break ;
 	sh_tokpos(tok, *it, *ln);
 	ft_isdigit(**it) ? ft_sdscpush((t_sds *)tok, *(*it)++) : 0;
 	return (st = sh_lexop(fd, tok, it, ln)) != NOP ||
-		(st = sh_lexword(fd, tok, it, ln)) != NOP
-		? st : sh_synerr(*ln, *it, "Unexpected token `%c'", **it);
+	(st = sh_lexword(fd, tok, it, ln)) != NOP ? st :
+	sh_synerr(*ln, *it, "Unexpected token `%c'", **it);
 }
 
 static inline int	lexline(int fd, t_deq *toks, char **it, char **ln)
@@ -59,8 +55,7 @@ static inline int	lexline(int fd, t_deq *toks, char **it, char **ln)
 	!ln ? (ln = it) : 0;
 	while (1)
 	{
-		ft_sdsgrow((t_sds *)(tok = ft_deqpush(toks)), 1);
-		*tok->val = '\0';
+		tok = ft_deqpush(toks);
 		tok->len = 0;
 		tok->spec = 0;
 		if ((st = lexone(fd, tok, it, ln)))

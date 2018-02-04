@@ -28,7 +28,7 @@ static inline int	onsemicolon(t_job *job, int fd, t_deq *toks, char **ln)
 	tok = sh_tokpeek(toks);
 	if ((st = sh_evalandor(job, fd, toks, ln)))
 	{
-		sh_jobctor(job);
+		sh_jobdtor(job);
 		return (st == OUF || tok != sh_tokpeek(toks) ? st : YEP);
 	}
 	return (YEP);
@@ -50,7 +50,7 @@ static inline int	onamp(t_job *job, int fd, t_deq *toks, char **ln)
 	tok = sh_tokpeek(toks);
 	if ((st = sh_evalandor(job, fd, toks, ln)))
 	{
-		sh_jobctor(job);
+		sh_jobdtor(job);
 		return (st == OUF || tok != sh_tokpeek(toks) ? st : YEP);
 	}
 	return (YEP);
@@ -74,7 +74,7 @@ inline int			sh_evallist(int fd, t_deq *toks, char **ln)
 
 	sh_jobctor(&job);
 	if (sh_evalandor(&job, fd, toks, ln) == OUF)
-		return (OUF);
+		return (ft_dtor(OUF, (t_dtor)sh_jobdtor, &job, NULL));
 	while (1)
 		if (!(tok = sh_tokpeek(toks)))
 			return (ft_dtor(YEP, (t_dtor)sh_jobdtor, &job, NULL));

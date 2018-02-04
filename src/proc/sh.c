@@ -31,6 +31,7 @@ inline int		sh_procshlaunch(t_proc *proc)
 	sh_eval(-1, &proc->u.sh.toks, &ln) ? (g_sh->status = 1) : 0;
 	proc->status = g_sh->status;
 	sh_unscope();
+	proc->u.sh.toks.cur = proc->u.sh.toks.len;
 	sh_procdtor(proc);
-	exit(proc->status);
+	return (sh_exit(proc->status, NULL));
 }
