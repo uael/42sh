@@ -46,7 +46,7 @@ SRC_NAME = \
 	lex/word.c lex/reduce.c \
 	main.c \
 	pool.c pool/mark.c pool/notify.c \
-	proc.c proc/bit.c proc/err.c proc/exe.c proc/fn.c proc/sh.c \
+	proc.c proc/bit.c proc/err.c proc/exe.c proc/fn.c proc/fork.c proc/sh.c \
 	prompt.c \
 	redir.c \
 	shell.c \

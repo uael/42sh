@@ -12,46 +12,16 @@
 
 #include "ush/pool.h"
 
-static int				g_io[3] = { 0, 0, 0 };
-
-static inline int			bang(t_bool b, int status)
-{
-	if (b)
-		return (status ? 0 : 1);
-	return (status);
-}
-
-static inline int			jobfork(t_job *job, t_proc *p, t_bool piped, int fg)
-{
-	pid_t	pid;
-
-	p->child = (t_bool)(piped || p->kind == PROC_EXE || p->kind == PROC_SH);
-	if (!p->child || !(pid = fork()))
-		return (sh_proclaunch(p, job->pgid, g_io, fg));
-	else if (pid < 0)
-		sh_exit(THROW(WUT), NULL);
-	else
-	{
-		p->pid = pid;
-		g_sh->ppid = pid;
-		if (g_sh->tty)
-		{
-			setpgid(pid, job->pgid);
-			if (!job->pgid)
-				job->pgid = pid;
-		}
-	}
-	return (YEP);
-}
-
-static inline int			jobhelp(t_job *job)
+static inline int	jobbg(t_job *job)
 {
 	size_t	i;
 	t_proc	*proc;
 	int		st;
 
 	i = 0;
-	st = bang(job->bang, sh_jobbg(job, (int)i));
+	st = sh_jobbg(job, (int)i);
+	if (job->bang)
+		st = st ? 0 : 1;
 	ft_putf(STDIN_FILENO, "[%d] ", job->idx + 1);
 	while (i < job->procs.len)
 	{
@@ -62,52 +32,58 @@ static inline int			jobhelp(t_job *job)
 	return (st);
 }
 
-static inline int			jobnext(t_job *job, int fg)
+static inline int	jobnext(t_job *job, int st)
 {
 	t_job	*next;
-	int		st;
+	t_andor	andor;
 
-	if (!job->procs.len)
-		st = EXIT_FAILURE;
-	else if (!job->procs.buf->pid)
-		st = bang(job->bang, job->procs.buf[job->procs.len - 1].status);
-	else if (!fg)
-		return (jobhelp(job));
-	else
-		st = bang(job->bang, sh_jobfg(job, 0));
-	if (!(job->andor == ANDOR_OR && st) && !(job->andor == ANDOR_AND && !st))
+	if (job->bang)
+		st = st ? 0 : 1;
+	andor = job->andor;
+	while (andor != ANDOR_NONE)
+	{
+		next = job->next;
+		job->next = NULL;
+		sh_jobdtor(job);
+		ft_memcpy(job, next, sizeof(t_job));
+		free(next);
+		if ((andor == ANDOR_OR && st) || (andor == ANDOR_AND && !st))
+			break ;
+		andor = job->andor;
+	}
+	if (!andor)
 	{
 		sh_jobdtor(job);
 		return (st);
 	}
-	next = job->next;
-	job->next = NULL;
-	sh_jobdtor(job);
-	ft_memcpy(job, next, sizeof(t_job));
-	free(next);
-	return (sh_joblaunch(job, fg));
+	return (sh_joblaunch(job, 1));
 }
 
-int							sh_joblaunch(t_job *job, int fg)
+int					sh_joblaunch(t_job *job, int fg)
 {
 	size_t	i;
 	t_proc	*proc;
 	int		fds[2];
+	int		io[3];
 
 	i = 0;
-	job->bg = (t_bool)!fg;
-	ft_memcpy(g_io, STD_FILENOS, 3 * sizeof(int));
+	ft_memcpy(io, STD_FILENOS, 3 * sizeof(int));
 	while (i < job->procs.len)
 	{
 		proc = job->procs.buf + i++;
-		sh_jobpipe(job, i, fds, g_io);
+		sh_jobpipe(job, i, fds, io);
 		proc->close = fds[0];
-		proc->state = PROC_RUNNING;
-		if (jobfork(job, proc, (t_bool)(job->procs.len > 1), fg))
+		proc->child = (t_bool)(job->procs.len > 1 || proc->kind == PROC_EXE ||
+			proc->kind == PROC_SH);
+		if (sh_procfork(proc, &job->pgid, io, fg))
 			return (!job->bang);
-		g_io[STDIN_FILENO] != STDIN_FILENO ? close(g_io[STDIN_FILENO]) : 0;
-		g_io[STDOUT_FILENO] != STDOUT_FILENO ? close(g_io[STDOUT_FILENO]) : 0;
-		g_io[STDIN_FILENO] = fds[0];
+		io[STDIN_FILENO] != STDIN_FILENO ? close(io[STDIN_FILENO]) : 0;
+		io[STDOUT_FILENO] != STDOUT_FILENO ? close(io[STDOUT_FILENO]) : 0;
+		io[STDIN_FILENO] = fds[0];
 	}
-	return (jobnext(job, fg));
+	if (!job->procs.len)
+		return (jobnext(job, EXIT_FAILURE));
+	else if (!job->procs.buf->pid)
+		return (jobnext(job, job->procs.buf[job->procs.len - 1].status));
+	return (fg ? jobnext(job, sh_jobfg(job, 0)) : jobbg(job));
 }
