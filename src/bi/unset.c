@@ -21,10 +21,10 @@ static int			unsetexhdl(int rcode, void *arg)
 	if (!errno || errno == EBADF || errno == EIO)
 		return (rcode);
 	if (arg)
-		ft_putf(STDERR_FILENO, COLOR_BRED"unset: "COLOR_RESET"%s: %e\n",
+		ft_putf(STDERR_FILENO, "unset: %s: %e\n",
 			arg, errno);
 	else
-		ft_putf(STDERR_FILENO, COLOR_BRED"unset: "COLOR_RESET"%e\n", errno);
+		ft_putf(STDERR_FILENO, "unset: %e\n", errno);
 	if (errno == ENOARG)
 		ft_puts(STDERR_FILENO, g_usage);
 	if (errno == ENOMEM)

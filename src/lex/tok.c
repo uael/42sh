@@ -54,6 +54,7 @@ static char			*g_tokidsstr[] =
 	[TOK_ROUT] = ">",
 	[TOK_LBRACKET] = "[",
 	[TOK_RBRACKET] = "]",
+	[TOK_BQUOTE] = "`",
 	[TOK_LCURLY] = "{",
 	[TOK_PIPE] = "|",
 	[TOK_RCURLY] = "}"

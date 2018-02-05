@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "ush/tok.h"
+#include "ush/eval.h"
 
 static t_tok		tokapd(uint16_t pos, char *beg, char *end)
 {
@@ -71,6 +72,7 @@ static inline void	exroutine(t_tok **orig, t_deq *toks, int *ex, int *apd)
 		if (((tok->spec & TSPEC_DQUOTE) || (tok->spec & TSPEC_SQUOTE)) && *ex)
 			*ex = 0;
 		tok->id == TOK_VAR && (*apd = 1) ? sh_wordexpand((t_sds *)tok) : 0;
+		tok->id == '`' && (*apd = 1) ? (tok = sh_evalbackquote(tok, toks)) : 0;
 		if (tok != *orig)
 		{
 			ft_sdsapd((t_sds *)*orig, tok->val);

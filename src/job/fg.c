@@ -14,7 +14,7 @@
 
 #include "ush/pool.h"
 
-inline static void	sh_jobhelp(t_job *job, int *st)
+inline static void	jobstop(t_job *job, int *st)
 {
 	t_job	*bg;
 
@@ -47,9 +47,7 @@ inline int			sh_jobfg(t_job *job, int cont)
 		tcsetattr(STDIN_FILENO, TCSADRAIN, &g_shmode);
 	}
 	if (sh_jobstopped(job))
-	{
-		sh_jobhelp(job, &st);
-	}
+		jobstop(job, &st);
 	else
 		st = job->procs.buf[job->procs.len - 1].status;
 	return (st);

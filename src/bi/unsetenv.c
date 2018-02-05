@@ -12,7 +12,7 @@
 
 #include "ush.h"
 
-#define N_UNSET COLOR_RED COLOR_BOLD "unsetenv: " COLOR_RESET
+#define N_UNSETENV "unsetenv: "
 
 inline int	sh_biunsetenv(int ac, char **av, char **env)
 {
@@ -21,14 +21,14 @@ inline int	sh_biunsetenv(int ac, char **av, char **env)
 
 	(void)env;
 	if (ac < 2)
-		return (ft_retf(NOP, N_UNSET"%e\n", EINVAL));
+		return (ft_retf(NOP, N_UNSETENV"%e\n", EINVAL));
 	i = 0;
 	fst = YEP;
 	while (++i < ac)
 		if (ft_strchr(av[i], '='))
-			return (ft_retf(NOP, N_UNSET"%s\n", "Syntax error"));
+			return (ft_retf(NOP, N_UNSETENV"%s\n", "Syntax error"));
 		else if (!sh_unsetenv(av[i], 1))
-			ft_retf((fst = NOP), N_UNSET"%s: Environ not fount\n",
+			ft_retf((fst = NOP), N_UNSETENV"%s: Environ not fount\n",
 				av[i]);
 	return (fst);
 }
