@@ -1,19 +1,45 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lex/spec.c                                         :+:      :+:    :+:   */
+/*   lex/reduce.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/13 08:23:58 by alucas-          ###   ########.fr       */
+/*   Updated: 2018/01/22 12:51:28 by cmalfroy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ush/lex.h"
-#include "ush/shell.h"
 
-inline int			sh_lexbslash(int fd, char **it, char **ln)
+inline char		sh_rbracket(char b)
+{
+	if (b == '[')
+		return (']');
+	if (b == '{')
+		return ('}');
+	if (b == '(')
+		return (')');
+	if (b == '`')
+		return ('`');
+	return (0);
+}
+
+inline t_bool	sh_isname(char *word)
+{
+	if (!ft_isalpha(*word) && *word != '_')
+		return (0);
+	++word;
+	while (*word && *word != '=')
+	{
+		if (!ft_isalnum(*word) && *word != '_')
+			return (0);
+		++word;
+	}
+	return (1);
+}
+
+inline int		sh_lexbslash(int fd, char **it, char **ln)
 {
 	int st;
 

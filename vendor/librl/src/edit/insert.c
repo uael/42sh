@@ -18,18 +18,26 @@ inline int	rl_editinsert(char c)
 {
 	if (c == '\n' || c == '\r')
 		return (rl_editreturn());
-	ft_sdscput(&g_eln->str, g_eln->idx++, c);
-	rl_editprint();
+	if (g_eln->len + 1 < MAX_INPUT)
+	{
+		if (g_eln->idx != g_eln->len)
+			ft_memmove(g_eln->buf + g_eln->idx + 1, g_eln->buf + g_eln->idx,
+				g_eln->len - g_eln->idx);
+		g_eln->buf[g_eln->idx++] = c;
+		g_eln->buf[++g_eln->len] = '\0';
+		rl_editprint();
+	}
 	return (YEP);
 }
 
 inline int	rl_editdelete(void)
 {
-	if (g_eln->idx < g_eln->str.len)
+	if (g_eln->idx < g_eln->len)
 	{
 		if (g_mode == RL_VISUAL && g_eln->idx != g_eln->vidx)
 			return (rl_visualdelete());
-		ft_sdsrem(&g_eln->str, g_eln->idx, NULL);
+		ft_memmove(g_eln->buf + g_eln->idx, g_eln->buf + g_eln->idx + 1,
+			g_eln->len - g_eln->idx);
 		rl_editprint();
 	}
 	return (YEP);
@@ -37,11 +45,13 @@ inline int	rl_editdelete(void)
 
 inline int	rl_editbackspace(void)
 {
-	if (g_eln->idx && g_eln->str.len)
+	if (g_eln->idx && g_eln->len)
 	{
 		if (g_mode == RL_VISUAL && g_eln->idx != g_eln->vidx)
 			return (rl_visualdelete());
-		ft_sdsrem(&g_eln->str, --g_eln->idx, NULL);
+		--g_eln->idx;
+		ft_memmove(g_eln->buf + g_eln->idx, g_eln->buf + g_eln->idx + 1,
+			g_eln->len - g_eln->idx);
 		rl_editprint();
 	}
 	return (YEP);

@@ -14,7 +14,7 @@
 
 inline int		rl_histsave(char const *filename)
 {
-	t_sds	*line;
+	char	line[MAX_INPUT];
 	t_ofs	*out;
 	char	*beg;
 	char	*eol;
@@ -23,10 +23,9 @@ inline int		rl_histsave(char const *filename)
 	if (ft_ofstrunc(out = alloca(sizeof(t_ifs)), filename))
 		return (THROW(WUT));
 	i = 0;
-	ft_sdsctor(line = alloca(sizeof(t_sds)));
-	while (rl_histcpy(i++, line))
+	while (rl_histcpy(i++, line, NULL))
 	{
-		beg = line->buf;
+		beg = line;
 		while ((eol = ft_strchr(beg, '\n')))
 		{
 			ft_ofswr(out, beg, eol - beg);
@@ -35,6 +34,5 @@ inline int		rl_histsave(char const *filename)
 		}
 		ft_ofswrf(out, "%s\n\n", beg);
 	}
-	ft_sdsdtor(line);
 	return (ft_ofsclose(out));
 }

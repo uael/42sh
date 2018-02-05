@@ -11,9 +11,8 @@
 /* ************************************************************************** */
 
 #include "ush/tok.h"
-#include "ush/eval.h"
 
-static t_tok		tokapd(uint16_t pos, char *beg, char *end)
+static t_tok	tokapd(uint16_t pos, char *beg, char *end)
 {
 	t_tok tok;
 
@@ -24,7 +23,7 @@ static t_tok		tokapd(uint16_t pos, char *beg, char *end)
 	return (tok);
 }
 
-inline void			sh_tokexplode(t_tok *tok, t_deq *into)
+inline void		sh_tokexplode(t_tok *tok, t_vec *av)
 {
 	char		*val;
 	char		*end;
@@ -53,63 +52,12 @@ inline void			sh_tokexplode(t_tok *tok, t_deq *into)
 		}
 }
 
-static inline void	tokswap(t_tok *a, t_tok *b)
+inline t_sds	*sh_tokdexpand(t_sds *dst, t_tok *src, char *ln)
 {
-	t_tok c;
 
-	c = *a;
-	*a = *b;
-	*b = c;
 }
 
-static inline void	exroutine(t_tok **orig, t_deq *toks, int *ex, int *apd)
+inline size_t	sh_tokexpand(char *dst, t_tok *src, char *ln, size_t n)
 {
-	t_tok *tok;
 
-	tok = *orig;
-	while (1)
-	{
-		if (((tok->spec & TSPEC_DQUOTE) || (tok->spec & TSPEC_SQUOTE)) && *ex)
-			*ex = 0;
-		tok->id == TOK_VAR && (*apd = 1) ? sh_wordexpand((t_sds *)tok) : 0;
-		tok->id == '`' && (*apd = 1) ? (tok = sh_evalbackquote(tok, toks)) : 0;
-		if (tok != *orig)
-		{
-			ft_sdsapd((t_sds *)*orig, tok->val);
-			sh_tokdtor(tok);
-			tokswap(tok, *orig);
-			*orig = sh_toknext(toks);
-		}
-		if (ft_deqlen(toks) > 1)
-		{
-			tok = ft_deqat(toks, 1);
-			if (!TOK_ISWORD(tok->id) || !(tok->spec & TSPEC_CONTINUOUS))
-				break ;
-		}
-		else
-			break ;
-	}
-}
-
-inline t_tok		*sh_tokexpand(t_deq *toks, int explode)
-{
-	t_tok	*tok;
-	int		apd;
-	int		ex;
-
-	ex = explode;
-	if (!(tok = sh_tokpeek(toks)))
-		return (NULL);
-	apd = 0;
-	exroutine(&tok, toks, &ex, &apd);
-	if (ex && apd && tok->len)
-	{
-		sh_tokexplode(tok, toks);
-		tok = sh_tokpeek(toks);
-	}
-	if (!explode || tok->len || (tok->spec & TSPEC_DQUOTE) ||
-		(tok->spec & TSPEC_SQUOTE) || !TOK_ISWORD(tok->id))
-		return (sh_tokpeek(toks));
-	sh_toknext(toks);
-	return (sh_tokexpand(toks, explode));
 }

@@ -22,7 +22,7 @@
 # endif
 
 typedef void	(t_rlhook)(void);
-typedef void	(t_rlcomp)(t_sds *cmd);
+typedef void	(t_rlcomp)(char *buf, size_t *len);
 
 extern int		rl_histload(char const *filename);
 extern int		rl_histsave(char const *filename);

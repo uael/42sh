@@ -27,7 +27,7 @@ static inline void			onprint(t_ofs *out, char const *row,
 		g_idx_col = g_screen->col;
 	if (g_mode == RL_VISUAL)
 	{
-		vis = ft_sdsat(&g_eln->str, g_eln->vidx);
+		vis = g_eln->buf + g_eln->vidx;
 		if (row == pos)
 		{
 			if (pos > vis)
@@ -63,7 +63,7 @@ static inline void			println(size_t i, uint16_t plen)
 	char *row;
 	char *eol;
 
-	pos = ft_sdsat(&g_eln->str, g_eln->idx);
+	pos = g_eln->buf + g_eln->idx;
 	while (i < g_eln->rows.len)
 	{
 		g_screen->col = plen;

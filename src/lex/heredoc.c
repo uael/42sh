@@ -15,12 +15,15 @@
 
 #define UEE "parse error: Unexpected EOF while looking for heredoc delimiter "
 
-static inline int	heredoc(t_tok2 *tok, char *eof, size_t eofl, char **it)
+static inline int	heredoc(t_tok *tok, char *eof, char **it, char **ln)
 {
-	ft_sdscpush((t_sds *)tok, **it);
+	size_t eofl;
+
+	eofl = ft_strlen(eof);
+	++tok->len;
 	if ((!**it || ISEOL(*it)) && (tok->len == eofl + 1 ||
-		(tok->len > eofl && ISREOL(tok->val + tok->len - (eofl + 2)))) &&
-		!ft_strncmp(tok->val + tok->len - (eofl + 1), eof, eofl))
+		(tok->len > eofl && ISREOL(*ln + tok->pos + tok->len - (eofl + 2)))) &&
+		!ft_strncmp(*ln + tok->pos + tok->len - (eofl + 1), eof, eofl))
 	{
 		ft_sdsnpop((t_sds *)tok, eofl + ISREOL(*it), NULL);
 		return (YEP);
@@ -29,14 +32,12 @@ static inline int	heredoc(t_tok2 *tok, char *eof, size_t eofl, char **it)
 	return (NOP);
 }
 
-inline int			sh_lexheredoc(int fd, t_tok2 *tok, char **it, char **ln)
+inline int			sh_lexheredoc(int fd, t_tok *tok, char **it, char **ln)
 {
 	char	*eof;
-	size_t	eofl;
 	int		st;
 
-	eofl = tok->len;
-	eof = ft_memdup(tok->val, (tok->len + 1) * sizeof(char));
+	eof = ft_strndup(*ln + tok->pos, tok->len);
 	tok->len = 0;
 	st = 0;
 	while (!st)
@@ -47,22 +48,21 @@ inline int			sh_lexheredoc(int fd, t_tok2 *tok, char **it, char **ln)
 		{
 			if (ISWEOL(*it))
 				++*it;
-			if (!heredoc(tok, eof, eofl, it))
+			if (!heredoc(tok, eof, it, ln))
 				break ;
 		}
 	free(eof);
 	return (st);
 }
 
-inline int			sh_lexheredoct(int fd, t_tok2 *tok, char **it, char **ln)
+inline int			sh_lexheredoct(int fd, t_tok *tok, char **it, char **ln)
 {
 	char	*eof;
-	size_t	eofl;
 	int		st;
 
-	eofl = tok->len;
-	eof = ft_memdup(tok->val, (tok->len + 1) * sizeof(char));
+	eof = ft_strndup(*ln + tok->pos, tok->len);
 	tok->len = 0;
+	tok->pos = (uint16_t)(*it - *ln);
 	st = 0;
 	while (!st)
 		if (!**it && (fd < 0 || (st = rl_catline(fd, 0, ln, it))))
@@ -75,7 +75,7 @@ inline int			sh_lexheredoct(int fd, t_tok2 *tok, char **it, char **ln)
 			if (*it == *ln || (*(*it - 1) == '\n'))
 				while (**it == '\t')
 					++*it;
-			if (!heredoc(tok, eof, eofl, it))
+			if (!heredoc(tok, eof, it, ln))
 				break ;
 		}
 	free(eof);

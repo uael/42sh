@@ -14,6 +14,7 @@
 # define USH_WORD_H
 
 # include "var.h"
+# include "tok.h"
 
 extern void		sh_wordglob(t_sds *word);
 extern int		sh_wordexpand(t_sds *word);

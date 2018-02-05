@@ -10,30 +10,20 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
-#include "edit.h"
 #include "visual.h"
 #include "read.h"
 
 #define K_ESC "\x1b"
 #define K_BACKSPACE "\x7f"
 #define K_DELETE "\x1b\x5b\x33\x7e"
-#define K_CTRL_A "\x1"
 #define K_CTRL_B "\x2"
 #define K_CTRL_C "\x3"
 #define K_CTRL_D "\x4"
-#define K_CTRL_E "\x5"
-#define K_CTRL_F "\x6"
-#define K_CTRL_H "\x8"
 #define K_TAB "\x9"
 #define K_RETURN "\xa"
-#define K_CTRL_K "\xb"
 #define K_CTRL_L "\xc"
 #define K_ENTER "\xd"
 #define K_CTRL_P "\x10"
-#define K_CTRL_R "\x12"
-#define K_CTRL_T "\x14"
-#define K_CTRL_U "\x15"
 #define K_CTRL_V "\x16"
 #define K_UP "\x1b\x5b\x41"
 #define K_DOWN "\x1b\x5b\x42"
@@ -55,10 +45,7 @@
 #define K_END "\x1b\x5b\x46"
 #define K_CTRL_Y "\x19"
 
-t_editln			g_edit[HIST_MAX + 1] =
-{
-	{ { 0, 0, 0 }, 0, 0, 0, { NULL, sizeof(char *), 0, 0 } },
-};
+t_editln			g_edit[HIST_MAX + 1];
 uint8_t				g_edit_len = 0;
 uint8_t				g_edit_idx = 0;
 t_editln			*g_eln;
@@ -150,11 +137,9 @@ static t_editbind	g_viskeymap[] =
 
 inline void			rl_editdtor(void)
 {
-	rl_histdtor();
 	g_edit_idx = 0;
 	while (g_edit_idx < g_edit_len)
 	{
-		ft_sdsdtor(&(g_edit + g_edit_idx)->str);
 		ft_vecdtor(&(g_edit + g_edit_idx)->rows, NULL);
 		++g_edit_idx;
 	}
@@ -168,13 +153,13 @@ static inline void	prepare(t_bool cat)
 	if (g_edit_len == 0)
 		ft_memset(g_edit, 0, (HIST_MAX + 1) * sizeof(t_editln));
 	g_edit_len = 0;
-	while (rl_histcpy(g_edit_len, &g_edit[g_edit_len].str))
+	while (rl_histcpy(g_edit_len, g_edit[g_edit_len].buf,
+		&g_edit[g_edit_len].len))
 		++g_edit_len;
 	g_eln = g_edit +
 		(g_edit_idx = g_edit_len++);
-	g_eln->str.len = 0;
-	ft_sdsgrow(&g_eln->str, 64);
-	*g_eln->str.buf = '\0';
+	g_eln->len = 0;
+	*g_eln->buf = '\0';
 	g_eln->idx = 0;
 	g_eln->row = 0;
 	g_eln->rows.len = 0;
@@ -228,8 +213,8 @@ int					rl_editln(char const *p, size_t *sz, char **ln, t_bool cat)
 			break ;
 	if (!st || st == NOP || st == RL_CLR)
 	{
-		*sz = g_eln->str.len;
-		*ln = g_eln->str.buf;
+		*sz = g_eln->len;
+		*ln = g_eln->buf;
 	}
 	return (st == NOP ? YEP : st);
 }

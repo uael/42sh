@@ -17,15 +17,15 @@
 inline int	rl_signalc(void)
 {
 	g_eln->idx = 0;
-	g_eln->str.len = 0;
-	*g_eln->str.buf = '\0';
+	g_eln->len = 0;
+	*g_eln->buf = '\0';
 	ft_write(STDIN_FILENO, "^C\n", 3);
 	return (RL_CLR);
 }
 
 inline int	rl_signald(void)
 {
-	if (g_eln->str.len)
+	if (g_eln->len)
 	{
 		if (g_mode == RL_VISUAL)
 			return (rl_visualdelete());
@@ -33,7 +33,8 @@ inline int	rl_signald(void)
 	}
 	if (g_edit_cat)
 		return (YEP);
-	ft_sdsmpush(&g_eln->str, "exit", 4);
+	ft_strcpy(g_eln->buf, "exit");
+	g_eln->len = 4;
 	rl_editprint();
 	ft_write(STDIN_FILENO, "\n", 1);
 	return (RL_EXIT);

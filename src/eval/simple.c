@@ -60,9 +60,9 @@ inline int		sh_evalsimple(t_job *job, int fd, t_deq *toks, char **ln)
 	ft_mapctor(&vars, g_strhash, sizeof(char *), sizeof(char *));
 	if (sh_tokpeek(toks)->id == TOK_WORD)
 	{
-		tok = sh_tokexpand(toks, 0);
-		if (ft_strchr(tok->val, '='))
-			sh_evalassign(toks, &vars);
+		tok = sh_tokdexpand(toks, 0);
+		if (ft_strnchr(*ln + tok->pos, '=', tok->len))
+			sh_evalassign(toks, &vars, *ln);
 	}
 	tok = sh_tokpeek(toks);
 	sh_procctor(ft_vecpush((t_vec *)&job->procs));

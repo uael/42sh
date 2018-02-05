@@ -42,8 +42,7 @@ SRC_NAME = \
 	eval/rout.c eval/sep.c eval/simple.c eval/subshell.c eval/backquote.c \
 	job.c job/bg.c job/cont.c job/debug.c job/fg.c job/mark.c job/launch.c \
 	job/state.c job/wait.c job/pipe.c \
-	lex.c lex/heredoc.c lex/op.c lex/quote.c lex/var.c lex/tok.c \
-	lex/word.c lex/reduce.c \
+	lex.c lex/heredoc.c lex/op.c lex/utils.c lex/var.c lex/word.c \
 	main.c \
 	pool.c pool/mark.c pool/notify.c \
 	proc.c proc/bit.c proc/err.c proc/exe.c proc/fn.c proc/fork.c proc/sh.c \

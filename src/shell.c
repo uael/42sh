@@ -18,8 +18,6 @@
 
 #define SH_PROMPT() (g_sh->status==0?" \033[32m❯\033[0m ":" \033[31m❯\033[0m ")
 
-static t_deq		g_stack_toks = { NULL, sizeof(t_tok), 0, 0, 0 };
-static t_deq		*g_toks = &g_stack_toks;
 static t_scope		g_lvls[SHLVL_MAX] =
 {
 	{ 0, NULL, 0, 0, 0, 0 }
@@ -90,9 +88,7 @@ inline int			sh_run(int fd, char *ln)
 	while (!(st = rl_getline(fd, sh_prompt(SH_PROMPT(), buf), &ln)))
 	{
 		it = ln;
-		g_toks->len = 0;
-		g_toks->cur = 0;
-		while (!(st = sh_tokenize(fd, &it, &ln, sh_eval)))
+		while (!(st = sh_lex(fd, &it, &ln, sh_eval)))
 			;
 		if (st < 0 || ((st == OUF ? (g_sh->status = 1) : 0) && !g_sh->status))
 			break ;
@@ -111,8 +107,6 @@ int					sh_exit(int exitno, char const *fmt, ...)
 		rl_histsave(ft_pathcat(ft_strcpy(buf, home), ".ushst"));
 	if (g_shfd >= 0)
 		rl_finalize(g_shfd);
-	g_toks->cur = 0;
-	ft_deqdtor(g_toks, (t_dtor)sh_tokdtor);
 	rl_dtor();
 	sh_envdtor();
 	sh_vardtor();

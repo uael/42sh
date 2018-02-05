@@ -31,29 +31,30 @@ static void		assignset(t_map *map, char *var, char *val)
 	}
 }
 
-inline int		sh_evalassign(t_deq *toks, t_map *map)
+inline int		sh_evalassign(t_deq *toks, t_map *map, char *ln)
 {
 	char		*assign;
 	int			st;
 	t_tok		*tok;
+	char		buf[MAX_INPUT];
 
 	st = NOP;
 	tok = sh_tokpeek(toks);
-	while ((assign = ft_strchr(tok->val, '=')))
-		if (assign == tok->val)
+	ft_strncpy(buf, ln + tok->pos, tok->len);
+	while ((assign = ft_strchr(buf, '=')))
+		if (assign == buf)
 		{
-			ft_sdssht((t_sds *)tok, NULL);
+			tok->len = 0;
 			break ;
 		}
-		else if (sh_isname(tok->val))
+		else if (sh_isname(buf))
 		{
 			st = YEP;
 			*assign = '\0';
-			assignset(map, tok->val, assign + 1);
+			assignset(map, buf, assign + 1);
 			g_sh->status = 0;
 			if (!(tok = sh_toknext(toks)) || tok->id != TOK_WORD)
 				break ;
-			tok = sh_tokexpand(toks, 0);
 		}
 		else
 			break ;

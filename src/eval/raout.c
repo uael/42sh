@@ -25,16 +25,16 @@ inline int		sh_evalraout(t_job *job, t_deq *toks, char **ln)
 	op = sh_tokpeek(toks);
 	if (!(tok = sh_toknext(toks)) || !TOK_ISWORD(tok->id))
 		return (sh_evalerr(*ln, tok, UEH, sh_tokstr(tok)));
-	if (!(tok = sh_redirword(job, toks, *ln)))
+	if (!sh_redirword(job, buf, toks, *ln))
 		return (YEP);
 	proc = ft_vecback((t_vec *)&job->procs);
-	if ((r.to = open(tok->val, O_WRONLY | O_CREAT | O_APPEND, 0644)) < 0)
+	if ((r.to = open(buf, O_WRONLY | O_CREAT | O_APPEND, 0644)) < 0)
 	{
-		sh_procerr(proc, ft_strcat(ft_strcat(ft_strcpy(buf, tok->val), ": "),
-			ft_strerr(errno)), *ln, tok->pos);
+		sh_procerr(proc, ft_strcat(ft_strcat(buf, ": "), ft_strerr(errno)),
+			*ln, tok->pos);
 		return (YEP);
 	}
-	r.from = op->val && ft_isdigit(*op->val) ? *op->val - '0' : STDOUT_FILENO;
+	r.from = ft_isdigit(*(*ln + op->pos)) ? *(*ln + op->pos) - '0' : 1;
 	*(t_redir *)ft_vecpush((t_vec *)&proc->redirs) = r;
 	return (YEP);
 }

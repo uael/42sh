@@ -56,3 +56,13 @@ inline char	*ft_strendw(char const *s1, char const *s2)
 	}
 	return (s2 == s4 ? (char *)s3 : NULL);
 }
+
+inline char		*ft_strndup(char const *src, size_t n)
+{
+	char	*dup;
+
+	dup = ft_malloc((n + 1) * sizeof(char));
+	ft_memcpy(dup, src, n);
+	dup[n] = '\0';
+	return (dup);
+}

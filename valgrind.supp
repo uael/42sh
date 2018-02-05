@@ -143,7 +143,7 @@
    fun:fork
    fun:readproc
    fun:sh_evalbackquote
-   fun:sh_tokexpand
+   fun:sh_tokdexpand
    fun:sh_evalargv
 }
 {
