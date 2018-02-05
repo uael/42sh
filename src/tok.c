@@ -31,7 +31,7 @@ inline void		sh_tokdtor(t_tok *tok)
 	ft_memset(tok, 0, sizeof(t_tok));
 }
 
-inline t_tok	*sh_tokpos(t_tok *tok, char const *it, char const *ln)
+inline t_tok2	*sh_tokpos(t_tok2 *tok, char const *it, char const *ln)
 {
 	char *pos;
 

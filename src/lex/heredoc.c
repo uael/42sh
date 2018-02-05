@@ -15,7 +15,7 @@
 
 #define UEE "parse error: Unexpected EOF while looking for heredoc delimiter "
 
-static inline int	heredoc(t_tok *tok, char *eof, size_t eofl, char **it)
+static inline int	heredoc(t_tok2 *tok, char *eof, size_t eofl, char **it)
 {
 	ft_sdscpush((t_sds *)tok, **it);
 	if ((!**it || ISEOL(*it)) && (tok->len == eofl + 1 ||
@@ -29,7 +29,7 @@ static inline int	heredoc(t_tok *tok, char *eof, size_t eofl, char **it)
 	return (NOP);
 }
 
-inline int			sh_lexheredoc(int fd, t_tok *tok, char **it, char **ln)
+inline int			sh_lexheredoc(int fd, t_tok2 *tok, char **it, char **ln)
 {
 	char	*eof;
 	size_t	eofl;
@@ -54,7 +54,7 @@ inline int			sh_lexheredoc(int fd, t_tok *tok, char **it, char **ln)
 	return (st);
 }
 
-inline int			sh_lexheredoct(int fd, t_tok *tok, char **it, char **ln)
+inline int			sh_lexheredoct(int fd, t_tok2 *tok, char **it, char **ln)
 {
 	char	*eof;
 	size_t	eofl;

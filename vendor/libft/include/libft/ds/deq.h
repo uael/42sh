@@ -50,8 +50,7 @@ extern void		*ft_deqmusht(t_deq *s, void const *b, size_t n);
 extern void		*ft_dequsht(t_deq *s);
 extern void		*ft_deqcusht(t_deq *s, void *item);
 extern void		*ft_deqnput(t_deq *s, size_t i, size_t n);
-extern void		*ft_deqmput(t_deq *self, size_t idx, void const *buf,
-	size_t n);
+extern void		*ft_deqmput(t_deq *self, size_t idx, void const *buf, size_t n);
 extern void		*ft_deqput(t_deq *s, size_t i);
 extern void		*ft_deqcput(t_deq *s, size_t i, void *item);
 extern size_t	ft_deqnpop(t_deq *s, size_t n, void *out);

@@ -20,9 +20,47 @@
 
 static char			g_stk[1000] = { 0 };
 static int			g_sidx;
-t_deq				*g_lextoks;
 
-static inline int	lexone(int fd, t_tok *tok, char **it, char **ln)
+int					tokitctor(t_tokit *tit, char **it, char **ln)
+{
+	if (!*it || !**it)
+		return (NOP);
+	!ln ? (ln = it) : 0;
+	tit->it = it;
+	tit->ln = ln;
+	return (YEP);
+}
+
+int					check(int fd, t_tok2 *t, t_deq *deq, t_tokit *it)
+{
+	int st;
+
+	if (t->id == TOK_EOL || t->id == TOK_END)
+	{
+		if ((st = sh_lexreduce(fd, deq, it->it, it->ln)))
+			return (st);
+		if (!g_sidx)
+		{
+			deq->cur = 0;
+			return (NOP);
+		}
+		deq->cur = deq->len + 1;
+	}
+	else if (ft_strchr("([{", t->id))
+		g_stk[g_sidx++] = sh_rbracket(t->id);
+	else if (g_sidx && t->id == g_stk[g_sidx - 1])
+		--g_sidx;
+	else if (ft_strchr(")}]", t->id) &&
+		(!g_sidx || t->id != g_stk[g_sidx - 1]))
+	{
+		return (g_sidx ? sh_synerr(*it->ln, *it->ln + t->pos, UEB, t->id,
+			g_stk[g_sidx - 1]) : sh_synerr(*it->ln, *it->ln + t->pos, UEC,
+			t->id));
+	}
+	return (YEP);
+}
+
+static inline int	tokenize(int fd, t_tok2 *tok, char **it, char **ln)
 {
 	int		st;
 
@@ -43,62 +81,34 @@ static inline int	lexone(int fd, t_tok *tok, char **it, char **ln)
 	sh_tokpos(tok, *it, *ln);
 	ft_isdigit(**it) ? ft_sdscpush((t_sds *)tok, *(*it)++) : 0;
 	return (st = sh_lexop(fd, tok, it, ln)) != NOP ||
-	(st = sh_lexword(fd, tok, it, ln)) != NOP ? st :
-	sh_synerr(*ln, *it, "Unexpected token `%c'", **it);
+		(st = sh_lexword(fd, tok, it, ln)) != NOP ? st :
+		sh_synerr(*ln, *it, "Unexpected token `%c'", **it);
 }
 
-static inline int	lexline(int fd, t_deq *toks, char **it, char **ln)
+int					sh_tokenize(int fd, char **it, char **ln, t_tokcb *cb)
 {
 	int		st;
-	t_tok	*tok;
+	t_deq	*d;
+	t_tok2	*t;
+	t_tokit	tit;
 
-	!ln ? (ln = it) : 0;
-	while (1)
-	{
-		tok = ft_deqpush(toks);
-		tok->len = 0;
-		tok->spec = 0;
-		if ((st = lexone(fd, tok, it, ln)))
-			return (st);
-		if (tok->id == TOK_EOL || tok->id == TOK_END)
-			break ;
-		if (ft_strchr("([{`", tok->id) && (!g_sidx || g_stk[g_sidx - 1] != '`'))
-			g_stk[g_sidx++] = sh_rbracket(tok->id);
-		else if (g_sidx && tok->id == g_stk[g_sidx - 1])
-			--g_sidx;
-		else if (ft_strchr(")}]`", tok->id) &&
-			(!g_sidx || tok->id != g_stk[g_sidx - 1]))
-			return (g_sidx ? sh_synerr(*ln, *ln + tok->pos, UEB, tok->id,
-				g_stk[g_sidx - 1]) : sh_synerr(*ln, *ln + tok->pos, UEC,
-				tok->id));
-	}
-	return (YEP);
-}
-
-int					sh_lex(int fd, t_deq *toks, char **it, char **ln)
-{
-	int		st;
-	size_t	sve;
-	size_t	cur;
-
-	if (!*it || !**it)
+	if (tokitctor(&tit, it, ln))
 		return (NOP);
-	g_sidx = 0;
-	g_lextoks = toks;
-	sve = toks->cur;
+	ft_deqctor(d = alloca(sizeof(t_deq)), sizeof(t_tok2));
+	d->buf += alloca((d->cap += 32) * sizeof(t_tok2));
 	while (1)
 	{
-		cur = toks->len;
-		if ((st = lexline(fd, toks, it, ln)))
-			return (st);
-		toks->cur = cur;
-		if ((st = sh_lexreduce(fd, toks, it, ln)))
-			return (st);
-		toks->cur = sve;
-		if (!g_sidx)
-			return (YEP);
+		if (d->len == d->cap)
+		{
+			t = alloca((d->cap *= 2) * sizeof(t_tok2));
+			ft_memcpy(t, d->buf, d->len * sizeof(t_tok2));
+			d->buf = t;
+		}
+		ft_memset(t = d->buf + d->len++, 0, sizeof(t_tok2));
+		if ((st = tokenize(fd, t, it, ln)) || (st = check(fd, t, d, &tit)))
+			return (st == NOP ? cb(fd, d, ln) : st);
 		if (!**it && (fd < 0 || (st = rl_catline(fd, 0, ln, it))))
-			return (st < 0 || !g_sh->tty ?
-				sh_synerr(*ln, *it, UEE, g_stk[g_sidx - 1]) : OUF);
+			return (st < 0 || !g_sh->tty ? sh_synerr(*ln, *it, UEE,
+				g_stk[g_sidx - 1]) : OUF);
 	}
 }

@@ -17,7 +17,7 @@
 #define UEH "parse error: Expected letter _ or '}' got `%c'"
 #define UEC "parse error: Expected closing '}' got `%c'"
 
-static inline int	varspecial(int fd, t_tok *tok, char **it, char **ln)
+static inline int	varspecial(int fd, t_tok2 *tok, char **it, char **ln)
 {
 	int		st;
 	char	*var;
@@ -43,7 +43,7 @@ static inline int	varspecial(int fd, t_tok *tok, char **it, char **ln)
 		((brace && ++*it) & 0));
 }
 
-static inline int	varuser(int fd, t_tok *tok, char **it, char **ln)
+static inline int	varuser(int fd, t_tok2 *tok, char **it, char **ln)
 {
 	char	brace;
 	int		st;
@@ -69,7 +69,7 @@ static inline int	varuser(int fd, t_tok *tok, char **it, char **ln)
 	return (YEP);
 }
 
-inline int			sh_lexvar(int fd, t_tok *tok, char **it, char **ln)
+inline int			sh_lexvar(int fd, t_tok2 *tok, char **it, char **ln)
 {
 	int		st;
 
@@ -80,6 +80,5 @@ inline int			sh_lexvar(int fd, t_tok *tok, char **it, char **ln)
 		return (st);
 	if (st && (st = varuser(fd, tok, it, ln)))
 		return (st);
-	tok->id = TOK_VAR;
 	return (YEP);
 }

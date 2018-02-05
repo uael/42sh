@@ -92,6 +92,12 @@ enum			e_tspec
 	TSPEC_DQUOTE = 1 << 3
 };
 
+typedef union	u_tokv
+{
+	t_sds		word;
+	int			fd;
+}				t_tokv;
+
 typedef struct	s_tok
 {
 	char		*val;
@@ -102,21 +108,33 @@ typedef struct	s_tok
 	char		spec;
 }				t_tok;
 
-extern t_deq	*g_lextoks;
+typedef struct	s_tok2
+{
+	char		*val;
+	size_t		cap;
+	size_t		len;
+	uint16_t	pos;
+	uint8_t		id;
+}				t_tok2;
 
-extern char		*sh_tokidstr(uint8_t id);
+typedef struct	s_tokit
+{
+	char		**it;
+	char		**ln;
+}				t_tokit;
+
+typedef int		(t_tokcb)(int fd, t_deq *toks, char **ln);
+
 extern char		*sh_tokstr(t_tok *tok);
 
-extern int		sh_lex(int fd, t_deq *toks, char **it, char **ln);
-extern int		sh_lexvar(int fd, t_tok *tok, char **it, char **ln);
-extern int		sh_lexop(int fd, t_tok *tok, char **it, char **ln);
-extern int		sh_lexquote(int fd, t_tok **tok, char **it, char **ln);
+extern int		sh_tokenize(int fd, char **it, char **ln, t_tokcb *cb);
+extern int		sh_lexvar(int fd, t_tok2 *tok, char **it, char **ln);
+extern int		sh_lexop(int fd, t_tok2 *tok, char **it, char **ln);
 extern int		sh_lexbslash(int fd, char **it, char **ln);
-extern int		sh_lexword(int fd, t_tok *t, char **it, char **ln);
-extern int		sh_lexheredoc(int fd, t_tok *tok, char **it, char **ln);
-extern int		sh_lexheredoct(int fd, t_tok *tok, char **it, char **ln);
+extern int		sh_lexword(int fd, t_tok2 *tok, char **it, char **ln);
+extern int		sh_lexheredoc(int fd, t_tok2 *tok, char **it, char **ln);
+extern int		sh_lexheredoct(int fd, t_tok2 *tok, char **it, char **ln);
 extern int		sh_lexreduce(int fd, t_deq *toks, char **it, char **ln);
-extern int		sh_lexnext(int fd, t_deq *toks, char c, char **ln);
 extern char		sh_rbracket(char b);
 extern t_bool	sh_isname(char *word);
 

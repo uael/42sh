@@ -92,8 +92,8 @@ inline int			sh_run(int fd, char *ln)
 		it = ln;
 		g_toks->len = 0;
 		g_toks->cur = 0;
-		while (!(st = sh_lex(fd, g_toks, &it, &ln)))
-			sh_eval(fd, g_toks, &ln) ? g_sh->status = 1 : 0;
+		while (!(st = sh_tokenize(fd, &it, &ln, sh_eval)))
+			;
 		if (st < 0 || ((st == OUF ? (g_sh->status = 1) : 0) && !g_sh->status))
 			break ;
 	}

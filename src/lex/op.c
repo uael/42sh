@@ -12,7 +12,7 @@
 
 #include "ush/lex.h"
 
-static inline int	opright(int fd, t_tok *tok, char **it, char **ln)
+static inline int	opright(int fd, t_tok2 *tok, char **it, char **ln)
 {
 	int st;
 
@@ -27,7 +27,7 @@ static inline int	opright(int fd, t_tok *tok, char **it, char **ln)
 	return ((tok->id = '>') & 0);
 }
 
-static inline int	opleft(int fd, t_tok *tok, char **it, char **ln)
+static inline int	opleft(int fd, t_tok2 *tok, char **it, char **ln)
 {
 	int st;
 
@@ -48,7 +48,7 @@ static inline int	opleft(int fd, t_tok *tok, char **it, char **ln)
 	return ((tok->id = '<') & 0);
 }
 
-static inline int	opand(int fd, t_tok *tok, char **it, char **ln)
+static inline int	opand(int fd, t_tok2 *tok, char **it, char **ln)
 {
 	int st;
 
@@ -61,7 +61,7 @@ static inline int	opand(int fd, t_tok *tok, char **it, char **ln)
 	return ((tok->id = '&') & 0);
 }
 
-static inline int	opor(int fd, t_tok *tok, char **it, char **ln)
+static inline int	opor(int fd, t_tok2 *tok, char **it, char **ln)
 {
 	int st;
 
@@ -72,7 +72,7 @@ static inline int	opor(int fd, t_tok *tok, char **it, char **ln)
 	return ((tok->id = '|') & 0);
 }
 
-inline int			sh_lexop(int fd, t_tok *tok, char **it, char **ln)
+inline int			sh_lexop(int fd, t_tok2 *tok, char **it, char **ln)
 {
 	if (**it == '>')
 		return (opright(fd, tok, it, ln));

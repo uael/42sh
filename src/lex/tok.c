@@ -60,15 +60,6 @@ static char			*g_tokidsstr[] =
 	[TOK_RCURLY] = "}"
 };
 
-inline char			*sh_tokidstr(uint8_t id)
-{
-	char *ret;
-
-	if (id > TOK_RCURLY)
-		return ("<unknown>");
-	return ((ret = g_tokidsstr[id]) ? ret : "<unknown>");
-}
-
 inline char			*sh_tokstr(t_tok *tok)
 {
 	char *ret;
