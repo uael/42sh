@@ -20,23 +20,23 @@ inline int	sh_bibg(int ac, char **av, char **env)
 	t_job	*job;
 
 	(void)env;
-	if (!(i = sh_poollen()))
+	if (!(i = ps_poollen()))
 		return (ft_retf(EXIT_FAILURE, BG"no current job\n"));
 	if (ac != 1)
 	{
 		while (*++av)
 			if (ft_strlen(*av) != ft_intlen(i = ft_atoi(*av), 10) ||
-				!(job = sh_poolget((size_t)i)) || sh_jobstopped(job))
+				!(job = ps_poolget((size_t)i)) || ps_jobstopped(job))
 				ft_putf(STDERR_FILENO, BG"%s: job not found\n", *av);
 			else
-				sh_jobcont(sh_poolget((size_t)i), 0);
+				ps_jobcont(ps_poolget((size_t)i), 0);
 		return (EXIT_SUCCESS);
 	}
 	else
 		while (--i >= 0)
-			if (sh_jobstopped(job = sh_poolget((size_t)i)))
+			if (ps_jobstopped(job = ps_poolget((size_t)i)))
 			{
-				sh_jobcont(job, 0);
+				ps_jobcont(job, 0);
 				return (EXIT_SUCCESS);
 			}
 	return (ft_retf(EXIT_FAILURE, BG"no current job\n"));

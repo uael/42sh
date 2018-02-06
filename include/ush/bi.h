@@ -13,10 +13,9 @@
 #ifndef USH_BI_H
 # define USH_BI_H
 
-# include "proc.h"
+# include <libps.h>
 
-extern t_procfn	*sh_bifn(char const *exe);
-
+extern void		sh_biregister(void);
 extern int		sh_biecho(int ac, char **argv, char **env);
 extern int		sh_biexit(int ac, char **av, char **env);
 extern int		sh_biunsetenv(int ac, char **av, char **env);

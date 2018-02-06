@@ -40,9 +40,9 @@ static int		argverror(t_job *job)
 	{
 		prev = ft_vecback((t_vec *)&job->procs);
 		ft_vecpop((t_vec *)&job->procs, NULL);
-		sh_procdtor(prev);
+		ps_procdtor(prev);
 	}
-	sh_procdtor(proc);
+	ps_procdtor(proc);
 	if (job->procs.len == 0)
 	{
 		ft_vecdtor((t_vec *)&job->procs, NULL);
@@ -62,7 +62,7 @@ inline int		sh_evalsimple(t_job *job, int fd, t_deq *toks, char **ln)
 	if (tok && tok->id == TOK_WORD)
 		sh_evalassign(tok, toks, &vars, *ln);
 	tok = sh_tokpeek(toks);
-	sh_procctor(ft_vecpush((t_vec *)&job->procs));
+	ps_procctor(ft_vecpush((t_vec *)&job->procs));
 	while (tok && TOK_ISREDIR(tok->id))
 		if (sh_evalredir(job, toks, ln) == OUF)
 			return (OUF);

@@ -25,7 +25,7 @@ inline char		*sh_redirword(t_job *job, char *dst, t_deq *toks, char *ln)
 	tok = sh_tokpeek(toks);
 	if (!sh_wordresolve(dst, ln + tok->pos, tok->len, NULL))
 	{
-		sh_procerr(proc, ft_strcat(ft_strncpy(buf, ln + tok->pos,
+		ps_procerr(proc, ft_strcat(ft_strncpy(buf, ln + tok->pos,
 			ft_u64max(tok->len, MAX_INPUT)), AMB), ln, tok->pos);
 		return (NULL);
 	}
@@ -47,7 +47,7 @@ inline int			sh_evalampr(t_job *job, t_deq *toks, char **ln)
 	proc = ft_vecback((t_vec *)&job->procs);
 	if ((fd = open(buf, O_WRONLY | O_CREAT | O_TRUNC, 0644)) < 0)
 	{
-		sh_procerr(proc, ft_strcat(ft_strcat(buf, ": "),
+		ps_procerr(proc, ft_strcat(ft_strcat(buf, ": "),
 			ft_strerr(errno)), *ln, tok->pos);
 		return (YEP);
 	}

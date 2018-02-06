@@ -30,7 +30,7 @@ inline int			sh_evalcmp(t_job *job, t_deq *toks, char **ln)
 	proc = ft_vecback((t_vec *)&job->procs);
 	if ((r.to = open(buf, O_RDWR | O_CREAT, 0644)) < 0)
 	{
-		sh_procerr(proc, ft_strcat(ft_strcat(buf, ": "),
+		ps_procerr(proc, ft_strcat(ft_strcat(buf, ": "),
 			ft_strerr(errno)), *ln, tok->pos);
 		return (YEP);
 	}

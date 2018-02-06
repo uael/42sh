@@ -83,16 +83,16 @@ static int		env_finalize(char *path, char **argv, char **envv)
 	t_proc	proc;
 	t_job	*job;
 
-	sh_procexe(&proc, path, argv[0], envv);
+	ps_procexe(&proc, path, argv[0], envv);
 	ft_vecctor(&av, sizeof(char *));
 	while (*argv)
 		*(char **)ft_vecpush(&av) = ft_strdup(*argv++);
 	*(char **)ft_vecpush(&av) = NULL;
 	proc.argv = av.buf;
 	proc.ownenv = 1;
-	sh_jobctor(job = alloca(sizeof(t_job)));
+	ps_jobctor(job = alloca(sizeof(t_job)));
 	*(t_proc *)ft_vecpush((t_vec *)&job->procs) = proc;
-	return (sh_joblaunch(job, 1));
+	return (ps_joblaunch(job, 1));
 }
 
 inline int		sh_bienv(int ac, char **av, char **ev)

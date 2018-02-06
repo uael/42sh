@@ -13,13 +13,11 @@
 #ifndef USH_EVAL_H
 # define USH_EVAL_H
 
+# include <libps.h>
+
 # include "shell.h"
-# include "pool.h"
 # include "tok.h"
 
-extern t_map	*g_binaries;
-
-extern void		sh_evaldtor(void);
 extern int		sh_eval(int fd, t_deq *toks, char **ln);
 extern int		sh_evallist(int fd, t_deq *toks, char **ln);
 extern int		sh_evalandor(t_job *job, int fd, t_deq *toks, char **ln);

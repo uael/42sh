@@ -22,12 +22,12 @@ OBJ_PATH = ./obj/
 ROBJ_PATH = $(OBJ_PATH)rel/
 DOBJ_PATH = $(OBJ_PATH)dev/
 SOBJ_PATH = $(OBJ_PATH)san/
-3TH_PATH = ./vendor/libft/ ./vendor/librl/
+3TH_PATH = ./vendor/libft/ ./vendor/librl/ ./vendor/libps/
 INC_PATH = ./include/
 LNK_PATH = ./ $(3TH_PATH)
 
 OBJ_NAME = $(SRC_NAME:.c=.o)
-R3TH_NAME = rl ft
+R3TH_NAME = ps rl ft
 D3TH_NAME = $(addsuffix .dev, $(R3TH_NAME))
 S3TH_NAME = $(addsuffix .san, $(R3TH_NAME))
 SRC_NAME = \
@@ -39,15 +39,10 @@ SRC_NAME = \
 	eval.c eval/ampr.c eval/andor.c eval/argv.c eval/assign.c eval/cmd.c \
 	eval/cmp.c eval/compound.c eval/heredoc.c eval/lamp.c eval/list.c \
 	eval/pipeline.c eval/ramp.c eval/raout.c eval/redir.c eval/rin.c \
-	eval/rout.c eval/sep.c eval/simple.c eval/subshell.c eval/backquote.c \
-	job.c job/bg.c job/cont.c job/debug.c job/fg.c job/mark.c job/launch.c \
-	job/state.c job/wait.c job/pipe.c \
+	eval/rout.c eval/sep.c eval/simple.c eval/subshell.c \
 	lex.c lex/heredoc.c lex/op.c lex/utils.c lex/var.c lex/word.c \
 	main.c \
-	pool.c pool/mark.c pool/notify.c \
-	proc.c proc/bit.c proc/err.c proc/exe.c proc/fn.c proc/fork.c proc/sh.c \
 	prompt.c \
-	redir.c \
 	shell.c \
 	tok.c \
 	var.c \

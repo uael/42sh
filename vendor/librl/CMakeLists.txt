@@ -28,7 +28,7 @@ else ()
   set(librl_ENABLE_TEST OFF)
 endif ()
 
-set(librl_HDR ${librl_INC_DIR}/librl.h src/signal.c src/signal.h)
+set(librl_HDR ${librl_INC_DIR}/librl.h)
 file(GLOB_RECURSE librl_HDRS ${librl_HDRS}
   ${librl_INC_DIR}/librl/*.h)
 file(GLOB_RECURSE librl_SRCS ${librl_SRCS}

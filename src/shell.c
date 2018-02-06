@@ -11,20 +11,17 @@
 /* ************************************************************************** */
 
 #include <signal.h>
-#include <term.h>
 
-#include "ush/shell.h"
-#include "ush/eval.h"
+#include "ush.h"
 
 #define SH_PROMPT() (g_sh->status==0?" \033[32m❯\033[0m ":" \033[31m❯\033[0m ")
 
 static t_scope		g_lvls[SHLVL_MAX] =
 {
-	{ 0, NULL, 0, 0, 0, 0 }
+	{ 0, NULL, 0, 0, 0 }
 };
 t_scope				*g_sh;
 uint8_t				g_shlvl;
-TTY					g_shmode;
 int					g_shfd = -1;
 
 inline uint8_t		sh_scope(void)
@@ -55,6 +52,8 @@ static inline void	sh_init(int fd)
 	char	*home;
 	char	buf[PATH_MAX];
 
+	sh_biregister();
+	ps_init(fd, sh_err, sh_exit);
 	g_sh->pid = getpgrp();
 	if (!(g_sh->tty = (t_bool)isatty(fd)))
 		return ;
@@ -71,8 +70,7 @@ static inline void	sh_init(int fd)
 		sh_exit(EXIT_FAILURE, "Couldn't put the shell in its own process "
 			"group");
 	tcsetpgrp(fd, g_sh->pid);
-	tcgetattr(fd, &g_shmode);
-	rl_hook(sh_poolnotify);
+	rl_hook(ps_poolnotify);
 	rl_complete(sh_complete);
 	if ((home = sh_getenv("HOME")))
 		rl_histload(ft_pathcat(ft_strcpy(buf, home), ".ushst"));
@@ -108,9 +106,9 @@ int					sh_exit(int exitno, char const *fmt, ...)
 	if (g_shfd >= 0)
 		rl_finalize(g_shfd);
 	rl_dtor();
+	ps_dtor();
 	sh_envdtor();
 	sh_vardtor();
-	sh_evaldtor();
 	if (fmt)
 	{
 		va_start(ap, fmt);

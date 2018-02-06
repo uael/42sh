@@ -14,7 +14,7 @@
 #include "libft/str.h"
 #include "libft/ds.h"
 
-inline char		*ft_getenv(char **env, char *var)
+inline char		*ft_getenv(char **env, char const *var)
 {
 	char *val;
 

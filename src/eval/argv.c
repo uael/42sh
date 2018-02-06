@@ -82,10 +82,10 @@ inline int			sh_evalargv(t_job *job, t_map *vars, t_deq *toks, char **ln)
 	if (!(own = (t_bool)ft_strcmp("true", prc->argv[0])) ||
 		!ft_strcmp("false", prc->argv[0]))
 	{
-		sh_procbit(prc, (t_bool)(own ? 1 : 0));
+		ps_procbit(prc, (t_bool)(own ? 1 : 0));
 		return (makeargv(job, NULL, toks, ln));
 	}
-	sh_procexe(prc, "PATH", prc->argv[0], makeenv(vars, &own));
+	ps_procexe(prc, "PATH", prc->argv[0], makeenv(vars, &own));
 	prc->ownenv = own;
 	if (makeargv(job, &av, toks, ln) == OUF)
 		return (OUF);

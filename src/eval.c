@@ -14,18 +14,6 @@
 
 #define UNEX "syntax error: Unexpected token `%s'"
 
-static t_map		g_binaries_stack =
-{
-	0, 0, 0, 0, NULL, { (t_hashfn *)ft_strhash, (t_eqfn *)ft_streq },
-	sizeof(char *), sizeof(char *), NULL, NULL
-};
-t_map				*g_binaries = &g_binaries_stack;
-
-inline void			sh_evaldtor(void)
-{
-	ft_mapdtor(g_binaries, (t_dtor)ft_pfree, (t_dtor)ft_pfree);
-}
-
 static inline int	evalfini(int ret, t_deq *toks)
 {
 	t_tok	*tok;

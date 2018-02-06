@@ -21,19 +21,19 @@ inline int	sh_bijobs(int ac, char **av, char **env)
 
 	(void)env;
 	i = 0;
-	sh_poolnotify();
+	ps_poolnotify();
 	if (ac == 1)
-		while ((size_t)i < sh_poollen())
-			sh_jobdebug(sh_poolget((size_t)i++));
+		while ((size_t)i < ps_poollen())
+			ps_jobdebug(ps_poolget((size_t)i++));
 	else
 		while (*++av)
 		{
 			i = ft_atoi(*av);
 			if (ft_strlen(*av) != ft_intlen(i, 10) ||
-				!(job = sh_poolget((size_t)i)))
+				!(job = ps_poolget((size_t)i)))
 				ft_putf(STDERR_FILENO, JOBS"%s: job not found\n", *av);
 			else
-				sh_jobdebug(job);
+				ps_jobdebug(job);
 		}
 	return (EXIT_SUCCESS);
 }

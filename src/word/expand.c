@@ -10,6 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <libps.h>
+
 #include "ush/word.h"
 #include "ush/shell.h"
 
@@ -61,7 +63,7 @@ static size_t	expandspecial(t_sds *word, char *var, size_t from)
 	else if (*var == '$')
 		len = expandn(word, from, g_sh->pid);
 	else if (*var == '!')
-		len = expandn(word, from, g_sh->ppid);
+		len = expandn(word, from, ps_lastpid());
 	return (len);
 }
 

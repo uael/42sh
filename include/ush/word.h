@@ -18,7 +18,6 @@
 
 extern void		sh_wordglob(t_sds *word);
 extern int		sh_wordexpand(t_sds *word);
-
 extern size_t	sh_wordexplode(t_vec *av, char const *src, size_t n);
 extern size_t	sh_wordresolve(char *d, char const *s, size_t n, uint8_t *e);
 

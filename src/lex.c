@@ -136,7 +136,20 @@ int					sh_lex(int fd, char **it, char **ln, t_tokcb *cb)
 		}
 		ft_memset(t = (t_tok *)d->buf + d->len++, 0, sizeof(t_tok));
 		if ((st = tokenize(fd, t, it, ln)) || (st = check(fd, t, d, &tit)))
-			return (st == NOP ? cb(fd, d, ln) : st);
+		{
+			if (st == NOP)
+			{
+				if (cb(fd, d, ln))
+					g_sh->status = 1;
+				if (**it)
+				{
+					d->len = 0;
+					d->cur = 0;
+					continue ;
+				}
+			}
+			return (st);
+		}
 		if (g_sidx && !**it && (fd < 0 || (st = rl_catline(fd, 0, ln, it))))
 			return (st < 0 || !g_sh->tty ? sh_synerr(*ln, *it, UEE,
 				g_stk[g_sidx - 1]) : OUF);

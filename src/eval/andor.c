@@ -36,7 +36,7 @@ static int			separator(t_deq *toks, t_job *right, t_tok *tok)
 	while ((tok = sh_toknext(toks)))
 		if (tok->id != TOK_EOL)
 			break ;
-	sh_jobctor(right);
+	ps_jobctor(right);
 	if (!(tok = sh_tokpeek(toks)))
 		return (NOP);
 	if (tok->id == TOK_NOT)

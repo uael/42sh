@@ -14,6 +14,7 @@
 #include <limits.h>
 
 #include "ush/bi.h"
+#include "ush/env.h"
 
 #define CD "cd: "
 #define USAGE "cd: usage: cd [-L|-P] [dir]\n"
