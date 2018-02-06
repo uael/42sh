@@ -12,9 +12,8 @@
 
 #include "ush/eval.h"
 
-static inline int	subshell(t_deq *toks)
+static inline int	subshell(t_subshell *s)
 {
-	char	*ln;
 	t_scope	*sh;
 	int		st;
 
@@ -22,24 +21,25 @@ static inline int	subshell(t_deq *toks)
 	sh_scope();
 	ft_memcpy(g_sh, sh, sizeof(t_scope));
 	g_sh->tty = 0;
-	sh_eval(-1, toks, &ln) ? (g_sh->status = 1) : 0;
+	sh_eval(-1, &s->toks, &s->ln) ? (g_sh->status = 1) : 0;
 	st = g_sh->status;
 	sh_unscope();
-	ft_deqdtor(toks, NULL);
-	free(toks);
+	ft_deqdtor(&s->toks, NULL);
+	free(s->ln);
+	free(s);
 	return (sh_exit(st, NULL));
 }
 
 inline int		sh_evalsubshell(t_job *job, int fd, t_deq *toks, char **ln)
 {
-	int		stack;
-	t_proc	proc;
-	t_deq	*deq;
-	t_tok	*tok;
+	int			stack;
+	t_proc		proc;
+	t_subshell	*sh;
+	t_tok		*tok;
 
 	(void)fd;
-	ft_deqctor(deq = malloc(sizeof(t_deq)), sizeof(t_tok));
-	ps_procfn(&proc, (t_proccb *)subshell, deq);
+	ft_deqctor(&(sh = malloc(sizeof(t_subshell)))->toks, sizeof(t_tok));
+	ps_procfn(&proc, (t_proccb *)subshell, sh);
 	stack = 0;
 	while ((tok = sh_toknext(toks))->id != ')' || stack)
 	{
@@ -47,15 +47,16 @@ inline int		sh_evalsubshell(t_job *job, int fd, t_deq *toks, char **ln)
 			++stack;
 		else if (tok->id == ')')
 			--stack;
-		*(t_tok *)ft_deqpush(deq) = *tok;
+		*(t_tok *)ft_deqpush(&sh->toks) = *tok;
 	}
-	if (!deq->len)
+	if (!sh->toks.len)
 	{
-		free(deq);
+		free(sh);
 		return (sh_evalerr(*ln, sh_tokpeek(toks), "Empty subshell"));
 	}
 	sh_toknext(toks);
-	(*(t_tok *)ft_deqpush(deq)).id = TOK_END;
+	(*(t_tok *)ft_deqpush(&sh->toks)).id = TOK_END;
 	*(t_proc *)ft_vecpush((t_vec *)&job->procs) = proc;
+	sh->ln = ft_strdup(*ln);
 	return (YEP);
 }

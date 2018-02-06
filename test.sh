@@ -6,7 +6,7 @@ WARNING="\033[34m ℹ \033[0m"
 
 function padme {
   S="$1"
-  line='                            '
+  line='                 '
   printf "%s %s" "$S" "${line:${#S}}"
 }
 
@@ -14,7 +14,7 @@ function spinner {
   local FRAMES='|/-\'
   while [ ! -z "$(ps a | awk '{print $1}' | grep $1)" ];
   do
-    printf "[%c]" "$FRAMES"
+    printf " %c " "$FRAMES"
     local TMP=${FRAMES#?}
     FRAMES=${TMP}${FRAMES%"$TMP"}
     sleep 0.2

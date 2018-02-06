@@ -15,6 +15,8 @@
 inline size_t	sh_wordresolve(char *dst, char const *src, size_t n, uint8_t *e)
 {
 	ft_strncpy(dst, src, n);
-	*e = 1;
+	e ? *e = 1 : 0;
 	return (YEP);
 }
+
+

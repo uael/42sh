@@ -18,6 +18,12 @@
 # include "shell.h"
 # include "tok.h"
 
+typedef struct	s_subshell
+{
+	t_deq		toks;
+	char		*ln;
+}				t_subshell;
+
 extern int		sh_eval(int fd, t_deq *toks, char **ln);
 extern int		sh_evallist(int fd, t_deq *toks, char **ln);
 extern int		sh_evalandor(t_job *job, int fd, t_deq *toks, char **ln);
