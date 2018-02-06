@@ -8,6 +8,8 @@ add_subdirectory(vendor/libps)
 add_subdirectory(vendor/librl)
 
 set(BUILD_SHARED_LIBS OFF)
+set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fno-omit-frame-pointer -fsanitize=address")
+set (CMAKE_LINKER_FLAGS_DEBUG "${CMAKE_STATIC_LINKER_FLAGS_DEBUG} -fno-omit-frame-pointer -fsanitize=address")
 
 set(21sh_INC_DIR ${CMAKE_CURRENT_LIST_DIR}/include)
 set(21sh_SRC_DIR ${CMAKE_CURRENT_LIST_DIR}/src)
@@ -26,6 +28,12 @@ add_executable(21sh ${21sh_HDR} ${21sh_HDRS} ${21sh_SRCS})
 set_property(TARGET 21sh PROPERTY C_STANDARD 90)
 target_include_directories(21sh PUBLIC ${21sh_INC_DIR})
 target_link_libraries(21sh PUBLIC debug ft debug rl debug ps)
+set_target_properties(21sh
+  PROPERTIES
+  ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/lib"
+  LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/lib"
+  RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/bin"
+)
 
 target_compile_definitions(21sh
   PRIVATE $<$<CONFIG:Debug>:DEBUG>$<$<CONFIG:Release>:NDEBUG>)
@@ -36,7 +44,6 @@ if (MSVC)
     PRIVATE /O$<$<CONFIG:Debug>:d>$<$<CONFIG:Release>:x>)
 else ()
   target_compile_options(21sh
-    PRIVATE -Wall -Werror -Wextra -fomit-frame-pointer -ansi
-    PRIVATE -Wno-missing-field-initializers -Wno-missing-braces
+    PRIVATE -Wall -Werror -Wextra
     PRIVATE -O$<$<CONFIG:Debug>:0 -g3>$<$<CONFIG:Release>:3>)
 endif ()

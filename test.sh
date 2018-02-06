@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-OK="\033[32m[✔]\033[0m"
-ERROR="\033[31m[✖]\033[0m"
-WARNING="\033[34m[ℹ]\033[0m"
+OK="\033[32m ✔ \033[0m"
+ERROR="\033[31m ✖ \033[0m"
+WARNING="\033[34m ℹ \033[0m"
 
 function padme {
   S="$1"
@@ -14,7 +14,7 @@ function spinner {
   local FRAMES='|/-\'
   while [ ! -z "$(ps a | awk '{print $1}' | grep $1)" ];
   do
-    printf "\033[34m[%c]\033[0m" "$FRAMES"
+    printf "[%c]" "$FRAMES"
     local TMP=${FRAMES#?}
     FRAMES=${TMP}${FRAMES%"$TMP"}
     sleep 0.2
