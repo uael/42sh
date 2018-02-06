@@ -18,10 +18,10 @@ inline int	rl_editctrlleft(void)
 
 	idx = g_eln->idx;
 	while (g_eln->idx > 0 &&
-		ft_isspace(g_eln->buf[g_eln->idx - 1]))
+		ft_isspace(g_eln->str.buf[g_eln->idx - 1]))
 		--g_eln->idx;
 	while (g_eln->idx > 0 &&
-		!ft_isspace(g_eln->buf[g_eln->idx - 1]))
+		!ft_isspace(g_eln->str.buf[g_eln->idx - 1]))
 		--g_eln->idx;
 	if (g_eln->idx != idx)
 		rl_editprint();
@@ -33,13 +33,13 @@ inline int	rl_editctrlright(void)
 	size_t idx;
 
 	idx = g_eln->idx;
-	while (g_eln->idx < g_eln->len &&
-		!ft_isspace(g_eln->buf[g_eln->idx + 1]))
+	while (g_eln->idx < g_eln->str.len &&
+		!ft_isspace(g_eln->str.buf[g_eln->idx + 1]))
 		++g_eln->idx;
-	while (g_eln->idx < g_eln->len &&
-		ft_isspace(g_eln->buf[g_eln->idx + 1]))
+	while (g_eln->idx < g_eln->str.len &&
+		ft_isspace(g_eln->str.buf[g_eln->idx + 1]))
 		++g_eln->idx;
-	if (g_eln->idx < g_eln->len)
+	if (g_eln->idx < g_eln->str.len)
 		++g_eln->idx;
 	if (g_eln->idx != idx)
 		rl_editprint();
@@ -56,10 +56,10 @@ inline int	rl_editctrlup(void)
 		return (YEP);
 	row = *(char **)ft_vecat(&g_eln->rows, (size_t)(g_eln->row - 2));
 	pre = *(char **)ft_vecat(&g_eln->rows, (size_t)(g_eln->row - 1));
-	pos = g_eln->buf + g_eln->idx;
-	g_eln->idx = row - g_eln->buf;
-	while (pos > pre && g_eln->buf[g_eln->idx] != '\n' &&
-		g_eln->idx < g_eln->len)
+	pos = ft_sdsat(&g_eln->str, g_eln->idx);
+	g_eln->idx = (uint16_t)(row - ft_sdsbeg(&g_eln->str));
+	while (pos > pre && g_eln->str.buf[g_eln->idx] != '\n' &&
+		g_eln->idx < g_eln->str.len)
 	{
 		++g_eln->idx;
 		--pos;
@@ -78,10 +78,10 @@ inline int	rl_editctrldown(void)
 		return (YEP);
 	row = *(char **)ft_vecat(&g_eln->rows, (size_t)(g_eln->row));
 	pre = *(char **)ft_vecat(&g_eln->rows, (size_t)(g_eln->row - 1));
-	pos = g_eln->buf + g_eln->idx;
-	g_eln->idx = row - g_eln->buf;
-	while (pos > pre && g_eln->buf[g_eln->idx] != '\n' &&
-		g_eln->idx < g_eln->len)
+	pos = ft_sdsat(&g_eln->str, g_eln->idx);
+	g_eln->idx = (uint16_t)(row - ft_sdsbeg(&g_eln->str));
+	while (pos > pre && g_eln->str.buf[g_eln->idx] != '\n' &&
+		g_eln->idx < g_eln->str.len)
 	{
 		++g_eln->idx;
 		--pos;
@@ -92,15 +92,15 @@ inline int	rl_editctrldown(void)
 
 inline int	rl_edittab(void)
 {
-	if (g_eln->idx != g_eln->len)
+	if (g_eln->idx != g_eln->str.len)
 	{
-		g_eln->idx = (uint16_t)g_eln->len;
+		g_eln->idx = (uint16_t)g_eln->str.len;
 		rl_editprint();
 	}
 	else if (g_rlcomp)
 	{
-		g_rlcomp(g_eln->buf, &g_eln->len);
-		g_eln->idx = g_eln->len;
+		g_rlcomp(&g_eln->str);
+		g_eln->idx = (uint16_t)g_eln->str.len;
 		rl_editprint();
 	}
 	return (YEP);

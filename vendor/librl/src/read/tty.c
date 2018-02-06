@@ -36,6 +36,7 @@ inline void		rl_ttyfinalize(int fd)
 inline void		rl_ttydtor(void)
 {
 	rl_editdtor();
+	rl_visualdtor();
 	rl_ttyfinalize(STDIN_FILENO);
 }
 

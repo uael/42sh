@@ -19,7 +19,7 @@ inline void		rl_editlnupdate(t_editln *ln)
 
 	ln->rows.len = 0;
 	ln->rows.isz = sizeof(char *);
-	beg = ln->buf;
+	beg = ln->str.buf;
 	while ((eol = ft_strchr(beg, '\n')))
 	{
 		*(char **)ft_vecpush(&ln->rows) = beg;

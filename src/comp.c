@@ -105,7 +105,7 @@ static char		*completepath(char *sep, char *path, char *buf)
 	return (path);
 }
 
-inline void		sh_complete(char *buf, size_t *len)
+inline void		sh_complete(t_sds *cmd)
 {
 	char *word;
 	char *end;
@@ -113,12 +113,12 @@ inline void		sh_complete(char *buf, size_t *len)
 	char *in;
 	char match[PATH_MAX];
 
-	end = *len ? buf + *len - 1 : buf;
+	end = cmd->len ? cmd->buf + cmd->len - 1 : cmd->buf;
 	word = end;
 	if (*word && ft_strchr(sh_varifs(), *word))
-		word = buf + *len;
+		word = cmd->buf + cmd->len;
 	else
-		while (word > buf && !ft_strchr(sh_varifs(), *(word - 1)))
+		while (word > cmd->buf && !ft_strchr(sh_varifs(), *(word - 1)))
 			--word;
 	if ((end = ft_strrchr(word, '/')))
 		word = completepath(end, word, match);
@@ -128,7 +128,6 @@ inline void		sh_complete(char *buf, size_t *len)
 	else
 		candidatepath(word, sh_getenv("PATH"), candidatedir(word, getcwd(cwd,
 			PATH_MAX), *match = 0, match) + 1, match);
-	if (*match && !((*len = word - buf) & 0) &&
-		!(buf[*len] = '\0'))
-		ft_strcat(buf, ft_strcpy(g_save, match));
+	if (*match && !((cmd->len = word - cmd->buf) & 0))
+		ft_sdsapd(cmd, ft_strcpy(g_save, match));
 }

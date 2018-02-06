@@ -15,6 +15,7 @@
 
 # include "edit.h"
 
+extern void		rl_visualdtor(void);
 extern int		rl_visualtoggle(void);
 extern int		rl_visualyank(void);
 extern int		rl_visualdelete(void);

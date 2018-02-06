@@ -24,7 +24,7 @@ inline int	rl_editleft(void)
 
 inline int	rl_editright(void)
 {
-	if (g_eln->idx != g_eln->len)
+	if (g_eln->idx != g_eln->str.len)
 	{
 		++g_eln->idx;
 		rl_editprint();
@@ -44,9 +44,9 @@ inline int	rl_edithome(void)
 
 inline int	rl_editend(void)
 {
-	if (g_eln->idx != g_eln->len)
+	if (g_eln->idx != g_eln->str.len)
 	{
-		g_eln->idx = (uint16_t)g_eln->len;
+		g_eln->idx = (uint16_t)g_eln->str.len;
 		rl_editprint();
 	}
 	return (YEP);

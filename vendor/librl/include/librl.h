@@ -13,7 +13,7 @@
 #ifndef LIBRL_H
 # define LIBRL_H
 
-# include <sys/types.h>
+# include <libft.h>
 # include <term.h>
 # include <termios.h>
 
@@ -22,7 +22,7 @@
 # endif
 
 typedef void	(t_rlhook)(void);
-typedef void	(t_rlcomp)(char *buf, size_t *len);
+typedef void	(t_rlcomp)(t_sds *cmd);
 
 extern int		rl_histload(char const *filename);
 extern int		rl_histsave(char const *filename);
