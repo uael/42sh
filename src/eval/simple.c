@@ -58,12 +58,9 @@ inline int		sh_evalsimple(t_job *job, int fd, t_deq *toks, char **ln)
 
 	(void)fd;
 	ft_mapctor(&vars, g_strhash, sizeof(char *), sizeof(char *));
-	if (sh_tokpeek(toks)->id == TOK_WORD)
-	{
-		tok = sh_tokdexpand(toks, 0);
-		if (ft_strnchr(*ln + tok->pos, '=', tok->len))
-			sh_evalassign(toks, &vars, *ln);
-	}
+	tok = sh_tokpeek(toks);
+	if (tok && tok->id == TOK_WORD)
+		sh_evalassign(tok, toks, &vars, *ln);
 	tok = sh_tokpeek(toks);
 	sh_procctor(ft_vecpush((t_vec *)&job->procs));
 	while (tok && TOK_ISREDIR(tok->id))

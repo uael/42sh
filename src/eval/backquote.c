@@ -63,7 +63,6 @@ inline t_tok		*sh_evalbackquote(t_tok *orig, t_deq *toks)
 	}
 	ft_deqrem(toks, (tok - (t_tok *)toks->buf) - toks->cur, NULL);
 	(*(t_tok *)ft_deqpush(&proc.u.sh.toks)).id = TOK_END;
-	orig->val ? *orig->val = '\0' : 0;
 	orig->len = 0;
 	orig->id = TOK_WORD;
 	if (proc.u.sh.toks.len)

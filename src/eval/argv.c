@@ -44,7 +44,7 @@ static inline int	makeargv(t_job *job, t_vec *av, t_deq *toks, char **ln)
 	while (tok)
 		if (TOK_ISWORD(tok->id))
 		{
-			av ? sh_tokexplode(tok, av) : 0;
+			av ? sh_wordexplode(av, *ln + tok->pos, tok->len) : 0;
 			tok = sh_toknext(toks);
 		}
 		else if (TOK_ISREDIR(tok->id))
@@ -69,12 +69,13 @@ inline int			sh_evalargv(t_job *job, t_map *vars, t_deq *toks, char **ln)
 	t_vec	av;
 
 	ft_vecctor(&av, sizeof(char *));
+	tok = sh_tokpeek(toks);
 	while (!av.len)
 	{
-		tok = sh_tokpeek(toks);
 		if (!tok || !TOK_ISWORD(tok->id))
 			return (NOP);
-		sh_tokexplode(tok, &av);
+		sh_wordexplode(&av, *ln + tok->pos, tok->len);
+		tok = sh_toknext(toks);
 	}
 	prc = ft_vecback((t_vec *)&job->procs);
 	prc->argv = av.buf;

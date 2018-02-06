@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   eval/heredoc.c                                     :+:      :+:    :+:   */
+/*   word/resolve.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,12 +10,11 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ush/eval.h"
+#include "ush/word.h"
 
-inline int			sh_evalheredoc(t_job *job, t_deq *toks, char **ln)
+inline size_t	sh_wordresolve(char *dst, char const *src, size_t n, uint8_t *e)
 {
-	(void)job;
-	(void)ln;
-	sh_toknext(toks);
+	ft_strncpy(dst, src, n);
+	*e = 1;
 	return (YEP);
 }

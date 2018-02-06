@@ -38,6 +38,6 @@ extern uint8_t	sh_unscope(void);
 extern char		*sh_prompt(char *prompt, char *buf);
 extern int		sh_run(int fd, char *ln);
 extern int		sh_exit(int exitno, char const *fmt, ...);
-extern void		sh_complete(t_sds *cmd);
+extern void		sh_complete(char *buf, size_t *len);
 
 #endif

@@ -13,7 +13,7 @@
 #ifndef LIBRL_H
 # define LIBRL_H
 
-# include <libft.h>
+# include <sys/types.h>
 # include <term.h>
 # include <termios.h>
 

@@ -13,9 +13,10 @@
 #ifndef LIBRL_SCREEN_H
 # define LIBRL_SCREEN_H
 
-# include "librl.h"
-
+# include <libft.h>
 # include <sys/ioctl.h>
+
+# include "librl.h"
 
 typedef struct	s_screen
 {

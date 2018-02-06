@@ -12,51 +12,44 @@
 
 #include "ush/eval.h"
 
-static void		assignset(t_map *map, char *var, char *val)
+static char		g_var[MAX_INPUT + 1];
+static char		g_val[MAX_INPUT + 1];
+
+static inline void	assignset(t_map *map)
 {
 	uint32_t	it;
 	char		*dvar;
-	t_sds		v;
 
-	ft_sdsctor(&v);
-	ft_sdsapd(&v, val);
-	if (ft_mapget(map, var, &it))
-		((char **)map->vals)[it] = v.buf;
-	else if (ft_mapput(map, dvar = ft_strdup(var), &it))
-		((char **)map->vals)[it] = v.buf;
-	else
+	if (ft_mapget(map, g_var, &it))
 	{
-		free(dvar);
-		ft_sdsdtor(&v);
+		free(((char **)map->vals)[it]);
+		((char **)map->vals)[it] = ft_strdup(g_val);
 	}
+	else if (ft_mapput(map, dvar = ft_strdup(g_var), &it))
+		((char **)map->vals)[it] = ft_strdup(g_val);
+	else
+		free(dvar);
 }
 
-inline int		sh_evalassign(t_deq *toks, t_map *map, char *ln)
+inline int			sh_evalassign(t_tok *tok, t_deq *toks, t_map *map, char *ln)
 {
-	char		*assign;
-	int			st;
-	t_tok		*tok;
-	char		buf[MAX_INPUT];
+	char		*eq;
+	uint8_t		e;
 
-	st = NOP;
-	tok = sh_tokpeek(toks);
-	ft_strncpy(buf, ln + tok->pos, tok->len);
-	while ((assign = ft_strchr(buf, '=')))
-		if (assign == buf)
-		{
-			tok->len = 0;
+	while (tok && tok->id == TOK_WORD)
+	{
+		if (!(eq = ft_strnchr(ln + tok->pos, '=', tok->len)) ||
+			(eq == ln + tok->pos && ++tok->pos))
 			break ;
-		}
-		else if (sh_isname(buf))
-		{
-			st = YEP;
-			*assign = '\0';
-			assignset(map, buf, assign + 1);
-			g_sh->status = 0;
-			if (!(tok = sh_toknext(toks)) || tok->id != TOK_WORD)
-				break ;
-		}
-		else
+		ft_strncpy(g_var, ln + tok->pos, eq - (ln + tok->pos));
+		if (!sh_isname(g_var))
 			break ;
-	return (st);
+		sh_wordresolve(g_val, eq, tok->len - (eq - ln), &e);
+		if (!e)
+			break ;
+		assignset(map);
+		g_sh->status = 0;
+		tok = sh_toknext(toks);
+	}
+	return (YEP);
 }

@@ -13,6 +13,8 @@
 #ifndef LIBRL_HIST_H
 # define LIBRL_HIST_H
 
+# include <libft.h>
+
 # include "librl.h"
 
 # define HIST_MAX (250)

@@ -19,14 +19,14 @@ inline char		*sh_redirword(t_job *job, char *dst, t_deq *toks, char *ln)
 {
 	t_tok	*tok;
 	t_proc	*proc;
-	char	buf[PATH_MAX + 1];
+	char	buf[MAX_INPUT + 1];
 
 	proc = ft_vecback((t_vec *)&job->procs);
 	tok = sh_tokpeek(toks);
-	if (!sh_tokexpand(dst, tok, ln, PATH_MAX))
+	if (!sh_wordresolve(dst, ln + tok->pos, tok->len, NULL))
 	{
 		sh_procerr(proc, ft_strcat(ft_strncpy(buf, ln + tok->pos,
-			ft_u64max(tok->len, PATH_MAX)), AMB), ln, tok->pos);
+			ft_u64max(tok->len, MAX_INPUT)), AMB), ln, tok->pos);
 		return (NULL);
 	}
 	sh_toknext(toks);

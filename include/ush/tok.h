@@ -13,7 +13,9 @@
 #ifndef USH_TOK_H
 # define USH_TOK_H
 
+# include <libft.h>
 # include <librl.h>
+
 # include "err.h"
 # include "var.h"
 # include "word.h"
@@ -72,19 +74,17 @@ enum			e_tok
 
 typedef struct	s_tok
 {
-	size_t		len;
-	uint32_t	pos;
+	uint16_t	len;
+	uint16_t	pos;
 	uint8_t		id;
+	uint8_t		padding[3];
 }				t_tok;
 
-extern void		sh_tokdtor(t_tok *tok);
 extern char		*sh_tokstr(t_tok *tok);
 extern t_tok	*sh_tokpeek(t_deq *toks);
 extern t_tok	*sh_toknext(t_deq *toks);
 extern t_tok	*sh_tokpos(t_tok *tok, char const *it, char const *ln);
-
-extern t_sds	*sh_tokdexpand(t_sds *dst, t_tok *src, char *ln);
-inline size_t	sh_tokexpand(char *dst, t_tok *src, char *ln, size_t n);
+extern void		sh_tokdtor(t_tok *tok);
 extern void		sh_tokexplode(t_tok *tok, t_vec *av);
 
 #endif
