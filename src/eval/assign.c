@@ -44,7 +44,7 @@ inline int			sh_evalassign(t_tok *tok, t_deq *toks, t_map *map, char *ln)
 		ft_strncpy(g_var, ln + tok->pos, eq - (ln + tok->pos));
 		if (!sh_isname(g_var))
 			break ;
-		sh_wordresolve(g_val, eq, tok->len - (eq - ln), &e);
+		sh_wordresolve(g_val, eq + 1, tok->len - (eq - ln - tok->pos) - 1, &e);
 		if (!e)
 			break ;
 		assignset(map);

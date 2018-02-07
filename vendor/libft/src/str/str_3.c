@@ -81,7 +81,10 @@ inline char		*ft_strncpy(char *dest, char const *src, size_t n)
 		*(dest + i) = *(src + i);
 		++i;
 	}
-	while (i < n)
-		*(dest + i++) = '\0';
+	if (src[i])
+		*(dest + i) = '\0';
+	else
+		while (i < n)
+			*(dest + i++) = '\0';
 	return (dest);
 }

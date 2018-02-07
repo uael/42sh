@@ -25,36 +25,15 @@ static char		*g_tokidsstr[] = {
 	[TOK_AMPR] = "&>",
 	[TOK_LAND] = "&&",
 	[TOK_LOR] = "||",
-	[TOK_CASE] = "case",
-	[TOK_DO] = "do",
-	[TOK_DONE] = "done",
-	[TOK_ELIF] = "elif",
-	[TOK_ELSE] = "else",
-	[TOK_FUNCTION] = "function",
-	[TOK_FOR] = "for",
-	[TOK_FI] = "fi",
-	[TOK_IF] = "if",
-	[TOK_IN] = "in",
-	[TOK_ESAC] = "esac",
-	[TOK_SELECT] = "select",
-	[TOK_THEN] = "then",
-	[TOK_UNTIL] = "until",
-	[TOK_WHILE] = "while",
 	[TOK_WORD] = "<word>",
 	[TOK_NOT] = "!",
 	[TOK_AMP] = "&",
 	[TOK_LPAR] = "(",
 	[TOK_RPAR] = ")",
-	[TOK_HYPEN] = "-",
 	[TOK_SEMICOLON] = ";",
 	[TOK_RIN] = "<",
-	[TOK_ASSIGN] = "=",
 	[TOK_ROUT] = ">",
-	[TOK_LBRACKET] = "[",
-	[TOK_RBRACKET] = "]",
-	[TOK_LCURLY] = "{",
-	[TOK_PIPE] = "|",
-	[TOK_RCURLY] = "}"
+	[TOK_PIPE] = "|"
 };
 
 inline char		*sh_tokstr(t_tok *tok)
@@ -63,7 +42,7 @@ inline char		*sh_tokstr(t_tok *tok)
 
 	if (!tok)
 		return (g_tokidsstr[TOK_END]);
-	if (tok->id > TOK_RCURLY)
+	if (tok->id > TOK_PIPE)
 		return ("<unknown>");
 	return ((ret = g_tokidsstr[tok->id]) ? ret : "<unknown>");
 }

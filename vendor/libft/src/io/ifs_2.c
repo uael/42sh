@@ -121,5 +121,5 @@ ssize_t					ft_ifschr(t_ifs *self, size_t off, char c, char **out)
 		}
 	if (out)
 		*out = src;
-	return (chr - src + off + 1);
+	return (chr - src + 1);
 }

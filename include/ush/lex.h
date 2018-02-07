@@ -18,8 +18,7 @@
 # define TOK_ISREDIR_1(ID) ((ID)==TOK_RIN||(ID)==TOK_ROUT)
 # define TOK_ISREDIR_2(ID) ((ID)!=TOK_EOL&&((ID)>=TOK_HEREDOC&&(ID)<=TOK_AMPR))
 # define TOK_ISREDIR(ID) (TOK_ISREDIR_1(ID)||TOK_ISREDIR_2(ID))
-# define TOK_ISBOOL(ID) ((ID)==TOK_TRUE||(ID)==TOK_FALSE)
-# define TOK_ISWORD(I) (TOK_ISBOOL(I)||(I)==TOK_WORD)
+# define TOK_ISWORD(I) ((I)==TOK_WORD)
 # define TOK_ISEND(ID) ((ID)==TOK_EOL||(ID)==TOK_END)
 # define TOK_ISSEP(ID) ((ID)==TOK_SEMICOLON||(ID)==TOK_AMP)
 # define TOK_ISHDOC(ID) ((ID)==TOK_HEREDOC||(ID)==TOK_HEREDOCT)
@@ -40,7 +39,6 @@ extern int		sh_lexbslash(int fd, char **it, char **ln);
 extern int		sh_lexword(int fd, t_tok *tok, char **it, char **ln);
 extern int		sh_lexheredoc(int fd, t_tok *tok, char **it, char **ln);
 extern int		sh_lexheredoct(int fd, t_tok *tok, char **it, char **ln);
-extern char		sh_rbracket(char b);
 extern t_bool	sh_isname(char *word);
 
 #endif

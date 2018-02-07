@@ -76,12 +76,11 @@ static inline int	check(int fd, t_tok *t, t_deq *deq, t_tokit *it)
 		}
 		deq->cur = deq->len + 1;
 	}
-	else if (ft_strchr("([{", t->id))
-		g_stk[g_sidx++] = sh_rbracket(t->id);
+	else if (t->id == '(')
+		g_stk[g_sidx++] = ')';
 	else if (g_sidx && t->id == g_stk[g_sidx - 1])
 		--g_sidx;
-	else if (ft_strchr(")}]", t->id) &&
-		(!g_sidx || t->id != g_stk[g_sidx - 1]))
+	else if (t->id == ')' && (!g_sidx || t->id != g_stk[g_sidx - 1]))
 	{
 		return (g_sidx ? sh_synerr(*it->ln, *it->ln + t->pos, UEB, t->id,
 			g_stk[g_sidx - 1]) : sh_synerr(*it->ln, *it->ln + t->pos, UEC,

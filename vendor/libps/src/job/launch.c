@@ -58,6 +58,22 @@ static inline int	jobnext(t_job *job, int st)
 	}
 	return (ps_joblaunch(job, 1));
 }
+/*
+static void debug(t_proc *p)
+{
+	char **av;
+
+	ft_puts(2, "{");
+	av = p->argv;
+	while (*av)
+	{
+		ft_putf(2, "'%s'", *av++);
+		if (*av)
+			ft_putf(2, ", ");
+		else
+			ft_putf(2, "}\n");
+	}
+}*/
 
 int					ps_joblaunch(t_job *job, int fg)
 {
@@ -77,6 +93,9 @@ int					ps_joblaunch(t_job *job, int fg)
 			proc->kind == PROC_FN);
 		if (ps_procfork(proc, &job->pgid, io, fg))
 			return (!job->bang);
+		/*if (proc->argv) debug(proc);
+		if (i < job->procs.len)
+			ft_puts(2, "|\n");*/
 		io[STDIN_FILENO] != STDIN_FILENO ? close(io[STDIN_FILENO]) : 0;
 		io[STDOUT_FILENO] != STDOUT_FILENO ? close(io[STDOUT_FILENO]) : 0;
 		io[STDIN_FILENO] = fds[0];

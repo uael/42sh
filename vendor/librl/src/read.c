@@ -73,11 +73,7 @@ int				rl_catline(int fd, char c, char **ln, char **it)
 	int			st;
 
 	if (fd != 0 || !isatty(fd) || rl_rawmode(fd))
-	{
-		st = rl_readnotty(fd, it);
-		*ln = *it;
-		return (st);
-	}
+		return (rl_catnotty(fd, ln, c, it));
 	ft_puts(STDIN_FILENO, "\033[0m\033[31m>\033[0m ");
 	signal(SIGWINCH, rd_sigwinch);
 	if (!g_screen_init && rl_screenget(g_screen) < 0)

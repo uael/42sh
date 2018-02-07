@@ -12,19 +12,6 @@
 
 #include "ush/lex.h"
 
-inline char		sh_rbracket(char b)
-{
-	if (b == '[')
-		return (']');
-	if (b == '{')
-		return ('}');
-	if (b == '(')
-		return (')');
-	if (b == '`')
-		return ('`');
-	return (0);
-}
-
 inline t_bool	sh_isname(char *word)
 {
 	if (!ft_isalpha(*word) && *word != '_')
