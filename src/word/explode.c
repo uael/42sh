@@ -14,6 +14,10 @@
 
 inline size_t	sh_wordexplode(t_vec *av, char const *src, size_t n)
 {
-	*(char **)ft_vecpush(av) = ft_strndup(src, n);
+	uint8_t	e;
+	t_sds	word;
+
+	if (sh_wordresolve(&word, src, n, &e))
+		*(char **)ft_vecpush(av) = word.buf;
 	return (YEP);
 }

@@ -1,4 +1,16 @@
-cat <<EOL
-asdasddsfsdfd
-sdfgsdfg
-EOL
+echo "
+dsfdsfdsf
+dg
+fdg
+
+df
+g
+s
+df
+g
+sd
+fg
+
+sdf
+gsdfgsdfgsdfg
+"

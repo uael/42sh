@@ -13,9 +13,8 @@
 #include "ush/eval.h"
 
 static char		g_var[MAX_INPUT + 1];
-static char		g_val[MAX_INPUT + 1];
 
-static inline void	assignset(t_map *map)
+static inline void	assignset(t_map *map, char *val)
 {
 	uint32_t	it;
 	char		*dvar;
@@ -23,18 +22,22 @@ static inline void	assignset(t_map *map)
 	if (ft_mapget(map, g_var, &it))
 	{
 		free(((char **)map->vals)[it]);
-		((char **)map->vals)[it] = ft_strdup(g_val);
+		((char **)map->vals)[it] = val;
 	}
 	else if (ft_mapput(map, dvar = ft_strdup(g_var), &it))
-		((char **)map->vals)[it] = ft_strdup(g_val);
+		((char **)map->vals)[it] = val;
 	else
+	{
 		free(dvar);
+		free(val);
+	}
 }
 
 inline int			sh_evalassign(t_tok *tok, t_deq *toks, t_map *map, char *ln)
 {
 	char		*eq;
 	uint8_t		e;
+	t_sds		val;
 
 	while (tok && tok->id == TOK_WORD)
 	{
@@ -44,10 +47,10 @@ inline int			sh_evalassign(t_tok *tok, t_deq *toks, t_map *map, char *ln)
 		ft_strncpy(g_var, ln + tok->pos, eq - (ln + tok->pos));
 		if (!sh_isname(g_var))
 			break ;
-		sh_wordresolve(g_val, eq + 1, tok->len - (eq - ln - tok->pos) - 1, &e);
+		sh_wordresolve(&val, eq + 1, tok->len - (eq - ln - tok->pos) - 1, &e);
 		if (!e)
 			break ;
-		assignset(map);
+		assignset(map, val.len ? val.buf : ft_strdup(""));
 		g_sh->status = 0;
 		tok = sh_toknext(toks);
 	}

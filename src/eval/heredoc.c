@@ -32,7 +32,7 @@ inline int			sh_evalheredoc(t_job *job, t_deq *toks, char **ln)
 	if (ft_isdigit(*(*ln + op->pos)))
 		proc->src[STDIN_FILENO] = *(*ln + op->pos) - '0';
 	sh_toknext(toks);
-	if (i > 0 && (proc = job->procs.buf + i - 1)->u.fn.cb == output)
+	if (i > 0 && (proc = job->procs.buf + i - 1)->u.fn.cb == (t_proccb *)output)
 	{
 		free(proc->u.fn.data);
 		proc->u.fn.data = ft_strndup(*ln + tok->pos, tok->pos);
