@@ -18,26 +18,6 @@ static inline int	output(char *data)
 	return (EXIT_SUCCESS);
 }
 
-static void			pipeprev(t_proc *prev, t_job *job, size_t i, char *out)
-{
-	t_proc *proc;
-
-	if (i > 0 && (proc = job->procs.buf + i - 1)->u.fn.cb == output)
-	{
-		free(proc->u.fn.data);
-		proc->u.fn.data = out;
-		return ;
-	}
-	if (prev->kind == PROC_NONE)
-			proc = prev;
-	else
-	{
-		prev->piped = 1;
-		proc = ft_vecput((t_vec *)&job->procs, i);
-	}
-	ps_procfn(proc, (t_proccb *)output, out);
-}
-
 inline int			sh_evalheredoc(t_job *job, t_deq *toks, char **ln)
 {
 	t_tok	*tok;
@@ -51,7 +31,18 @@ inline int			sh_evalheredoc(t_job *job, t_deq *toks, char **ln)
 	proc = ft_vecat((t_vec *)&job->procs, i);
 	if (ft_isdigit(*(*ln + op->pos)))
 		proc->src[STDIN_FILENO] = *(*ln + op->pos) - '0';
-	pipeprev(proc, job, i, ft_strndup(*ln + tok->pos, tok->pos));
 	sh_toknext(toks);
+	if (i > 0 && (proc = job->procs.buf + i - 1)->u.fn.cb == output)
+	{
+		free(proc->u.fn.data);
+		proc->u.fn.data = ft_strndup(*ln + tok->pos, tok->pos);
+		return (YEP);
+	}
+	if (proc->kind != PROC_NONE)
+	{
+		proc->piped = 1;
+		proc = ft_vecput((t_vec *)&job->procs, i);
+	}
+	ps_procfn(proc, (t_proccb *)output, ft_strndup(*ln + tok->pos, tok->pos));
 	return (YEP);
 }
