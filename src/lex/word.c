@@ -30,7 +30,7 @@ static inline int	quote(int fd, t_tok *tok, char **it, char **ln)
 			return (st);
 		else if (!**it && (fd < 0 || (st = rl_catline(fd, 0, ln, it))))
 			return (st < 0 || !g_sh->tty ? sh_synerr(*ln, *it, UEC, q) : OUF);
-		else if (bs)
+		else if (bs && q != '\'')
 			(void)((++tok->len && ++*it) && (bs = 0));
 		else if (**it == q && (++tok->len && ++*it))
 			break ;

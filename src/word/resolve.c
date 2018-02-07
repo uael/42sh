@@ -83,18 +83,38 @@ inline size_t	sh_wordresolve(t_sds *d, char const *s, size_t n, uint8_t *e)
 		if (bs)
 		{
 			if (quote == '"')
-				*ft_sdspush(d) = DQUOT(s) ? *s++ : (char)'\\';
+				if (DQUOT(s))
+					*ft_sdspush(d) = *s++;
+				else
+				{
+					*ft_sdspush(d) = (char)'\\';
+					++n;
+				}
 			else if (quote == '\'')
-				*ft_sdspush(d) = QUOTE(s) ? *s++ : (char)'\\';
+				if (QUOTE(s))
+					*ft_sdspush(d) = *s++;
+				else
+				{
+					*ft_sdspush(d) = (char)'\\';
+					++n;
+				}
 			else
 				*ft_sdspush(d) = *s++;
+			bs = 0;
 		}
 		else if ((bs = (t_bool)(*s == '\\')))
 			++s;
 		else if (*s == '\'' || *s == '"' || *s == '`')
 		{
-			if ((quote = (char)(quote ? 0 : *s)) && e && *e)
-				*e = 0;
+			if (quote && quote == *s)
+				quote = 0;
+			else if (!quote)
+			{
+				quote = *s;
+				e && *e ? (*e = 0) : 0;
+			}
+			else
+				*ft_sdspush(d) = *s;
 			++s;
 		}
 		else if (*s == '$' && n && *s + 1 && (!quote || quote == '"'))
