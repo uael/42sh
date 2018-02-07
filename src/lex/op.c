@@ -90,7 +90,7 @@ inline int			sh_lexop(int fd, t_tok *tok, char **it, char **ln)
 		return ((tok->id = TOK_SEMICOLON) & 0);
 	if (**it == '(' && ++*it)
 		return ((tok->id = TOK_LPAR) & 0);
-	if (**it == '(' && ++*it)
+	if (**it == ')' && ++*it)
 		return ((tok->id = TOK_RPAR) & 0);
 	return (NOP);
 }
