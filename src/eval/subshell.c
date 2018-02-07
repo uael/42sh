@@ -24,10 +24,14 @@ static inline int	subshell(t_subshell *s)
 	sh_eval(-1, &s->toks, &s->ln) ? (g_sh->status = 1) : 0;
 	st = g_sh->status;
 	sh_unscope();
+	return (sh_exit(st, NULL));
+}
+
+static inline void	subshelldtor(t_subshell *s)
+{
 	ft_deqdtor(&s->toks, NULL);
 	free(s->ln);
 	free(s);
-	return (sh_exit(st, NULL));
 }
 
 inline int		sh_evalsubshell(t_job *job, int fd, t_deq *toks, char **ln)
@@ -39,7 +43,7 @@ inline int		sh_evalsubshell(t_job *job, int fd, t_deq *toks, char **ln)
 
 	(void)fd;
 	ft_deqctor(&(sh = malloc(sizeof(t_subshell)))->toks, sizeof(t_tok));
-	ps_procfn(&proc, (t_proccb *)subshell, sh);
+	ps_procfn(&proc, (t_proccb *)subshell, (t_dtor)subshelldtor, sh);
 	stack = 0;
 	while ((tok = sh_toknext(toks))->id != ')' || stack)
 	{

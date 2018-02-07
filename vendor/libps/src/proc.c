@@ -49,6 +49,7 @@ inline void			ps_procdtor(t_proc *p)
 	}
 	ps_redirectclose(&p->redirs);
 	ft_vecdtor((t_vec *)&p->redirs, NULL);
+	p->kind == PROC_FN && p->u.fn.dtor ? p->u.fn.dtor(p->u.fn.data) : 0;
 	p->kind == PROC_ERR && p->u.err.msg ? ft_pfree((void **)&p->u.err.msg) : 0;
 	p->kind == PROC_ERR && p->u.err.ln ? ft_pfree((void **)&p->u.err.ln) : 0;
 }

@@ -14,7 +14,7 @@
 
 static inline int	output(char *data)
 {
-	ft_putf(STDOUT_FILENO, data);
+	ft_puts(STDOUT_FILENO, data);
 	return (EXIT_SUCCESS);
 }
 
@@ -43,6 +43,7 @@ inline int			sh_evalheredoc(t_job *job, t_deq *toks, char **ln)
 		proc->piped = 1;
 		proc = ft_vecput((t_vec *)&job->procs, i);
 	}
-	ps_procfn(proc, (t_proccb *)output, ft_strndup(*ln + tok->pos, tok->len));
+	ps_procfn(proc, (t_proccb *)output, (t_dtor)free,
+		ft_strndup(*ln + tok->pos, tok->len));
 	return (YEP);
 }

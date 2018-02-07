@@ -33,7 +33,6 @@ static inline int		subshell(char *ln)
 		;
 	st = g_sh->status;
 	sh_unscope();
-	free(ln);
 	return (sh_exit(st, NULL));
 }
 
@@ -72,7 +71,7 @@ static inline void		onbquote(t_sds *d, char const **s, size_t *n)
 	while (*n && **s != '`')
 		(void)(++*s && --*n);
 	if (*s - b > 1)
-		ps_read(d, (t_proccb *)subshell, ft_strndup(b, *s - b));
+		ps_read(d, (t_proccb *)subshell, (t_dtor)free, ft_strndup(b, *s - b));
 	++*s;
 	--*n;
 }

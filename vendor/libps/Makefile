@@ -12,7 +12,7 @@
 
 NAME = libps.a
 CC = gcc
-CFLAGS = -Werror -Wextra -Wall -g3 -fno-omit-frame-pointer -fsanitize=address
+CFLAGS = -Werror -Wextra -Wall -O3
 
 SRC_PATH = src
 OBJ_PATH = obj

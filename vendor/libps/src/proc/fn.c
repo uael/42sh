@@ -12,11 +12,12 @@
 
 #include "../ps.h"
 
-inline void		ps_procfn(t_proc *proc, t_proccb *cb, void *data)
+inline void		ps_procfn(t_proc *proc, t_proccb *cb, t_dtor dtor, void *data)
 {
 	ps_procctor(proc);
 	proc->kind = PROC_FN;
 	proc->u.fn.cb = cb;
+	proc->u.fn.dtor = dtor;
 	proc->u.fn.data = data;
 }
 

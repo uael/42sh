@@ -26,8 +26,8 @@
    fun:xpc_atfork_child
    fun:libSystem_atfork_child
    fun:fork
-   fun:sh_procfork
-   fun:sh_joblaunch
+   fun:ps_procfork
+   fun:ps_joblaunch
    fun:sh_evallist
    fun:sh_eval
 }
@@ -42,10 +42,10 @@
    fun:xpc_atfork_child
    fun:libSystem_atfork_child
    fun:fork
-   fun:readproc
-   fun:sh_evalbackquote
-   fun:sh_tokexpand
-   fun:sh_evalargv
+   fun:ps_procfork
+   fun:ps_read
+   fun:sh_wordresolve
+   fun:sh_wordexplode
 }
 {
    <insert_a_suppression_name_here>
@@ -57,8 +57,8 @@
    fun:_notify_fork_child
    fun:libSystem_atfork_child
    fun:fork
-   fun:sh_procfork
-   fun:sh_joblaunch
+   fun:ps_procfork
+   fun:ps_joblaunch
    fun:sh_evallist
    fun:sh_eval
 }
@@ -74,8 +74,8 @@
    fun:_notify_fork_child
    fun:libSystem_atfork_child
    fun:fork
-   fun:sh_procfork
-   fun:sh_joblaunch
+   fun:ps_procfork
+   fun:ps_joblaunch
    fun:sh_evallist
    fun:sh_eval
 }
@@ -91,10 +91,10 @@
    fun:_notify_fork_child
    fun:libSystem_atfork_child
    fun:fork
-   fun:readproc
-   fun:sh_evalbackquote
-   fun:sh_tokexpand
-   fun:sh_evalargv
+   fun:ps_procfork
+   fun:ps_read
+   fun:sh_wordresolve
+   fun:sh_wordexplode
 }
 {
    <insert_a_suppression_name_here>
@@ -124,8 +124,8 @@
    fun:xpc_atfork_child
    fun:libSystem_atfork_child
    fun:fork
-   fun:sh_procfork
-   fun:sh_joblaunch
+   fun:ps_procfork
+   fun:ps_joblaunch
    fun:sh_evallist
    fun:sh_eval
    fun:sh_run
@@ -141,10 +141,10 @@
    fun:xpc_atfork_child
    fun:libSystem_atfork_child
    fun:fork
-   fun:readproc
-   fun:sh_evalbackquote
-   fun:sh_tokdexpand
-   fun:sh_evalargv
+   fun:ps_procfork
+   fun:ps_read
+   fun:sh_wordresolve
+   fun:sh_wordexplode
 }
 {
    <insert_a_suppression_name_here>

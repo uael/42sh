@@ -22,9 +22,10 @@ typedef int		(t_proccb)(void *data);
 typedef struct	s_procfn
 {
 	t_proccb	*cb;
+	t_dtor		dtor;
 	void		*data;
 }				t_procfn;
 
-extern void		ps_procfn(struct s_proc *proc, t_proccb *cb, void *data);
+extern void		ps_procfn(struct s_proc *p, t_proccb *cb, t_dtor dtor, void *d);
 
 #endif

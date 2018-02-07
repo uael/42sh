@@ -76,11 +76,11 @@ static inline void	readproc(t_proc *p, t_sds *out)
 		out->buf[out->len] = '\0';
 }
 
-inline void			ps_read(t_sds *dst, t_proccb *cb, void *data)
+inline void			ps_read(t_sds *dst, t_proccb *cb, t_dtor dtor, void *data)
 {
 	t_proc proc;
 
-	ps_procfn(&proc, cb, data);
+	ps_procfn(&proc, cb, dtor, data);
 	readproc(&proc, dst);
 	ps_procdtor(&proc);
 }
