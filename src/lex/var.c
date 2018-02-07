@@ -34,7 +34,7 @@ static inline int	varspecial(int fd, t_tok *tok, char **it, char **ln)
 			++var;
 	else
 		return (NOP);
-	ft_sdsmpush((t_sds *)tok, *it, var - *it);
+	tok->len += var - *it;
 	*it += var - *it;
 	st = 0;
 	if (brace && !*var && (fd < 0 || (st = rl_catline(fd, 0, ln, it))))
@@ -52,7 +52,7 @@ static inline int	varuser(int fd, t_tok *tok, char **it, char **ln)
 	brace = **it;
 	if (!ft_isalpha(brace) && brace != '_' && brace != '{')
 		return (sh_synerr(*ln, *it, "Expected alpha _ or '{' got `%c'", **it));
-	while (ft_sdscpush((t_sds *)tok, *(*it)++))
+	while ((++tok->len && ++*it))
 		if (brace == '{' && !**it &&
 			(fd < 0 || (st = rl_catline(fd, 0, ln, it))))
 			return (st < 0 || !g_sh->tty ? sh_synerr(*ln, *it, UEE) : OUF);
@@ -63,7 +63,7 @@ static inline int	varuser(int fd, t_tok *tok, char **it, char **ln)
 			if (brace == '{' && **it != '}')
 				return (sh_synerr(*ln, *it, UEH, **it));
 			if (brace == '{')
-				ft_sdscpush((t_sds *)tok, *(*it)++);
+				(++tok->len && ++*it);
 			break ;
 		}
 	return (YEP);
@@ -75,11 +75,10 @@ inline int			sh_lexvar(int fd, t_tok *tok, char **it, char **ln)
 
 	if (**it != '$')
 		return (NOP);
-	ft_sdscpush((t_sds *)tok, *(*it)++);
+	(++tok->len && ++*it);
 	if ((st = varspecial(fd, tok, it, ln)) > NOP)
 		return (st);
 	if (st && (st = varuser(fd, tok, it, ln)))
 		return (st);
-	tok->id = TOK_VAR;
 	return (YEP);
 }

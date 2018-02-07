@@ -24,13 +24,11 @@ typedef struct	s_scope
 	char		**av;
 	int			status;
 	pid_t		pid;
-	pid_t		ppid;
 	t_bool		tty;
 }				t_scope;
 
 extern t_scope	*g_sh;
 extern uint8_t	g_shlvl;
-extern TTY		g_shmode;
 extern int		g_shfd;
 
 extern uint8_t	sh_scope(void);

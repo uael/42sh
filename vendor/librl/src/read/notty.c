@@ -53,3 +53,37 @@ inline int		rl_readnotty(int fd, char **ln)
 		return (WUT);
 	return (NOP);
 }
+
+inline int		rl_catnotty(int fd, char **ln, char c, char **it)
+{
+	char	*buf;
+	size_t	middle;
+	ssize_t	rd;
+
+	if (fd < 0 || fd > OPEN_MAX)
+		return (ENO_THROW(WUT, EINVAL));
+	g_in[fd].ifd = fd;
+	if ((rd = ft_ifschr(g_in + fd, (size_t)g_rd[fd], '\n', &buf)) > 0)
+	{
+		if (c < 0)
+		{
+			middle = g_ln.len + c;
+			ft_sdsnpop(&g_ln, (size_t)-c, NULL);
+		}
+		else if (c)
+		{
+			middle = g_ln.len + 1;
+			ft_sdscpush(&g_ln, c);
+		}
+		else
+			middle = g_ln.len;
+		ft_sdsmpush(&g_ln, buf, (size_t)rd);
+		*ln = g_ln.buf;
+		*it = g_ln.buf + middle;
+		g_rd[fd] += rd;
+		return (YEP);
+	}
+	if (g_rd[fd] < 0)
+		return (WUT);
+	return (NOP);
+}

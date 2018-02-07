@@ -57,7 +57,8 @@ extern int		ft_pfree(void **pptr);
 extern void		ft_clean(void *ptr);
 
 extern char		*ft_join(char const *s1, char const *s2, char n);
-extern char		*ft_getenv(char **env, char *var);
+extern char		*ft_getenv(char **env, char const *var);
 extern void		ft_setenv(struct s_vec *env, char *var, char *val);
+extern t_bool	ft_unsetenv(struct s_vec *env, char *var, t_bool delm);
 
 #endif

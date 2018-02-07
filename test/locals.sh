@@ -1,6 +1,5 @@
-echo $OOPSf$OOPS
-echo sdf${HOME}${HOME}
-echo sdf${HOME}
+echo sdf${HOME}a${HOME}sdf sdf${HOME}a${HOME}sdf sdf${HOME}a${HOME}sdf
+echo sdf${HOME} sdf${HOME} sdf${HOME} sdf${HOME}a${HOME}sdf sdf${HOME}a${HOME}sdf
 echo ${HOME}
 echo "sdf${HOME}"
 echo "${HOME}"
@@ -24,7 +23,6 @@ echo sdf$HOMEe$HOME
 echo $HOMEf$HOME
 echo "sdf$HOMEg$HOME"
 echo "$HOMEh$HOME"
-echo sdf${HOME}a${HOME}sdf
 echo ${HOME}b${HOME}sdf
 echo "sdf${HOME}c${HOME}dfg"
 echo "${HOME}d${HOME}fgh"

@@ -33,14 +33,8 @@ static inline int	opleft(int fd, t_tok *tok, char **it, char **ln)
 
 	if (++*it && (st = sh_lexbslash(fd, it, ln)))
 		return (st);
-	if (**it == '<')
-	{
-		if (++*it && (st = sh_lexbslash(fd, it, ln)))
-			return (st);
-		if (**it == '-' && ++*it)
-			return ((tok->id = TOK_HEREDOCT) & 0);
+	if (**it == '<' && ++*it)
 		return ((tok->id = TOK_HEREDOC) & 0);
-	}
 	if (**it == '>' && ++*it)
 		return ((tok->id = TOK_CMP) & 0);
 	if (**it == '&' && ++*it)
@@ -84,5 +78,13 @@ inline int			sh_lexop(int fd, t_tok *tok, char **it, char **ln)
 		return (opand(fd, tok, it, ln));
 	if (**it == '|')
 		return (opor(fd, tok, it, ln));
-	return (ft_strchr("!;()", **it) ? (tok->id = *(uint8_t *)(*it)++) & 0 : 1);
+	if (**it == '!' && ++*it)
+		return ((tok->id = TOK_NOT) & 0);
+	if (**it == ';' && ++*it)
+		return ((tok->id = TOK_SEMICOLON) & 0);
+	if (**it == '(' && ++*it)
+		return ((tok->id = TOK_LPAR) & 0);
+	if (**it == ')' && ++*it)
+		return ((tok->id = TOK_RPAR) & 0);
+	return (NOP);
 }

@@ -12,6 +12,40 @@
 
 #include "ush/tok.h"
 
+static char		*g_tokidsstr[] = {
+	[TOK_END] = "<EOF>",
+	[TOK_HEREDOC] = "<<",
+	[TOK_RAOUT] = ">>",
+	[TOK_LAMP] = "<&",
+	[TOK_RAMP] = ">&",
+	[TOK_CMP] = "<>",
+	[TOK_EOL] = "<newline>",
+	[TOK_RPOUT] = ">|",
+	[TOK_AMPR] = "&>",
+	[TOK_LAND] = "&&",
+	[TOK_LOR] = "||",
+	[TOK_WORD] = "<word>",
+	[TOK_NOT] = "!",
+	[TOK_AMP] = "&",
+	[TOK_LPAR] = "(",
+	[TOK_RPAR] = ")",
+	[TOK_SEMICOLON] = ";",
+	[TOK_RIN] = "<",
+	[TOK_ROUT] = ">",
+	[TOK_PIPE] = "|"
+};
+
+inline char		*sh_tokstr(t_tok *tok)
+{
+	char *ret;
+
+	if (!tok)
+		return (g_tokidsstr[TOK_END]);
+	if (tok->id > TOK_PIPE)
+		return ("<unknown>");
+	return ((ret = g_tokidsstr[tok->id]) ? ret : "<unknown>");
+}
+
 inline t_tok	*sh_tokpeek(t_deq *toks)
 {
 	if (ft_deqlen(toks))
@@ -27,17 +61,11 @@ inline t_tok	*sh_toknext(t_deq *toks)
 
 inline void		sh_tokdtor(t_tok *tok)
 {
-	ft_sdsdtor((t_sds *)tok);
 	ft_memset(tok, 0, sizeof(t_tok));
 }
 
 inline t_tok	*sh_tokpos(t_tok *tok, char const *it, char const *ln)
 {
-	char *pos;
-
-	pos = (char *)it;
-	while (pos > ln && !ISEOL(pos - 1))
-		--pos;
-	tok->pos = (uint16_t)(it - pos);
+	tok->pos = (uint16_t)(it - ln);
 	return (tok);
 }

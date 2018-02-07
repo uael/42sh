@@ -12,29 +12,14 @@
 
 #include "ush/bi.h"
 
-inline t_procfn	*sh_bifn(char const *exe)
+inline void	sh_biregister(void)
 {
-	if (!ft_strcmp(exe, "cd"))
-		return (sh_bicd);
-	if (!ft_strcmp(exe, "bg"))
-		return (sh_bibg);
-	if (!ft_strcmp(exe, "echo"))
-		return (sh_biecho);
-	if (!ft_strcmp(exe, "env"))
-		return (sh_bienv);
-	if (!ft_strcmp(exe, "exit"))
-		return (sh_biexit);
-	if (!ft_strcmp(exe, "export"))
-		return (sh_biexport);
-	if (!ft_strcmp(exe, "fg"))
-		return (sh_bifg);
-	if (!ft_strcmp(exe, "jobs"))
-		return (sh_bijobs);
-	if (!ft_strcmp(exe, "setenv"))
-		return (sh_bisetenv);
-	if (!ft_strcmp(exe, "unset"))
-		return ((t_procfn *)sh_biunset);
-	if (!ft_strcmp(exe, "unsetenv"))
-		return (sh_biunsetenv);
-	return (NULL);
+	ps_biregister("cd", sh_bicd);
+	ps_biregister("echo", sh_biecho);
+	ps_biregister("env", sh_bienv);
+	ps_biregister("exit", sh_biexit);
+	ps_biregister("export", sh_biexport);
+	ps_biregister("setenv", sh_bisetenv);
+	ps_biregister("unset", (t_procbi *)sh_biunset);
+	ps_biregister("unsetenv", sh_biunsetenv);
 }

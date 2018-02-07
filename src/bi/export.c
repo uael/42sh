@@ -12,6 +12,8 @@
 
 #include "ush.h"
 
+#define N "export: "
+
 static inline void		export(char *var, char *val, char **envv)
 {
 	char *local;
@@ -38,10 +40,10 @@ inline int				sh_biexport(int ac, char **a, char **envv)
 		return (sh_vardump(envv));
 	while (++i < ac)
 		if (*a[i] == '=')
-			return (ft_retf(EXIT_FAILURE, "%s: bad assignment\n", a[i]));
+			return (ft_retf(EXIT_FAILURE, N"%s: bad assignment\n", a[i]));
 		else if ((val = ft_strchr(a[i], '=')))
 			if (!sh_isname(a[i]))
-				return (ft_retf(EXIT_FAILURE, "%s: not an identifier\n", a[i]));
+				return (ft_retf(1, N"%s: not an identifier\n", a[i]));
 			else
 			{
 				*val = '\0';
@@ -50,6 +52,6 @@ inline int				sh_biexport(int ac, char **a, char **envv)
 		else if (sh_isname(a[i]))
 			export(a[i], NULL, envv);
 		else
-			return (ft_retf(EXIT_FAILURE, "%s: Invalid argument\n", a[i]));
+			return (ft_retf(EXIT_FAILURE, N"%s: Invalid argument\n", a[i]));
 	return (EXIT_SUCCESS);
 }

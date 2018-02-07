@@ -14,7 +14,7 @@
 
 #define ENV_I (1 << 0)
 #define M_DUP "Duplicate option"
-#define N_ENV "env: "
+#define ENV "env: "
 #define EHELP1 "usage: env [-i] [-P utilpath] [-u name]\n"
 #define EHELP EHELP1 "           [name=value ...] [utility [argument ...]]\n"
 
@@ -61,14 +61,14 @@ static int		env_parse_opts(char **av, void **o, t_vec *e)
 				if (*a == 'i' && !(*((uint8_t *)o[0]) & ENV_I))
 					*((uint8_t *)o[0]) |= ENV_I;
 				else if (*a == 'i')
-					return (ft_retf(NOP, N_ENV"%c: "M_DUP"\n", *a) & 0);
+					return (ft_retf(NOP, ENV"%c: "M_DUP"\n", *a) & 0);
 				else if (ft_strchr("Pu", *a))
 				{
 					envgetopt(*a, *(a + 1) ? a + 1 : av[++i], (char **)o[1], e);
 					break ;
 				}
 				else
-					return (ft_retf(NOP, N_ENV"%c: %e\n", *a, EINVAL) & 0);
+					return (ft_retf(NOP, ENV"%c: %e\n", *a, EINVAL) & 0);
 		}
 		else if (ft_strchr(a, '='))
 			*(char **)ft_vecpush(e) = ft_strdup(a);
@@ -83,16 +83,16 @@ static int		env_finalize(char *path, char **argv, char **envv)
 	t_proc	proc;
 	t_job	*job;
 
-	sh_procexe(&proc, path, argv[0], envv);
+	ps_procexe(&proc, path, argv[0], envv);
 	ft_vecctor(&av, sizeof(char *));
 	while (*argv)
 		*(char **)ft_vecpush(&av) = ft_strdup(*argv++);
 	*(char **)ft_vecpush(&av) = NULL;
 	proc.argv = av.buf;
 	proc.ownenv = 1;
-	sh_jobctor(job = alloca(sizeof(t_job)));
+	ps_jobctor(job = alloca(sizeof(t_job)));
 	*(t_proc *)ft_vecpush((t_vec *)&job->procs) = proc;
-	return (sh_joblaunch(job, 1));
+	return (ps_joblaunch(job, 1));
 }
 
 inline int		sh_bienv(int ac, char **av, char **ev)

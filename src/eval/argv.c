@@ -12,17 +12,6 @@
 
 #include "ush/eval.h"
 
-static inline int	own(t_vec *av, t_tok *tok)
-{
-	if (av)
-	{
-		*(char **)ft_vecpush(av) = tok->val;
-		tok->val = NULL;
-		tok->cap = 0;
-	}
-	return (YEP);
-}
-
 static inline char	**makeenv(t_map *vars, t_bool *owned)
 {
 	t_vec		*e;
@@ -51,14 +40,12 @@ static inline int	makeargv(t_job *job, t_vec *av, t_deq *toks, char **ln)
 {
 	t_tok *tok;
 
-	own(av, sh_tokpeek(toks));
-	tok = sh_toknext(toks);
+	tok = sh_tokpeek(toks);
 	while (tok)
 		if (TOK_ISWORD(tok->id))
 		{
-			if (av && (tok = sh_tokexpand(toks, 1)) && TOK_ISWORD(tok->id))
-				own(av, tok);
-			tok && TOK_ISWORD(tok->id) ? tok = sh_toknext(toks) : 0;
+			av ? sh_wordexplode(av, *ln + tok->pos, tok->len) : 0;
+			tok = sh_toknext(toks);
 		}
 		else if (TOK_ISREDIR(tok->id))
 		{
@@ -81,17 +68,25 @@ inline int			sh_evalargv(t_job *job, t_map *vars, t_deq *toks, char **ln)
 	t_bool	own;
 	t_vec	av;
 
-	if (!(tok = sh_tokexpand(toks, 1)) || !TOK_ISWORD(tok->id))
-		return (NOP);
-	prc = ft_vecback((t_vec *)&job->procs);
-	if (TOK_ISBOOL(tok->id))
+	ft_vecctor(&av, sizeof(char *));
+	tok = sh_tokpeek(toks);
+	while (!av.len)
 	{
-		sh_procbit(prc, (t_bool)(tok->id == TOK_FALSE));
+		if (!tok || !TOK_ISWORD(tok->id))
+			return (NOP);
+		sh_wordexplode(&av, *ln + tok->pos, tok->len);
+		tok = sh_toknext(toks);
+	}
+	prc = ft_vecback((t_vec *)&job->procs);
+	prc->argv = av.buf;
+	if (!(own = (t_bool)ft_strcmp("true", prc->argv[0])) ||
+		!ft_strcmp("false", prc->argv[0]))
+	{
+		ps_procbit(prc, (t_bool)(own ? 1 : 0));
 		return (makeargv(job, NULL, toks, ln));
 	}
-	sh_procexe(prc, "PATH", tok->val, makeenv(vars, &own));
+	ps_procexe(prc, "PATH", prc->argv[0], makeenv(vars, &own));
 	prc->ownenv = own;
-	ft_vecctor(&av, sizeof(char *));
 	if (makeargv(job, &av, toks, ln) == OUF)
 		return (OUF);
 	*(char **)ft_vecpush(&av) = NULL;

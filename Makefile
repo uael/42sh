@@ -10,29 +10,20 @@
 #                                                                              #
 # **************************************************************************** #
 
-NAME = 21sh
+NAME = 42sh
 CC = gcc
-CFLAGS = -Werror -Wextra -Wall
-RCFLAGS = $(CFLAGS) -O3
-DCFLAGS = $(CFLAGS) -g3 -DDEBUG
-SCFLAGS = $(DCFLAGS) -fsanitize=address -fsanitize=undefined
+CFLAGS = -Werror -Wextra -Wall -O3
 
-SRC_PATH = ./src/
-OBJ_PATH = ./obj/
-ROBJ_PATH = $(OBJ_PATH)rel/
-DOBJ_PATH = $(OBJ_PATH)dev/
-SOBJ_PATH = $(OBJ_PATH)san/
-3TH_PATH = ./vendor/libft/ ./vendor/librl/
-INC_PATH = ./include/
-LNK_PATH = ./ $(3TH_PATH)
+SRC_PATH = src
+OBJ_PATH = obj
+INC_PATH = include vendor/libft/include vendor/librl/include vendor/libps/include
+3TH_PATH = vendor
 
-OBJ_NAME = $(SRC_NAME:.c=.o)
-R3TH_NAME = rl ft
-D3TH_NAME = $(addsuffix .dev, $(R3TH_NAME))
-S3TH_NAME = $(addsuffix .san, $(R3TH_NAME))
+LIB_NAME =
+3TH_NAME = libft/libft.a librl/librl.a libps/libps.a
 SRC_NAME = \
 	bi.c bi/cd.c bi/echo.c bi/env.c bi/exit.c bi/export.c bi/setenv.c \
-	bi/unset.c bi/unsetenv.c bi/fg.c bi/bg.c bi/jobs.c \
+	bi/unset.c bi/unsetenv.c \
 	comp.c \
 	env.c \
 	err.c \
@@ -40,184 +31,58 @@ SRC_NAME = \
 	eval/cmp.c eval/compound.c eval/heredoc.c eval/lamp.c eval/list.c \
 	eval/pipeline.c eval/ramp.c eval/raout.c eval/redir.c eval/rin.c \
 	eval/rout.c eval/sep.c eval/simple.c eval/subshell.c \
-	job.c job/bg.c job/cont.c job/debug.c job/fg.c job/mark.c job/launch.c \
-	job/state.c job/wait.c job/pipe.c \
-	lex.c lex/heredoc.c lex/next.c lex/op.c lex/quote.c lex/var.c lex/tok.c \
-	lex/word.c lex/reduce.c \
+	lex.c lex/heredoc.c lex/op.c lex/utils.c lex/var.c lex/word.c \
 	main.c \
-	pool.c pool/mark.c pool/notify.c \
-	proc.c proc/bit.c proc/err.c proc/exe.c proc/fn.c proc/fork.c proc/sh.c \
 	prompt.c \
-	redir.c \
 	shell.c \
-	tok.c tok/expand.c \
-	var.c \
-	word.c word/expand.c
+	tok.c \
+	var.c var/expand.c \
+	word/explode.c word/resolve.c
 
-SRC = $(addprefix $(SRC_PATH), $(SRC_NAME))
-ROBJ = $(addprefix $(ROBJ_PATH), $(OBJ_NAME))
-DOBJ = $(addprefix $(DOBJ_PATH), $(OBJ_NAME))
-SOBJ = $(addprefix $(SOBJ_PATH), $(OBJ_NAME))
-RDEP = $(ROBJ:%.o=%.d)
-DDEP = $(DOBJ:%.o=%.d)
-SDEP = $(SOBJ:%.o=%.d)
-INC = $(addprefix -I, $(INC_PATH) $(addsuffix include/, $(3TH_PATH)))
-LNK = $(addprefix -L, $(LNK_PATH))
-R3TH = $(addprefix -l, $(R3TH_NAME))
-D3TH = $(addprefix -l, $(D3TH_NAME))
-S3TH = $(addprefix -l, $(S3TH_NAME))
-EXE = $(NAME)
-LIB =
+OBJ = $(addprefix $(OBJ_PATH)/, $(SRC_NAME:.c=.o))
+INC = $(addprefix -I, $(INC_PATH))
+3TH = $(addprefix $(3TH_PATH)/, $(3TH_NAME))
+LIB = $(addprefix -l, $(LIB_NAME)) $(3TH)
+DEP = $(OBJ:%.o=%.d)
 
-all: $(EXE)
+all: $(NAME)
 
-dev: $(EXE).dev
+$(NAME): $(3TH) $(OBJ)
+	@$(CC) $(CFLAGS) $(INC) $(OBJ) $(LIB) -o $(NAME)
+	@printf  "%-20s\033[32m✔\033[0m\n" "$(NAME): exe"
 
-san: $(EXE).san
-
-wut: all dev san
-
-$(LIB).a: $(LIB)
-
-$(LIB).dev.a: $(LIB).dev
-
-$(LIB).san.a: $(LIB).san
-
-$(LIB): $(ROBJ)
-ifneq ($(3TH_PATH),)
-	@$(foreach lib,$(3TH_PATH),$(MAKE) -C $(lib);)
-endif
-	@ar -rc $(LIB).a $(ROBJ)
-	@ranlib $(LIB).a
-	@printf  "%-30s\033[32m[✔]\033[0m\n" "$(LIB): lib"
-
-$(LIB).dev: $(DOBJ)
-ifneq ($(3TH_PATH),)
-	@$(foreach lib,$(3TH_PATH),$(MAKE) -C $(lib) dev;)
-endif
-	@ar -rc $(LIB).dev.a $(DOBJ)
-	@ranlib $(LIB).dev.a
-	@printf  "%-30s\033[32m[✔]\033[0m\n" "$(LIB).dev: lib"
-
-$(LIB).san: $(SOBJ)
-ifneq ($(3TH_PATH),)
-	@$(foreach lib,$(3TH_PATH),$(MAKE) -C $(lib) san;)
-endif
-	@ar -rc $(LIB).san.a $(SOBJ)
-	@ranlib $(LIB).san.a
-	@printf  "%-30s\033[32m[✔]\033[0m\n" "$(LIB).san: lib"
-
-$(EXE): $(ROBJ)
-ifneq ($(3TH_PATH),)
-	@$(foreach lib,$(3TH_PATH),$(MAKE) -C $(lib);)
-endif
-	@$(CC) $(RCFLAGS) $(LNK) $(INC) $(ROBJ) -o $(EXE) $(R3TH)
-	@printf  "%-30s\033[32m[✔]\033[0m\n" "$(EXE): exe"
-
-$(EXE).dev: $(DOBJ)
-ifneq ($(3TH_PATH),)
-	@$(foreach lib,$(3TH_PATH),$(MAKE) -C $(lib) dev;)
-endif
-	@$(CC) $(DCFLAGS) $(LNK) $(INC) $(DOBJ) -o $(EXE).dev $(D3TH)
-	@printf  "%-30s\033[32m[✔]\033[0m\n" "$(EXE).dev: exe"
-
-$(EXE).san: $(SOBJ)
-ifneq ($(3TH_PATH),)
-	@$(foreach lib,$(3TH_PATH),$(MAKE) -C $(lib) san;)
-endif
-	@$(CC) $(SCFLAGS) $(LNK) $(INC) $(SOBJ) -o $(EXE).san $(S3TH)
-	@printf  "%-30s\033[32m[✔]\033[0m\n" "$(EXE).san: exe"
-
-$(ROBJ_PATH)%.o: $(SRC_PATH)%.c
+$(OBJ_PATH)/%.o: $(SRC_PATH)/%.c
 	@mkdir -p $(shell dirname $@)
-	@printf  "\r%-30s\033[34m[$<]\033[0m\n" "$(NAME):"
-	@$(CC) $(RCFLAGS) $(INC) -MMD -MP -c $< -o $@
+	@printf "\r%-20s$<\n" "$(NAME):"
+	@$(CC) $(CFLAGS) $(INC) -MMD -MP -c $< -o $@
 	@printf "\033[A\033[2K"
 
-$(DOBJ_PATH)%.o: $(SRC_PATH)%.c
-	@mkdir -p $(shell dirname $@)
-	@printf  "\r%-30s\033[34m[$<]\033[0m\n" "$(NAME).dev:"
-	@$(CC) $(DCFLAGS) $(INC) -MMD -MP -c $< -o $@
-	@printf "\033[A\033[2K"
-
-$(SOBJ_PATH)%.o: $(SRC_PATH)%.c
-	@mkdir -p $(shell dirname $@)
-	@printf  "\r%-30s\033[34m[$<]\033[0m\n" "$(NAME).san:"
-	@$(CC) $(SCFLAGS) $(INC) -MMD -MP -c $< -o $@
-	@printf "\033[A\033[2K"
+$(3TH_PATH)/%.a:
+	@$(MAKE) -C $(shell dirname $@)
 
 clean:
-	@rm -rf $(ROBJ_PATH)
-	@printf  "%-30s\033[32m[✔]\033[0m\n" "$(NAME): $@"
+	@$(MAKE) -C $(3TH_PATH)/libft clean
+	@$(MAKE) -C $(3TH_PATH)/librl clean
+	@$(MAKE) -C $(3TH_PATH)/libps clean
+	@rm -rf $(OBJ_PATH)
+	@printf  "%-20s\033[32m✔\033[0m\n" "$(NAME): $@"
 
-fclean: clean
-ifneq ($(3TH_PATH),)
-	@$(foreach lib,$(3TH_PATH),$(MAKE) -C $(lib) fclean;)
-endif
-ifneq ($(LIB),)
-	@rm -f $(LIB).a
-else
-	@rm -f $(EXE)
-endif
-	@printf  "%-30s\033[32m[✔]\033[0m\n" "$(NAME): $@"
-
-cleandev:
-	@rm -rf $(DOBJ_PATH)
-	@printf  "%-30s\033[32m[✔]\033[0m\n" "$(NAME).dev: $@"
-
-fcleandev: cleandev
-ifneq ($(3TH_PATH),)
-	@$(foreach lib,$(3TH_PATH),$(MAKE) -C $(lib) fcleandev;)
-endif
-ifneq ($(LIB),)
-	@rm -f $(LIB).dev.a
-else
-	@rm -f $(EXE).dev
-endif
-	@printf  "%-30s\033[32m[✔]\033[0m\n" "$(NAME).dev: $@"
-
-cleansan:
-	@rm -rf $(SOBJ_PATH)
-	@printf  "%-30s\033[32m[✔]\033[0m\n" "$(NAME).san: $@"
-
-fcleansan: cleansan
-ifneq ($(3TH_PATH),)
-	@$(foreach lib,$(3TH_PATH),$(MAKE) -C $(lib) fcleansan;)
-endif
-ifneq ($(LIB),)
-	@rm -f $(LIB).san.a
-else
-	@rm -f $(EXE).san
-endif
-	@printf  "%-30s\033[32m[✔]\033[0m\n" "$(NAME).san: $@"
+fclean:
+	@$(MAKE) -C $(3TH_PATH)/libft fclean
+	@$(MAKE) -C $(3TH_PATH)/librl fclean
+	@$(MAKE) -C $(3TH_PATH)/libps fclean
+	@rm -rf $(OBJ_PATH)
+	@rm -f $(NAME)
+	@printf  "%-20s\033[32m✔\033[0m\n" "$(NAME): $@"
 
 re: fclean all
 
-redev: fcleandev dev
-
-resan: fcleansan san
-
 test: all
-	@./test.sh . 21sh
-
-testdev: dev
-	@./test.sh . 21sh.dev
-
-testsan: san
-	@./test.sh . 21sh.san
+	@./test.sh . $(NAME)
 
 valgrind: all
-	@./valgrind.sh . 21sh
+	@./valgrind.sh . $(NAME)
 
-valgrinddev: dev
-	@./valgrind.sh . 21sh.dev
+-include $(DEP)
 
-valgrindsan: san
-	@./valgrind.sh . 21sh.san
-
--include $(RDEP)
--include $(DDEP)
--include $(SDEP)
-
-.PHONY: all, dev, san, $(NAME), clean, fclean, cleandev, fcleandev, cleansan, \
-  fcleansan, re, redev, resan, test, testdev, testsan, valgrind
+.PHONY: all, $(NAME), clean, fclean, re, test, valgrind
