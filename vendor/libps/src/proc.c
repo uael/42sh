@@ -12,7 +12,7 @@
 
 #include <signal.h>
 
-#include "api.h"
+#include "ps.h"
 
 static int			(*g_procs[6])(t_proc *proc) =
 {

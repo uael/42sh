@@ -13,11 +13,14 @@
 #ifndef LIBPS_H
 # define LIBPS_H
 
-# include "libps/err.h"
-# include "libps/job.h"
-# include "libps/pool.h"
-# include "libps/proc.h"
-# include "libps/redir.h"
+# include <libft.h>
+
+#include "libps/job.h"
+#include "libps/proc.h"
+#include "libps/redir.h"
+
+typedef int		(t_errcb)(char const *fmt, ...);
+typedef int		(t_fatalcb)(int code, char const *fmt, ...);
 
 extern int		ps_init(int fd, t_errcb *errcb, t_fatalcb *fatalcb);
 extern void		ps_dtor(void);

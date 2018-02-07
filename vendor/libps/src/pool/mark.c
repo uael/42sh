@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libps/pool.h"
+#include "../ps.h"
 
 inline int		ps_poolmark(pid_t pid, int status)
 {

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../api.h"
+#include "../ps.h"
 
 inline int		ps_procfork(t_proc *p, pid_t *pgid, int *io, int fg)
 {

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libps/job.h"
+#include "ps.h"
 
 inline void		ps_jobctor(t_job *job)
 {
@@ -27,4 +27,12 @@ inline void		ps_jobdtor(t_job *job)
 		free(job->next);
 		job->next = NULL;
 	}
+}
+
+inline t_job	*ps_jobnext(t_job *job, t_job *right, t_andor andor)
+{
+	job->andor = andor;
+	job->next = ft_memdup(right, sizeof(t_job));
+	job = job->next;
+	return (job);
 }

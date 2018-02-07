@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../api.h"
+#include "../ps.h"
 
 inline void		ps_jobpipe(t_job *job, size_t i, int *fds, int *io)
 {

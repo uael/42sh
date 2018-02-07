@@ -12,7 +12,7 @@
 
 #include <sys/wait.h>
 
-#include "libps/pool.h"
+#include "../ps.h"
 
 static t_bool	jobfini(t_job *job)
 {

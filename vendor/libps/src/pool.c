@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libps/pool.h"
+#include "ps.h"
 
 static t_pool	g_async_stack;
 static t_pool	*g_async = &g_async_stack;

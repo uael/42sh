@@ -12,7 +12,7 @@
 
 #include <sys/wait.h>
 
-#include "libps/job.h"
+#include "../ps.h"
 
 inline void		ps_jobwait(t_job *job)
 {

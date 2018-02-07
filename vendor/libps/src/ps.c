@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "api.h"
+#include "ps.h"
 
 t_map			*g_binaries = &g_binaries_stack;
 t_map			*g_builtins = &g_builtins_stack;
@@ -28,6 +28,10 @@ inline int		ps_init(int fd, t_errcb *errcb, t_fatalcb *fatalcb)
 	tcgetattr(fd, &g_tcmode);
 	g_tty = (t_bool)isatty(fd);
 	g_pgid = getpid();
+	ps_biregister("bg", ps_bibg);
+	ps_biregister("fg", ps_bifg);
+	ps_biregister("jobs", ps_bijobs);
+	rl_hook(ps_poolnotify);
 	return (YEP);
 }
 

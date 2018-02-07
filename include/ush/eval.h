@@ -26,7 +26,7 @@ typedef struct	s_subshell
 
 extern int		sh_eval(int fd, t_deq *toks, char **ln);
 extern int		sh_evallist(int fd, t_deq *toks, char **ln);
-extern int		sh_evalandor(t_job *job, int fd, t_deq *toks, char **ln);
+extern int		sh_evalandor(t_job *j, int fd, t_deq *toks, char **ln);
 extern int		sh_evalpipeline(t_job *job, int fd, t_deq *toks, char **ln);
 extern int		sh_evalcmd(t_job *job, int fd, t_deq *toks, char **ln);
 extern int		sh_evalsimple(t_job *job, int fd, t_deq *toks, char **ln);

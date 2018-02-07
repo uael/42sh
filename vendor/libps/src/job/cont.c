@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libps/job.h"
+#include "../ps.h"
 
 inline void		ps_jobcont(t_job *job, int fg)
 {

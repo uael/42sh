@@ -14,14 +14,11 @@
 
 inline void	sh_biregister(void)
 {
-	ps_biregister("bg", sh_bibg);
 	ps_biregister("cd", sh_bicd);
 	ps_biregister("echo", sh_biecho);
 	ps_biregister("env", sh_bienv);
 	ps_biregister("exit", sh_biexit);
 	ps_biregister("export", sh_biexport);
-	ps_biregister("fg", sh_bifg);
-	ps_biregister("jobs", sh_bijobs);
 	ps_biregister("setenv", sh_bisetenv);
 	ps_biregister("unset", (t_procbi *)sh_biunset);
 	ps_biregister("unsetenv", sh_biunsetenv);

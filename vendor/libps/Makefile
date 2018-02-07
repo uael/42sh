@@ -22,6 +22,7 @@ INC_PATH = include ../libft/include ../librl/include
 LIB_NAME =
 3TH_NAME =
 SRC_NAME = \
+	bi/fg.c bi/bg.c bi/jobs.c \
 	job.c job/bg.c job/cont.c job/debug.c job/fg.c job/mark.c job/launch.c \
 	job/state.c job/wait.c job/pipe.c \
 	pool.c pool/mark.c pool/notify.c \

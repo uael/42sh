@@ -12,7 +12,7 @@
 
 #include <sys/stat.h>
 
-#include "../api.h"
+#include "../ps.h"
 
 static int		exetest(char *exe)
 {

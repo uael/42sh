@@ -27,6 +27,5 @@ typedef struct	s_procexe
 }				t_procexe;
 
 extern void		ps_procexe(struct s_proc *ps, char const *p, char *e, char **v);
-extern int		ps_procexelaunch(struct s_proc *prc);
 
 #endif

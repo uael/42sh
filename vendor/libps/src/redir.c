@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libps/redir.h"
+#include "ps.h"
 
 inline int		ps_redirect(t_redirs *redirs, int *scope)
 {

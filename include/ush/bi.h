@@ -24,8 +24,5 @@ extern int		sh_bisetenv(int ac, char **av, char **env);
 extern int		sh_bicd(int ac, char **av, char **env);
 extern int		sh_biunset(int ac, char **av);
 extern int		sh_biexport(int ac, char **av, char **env);
-extern int		sh_bibg(int ac, char **av, char **env);
-extern int		sh_bifg(int ac, char **av, char **env);
-extern int		sh_bijobs(int ac, char **av, char **env);
 
 #endif

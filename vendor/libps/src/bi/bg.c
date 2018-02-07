@@ -10,30 +10,34 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ush.h"
+#include "../ps.h"
 
-#define JOBS "jobs: "
+#define BG "bg: "
 
-inline int	sh_bijobs(int ac, char **av, char **env)
+inline int	ps_bibg(int ac, char **av, char **env)
 {
 	ssize_t	i;
 	t_job	*job;
 
 	(void)env;
-	i = 0;
-	ps_poolnotify();
-	if (ac == 1)
-		while ((size_t)i < ps_poollen())
-			ps_jobdebug(ps_poolget((size_t)i++));
-	else
+	if (!(i = ps_poollen()))
+		return (ft_retf(EXIT_FAILURE, BG"no current job\n"));
+	if (ac != 1)
+	{
 		while (*++av)
-		{
-			i = ft_atoi(*av);
-			if (ft_strlen(*av) != ft_intlen(i, 10) ||
-				!(job = ps_poolget((size_t)i)))
-				ft_putf(STDERR_FILENO, JOBS"%s: job not found\n", *av);
+			if (ft_strlen(*av) != ft_intlen(i = ft_atoi(*av), 10) ||
+				!(job = ps_poolget((size_t)i)) || ps_jobstopped(job))
+				ft_putf(STDERR_FILENO, BG"%s: job not found\n", *av);
 			else
-				ps_jobdebug(job);
-		}
-	return (EXIT_SUCCESS);
+				ps_jobcont(ps_poolget((size_t)i), 0);
+		return (EXIT_SUCCESS);
+	}
+	else
+		while (--i >= 0)
+			if (ps_jobstopped(job = ps_poolget((size_t)i)))
+			{
+				ps_jobcont(job, 0);
+				return (EXIT_SUCCESS);
+			}
+	return (ft_retf(EXIT_FAILURE, BG"no current job\n"));
 }

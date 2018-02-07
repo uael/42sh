@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libps/job.h"
+#include "../ps.h"
 
 static inline int	jobbg(t_job *job)
 {

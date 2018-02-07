@@ -20,7 +20,6 @@ struct s_proc;
 typedef int		(t_procbi)(int ac, char **av, char **envv);
 
 extern void		ps_biregister(char const *name, t_procbi *fn);
-extern void		ps_procbi(struct s_proc *proc, t_procbi *fn, char **envv);
-extern int		ps_procbilaunch(struct s_proc *proc);
 
 #endif
+

@@ -1,21 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libps/err.h                                        :+:      :+:    :+:   */
+/*   ush/env.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
+/*   Created: 2017/11/07 09:52:30 by cmalfroy          #+#    #+#             */
 /*   Updated: 2017/12/06 12:00:10 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBPS_ERR_H
-# define LIBPS_ERR_H
+#include "../ps.h"
 
-# include <libft.h>
+#define JOBS "jobs: "
 
-typedef int	(t_errcb)(char const *fmt, ...);
-typedef int	(t_fatalcb)(int code, char const *fmt, ...);
+inline int	ps_bijobs(int ac, char **av, char **env)
+{
+	ssize_t	i;
+	t_job	*job;
 
-#endif
+	(void)env;
+	i = 0;
+	ps_poolnotify();
+	if (ac == 1)
+		while ((size_t)i < ps_poollen())
+			ps_jobdebug(ps_poolget((size_t)i++));
+	else
+		while (*++av)
+		{
+			i = ft_atoi(*av);
+			if (ft_strlen(*av) != ft_intlen(i, 10) ||
+				!(job = ps_poolget((size_t)i)))
+				ft_putf(STDERR_FILENO, JOBS"%s: job not found\n", *av);
+			else
+				ps_jobdebug(job);
+		}
+	return (EXIT_SUCCESS);
+}

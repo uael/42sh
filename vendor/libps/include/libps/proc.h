@@ -17,7 +17,7 @@
 # include "proc/bit.h"
 # include "proc/err.h"
 # include "proc/exe.h"
-# include "libps/proc/fn.h"
+# include "proc/fn.h"
 # include "redir.h"
 
 typedef enum	e_procst
@@ -75,8 +75,5 @@ typedef struct	s_procs
 
 extern void		ps_procctor(t_proc *proc);
 extern void		ps_procdtor(t_proc *p);
-extern int		ps_procmark(t_proc *proc, int status);
-extern int		ps_procfork(t_proc *p, pid_t *pgid, int *io, int fg);
-extern int		ps_proclaunch(t_proc *proc, pid_t pgid, int *io, int fg);
 
 #endif

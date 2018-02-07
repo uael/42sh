@@ -47,38 +47,30 @@ static int			separator(t_deq *toks, t_job *right, t_tok *tok)
 	return (YEP);
 }
 
-static t_job		*jobaddnext(t_job *right, t_job *job, t_bool m)
-{
-	job->andor = m ? ANDOR_AND : ANDOR_OR;
-	job->next = ft_memdup(right, sizeof(t_job));
-	job = job->next;
-	return (job);
-}
-
-inline int			sh_evalandor(t_job *job, int fd, t_deq *toks, char **ln)
+inline int			sh_evalandor(t_job *j, int fd, t_deq *toks, char **ln)
 {
 	t_tok	*tok;
-	t_job	right;
+	t_job	r;
 	int		st;
 
 	if (!(tok = sh_tokpeek(toks)))
 		return (NOP);
-	tok->id == TOK_NOT && (job->bang = 1) ? sh_toknext(toks) : 0;
-	if ((st = sh_evalpipeline(job, fd, toks, ln)))
-		return (pipelineerr(st, tok, job->bang ? EBANG : 0, *ln));
+	tok->id == TOK_NOT && (j->bang = 1) ? sh_toknext(toks) : 0;
+	if ((st = sh_evalpipeline(j, fd, toks, ln)))
+		return (pipelineerr(st, tok, j->bang ? EBANG : 0, *ln));
 	while (1)
 		if (!(tok = sh_tokpeek(toks)))
 			return (NOP);
 		else if (tok->id == TOK_LAND || tok->id == TOK_LOR)
 		{
-			if (separator(toks, &right, tok))
+			if (separator(toks, &r, tok))
 				return (sh_evalerr(*ln, tok, UEP, sh_tokstr(tok)));
-			if ((st = sh_evalpipeline(&right, fd, toks, ln)))
+			if ((st = sh_evalpipeline(&r, fd, toks, ln)))
 			{
 				return (pipelineerr(st, sh_tokpeek(toks),
-					(right.bang ? EBANG : 0) | EINSQ, *ln));
+					(r.bang ? EBANG : 0) | EINSQ, *ln));
 			}
-			job = jobaddnext(&right, job, (t_bool)(tok->id == TOK_LAND));
+			j = ps_jobnext(j, &r, tok->id == TOK_LAND ? ANDOR_AND : ANDOR_OR);
 		}
 		else
 			return (YEP);

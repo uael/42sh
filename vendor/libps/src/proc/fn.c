@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../api.h"
+#include "../ps.h"
 
 inline void		ps_procfn(t_proc *proc, t_proccb *cb, void *data)
 {

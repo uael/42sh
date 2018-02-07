@@ -12,7 +12,7 @@
 
 #include <signal.h>
 
-#include "../api.h"
+#include "../ps.h"
 
 inline int		ps_jobbg(t_job *job, int cont)
 {

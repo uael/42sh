@@ -13,7 +13,7 @@
 #include <signal.h>
 #include <sys/termios.h>
 
-#include "../api.h"
+#include "../ps.h"
 
 inline static int	jobstop(t_job *job)
 {

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../api.h"
+#include "../ps.h"
 
 inline void		ps_procbit(t_proc *proc, t_bool bit)
 {

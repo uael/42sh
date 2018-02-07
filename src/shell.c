@@ -70,7 +70,6 @@ static inline void	sh_init(int fd)
 		sh_exit(EXIT_FAILURE, "Couldn't put the shell in its own process "
 			"group");
 	tcsetpgrp(fd, g_sh->pid);
-	rl_hook(ps_poolnotify);
 	rl_complete(sh_complete);
 	if ((home = sh_getenv("HOME")))
 		rl_histload(ft_pathcat(ft_strcpy(buf, home), ".ushst"));

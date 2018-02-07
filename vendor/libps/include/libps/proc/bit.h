@@ -20,6 +20,5 @@ struct s_proc;
 typedef t_bool	t_procbit;
 
 extern void		ps_procbit(struct s_proc *proc, t_bool bit);
-extern int		ps_procbitlaunch(struct s_proc *proc);
 
 #endif

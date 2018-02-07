@@ -29,7 +29,4 @@ typedef struct	s_redirs
 	size_t		len;
 }				t_redirs;
 
-extern int		ps_redirect(t_redirs *redirs, int *scope);
-extern void		ps_redirectclose(t_redirs *redirs);
-
 #endif

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ush.h"
+#include "../ps.h"
 
 #define FG "fg: "
 
@@ -37,7 +37,7 @@ static void	fg(size_t idx)
 	}
 }
 
-inline int	sh_bifg(int ac, char **av, char **env)
+inline int	ps_bifg(int ac, char **av, char **env)
 {
 	ssize_t	i;
 

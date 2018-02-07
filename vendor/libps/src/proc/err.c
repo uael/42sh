@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../api.h"
+#include "../ps.h"
 
 inline t_procerr	*ps_procerr(t_proc *proc, char *msg, char *ln, size_t pos)
 {

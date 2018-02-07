@@ -16,7 +16,6 @@
 # include <libft.h>
 
 struct s_proc;
-struct s_procfn;
 
 typedef int		(t_proccb)(void *data);
 
@@ -27,6 +26,5 @@ typedef struct	s_procfn
 }				t_procfn;
 
 extern void		ps_procfn(struct s_proc *proc, t_proccb *cb, void *data);
-extern int		ps_procfnlaunch(struct s_proc *proc);
 
 #endif

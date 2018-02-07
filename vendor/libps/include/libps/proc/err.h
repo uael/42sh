@@ -26,6 +26,5 @@ typedef struct		s_procerr
 }					t_procerr;
 
 extern t_procerr	*ps_procerr(struct s_proc *pr, char *m, char *ln, size_t p);
-extern int			ps_procerrlaunch(struct s_proc *prc);
 
 #endif

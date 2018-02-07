@@ -23,7 +23,7 @@ LIB_NAME =
 3TH_NAME = libft/libft.a librl/librl.a libps/libps.a
 SRC_NAME = \
 	bi.c bi/cd.c bi/echo.c bi/env.c bi/exit.c bi/export.c bi/setenv.c \
-	bi/unset.c bi/unsetenv.c bi/fg.c bi/bg.c bi/jobs.c \
+	bi/unset.c bi/unsetenv.c \
 	comp.c \
 	env.c \
 	err.c \
