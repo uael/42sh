@@ -10,7 +10,7 @@
 #                                                                              #
 # **************************************************************************** #
 
-NAME = 21sh
+NAME = 42sh
 CC = gcc
 CFLAGS = -Werror -Wextra -Wall -O3
 
@@ -78,10 +78,10 @@ fclean:
 re: fclean all
 
 test: all
-	@./test.sh . 21sh
+	@./test.sh . $(NAME)
 
 valgrind: all
-	@./valgrind.sh . 21sh
+	@./valgrind.sh . $(NAME)
 
 -include $(DEP)
 

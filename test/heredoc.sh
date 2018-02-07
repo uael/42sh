@@ -4,13 +4,13 @@ cat <<1
 1
 
 cat <<EOL | grep -o "Hi,"; \
-  cat <<EOF | grep -o "I'm the 21sh shell"; \
+  cat <<EOF | grep -o "I'm the 42sh shell"; \
   cat <<EOF | grep -o "I'm trying to known"; \
   cat <<1 | grep -o "if heredoc are well handled or not"; \
   cat <<eoF2 | grep -o "here it work"
 Hi,
 EOL
-I'm the 21sh shell
+I'm the 42sh shell
 EOF
 I'm trying to known
 EOF

@@ -1,5 +1,5 @@
-cd 21sh 2>&1 | grep -o "cd: 21sh: No a directory"
-cd .gitignore 2>&1 | grep -o "cd: 21sh: No a directory"
+cd 42sh 2>&1 | grep -o "cd: 42sh: No a directory"
+cd .gitignore 2>&1 | grep -o "cd: 42sh: No a directory"
 P=$PWD
 cd ////
 cd ///

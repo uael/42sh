@@ -45,7 +45,7 @@ else
 fi
 
 if [ -z "$2" ];then
-  export EXE=${PROJECT_PATH}/21sh
+  export EXE=${PROJECT_PATH}/42sh
 else
   export EXE=${PROJECT_PATH}/$2
 fi
