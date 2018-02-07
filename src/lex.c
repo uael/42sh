@@ -45,10 +45,8 @@ static inline int	reduce(int fd, t_deq *toks, char **it, char **ln)
 		{
 			if (prev->id == TOK_HEREDOC && sh_lexheredoc(fd, tok, it, ln))
 				return (OUF);
-			if (prev->id == TOK_HEREDOCT && sh_lexheredoct(fd, tok, it, ln))
-				return (OUF);
 		}
-		else if (prev && TOK_ISHDOC(prev->id))
+		else if (prev && prev->id == TOK_HEREDOC)
 			return (sh_synerr(*ln, *ln + tok->pos, UEH, sh_tokstr(prev),
 				sh_tokstr(tok)));
 		else if (prev && prev->id == tok->id && TOK_ISSEP(tok->id))

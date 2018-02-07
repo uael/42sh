@@ -56,30 +56,3 @@ inline int			sh_lexheredoc(int fd, t_tok *tok, char **it, char **ln)
 	free(eof);
 	return (st);
 }
-
-inline int			sh_lexheredoct(int fd, t_tok *tok, char **it, char **ln)
-{
-	char	*eof;
-	int		st;
-
-	eof = ft_strndup(*ln + tok->pos, tok->len);
-	tok->len = 0;
-	tok->pos = (uint16_t)(*it - *ln);
-	st = 0;
-	while (!st)
-		if (!**it && (fd < 0 || (st = rl_catline(fd, 0, ln, it))))
-			st = st < 0 || !g_sh->tty ?
-				sh_synerr(*ln, *it, UEE"`%s'", eof) : OUF;
-		else
-		{
-			if (ISWEOL(*it))
-				++*it;
-			if (*it == *ln || (*(*it - 1) == '\n'))
-				while (**it == '\t')
-					++*it;
-			if (!heredoc(tok, eof, it, ln))
-				break ;
-		}
-	free(eof);
-	return (st);
-}

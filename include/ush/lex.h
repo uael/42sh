@@ -21,7 +21,6 @@
 # define TOK_ISWORD(I) ((I)==TOK_WORD)
 # define TOK_ISEND(ID) ((ID)==TOK_EOL||(ID)==TOK_END)
 # define TOK_ISSEP(ID) ((ID)==TOK_SEMICOLON||(ID)==TOK_AMP)
-# define TOK_ISHDOC(ID) ((ID)==TOK_HEREDOC||(ID)==TOK_HEREDOCT)
 # define TOK_ISCMDM(ID) (TOK_ISWORD(ID)||TOK_ISREDIR(ID))
 
 typedef struct	s_tokit
@@ -38,7 +37,6 @@ extern int		sh_lexop(int fd, t_tok *tok, char **it, char **ln);
 extern int		sh_lexbslash(int fd, char **it, char **ln);
 extern int		sh_lexword(int fd, t_tok *tok, char **it, char **ln);
 extern int		sh_lexheredoc(int fd, t_tok *tok, char **it, char **ln);
-extern int		sh_lexheredoct(int fd, t_tok *tok, char **it, char **ln);
 extern t_bool	sh_isname(char *word);
 
 #endif

@@ -33,14 +33,8 @@ static inline int	opleft(int fd, t_tok *tok, char **it, char **ln)
 
 	if (++*it && (st = sh_lexbslash(fd, it, ln)))
 		return (st);
-	if (**it == '<')
-	{
-		if (++*it && (st = sh_lexbslash(fd, it, ln)))
-			return (st);
-		if (**it == '-' && ++*it)
-			return ((tok->id = TOK_HEREDOCT) & 0);
+	if (**it == '<' && ++*it)
 		return ((tok->id = TOK_HEREDOC) & 0);
-	}
 	if (**it == '>' && ++*it)
 		return ((tok->id = TOK_CMP) & 0);
 	if (**it == '&' && ++*it)

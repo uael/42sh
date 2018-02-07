@@ -15,7 +15,6 @@
 static char		*g_tokidsstr[] = {
 	[TOK_END] = "<EOF>",
 	[TOK_HEREDOC] = "<<",
-	[TOK_HEREDOCT] = "<<-",
 	[TOK_RAOUT] = ">>",
 	[TOK_LAMP] = "<&",
 	[TOK_RAMP] = ">&",
