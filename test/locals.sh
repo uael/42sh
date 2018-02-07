@@ -1,2 +1,4 @@
-echo \
-a
+cat <<EOL
+asdasddsfsdfd
+sdfgsdfg
+EOL

@@ -25,7 +25,8 @@ static inline int	heredoc(t_tok *tok, char *eof, char **it, char **ln)
 		(tok->len > eofl && ISREOL(*ln + tok->pos + tok->len - (eofl + 2)))) &&
 		!ft_strncmp(*ln + tok->pos + tok->len - (eofl + 1), eof, eofl))
 	{
-		ft_sdsnpop((t_sds *)tok, eofl + ISREOL(*it), NULL);
+		tok->len -= eofl + ISREOL(*it);
+		++*it;
 		return (YEP);
 	}
 	++*it;
@@ -39,6 +40,7 @@ inline int			sh_lexheredoc(int fd, t_tok *tok, char **it, char **ln)
 
 	eof = ft_strndup(*ln + tok->pos, tok->len);
 	tok->len = 0;
+	tok->pos = (uint16_t)(*it - *ln);
 	st = 0;
 	while (!st)
 		if (!**it && (fd < 0 || (st = rl_catline(fd, 0, ln, it))))

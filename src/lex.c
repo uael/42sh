@@ -13,13 +13,11 @@
 #include "ush/lex.h"
 #include "ush/shell.h"
 
-#define UEB "parse error: Unexpected token `%c' while looking for matching `%c'"
 #define UEE "parse error: Unexpected EOF while looking for matching `%c'"
 #define UEC "parse error: Unexpected closing bracket `%c'"
 #define UEH "syntax error: Expected `<word>' after heredoc `%s' got `%s'"
 #define EXS "syntax error: Unexpected empty command between `%s'"
 
-static char			g_stk[1000] = { 0 };
 static int			g_sidx;
 
 static inline int	tokitctor(t_tokit *tit, char **it, char **ln)
@@ -77,15 +75,11 @@ static inline int	check(int fd, t_tok *t, t_deq *deq, t_tokit *it)
 		deq->cur = deq->len + 1;
 	}
 	else if (t->id == '(')
-		g_stk[g_sidx++] = ')';
-	else if (g_sidx && t->id == g_stk[g_sidx - 1])
+		++g_sidx;
+	else if (g_sidx && t->id == ')')
 		--g_sidx;
-	else if (t->id == ')' && (!g_sidx || t->id != g_stk[g_sidx - 1]))
-	{
-		return (g_sidx ? sh_synerr(*it->ln, *it->ln + t->pos, UEB, t->id,
-			g_stk[g_sidx - 1]) : sh_synerr(*it->ln, *it->ln + t->pos, UEC,
-			t->id));
-	}
+	else if (t->id == ')' && !g_sidx)
+		return (sh_synerr(*it->ln, *it->ln + t->pos, UEC, t->id));
 	return (YEP);
 }
 
@@ -150,7 +144,6 @@ int					sh_lex(int fd, char **it, char **ln, t_tokcb *cb)
 			return (st);
 		}
 		if (g_sidx && !**it && (fd < 0 || (st = rl_catline(fd, 0, ln, it))))
-			return (st < 0 || !g_sh->tty ? sh_synerr(*ln, *it, UEE,
-				g_stk[g_sidx - 1]) : OUF);
+			return (st < 0 || !g_sh->tty ? sh_synerr(*ln, *it, UEE, ')') : OUF);
 	}
 }
