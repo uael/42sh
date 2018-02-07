@@ -45,7 +45,6 @@ extern int			ps_redirect(t_redirs *redirs, int *scope);
 extern void			ps_redirectclose(t_redirs *redirs);
 
 extern int			ps_procmark(t_proc *proc, int status);
-extern int			ps_procfork(t_proc *p, pid_t *pgid, int *io, int fg);
 extern int			ps_proclaunch(t_proc *proc, pid_t pgid, int *io, int fg);
 
 extern int			ps_jobstopped(t_job *j);

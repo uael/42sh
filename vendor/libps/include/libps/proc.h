@@ -75,5 +75,6 @@ typedef struct	s_procs
 
 extern void		ps_procctor(t_proc *proc);
 extern void		ps_procdtor(t_proc *p);
+extern int		ps_procfork(t_proc *p, pid_t *pgid, int *io, int fg);
 
 #endif

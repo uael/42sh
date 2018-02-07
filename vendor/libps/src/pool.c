@@ -44,7 +44,7 @@ inline t_bool	ps_poolrem(size_t idx, t_job *out)
 	if (idx > g_async->len)
 		return (0);
 	if (out)
-		ft_memcpy(out, g_async + idx, sizeof(t_job));
+		ft_memcpy(out, g_async->jobs + idx, sizeof(t_job));
 	if (--g_async->len)
 	{
 		ft_memmove(g_async->jobs + idx, g_async->jobs + idx + 1,

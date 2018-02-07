@@ -12,120 +12,97 @@
 
 #include <libps.h>
 
-#include "ush/word.h"
+#include "ush/eval.h"
 #include "ush/shell.h"
+#include "ush/word.h"
 
 #define DQUOT(IT) ft_strchr("\\\n\"$", *(IT))
 #define QUOTE(IT) (*(IT) == '\'' && (*((IT) + 1) == '\''))
 
-static size_t	getvar(char const *from, char *to)
+static inline int		subshell(char *ln)
 {
-	t_bool	bracket;
-	char	*beg;
+	t_scope	*sh;
+	int		st;
+	char	*it;
 
-	beg = to;
-	if ((bracket = (t_bool)(*from == '{')))
-		++from;
-	if (*from == '_' || ft_isalpha(*from))
-		while (*from && (*from == '_' || ft_isalnum(*from)) &&
-			(!bracket || *from != '}'))
-			*to++ = *from++;
-	else if (ft_isdigit(*from))
-		while (*from && ft_isdigit(*from))
-			*to++ = *from++;
-	else if (ft_strchr("#?$!", *from))
-		*to++ = *from;
+	sh = g_sh;
+	sh_scope();
+	ft_memcpy(g_sh, sh, sizeof(t_scope));
+	it = ln;
+	while (!sh_lex(-1, &it, &ln, sh_eval))
+		;
+	st = g_sh->status;
+	sh_unscope();
+	free(ln);
+	return (sh_exit(st, NULL));
+}
+
+static inline t_bool	inhib(t_sds *d, char quote, char const **s, size_t *n)
+{
+	if ((quote == '"' && !DQUOT(*s)) || (quote == '\'' && !QUOTE(*s)))
+		*ft_sdspush(d) = (char)'\\';
 	else
-		return (0);
-	*to = '\0';
-	return (to - beg + (bracket ? 2 : 0));
-}
-
-static size_t	resolvevar(t_sds *word, char const *src)
-{
-	char	var[PATH_MAX];
-	char	buf[20];
-	char	*val;
-	size_t	len;
-	int		n;
-
-	len = getvar(src, var);
-	if ((val = sh_varget(var, g_env)))
-		ft_sdsapd(word, val);
-	else if (ft_isdigit(*var) && (n = (int)ft_atoi(var)) < g_sh->ac && n >= 0)
-		ft_sdsapd(word, g_sh->av[n]);
-	else if ((len == 1 && ft_strchr("#?$!", *var)))
 	{
-		if (*var == '#')
-			n = g_sh->ac;
-		else if (*var == '?')
-			n = g_sh->status;
-		else if (*var == '$')
-			n = g_sh->pid;
-		else if (*var == '!')
-			n = ps_lastpid();
-		ft_sdsmpush(word, buf, ft_intstr(buf, n, 10));
+		*ft_sdspush(d) = *(*s)++;
+		--*n;
+		return (1);
 	}
-	return (len);
+	return (0);
 }
 
-inline size_t	sh_wordresolve(t_sds *d, char const *s, size_t n, uint8_t *e)
+static inline int		onquote(t_sds *d, char *q, char const **s, size_t *n)
+{
+	if (*q && *q == **s)
+		*q = 0;
+	else if (!*q)
+		*q = **s;
+	else
+		*ft_sdspush(d) = **s;
+	++*s;
+	--*n;
+	return (*q);
+}
+
+static inline void		onbquote(t_sds *d, char const **s, size_t *n)
+{
+	char const *b;
+
+	b = ++*s;
+	--*n;
+	while (*n && **s != '`')
+		(void)(++*s && --*n);
+	if (*s - b > 1)
+		ps_read(d, (t_proccb *)subshell, ft_strndup(b, *s - b));
+	++*s;
+	--*n;
+}
+
+inline size_t			sh_wordresolve(t_sds *d, char const *s, size_t n,
+	uint8_t *e)
 {
 	t_bool	bs;
-	char	quote;
+	char	q;
 	size_t	len;
 
 	bs = 0;
-	quote = 0;
-	e ? (*e = 0) : 0;
+	q = 0;
+	e ? (*e = 1) : 0;
 	ft_sdsctor(d);
-	while (n-- && *s)
-		if (bs)
-		{
-			if (quote == '"')
-				if (DQUOT(s))
-					*ft_sdspush(d) = *s++;
-				else
-				{
-					*ft_sdspush(d) = (char)'\\';
-					++n;
-				}
-			else if (quote == '\'')
-				if (QUOTE(s))
-					*ft_sdspush(d) = *s++;
-				else
-				{
-					*ft_sdspush(d) = (char)'\\';
-					++n;
-				}
-			else
-				*ft_sdspush(d) = *s++;
-			bs = 0;
-		}
+	while (n && *s)
+		if (bs && !(bs = 0))
+			inhib(d, q, &s, &n) && e ? (*e = 0) : 0;
 		else if ((bs = (t_bool)(*s == '\\')))
-			++s;
-		else if (*s == '\'' || *s == '"' || *s == '`')
+			(void)(++s && --n);
+		else if (*s == '\'' || *s == '"')
+			onquote(d, &q, &s, &n) && e ? (*e = 0) : 0;
+		else if (*s == '`' && n && *(s + 1) && (!q || q == '"'))
+			onbquote(d, &s, &n);
+		else if (*s == '$' && n && *(s + 1) && (!q || q == '"'))
 		{
-			if (quote && quote == *s)
-				quote = 0;
-			else if (!quote)
-			{
-				quote = *s;
-				e && *e ? (*e = 0) : 0;
-			}
-			else
-				*ft_sdspush(d) = *s;
-			++s;
-		}
-		else if (*s == '$' && n && *s + 1 && (!quote || quote == '"'))
-		{
-			len = resolvevar(d, s + 1) + 1;
+			s += (len = sh_varexpand(d, s + 1) + 1);
 			len > n ? (n = 0) : (n -= len);
-			s += len;
 		}
-		else
-			*ft_sdspush(d) = *s++;
+		else if ((*ft_sdspush(d) = *s++))
+			--n;
 	return (d->len);
 }
-
-

@@ -12,12 +12,31 @@
 
 #include "ush/word.h"
 
-inline size_t	sh_wordexplode(t_vec *av, char const *src, size_t n)
+inline void	sh_wordexplode(t_vec *av, char const *src, size_t n)
 {
 	uint8_t	e;
 	t_sds	word;
+	char	*beg;
+	char	*eol;
+	char	sep[20];
 
-	if (sh_wordresolve(&word, src, n, &e))
-		*(char **)ft_vecpush(av) = word.buf;
-	return (YEP);
+	if (!sh_wordresolve(&word, src, n, &e))
+		return ;
+	if (!e)
+		beg = word.buf;
+	else
+	{
+		ft_strcat(ft_strcpy(sep, sh_varifs()), "\n");
+		beg = word.buf;
+		while ((eol = ft_strmchr(beg, sep)))
+		{
+			*eol = '\0';
+			*(char **)ft_vecpush(av) = beg == word.buf ? beg :
+				ft_strndup(beg, eol - beg);
+			while (*++eol && ft_strchr(sep, *eol))
+				;
+			beg = eol;
+		}
+	}
+	*(char **)ft_vecpush(av) = beg == word.buf ? beg : ft_strdup(beg);
 }

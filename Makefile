@@ -36,8 +36,8 @@ SRC_NAME = \
 	prompt.c \
 	shell.c \
 	tok.c \
-	var.c \
-	word.c word/expand.c word/explode.c word/resolve.c
+	var.c var/expand.c \
+	word/explode.c word/resolve.c
 
 OBJ = $(addprefix $(OBJ_PATH)/, $(SRC_NAME:.c=.o))
 INC = $(addprefix -I, $(INC_PATH))
