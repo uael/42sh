@@ -35,7 +35,7 @@ inline int			sh_evalheredoc(t_job *job, t_deq *toks, char **ln)
 	if (i > 0 && (proc = job->procs.buf + i - 1)->u.fn.cb == (t_proccb *)output)
 	{
 		free(proc->u.fn.data);
-		proc->u.fn.data = ft_strndup(*ln + tok->pos, tok->pos);
+		proc->u.fn.data = ft_strndup(*ln + tok->pos, tok->len);
 		return (YEP);
 	}
 	if (proc->kind != PROC_NONE)
@@ -43,6 +43,6 @@ inline int			sh_evalheredoc(t_job *job, t_deq *toks, char **ln)
 		proc->piped = 1;
 		proc = ft_vecput((t_vec *)&job->procs, i);
 	}
-	ps_procfn(proc, (t_proccb *)output, ft_strndup(*ln + tok->pos, tok->pos));
+	ps_procfn(proc, (t_proccb *)output, ft_strndup(*ln + tok->pos, tok->len));
 	return (YEP);
 }
