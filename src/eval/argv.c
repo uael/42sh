@@ -51,7 +51,7 @@ static inline int	makeargv(t_job *job, t_vec *av, t_deq *toks, char **ln)
 		{
 			if (sh_evalredir(job, toks, ln) == OUF)
 			{
-				av ? ft_vecdtor(av, NULL) : 0;
+				av ? ft_vecdtor(av, (t_dtor)ft_pfree) : 0;
 				return (OUF);
 			}
 			tok = sh_tokpeek(toks);
