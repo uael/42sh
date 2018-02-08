@@ -4,7 +4,7 @@ dist: trusty
 os: osx
 script:
   - git clone https://github.com/we-sh/42ShellTester.git st
-  - make
-  - make test
-  - bash st/42ShellTester.sh --filter 21sh $PWD/42sh
-  - bash st/42ShellTester.sh --filter subshell $PWD/42sh
+  - make san
+  - make testsan
+  - bash st/42ShellTester.sh --filter 21sh $PWD/42sh.san
+  - bash st/42ShellTester.sh --filter subshell $PWD/42sh.san

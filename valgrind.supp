@@ -27,9 +27,6 @@
    fun:libSystem_atfork_child
    fun:fork
    fun:ps_procfork
-   fun:ps_joblaunch
-   fun:sh_evallist
-   fun:sh_eval
 }
 {
    <insert_a_suppression_name_here>
@@ -43,9 +40,6 @@
    fun:libSystem_atfork_child
    fun:fork
    fun:ps_procfork
-   fun:ps_read
-   fun:sh_wordresolve
-   fun:sh_wordexplode
 }
 {
    <insert_a_suppression_name_here>
@@ -58,26 +52,6 @@
    fun:libSystem_atfork_child
    fun:fork
    fun:ps_procfork
-   fun:ps_joblaunch
-   fun:sh_evallist
-   fun:sh_eval
-}
-{
-   <insert_a_suppression_name_here>
-   Memcheck:Leak
-   match-leak-kinds: definite
-   fun:malloc
-   fun:_nc_table_new
-   fun:_notify_init_globals
-   fun:_os_once
-   fun:_os_alloc_once
-   fun:_notify_fork_child
-   fun:libSystem_atfork_child
-   fun:fork
-   fun:ps_procfork
-   fun:ps_joblaunch
-   fun:sh_evallist
-   fun:sh_eval
 }
 {
    <insert_a_suppression_name_here>
@@ -92,9 +66,20 @@
    fun:libSystem_atfork_child
    fun:fork
    fun:ps_procfork
-   fun:ps_read
-   fun:sh_wordresolve
-   fun:sh_wordexplode
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:_nc_table_new
+   fun:_notify_init_globals
+   fun:_os_once
+   fun:_os_alloc_once
+   fun:_notify_fork_child
+   fun:libSystem_atfork_child
+   fun:fork
+   fun:ps_procfork
 }
 {
    <insert_a_suppression_name_here>
@@ -125,10 +110,6 @@
    fun:libSystem_atfork_child
    fun:fork
    fun:ps_procfork
-   fun:ps_joblaunch
-   fun:sh_evallist
-   fun:sh_eval
-   fun:sh_run
 }
 {
    <insert_a_suppression_name_here>
@@ -142,9 +123,6 @@
    fun:libSystem_atfork_child
    fun:fork
    fun:ps_procfork
-   fun:ps_read
-   fun:sh_wordresolve
-   fun:sh_wordexplode
 }
 {
    <insert_a_suppression_name_here>

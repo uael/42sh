@@ -116,4 +116,5 @@ valgrind: dev
 
 -include $(DEP)
 
-.PHONY: all, dev, san, $(NAME), clean, fclean, re, test, valgrind
+.PHONY: all, dev, san, $(NAME), clean, fclean, re, test, testdev, testsan, \
+  valgrind

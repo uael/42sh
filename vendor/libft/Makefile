@@ -19,7 +19,7 @@ CC ?= gcc
 
 INC_PATH = include
 SRC_PATH = src
-OBJ_PATH = ?obj
+OBJ_PATH ?= obj
 3TH_PATH =
 
 LIB_NAME =
