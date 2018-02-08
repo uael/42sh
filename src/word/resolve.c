@@ -64,14 +64,22 @@ static inline int		onquote(t_sds *d, char *q, char const **s, size_t *n)
 
 static inline void		onbquote(t_sds *d, char const **s, size_t *n)
 {
-	char const *b;
+	t_sds		cmd;
+	t_bool		bs;
 
-	b = ++*s;
+	ft_sdsctor(&cmd);
+	++*s;
 	--*n;
-	while (*n && **s != '`')
-		(void)(++*s && --*n);
-	if (*s - b > 1)
-		ps_read(d, (t_proccb *)subshell, (t_dtor)free, ft_strndup(b, *s - b));
+	bs = 0;
+	while (*n && **s != '`' && **s)
+		if (!(bs ^= 1))
+			inhib(&cmd, '`', s, n);
+		else if ((bs = (t_bool)(**s == '\\')))
+			(void)(++*s && --*n);
+		else if ((*ft_sdspush(&cmd) = *(*s)++))
+			--*n;
+	if (cmd.len)
+		ps_read(d, (t_proccb *)subshell, (t_dtor)free, cmd.buf);
 	++*s;
 	--*n;
 }
@@ -88,7 +96,7 @@ inline size_t			sh_wordresolve(t_sds *d, char const *s, size_t n,
 	e ? (*e = 1) : 0;
 	ft_sdsctor(d);
 	while (n && *s)
-		if (bs && !(bs = 0))
+		if (!(bs ^= 1))
 			inhib(d, q, &s, &n) && e ? (*e = 0) : 0;
 		else if ((bs = (t_bool)(*s == '\\')))
 			(void)(++s && --n);

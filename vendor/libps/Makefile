@@ -22,11 +22,13 @@ SRC_PATH = src
 OBJ_PATH ?= obj
 3TH_PATH =
 
-LIB_NAME =
-ifeq ($@,dev)
-LIB_NAME = $(addsuffix .dev, $(LIB_NAME))
-else ifeq ($@,san)
-LIB_NAME = $(addsuffix .dev, $(LIB_NAME))
+LIBS =
+ifneq (,$(findstring dev,$(NAME)))
+LIB_NAME = $(addsuffix .dev, $(LIBS))
+else ifneq (,$(findstring san,$(NAME)))
+LIB_NAME = $(addsuffix .san, $(LIBS))
+else
+LIB_NAME = $(LIBS)
 endif
 3TH_NAME =
 SRC_NAME = \

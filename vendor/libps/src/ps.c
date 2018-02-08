@@ -72,8 +72,8 @@ static inline void	readproc(t_proc *p, t_sds *out)
 		ft_sdsmpush(out, buf, (size_t)ret);
 	}
 	close(fds[0]);
-	while (out->len && out->buf[--out->len] == '\n')
-		out->buf[out->len] = '\0';
+	while (out->len && out->buf[out->len - 1] == '\n')
+		out->buf[--out->len] = '\0';
 }
 
 inline void			ps_read(t_sds *dst, t_proccb *cb, t_dtor dtor, void *data)

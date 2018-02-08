@@ -23,11 +23,13 @@ SRC_PATH = src
 OBJ_PATH ?= obj
 3TH_PATH = vendor
 
-LIB_NAME = ft rl ps
-ifeq ($@,dev)
-LIB_NAME = $(addsuffix .dev, $(LIB_NAME))
-else ifeq ($@,san)
-LIB_NAME = $(addsuffix .dev, $(LIB_NAME))
+LIBS = ft rl ps
+ifneq (,$(findstring dev,$(NAME)))
+LIB_NAME = $(addsuffix .dev, $(LIBS))
+else ifneq (,$(findstring san,$(NAME)))
+LIB_NAME = $(addsuffix .san, $(LIBS))
+else
+LIB_NAME = $(LIBS)
 endif
 3TH_NAME = libft librl libps
 SRC_NAME = \
