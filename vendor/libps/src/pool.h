@@ -15,6 +15,10 @@
 
 # include "libps/job.h"
 
+# ifndef CHILD_MAX
+#  define CHILD_MAX 255
+# endif
+
 typedef struct	s_pool
 {
 	t_job		jobs[CHILD_MAX];
