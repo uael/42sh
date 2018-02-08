@@ -10,17 +10,26 @@
 #                                                                              #
 # **************************************************************************** #
 
-NAME = 42sh
-CC = gcc
-CFLAGS = -Werror -Wextra -Wall -O3
+NAME ?= 42sh
+CFLAGS += -Werror -Wextra -Wall
+RCFLAGS = -O3 -fomit-frame-pointer
+DCFLAGS = -g3 -DDEBUG
+SCFLAGS = -fsanitize=address,undefined -ferror-limit=5
+CC ?= gcc
+MAKE += -j4
 
+INC_PATH = include
 SRC_PATH = src
-OBJ_PATH = obj
-INC_PATH = include vendor/libft/include vendor/librl/include vendor/libps/include
+OBJ_PATH ?= obj
 3TH_PATH = vendor
 
-LIB_NAME =
-3TH_NAME = libft/libft.a librl/librl.a libps/libps.a
+LIB_NAME = ft rl ps
+ifeq ($@,dev)
+LIB_NAME = $(addsuffix .dev, $(LIB_NAME))
+else ifeq ($@,san)
+LIB_NAME = $(addsuffix .dev, $(LIB_NAME))
+endif
+3TH_NAME = libft librl libps
 SRC_NAME = \
 	bi.c bi/cd.c bi/echo.c bi/env.c bi/exit.c bi/export.c bi/setenv.c \
 	bi/unset.c bi/unsetenv.c \
@@ -39,16 +48,35 @@ SRC_NAME = \
 	var.c var/expand.c \
 	word/explode.c word/resolve.c
 
-OBJ = $(addprefix $(OBJ_PATH)/, $(SRC_NAME:.c=.o))
-INC = $(addprefix -I, $(INC_PATH))
 3TH = $(addprefix $(3TH_PATH)/, $(3TH_NAME))
-LIB = $(addprefix -l, $(LIB_NAME)) $(3TH)
+OBJ = $(addprefix $(OBJ_PATH)/, $(SRC_NAME:.c=.o))
+LNK = $(addprefix -L, $(3TH))
+INC = $(addprefix -I, $(INC_PATH) $(addsuffix /include, $(3TH)))
+LIB = $(addprefix -l, $(LIB_NAME))
 DEP = $(OBJ:%.o=%.d)
 
-all: $(NAME)
+all:
+ifneq ($(3TH_NAME),)
+	@+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th);)
+endif
+	@+$(MAKE) $(NAME) "CFLAGS = $(RCFLAGS)" "OBJ_PATH = $(OBJ_PATH)/rel"
 
-$(NAME): $(3TH) $(OBJ)
-	@$(CC) $(CFLAGS) $(INC) $(OBJ) $(LIB) -o $(NAME)
+dev:
+ifneq ($(3TH_NAME),)
+	@+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) dev;)
+endif
+	@+$(MAKE) $(NAME).dev "NAME = $(NAME).dev" "CFLAGS = $(DCFLAGS)" \
+	  "OBJ_PATH = $(OBJ_PATH)/dev"
+
+san:
+ifneq ($(3TH_NAME),)
+	@+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) san;)
+endif
+	@+$(MAKE) $(NAME).san "NAME = $(NAME).san" "CFLAGS = $(SCFLAGS)" \
+	  "OBJ_PATH = $(OBJ_PATH)/san"
+
+$(NAME): $(OBJ)
+	@$(CC) $(CFLAGS) $(INC) $(LNK) $(OBJ) $(LIB) -o $(NAME)
 	@printf  "%-20s\033[32m✔\033[0m\n" "$(NAME): exe"
 
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.c
@@ -57,20 +85,17 @@ $(OBJ_PATH)/%.o: $(SRC_PATH)/%.c
 	@$(CC) $(CFLAGS) $(INC) -MMD -MP -c $< -o $@
 	@printf "\033[A\033[2K"
 
-$(3TH_PATH)/%.a:
-	@$(MAKE) -C $(shell dirname $@)
-
 clean:
-	@$(MAKE) -C $(3TH_PATH)/libft clean
-	@$(MAKE) -C $(3TH_PATH)/librl clean
-	@$(MAKE) -C $(3TH_PATH)/libps clean
+ifneq ($(3TH_NAME),)
+	@+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) clean;)
+endif
 	@rm -rf $(OBJ_PATH)
 	@printf  "%-20s\033[32m✔\033[0m\n" "$(NAME): $@"
 
 fclean:
-	@$(MAKE) -C $(3TH_PATH)/libft fclean
-	@$(MAKE) -C $(3TH_PATH)/librl fclean
-	@$(MAKE) -C $(3TH_PATH)/libps fclean
+ifneq ($(3TH_NAME),)
+	@+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) fclean;)
+endif
 	@rm -rf $(OBJ_PATH)
 	@rm -f $(NAME)
 	@printf  "%-20s\033[32m✔\033[0m\n" "$(NAME): $@"
@@ -80,9 +105,15 @@ re: fclean all
 test: all
 	@./test.sh . $(NAME)
 
-valgrind: all
-	@./valgrind.sh . $(NAME)
+testdev: dev
+	@./test.sh . $(NAME).dev
+
+testsan: san
+	@./test.sh . $(NAME).san
+
+valgrind: dev
+	@./valgrind.sh . $(NAME).dev
 
 -include $(DEP)
 
-.PHONY: all, $(NAME), clean, fclean, re, test, valgrind
+.PHONY: all, dev, san, $(NAME), clean, fclean, re, test, valgrind

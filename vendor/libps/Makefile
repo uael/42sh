@@ -10,16 +10,24 @@
 #                                                                              #
 # **************************************************************************** #
 
-NAME = libps.a
-CC = gcc
-CFLAGS = -Werror -Wextra -Wall -O3
+NAME ?= libps
+CFLAGS += -Werror -Wextra -Wall
+RCFLAGS = -O3 -fomit-frame-pointer
+DCFLAGS = -g3 -DDEBUG
+SCFLAGS = -fsanitize=address,undefined -ferror-limit=5
+CC ?= gcc
 
-SRC_PATH = src
-OBJ_PATH = obj
 INC_PATH = include ../libft/include ../librl/include
+SRC_PATH = src
+OBJ_PATH = ?obj
 3TH_PATH =
 
 LIB_NAME =
+ifeq ($@,dev)
+LIB_NAME = $(addsuffix .dev, $(LIB_NAME))
+else ifeq ($@,san)
+LIB_NAME = $(addsuffix .dev, $(LIB_NAME))
+endif
 3TH_NAME =
 SRC_NAME = \
 	bi/fg.c bi/bg.c bi/jobs.c \
@@ -30,17 +38,36 @@ SRC_NAME = \
 	ps.c \
 	redir.c
 
-OBJ = $(addprefix $(OBJ_PATH)/, $(SRC_NAME:.c=.o))
-INC = $(addprefix -I, $(INC_PATH))
 3TH = $(addprefix $(3TH_PATH)/, $(3TH_NAME))
-LIB = $(addprefix -l, $(LIB_NAME)) $(3TH)
+OBJ = $(addprefix $(OBJ_PATH)/, $(SRC_NAME:.c=.o))
+LNK = $(addprefix -L, $(3TH))
+INC = $(addprefix -I, $(INC_PATH) $(addsuffix /include, $(3TH)))
+LIB = $(addprefix -l, $(LIB_NAME))
 DEP = $(OBJ:%.o=%.d)
 
-all: $(NAME)
+all:
+ifneq ($(3TH_NAME),)
+	@+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th);)
+endif
+	@+$(MAKE) $(NAME).a "CFLAGS = $(RCFLAGS)" "OBJ_PATH = $(OBJ_PATH)/rel"
 
-$(NAME): $(3TH) $(OBJ)
-	@ar -rc $(NAME) $(OBJ)
-	@ranlib $(NAME)
+dev:
+ifneq ($(3TH_NAME),)
+	@+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) dev;)
+endif
+	@+$(MAKE) $(NAME).dev.a "NAME = $(NAME).dev" "CFLAGS = $(DCFLAGS)" \
+	  "OBJ_PATH = $(OBJ_PATH)/dev"
+
+san:
+ifneq ($(3TH_NAME),)
+	@+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) san;)
+endif
+	@+$(MAKE) $(NAME).san.a "NAME = $(NAME).san" "CFLAGS = $(SCFLAGS)" \
+	  "OBJ_PATH = $(OBJ_PATH)/san"
+
+$(NAME).a: $(OBJ)
+	@ar -rc $(NAME).a $(OBJ)
+	@ranlib $(NAME).a
 	@printf  "%-20s\033[32m✔\033[0m\n" "$(NAME): lib"
 
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.c
@@ -49,14 +76,17 @@ $(OBJ_PATH)/%.o: $(SRC_PATH)/%.c
 	@$(CC) $(CFLAGS) $(INC) -MMD -MP -c $< -o $@
 	@printf "\033[A\033[2K"
 
-$(3TH_PATH)/%.a:
-	@$(MAKE) -C $(shell dirname $@)
-
 clean:
+ifneq ($(3TH_NAME),)
+	@+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) clean;)
+endif
 	@rm -rf $(OBJ_PATH)
 	@printf  "%-20s\033[32m✔\033[0m\n" "$(NAME): $@"
 
 fclean:
+ifneq ($(3TH_NAME),)
+	@+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) fclean;)
+endif
 	@rm -rf $(OBJ_PATH)
 	@rm -f $(NAME)
 	@printf  "%-20s\033[32m✔\033[0m\n" "$(NAME): $@"
@@ -65,4 +95,4 @@ re: fclean all
 
 -include $(DEP)
 
-.PHONY: all, $(NAME), clean, fclean, re
+.PHONY: all, dev, san, $(NAME).a, clean, fclean, re

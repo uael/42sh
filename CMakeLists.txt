@@ -28,12 +28,6 @@ add_executable(42sh ${42sh_HDR} ${42sh_HDRS} ${42sh_SRCS})
 set_property(TARGET 42sh PROPERTY C_STANDARD 90)
 target_include_directories(42sh PUBLIC ${42sh_INC_DIR})
 target_link_libraries(42sh PUBLIC debug ft debug rl debug ps)
-set_target_properties(42sh
-  PROPERTIES
-  ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/lib"
-  LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/lib"
-  RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/bin"
-)
 
 target_compile_definitions(42sh
   PRIVATE $<$<CONFIG:Debug>:DEBUG>$<$<CONFIG:Release>:NDEBUG>)

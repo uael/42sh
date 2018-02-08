@@ -4,4 +4,6 @@ out/
 obj/
 42sh
 42sh.exe
+*.dev
+*.san
 *.a
