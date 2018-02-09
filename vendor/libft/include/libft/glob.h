@@ -6,14 +6,14 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/08 23:55:49 by mc                #+#    #+#             */
-/*   Updated: 2018/02/09 10:36:40 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/09 19:25:49 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef USH_GLOB_H
 # define USH_GLOB_H
 
-# include <libft.h>
+#include <stdlib.h>
 
 # ifndef _GLOB_H
 

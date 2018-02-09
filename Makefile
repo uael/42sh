@@ -6,7 +6,7 @@
 #    By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/07 09:52:36 by alucas-           #+#    #+#              #
-#    Updated: 2018/02/08 23:55:34 by mc               ###   ########.fr        #
+#    Updated: 2018/02/09 19:26:26 by mc               ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -42,7 +42,6 @@ SRC_NAME = \
 	eval/cmp.c eval/compound.c eval/heredoc.c eval/lamp.c eval/list.c \
 	eval/pipeline.c eval/ramp.c eval/raout.c eval/redir.c eval/rin.c \
 	eval/rout.c eval/sep.c eval/simple.c eval/subshell.c \
-	glob/glob.c \
 	lex.c lex/heredoc.c lex/op.c lex/utils.c lex/var.c lex/word.c \
 	main.c \
 	prompt.c \

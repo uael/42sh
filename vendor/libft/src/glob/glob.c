@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/08 23:54:42 by mc                #+#    #+#             */
-/*   Updated: 2018/02/09 10:35:44 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/09 19:29:51 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,7 @@
 ** find pathnames matching a pattern, free memory from globctor()
 */
 
-#include "ush/glob.h"
-
+#include "libft/glob.h"
 
 int		globctor(const char *pattern, int flags, t_glob *pglob)
 {
