@@ -1,32 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   glob.c                                             :+:      :+:    :+:   */
+/*   glob_match.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/02/08 23:54:42 by mc                #+#    #+#             */
-/*   Updated: 2018/02/09 21:09:06 by mc               ###   ########.fr       */
+/*   Created: 2018/02/09 20:57:25 by mc                #+#    #+#             */
+/*   Updated: 2018/02/09 21:07:13 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#ifndef GLOBUX_H
+# define GLOBUX_H
+
+# include "libft/tys.h" /* for t_bool */
+
 /*
-** globctor, globdtor -
-** find pathnames matching a pattern, free memory from globctor()
+** Perform shell-style glob matching, returning true (1) if the match
+** succeeds, or false (0) if it fails.
+**
+** @pat: Shell-style pattern to match, e.g. "*.[ch]".
+** @str: String to match.  The pattern must match the entire string.
 */
+t_bool glob_match(char const *pat, char const *str);
 
-#include "libft/glob.h"
-#include "libft/glob/glob_match.h"
-
-int		globctor(const char *pattern, int flags, t_glob *pglob)
-{
-	(void)pattern; //TODO
-	(void)flags; //TODO
-	(void)pglob; //TODO
-	return 42; //TODO
-}
-
-void	globdtor(t_glob *pglob)
-{
-	(void)pglob; //TODO
-}
+#endif /* GLOBUX_H */

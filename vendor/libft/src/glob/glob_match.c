@@ -1,32 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   glob.c                                             :+:      :+:    :+:   */
+/*   glob_match.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/02/08 23:54:42 by mc                #+#    #+#             */
-/*   Updated: 2018/02/09 21:09:06 by mc               ###   ########.fr       */
+/*   Created: 2018/02/09 21:09:16 by mc                #+#    #+#             */
+/*   Updated: 2018/02/09 21:11:27 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 /*
-** globctor, globdtor -
-** find pathnames matching a pattern, free memory from globctor()
+** glob_match - glob util function to check if a pattern actually match
 */
 
 #include "libft/glob.h"
 #include "libft/glob/glob_match.h"
 
-int		globctor(const char *pattern, int flags, t_glob *pglob)
+t_bool glob_match(char const *pat, char const *str)
 {
-	(void)pattern; //TODO
-	(void)flags; //TODO
-	(void)pglob; //TODO
+	(void)pat; //TODO
+	(void)str; //TODO
 	return 42; //TODO
-}
-
-void	globdtor(t_glob *pglob)
-{
-	(void)pglob; //TODO
 }
