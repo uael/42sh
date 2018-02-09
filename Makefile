@@ -6,7 +6,7 @@
 #    By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/07 09:52:36 by alucas-           #+#    #+#              #
-#    Updated: 2017/12/08 09:48:05 by alucas-          ###   ########.fr        #
+#    Updated: 2018/02/09 11:08:49 by mc               ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@ CFLAGS += -Werror -Wextra -Wall
 RCFLAGS = -O3 -fomit-frame-pointer
 DCFLAGS = -g3 -DDEBUG
 SCFLAGS = -fsanitize=address,undefined -ferror-limit=5
-CC ?= gcc
+CC ?= clang
 MAKE += -j4
 
 INC_PATH = include
