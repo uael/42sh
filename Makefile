@@ -6,7 +6,7 @@
 #    By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/07 09:52:36 by alucas-           #+#    #+#              #
-#    Updated: 2018/02/09 11:08:49 by mc               ###   ########.fr        #
+#    Updated: 2018/02/09 11:11:28 by mc               ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -73,51 +73,55 @@ endif
 
 san:
 ifneq ($(3TH_NAME),)
-	@+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) san;)
+	+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) san;)
 endif
-	@+$(MAKE) $(NAME).san "NAME = $(NAME).san" "CFLAGS = $(SCFLAGS)" \
+	+$(MAKE) $(NAME).san "NAME = $(NAME).san" "CFLAGS = $(SCFLAGS)" \
 	  "OBJ_PATH = $(OBJ_DIR)/san"
 
 $(NAME): $(OBJ)
-	@$(CC) $(CFLAGS) $(INC) $(LNK) $(OBJ) $(LIB) -o $(NAME)
+	$(CC) $(CFLAGS) $(INC) $(LNK) $(OBJ) $(LIB) -o $(NAME)
 	@printf  "%-20s\033[32m✔\033[0m\n" "$(NAME): exe"
 
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.c
-	@mkdir -p $(shell dirname $@)
+	mkdir -p $(shell dirname $@)
 	@printf "\r%-20s$<\n" "$(NAME):"
-	@$(CC) $(CFLAGS) $(INC) -MMD -MP -c $< -o $@
+	$(CC) $(CFLAGS) $(INC) -MMD -MP -c $< -o $@
 	@printf "\033[A\033[2K"
 
 clean:
 ifneq ($(3TH_NAME),)
-	@+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) clean;)
+	+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) clean;)
 endif
-	@rm -rf $(OBJ_PATH)
+	rm -rf $(OBJ_PATH)
 	@printf  "%-20s\033[32m✔\033[0m\n" "$(NAME): $@"
 
 fclean:
 ifneq ($(3TH_NAME),)
-	@+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) fclean;)
+	+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) fclean;)
 endif
-	@rm -rf $(OBJ_PATH)
-	@rm -f $(NAME)
+	rm -rf $(OBJ_PATH)
+	rm -f $(NAME)
 	@printf  "%-20s\033[32m✔\033[0m\n" "$(NAME): $@"
 
 re: fclean all
 
 test: all
-	@./test.sh . $(NAME)
+	./test.sh . $(NAME)
 
 testdev: dev
-	@./test.sh . $(NAME).dev
+	./test.sh . $(NAME).dev
 
 testsan: san
-	@./test.sh . $(NAME).san
+	./test.sh . $(NAME).san
 
 valgrind: dev
-	@./valgrind.sh . $(NAME).dev
+	./valgrind.sh . $(NAME).dev
 
 -include $(DEP)
+
+ifndef VERBOSE
+.SILENT:
+endif
 
 .PHONY: all, dev, san, $(NAME), clean, fclean, re, test, testdev, testsan, \
   valgrind

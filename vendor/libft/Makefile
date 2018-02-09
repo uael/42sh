@@ -6,7 +6,7 @@
 #    By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/07 09:52:36 by alucas-           #+#    #+#              #
-#    Updated: 2018/02/09 11:08:49 by mc               ###   ########.fr        #
+#    Updated: 2018/02/09 11:11:35 by mc               ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -65,52 +65,56 @@ DEP = $(OBJ:%.o=%.d)
 
 all:
 ifneq ($(3TH_NAME),)
-	@+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th);)
+	+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th);)
 endif
-	@+$(MAKE) $(NAME).a "CFLAGS = $(RCFLAGS)" "OBJ_PATH = $(OBJ_DIR)/rel"
+	+$(MAKE) $(NAME).a "CFLAGS = $(RCFLAGS)" "OBJ_PATH = $(OBJ_DIR)/rel"
 
 dev:
 ifneq ($(3TH_NAME),)
-	@+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) dev;)
+	+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) dev;)
 endif
-	@+$(MAKE) $(NAME).dev.a "NAME = $(NAME).dev" "CFLAGS = $(DCFLAGS)" \
+	+$(MAKE) $(NAME).dev.a "NAME = $(NAME).dev" "CFLAGS = $(DCFLAGS)" \
 	  "OBJ_PATH = $(OBJ_DIR)/dev"
 
 san:
 ifneq ($(3TH_NAME),)
-	@+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) san;)
+	+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) san;)
 endif
-	@+$(MAKE) $(NAME).san.a "NAME = $(NAME).san" "CFLAGS = $(SCFLAGS)" \
+	+$(MAKE) $(NAME).san.a "NAME = $(NAME).san" "CFLAGS = $(SCFLAGS)" \
 	  "OBJ_PATH = $(OBJ_DIR)/san"
 
 $(NAME).a: $(OBJ)
-	@ar -rc $(NAME).a $(OBJ)
-	@ranlib $(NAME).a
+	ar -rc $(NAME).a $(OBJ)
+	ranlib $(NAME).a
 	@printf  "%-20s\033[32m✔\033[0m\n" "$(NAME): lib"
 
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.c
-	@mkdir -p $(shell dirname $@)
+	mkdir -p $(shell dirname $@)
 	@printf "\r%-20s$<\n" "$(NAME):"
-	@$(CC) $(CFLAGS) $(INC) -MMD -MP -c $< -o $@
+	$(CC) $(CFLAGS) $(INC) -MMD -MP -c $< -o $@
 	@printf "\033[A\033[2K"
 
 clean:
 ifneq ($(3TH_NAME),)
-	@+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) clean;)
+	+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) clean;)
 endif
-	@rm -rf $(OBJ_PATH)
+	rm -rf $(OBJ_PATH)
 	@printf  "%-20s\033[32m✔\033[0m\n" "$(NAME): $@"
 
 fclean:
 ifneq ($(3TH_NAME),)
-	@+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) fclean;)
+	+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) fclean;)
 endif
-	@rm -rf $(OBJ_PATH)
-	@rm -f $(NAME)
+	rm -rf $(OBJ_PATH)
+	rm -f $(NAME)
 	@printf  "%-20s\033[32m✔\033[0m\n" "$(NAME): $@"
 
 re: fclean all
 
 -include $(DEP)
+
+ifndef VERBOSE
+.SILENT:
+endif
 
 .PHONY: all, dev, san, $(NAME).a, clean, fclean, re
