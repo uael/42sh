@@ -79,7 +79,7 @@ MAKEFLAGS =	-j
 CC =		$(shell clang --version >/dev/null 2>&1 && echo clang || echo gcc)
 CFLAGS =	-Wall -Wextra -Werror -O2
 CPPFLAGS =
-LDFLAGS =	-Wl,--allow-multiple-definition
+LDFLAGS =
 LDLIBS =	$(LIBS)
 
 # guess os and architecture

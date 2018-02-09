@@ -12,10 +12,6 @@
 
 #include "libft/getopt.h"
 
-int			g_optind;
-char		*g_optarg;
-int			g_opterr = 1;
-
 t_opt				*ft_opt_getstruct_long(char *s, t_opt *longopt,
 	char *pname)
 {
