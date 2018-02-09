@@ -6,7 +6,7 @@
 #    By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/07 09:52:36 by alucas-           #+#    #+#              #
-#    Updated: 2018/02/08 23:55:34 by mc               ###   ########.fr        #
+#    Updated: 2018/02/09 10:56:56 by mc               ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,6 +22,7 @@ INC_PATH = include
 SRC_PATH = src
 OBJ_PATH ?= obj
 3TH_PATH = vendor
+UNIT_TEST_PATH = test/unit
 
 LIBS = ps rl ft
 ifneq (,$(findstring dev,$(NAME)))
@@ -92,6 +93,7 @@ clean:
 ifneq ($(3TH_NAME),)
 	@+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) clean;)
 endif
+	@test -d $(UNIT_TEST_PATH) && $(MAKE) -C $(UNIT_TEST_PATH) clean
 	@rm -rf $(OBJ_PATH)
 	@printf  "%-20s\033[32m✔\033[0m\n" "$(NAME): $@"
 
@@ -99,6 +101,7 @@ fclean:
 ifneq ($(3TH_NAME),)
 	@+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) fclean;)
 endif
+	@test -d $(UNIT_TEST_PATH) && $(MAKE) -C $(UNIT_TEST_PATH) fclean
 	@rm -rf $(OBJ_PATH)
 	@rm -f $(NAME)
 	@printf  "%-20s\033[32m✔\033[0m\n" "$(NAME): $@"
@@ -106,15 +109,19 @@ endif
 re: fclean all
 
 test: all
+	@test -d $(UNIT_TEST_PATH) && $(MAKE) -C $(UNIT_TEST_PATH)
 	@./test.sh . $(NAME)
 
 testdev: dev
+	@test -d $(UNIT_TEST_PATH) && $(MAKE) -C $(UNIT_TEST_PATH) debug
 	@./test.sh . $(NAME).dev
 
 testsan: san
+	@test -d $(UNIT_TEST_PATH) && $(MAKE) -C $(UNIT_TEST_PATH) sanitize
 	@./test.sh . $(NAME).san
 
 valgrind: dev
+	@test -d $(UNIT_TEST_PATH) && $(MAKE) -C $(UNIT_TEST_PATH) debug
 	@./valgrind.sh . $(NAME).dev
 
 -include $(DEP)

@@ -1,0 +1,3 @@
+[submodule "test/unit/minunit"]
+	path = test/unit/minunit
+	url = https://github.com/jeanmax/minunit
