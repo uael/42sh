@@ -67,10 +67,14 @@ function dotest {
   diff ${test_out} ${test_expected}
 }
 
+UNAME_S=$(uname -s)
+
 mkdir -p out
 ECODE=0
-for test in ./test/*.sh; do
-  job "Test" "$(basename "${test%.*}")" "dotest ${EXE} /bin/bash ${test}"
+for test_file in ./test/*.sh; do
+  test "$UNAME_S" == Linux && echo "$test_file" | grep -q mac-only && continue
+
+  job "Test" "$(basename "${test_file%.*}")" "dotest ${EXE} /bin/bash ${test_file}"
   RET=$?
   if [[ $RET != 0 ]]; then
     ECODE=$RET
