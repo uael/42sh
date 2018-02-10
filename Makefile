@@ -6,7 +6,7 @@
 #    By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/07 09:52:36 by alucas-           #+#    #+#              #
-#    Updated: 2018/02/10 16:31:20 by mc               ###   ########.fr        #
+#    Updated: 2018/02/10 16:40:31 by mc               ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ RCFLAGS = -O3 -fomit-frame-pointer
 DCFLAGS = -g3 -DDEBUG
 SCFLAGS = -fsanitize=address,undefined -ferror-limit=5
 CC ?= gcc
-MAKE += -j4
+MAKEFLAGS += -j$(shell nproc 2>/dev/null)
 
 INC_PATH = include
 OBJ_DIR ?= obj
