@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/09 07:00:16 by alucas-          ###   ########.fr       */
+/*   Updated: 2018/02/09 19:22:55 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include "libft/ds.h"
 # include "libft/ex.h"
 # include "libft/fs.h"
+# include "libft/glob.h"
 # include "libft/hash.h"
 # include "libft/int.h"
 # include "libft/io.h"

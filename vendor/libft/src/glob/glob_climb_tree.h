@@ -1,32 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   glob.c                                             :+:      :+:    :+:   */
+/*   glob_climb_tree.h                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/02/08 23:54:42 by mc                #+#    #+#             */
-/*   Updated: 2018/02/09 10:35:44 by mc               ###   ########.fr       */
+/*   Created: 2018/02/09 20:57:25 by mc                #+#    #+#             */
+/*   Updated: 2018/02/10 11:16:53 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#ifndef GLOB_CLIMB_TREE_H
+# define GLOB_CLIMB_TREE_H
+
+# include "libft/tys.h" /* for t_bool */
+
 /*
-** globctor, globdtor -
-** find pathnames matching a pattern, free memory from globctor()
+** Recursively check PAT on the matching directory tree
+**
+** @pat: Shell-style pattern to match, e.g. "*.[ch]".
 */
+t_bool glob_climb_tree(char const *pattern, int flags);
 
-#include "ush/glob.h"
-
-
-int		globctor(const char *pattern, int flags, t_glob *pglob)
-{
-	(void)pattern; //TODO
-	(void)flags; //TODO
-	(void)pglob; //TODO
-	return 42; //TODO
-}
-
-void	globdtor(t_glob *pglob)
-{
-	(void)pglob; //TODO
-}
+#endif /* GLOB_CLIMB_TREE_H */
