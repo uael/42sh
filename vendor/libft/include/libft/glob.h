@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/08 23:55:49 by mc                #+#    #+#             */
-/*   Updated: 2018/02/09 20:59:00 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/10 11:58:17 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,13 +44,16 @@
 
 # endif /* _GLOB_H */
 
+# define GLOB_SUCCESS 0
+
 /* Structure describing a globbing run.  */
 typedef struct s_glob	t_glob;
 struct					s_glob
 {
-	size_t   gl_pathc;    /* Count of paths matched so far  */
-	char   **gl_pathv;    /* List of matched pathnames.  */
-	size_t   gl_offs;     /* Slots to reserve in gl_pathv.  */
+	size_t	gl_pathc;    /* Count of paths matched so far  */
+	char	**gl_pathv;  /* List of matched pathnames.  */
+	size_t	gl_offs;     /* Slots to reserve in gl_pathv.  */
+    int		gl_flags;    /* Set to FLAGS, maybe | GLOB_MAGCHAR.  */
 };
 
 /*

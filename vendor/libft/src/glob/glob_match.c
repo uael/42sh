@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 21:09:16 by mc                #+#    #+#             */
-/*   Updated: 2018/02/09 21:11:27 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/10 11:56:20 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,16 @@
 */
 
 #include "libft/glob.h"
-#include "libft/glob/glob_match.h"
+#include "glob_match.h"
 
-t_bool glob_match(char const *pat, char const *str)
+t_bool glob_match(char const *pat, char const *str, int flags)
 {
+/*
+	handle_flags(GLOB_NOESCAPE | GLOB_PERIOD | GLOB_BRACE)
+
+*/
 	(void)pat; //TODO
 	(void)str; //TODO
+	(void)flags; //TODO
 	return 42; //TODO
 }
