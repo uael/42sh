@@ -6,7 +6,7 @@
 #    By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/07 09:52:36 by alucas-           #+#    #+#              #
-#    Updated: 2018/02/10 16:45:53 by mc               ###   ########.fr        #
+#    Updated: 2018/02/10 17:10:14 by mc               ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -91,9 +91,6 @@ $(OBJ_PATH):
 	mkdir -p $(OBJ_PATH)
 
 clean:
-ifneq ($(3TH_NAME),)
-	+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) clean &&) true
-endif
 	rm -f $(OBJ) $(DEP)
 	rm -f $(OBJ:$(OBJ_DIR)/rel%=$(OBJ_DIR)/dev%) $(DEP:$(OBJ_DIR)/rel%=$(OBJ_DIR)/dev%)
 	rm -f $(OBJ:$(OBJ_DIR)/rel%=$(OBJ_DIR)/san%) $(DEP:$(OBJ_DIR)/rel%=$(OBJ_DIR)/san%)
@@ -107,7 +104,7 @@ endif
 	test -d $(OBJ_DIR)/dev && rmdir $(OBJ_DIR)/dev || true
 	test -d $(OBJ_DIR)/san && rmdir $(OBJ_DIR)/san || true
 	test -d $(OBJ_DIR) && rmdir $(OBJ_DIR) || true
-	rm -f $(NAME)
+	rm -f $(NAME){,.san,.dev}
 	@printf  "%-20s\033[32m✔\033[0m\n" "$(NAME): $@"
 
 re: fclean all
