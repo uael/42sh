@@ -6,7 +6,7 @@
 #    By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/07 09:52:36 by alucas-           #+#    #+#              #
-#    Updated: 2018/02/10 16:27:05 by mc               ###   ########.fr        #
+#    Updated: 2018/02/10 16:30:54 by mc               ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@ CFLAGS += -Werror -Wextra -Wall
 RCFLAGS = -O3 -fomit-frame-pointer
 DCFLAGS = -g3 -DDEBUG
 SCFLAGS = -fsanitize=address,undefined -ferror-limit=5
-CC ?= clang
+CC ?= gcc
 
 INC_PATH = include ../libft/include
 OBJ_DIR ?= obj
@@ -67,7 +67,7 @@ ifneq ($(3TH_NAME),)
 	+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) san;)
 endif
 	+$(MAKE) $(NAME).san.a "NAME = $(NAME).san" "CFLAGS = $(SCFLAGS)" \
-	  "OBJ_PATH = $(OBJ_DIR)/san"
+	  "OBJ_PATH = $(OBJ_DIR)/san" "CC = clang"
 
 $(NAME).a: $(OBJ_PATH) $(OBJ)
 	ar -rc $(NAME).a $(OBJ)
