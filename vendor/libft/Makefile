@@ -6,7 +6,7 @@
 #    By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/07 09:52:36 by alucas-           #+#    #+#              #
-#    Updated: 2018/02/09 11:11:35 by mc               ###   ########.fr        #
+#    Updated: 2018/02/10 16:26:43 by mc               ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,6 @@ SCFLAGS = -fsanitize=address,undefined -ferror-limit=5
 CC ?= clang
 
 INC_PATH = include
-SRC_PATH = src
 OBJ_DIR ?= obj
 OBJ_PATH ?= $(OBJ_DIR)/rel
 3TH_PATH =
@@ -33,29 +32,31 @@ LIB_NAME = $(LIBS)
 endif
 3TH_NAME =
 SRC_NAME = \
-	cty/cty.c cty/cty_2.c cty/cty_3.c \
-	ds/alloc.c ds/apd.c ds/at.c ds/aver.c ds/back.c ds/begin.c ds/clean.c \
-	ds/clr.c ds/cpush.c ds/cput.c ds/ctor.c ds/cusht.c ds/dtor.c ds/emp.c \
-	ds/end.c ds/grow.c ds/len.c ds/mpush.c ds/mput.c ds/musht.c ds/npop.c \
-	ds/npush.c ds/nput.c ds/nrem.c ds/nsht.c ds/nusht.c ds/pop.c ds/prd.c \
-	ds/push.c ds/put.c ds/rem.c ds/sht.c ds/usht.c ds/mdtor.c ds/map.c \
-	ds/map_2.c ds/set.c ds/set_2.c \
-	ex/ex.c ex/ex_2.c \
-	fs/fs.c fs/fs_2.c fs/fs_3.c fs/fs_4.c \
-	hash/hash.c hash/hash_2.c \
-	int/len.c int/str.c \
-	io/fcntl.c io/ifs.c io/ifs_2.c io/ofs.c io/ofs_2.c io/ofs_3.c io/padn.c \
-	io/putc.c io/putf.c io/putl.c io/putn.c io/puts.c \
-	lib/atoi.c lib/clean.c lib/dtor.c lib/getenv.c lib/itoa.c lib/join.c \
-	lib/strerr.c \
-	math/imax.c math/imin.c math/m4.c math/m4_mul.c math/m4_rot.c \
-	math/m4_trans.c math/pow.c math/pow2_next.c math/umax.c math/umin.c \
-	math/v3.c math/v3_2.c math/eq.c math/eq_2.c \
-	mem/alloc.c \
-	str/mem.c str/mem_2.c str/str.c str/str_2.c str/str_3.c str/str_4.c \
-	str/str_5.c \
-	get_opt/getoptlong.c get_opt/getoptlonglong.c get_opt/getopt.c
+	cty.c cty_2.c cty_3.c \
+	ds_alloc.c apd.c at.c aver.c back.c begin.c ds_clean.c \
+	clr.c cpush.c cput.c ctor.c cusht.c ds_dtor.c emp.c \
+	end.c grow.c ds_len.c mpush.c mput.c musht.c npop.c \
+	npush.c nput.c nrem.c nsht.c nusht.c pop.c prd.c \
+	push.c put.c rem.c sht.c usht.c mdtor.c map.c \
+	map_2.c set.c set_2.c \
+	ex.c ex_2.c \
+	fs.c fs_2.c fs_3.c fs_4.c \
+	hash.c hash_2.c \
+	len.c int_str.c \
+	fcntl.c ifs.c ifs_2.c ofs.c ofs_2.c ofs_3.c padn.c \
+	putc.c putf.c putl.c putn.c puts.c \
+	atoi.c clean.c dtor.c getenv.c itoa.c join.c \
+	strerr.c \
+	imax.c imin.c m4.c m4_mul.c m4_rot.c \
+	m4_trans.c pow.c pow2_next.c umax.c umin.c \
+	v3.c v3_2.c eq.c eq_2.c \
+	alloc.c \
+	mem.c mem_2.c str.c str_2.c str_3.c str_4.c \
+	str_5.c \
+	getoptlong.c getoptlonglong.c getopt.c
 
+VPATH = src src/cty src/get_opt src/lib src/ex src/io src/fs src/mem \
+		src/str src/int src/math src/hash src/ds
 3TH = $(addprefix $(3TH_PATH)/, $(3TH_NAME))
 OBJ = $(addprefix $(OBJ_PATH)/, $(SRC_NAME:.c=.o))
 LNK = $(addprefix -L, $(3TH))
@@ -83,29 +84,36 @@ endif
 	+$(MAKE) $(NAME).san.a "NAME = $(NAME).san" "CFLAGS = $(SCFLAGS)" \
 	  "OBJ_PATH = $(OBJ_DIR)/san"
 
-$(NAME).a: $(OBJ)
+$(NAME).a: $(OBJ_PATH) $(OBJ)
 	ar -rc $(NAME).a $(OBJ)
 	ranlib $(NAME).a
 	@printf  "%-20s\033[32m✔\033[0m\n" "$(NAME): lib"
 
-$(OBJ_PATH)/%.o: $(SRC_PATH)/%.c
-	mkdir -p $(shell dirname $@)
+$(OBJ_PATH)/%.o: %.c
 	@printf "\r%-20s$<\n" "$(NAME):"
 	$(CC) $(CFLAGS) $(INC) -MMD -MP -c $< -o $@
 	@printf "\033[A\033[2K"
+
+$(OBJ_PATH):
+	mkdir -p $(OBJ_PATH)
 
 clean:
 ifneq ($(3TH_NAME),)
 	+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) clean;)
 endif
-	rm -rf $(OBJ_PATH)
+	rm -f $(OBJ) $(DEP)
+	rm -f $(OBJ:$(OBJ_DIR)/rel%=$(OBJ_DIR)/dev%) $(DEP:$(OBJ_DIR)/rel%=$(OBJ_DIR)/dev%)
+	rm -f $(OBJ:$(OBJ_DIR)/rel%=$(OBJ_DIR)/san%) $(DEP:$(OBJ_DIR)/rel%=$(OBJ_DIR)/san%)
 	@printf  "%-20s\033[32m✔\033[0m\n" "$(NAME): $@"
 
-fclean:
+fclean: clean
 ifneq ($(3TH_NAME),)
 	+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) fclean;)
 endif
-	rm -rf $(OBJ_PATH)
+	test -d $(OBJ_DIR)/rel && rmdir $(OBJ_DIR)/rel || true
+	test -d $(OBJ_DIR)/dev && rmdir $(OBJ_DIR)/dev || true
+	test -d $(OBJ_DIR)/san && rmdir $(OBJ_DIR)/san || true
+	test -d $(OBJ_DIR) && rmdir $(OBJ_DIR) || true
 	rm -f $(NAME)
 	@printf  "%-20s\033[32m✔\033[0m\n" "$(NAME): $@"
 

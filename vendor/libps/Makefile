@@ -6,7 +6,7 @@
 #    By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/07 09:52:36 by alucas-           #+#    #+#              #
-#    Updated: 2018/02/09 11:11:41 by mc               ###   ########.fr        #
+#    Updated: 2018/02/10 16:27:00 by mc               ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,6 @@ SCFLAGS = -fsanitize=address,undefined -ferror-limit=5
 CC ?= clang
 
 INC_PATH = include ../libft/include ../librl/include
-SRC_PATH = src
 OBJ_DIR ?= obj
 OBJ_PATH ?= $(OBJ_DIR)/rel
 3TH_PATH =
@@ -33,14 +32,15 @@ LIB_NAME = $(LIBS)
 endif
 3TH_NAME =
 SRC_NAME = \
-	bi/fg.c bi/bg.c bi/jobs.c \
-	job.c job/bg.c job/cont.c job/debug.c job/fg.c job/mark.c job/launch.c \
-	job/state.c job/wait.c job/pipe.c \
-	pool.c pool/mark.c pool/notify.c \
-	proc.c proc/bi.c proc/bit.c proc/err.c proc/exe.c proc/fn.c proc/fork.c \
+	fg.c bg.c jobs.c \
+	job.c job_bg.c cont.c debug.c job_fg.c job_mark.c launch.c \
+	state.c wait.c pipe.c \
+	pool.c mark.c notify.c \
+	proc.c bi.c bit.c err.c exe.c fn.c fork.c \
 	ps.c \
 	redir.c
 
+VPATH = src src/bi src/pool src/proc src/job
 3TH = $(addprefix $(3TH_PATH)/, $(3TH_NAME))
 OBJ = $(addprefix $(OBJ_PATH)/, $(SRC_NAME:.c=.o))
 LNK = $(addprefix -L, $(3TH))
@@ -68,29 +68,36 @@ endif
 	+$(MAKE) $(NAME).san.a "NAME = $(NAME).san" "CFLAGS = $(SCFLAGS)" \
 	  "OBJ_PATH = $(OBJ_DIR)/san"
 
-$(NAME).a: $(OBJ)
+$(NAME).a: $(OBJ_PATH) $(OBJ)
 	ar -rc $(NAME).a $(OBJ)
 	ranlib $(NAME).a
 	@printf  "%-20s\033[32m✔\033[0m\n" "$(NAME): lib"
 
-$(OBJ_PATH)/%.o: $(SRC_PATH)/%.c
-	mkdir -p $(shell dirname $@)
+$(OBJ_PATH)/%.o: %.c
 	@printf "\r%-20s$<\n" "$(NAME):"
 	$(CC) $(CFLAGS) $(INC) -MMD -MP -c $< -o $@
 	@printf "\033[A\033[2K"
+
+$(OBJ_PATH):
+	mkdir -p $(OBJ_PATH)
 
 clean:
 ifneq ($(3TH_NAME),)
 	+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) clean;)
 endif
-	rm -rf $(OBJ_PATH)
+	rm -f $(OBJ) $(DEP)
+	rm -f $(OBJ:$(OBJ_DIR)/rel%=$(OBJ_DIR)/dev%) $(DEP:$(OBJ_DIR)/rel%=$(OBJ_DIR)/dev%)
+	rm -f $(OBJ:$(OBJ_DIR)/rel%=$(OBJ_DIR)/san%) $(DEP:$(OBJ_DIR)/rel%=$(OBJ_DIR)/san%)
 	@printf  "%-20s\033[32m✔\033[0m\n" "$(NAME): $@"
 
-fclean:
+fclean: clean
 ifneq ($(3TH_NAME),)
 	+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) fclean;)
 endif
-	rm -rf $(OBJ_PATH)
+	test -d $(OBJ_DIR)/rel && rmdir $(OBJ_DIR)/rel || true
+	test -d $(OBJ_DIR)/dev && rmdir $(OBJ_DIR)/dev || true
+	test -d $(OBJ_DIR)/san && rmdir $(OBJ_DIR)/san || true
+	test -d $(OBJ_DIR) && rmdir $(OBJ_DIR) || true
 	rm -f $(NAME)
 	@printf  "%-20s\033[32m✔\033[0m\n" "$(NAME): $@"
 
