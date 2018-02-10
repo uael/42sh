@@ -6,7 +6,7 @@
 /*   By: mcanal <zboub@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/11/29 15:38:59 by mcanal            #+#    #+#             */
-/*   Updated: 2018/02/09 20:42:15 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/10 12:22:04 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 */
 
 #include "super_test_3000.h"
+#include "glob_match.h"
 
 /*
  * The tests are all jammed together in one array to make it simpler
@@ -106,11 +107,11 @@ static char const glob_tests[] =
 
 static void test_glob_match(char const *pat, char const *str, t_bool expected)
 {
-	t_bool match = glob_match(pat, str);
+	t_bool match = glob_match(pat, str, 0); //TODO: flags
 
 	MU_ASSERT(
 		match == expected,
-		"glob_match failed: pat='%s', str='%s', test=%d, ctrl:%d",
+		"glob_match failed:\n    [pat='%s', str='%s', test=%d, ctrl:%d]",
 		pat, str, match, expected
 	);
 }

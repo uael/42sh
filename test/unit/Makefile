@@ -6,7 +6,7 @@
 #    By: mcanal <mcanal@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/11/29 13:16:03 by mcanal            #+#    #+#              #
-#    Updated: 2018/02/09 12:33:55 by mc               ###   ########.fr        #
+#    Updated: 2018/02/10 12:20:01 by mc               ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 
@@ -69,6 +69,7 @@ O_DIR =		obj
 OBJS =		$(SRCS:%.c=$(O_DIR)/%.o)
 DEPS =		$(OBJS:%.o=%.d)
 TEST_OBJS =	$(shell find $(ROOT_DIR)/obj/rel -name \*.o 2>/dev/null | grep -v main) #TODO
+TEST_INCS =	$(shell find $(ROOT_DIR)/{include,vendor} -name \*.h 2>/dev/null | sed -E "s|(.*)/.*\.h|-I\1|" | sort | uniq) #fuck
 
 # specify flags for commands used in the following rules
 RM =		rm -f
@@ -190,7 +191,7 @@ mrproper: fclean $(O_DIR)
 # create binary (link)
 $(NAME): $(OBJS) $(LFT) $(LRL) $(LPS) $(MIN) $(TEST_OBJS)
 	@$(ECHO) "$(BLUE)$(OBJS) $(TEST_OBJS)$(WHITE)->$(RED) $@ $(BASIC)"
-	$(CC) $(CFLAGS) $(I_DIR) $(OBJS) $(TEST_OBJS) $(LDLIBS) -o $@ $(LDFLAGS)
+	$(CC) $(CFLAGS) $(I_DIR) $(TEST_INCS) $(OBJS) $(TEST_OBJS) $(LDLIBS) -o $@ $(LDFLAGS)
 	@$(ECHO) "$(WHITE)cflags:$(BASIC) $(CFLAGS)"
 	@$(ECHO) "$(WHITE)ccpflags:$(BASIC) $(CPPFLAGS)"
 	@$(ECHO) "$(WHITE)libs:$(BASIC) $(LIBS)"
@@ -199,7 +200,7 @@ $(NAME): $(OBJS) $(LFT) $(LRL) $(LPS) $(MIN) $(TEST_OBJS)
 # create object files (compile)
 $(O_DIR)/%.o: %.c
 	@$(ECHO) "$(WHITE)$<\t->$(BLUE) $@ $(BASIC)"
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(I_DIR) -MMD -c $< -o $@
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(I_DIR) $(TEST_INCS) -MMD -c $< -o $@
 
 # create directory for compilation sub-products
 $(O_DIR):
