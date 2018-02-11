@@ -6,14 +6,42 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/08 23:55:49 by mc                #+#    #+#             */
-/*   Updated: 2018/02/10 11:58:17 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/11 23:17:12 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+/*
+** Long ago, in UNIX V6, there was a program /etc/glob that would expand
+** wildcard patterns. Soon afterward this became a shell built-in.
+**
+** These days there is also a library routine glob(3) that will
+** perform this function for a user program.
+**
+** Now we are writing a clone of this. Things got a little weird, ok?
+*/
 
 #ifndef USH_GLOB_H
 # define USH_GLOB_H
 
 # include <stdlib.h>
+
+/* # define DEBUG_MODE */
+# ifdef DEBUG_MODE
+#  include <stdio.h>
+#  define CLR_BLACK "\033[30;01m"
+#  define CLR_RED "\033[31;01m"
+#  define CLR_GREEN "\033[32;01m"
+#  define CLR_YELLOW "\033[33;01m"
+#  define CLR_BLUE "\033[34;01m"
+#  define CLR_MAGENTA "\033[35;01m"
+#  define CLR_CYAN "\033[36;01m"
+#  define CLR_WHITE "\033[37;01m"
+#  define CLR_RESET "\033[0m"
+#  define DEBUG_HEADER CLR_MAGENTA "[DEBUG] " CLR_RESET
+#  define DEBUG(str, ...) fprintf(stderr, DEBUG_HEADER str CLR_RESET "\n", ##__VA_ARGS__)
+# else
+#  define DEBUG(str, ...) do {} while (0)
+# endif
 
 # ifndef _GLOB_H
 

@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 22:23:43 by mc                #+#    #+#             */
-/*   Updated: 2018/02/10 11:57:37 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/12 00:02:52 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,14 @@
 #include "libft/glob.h"
 #include "glob_match.h"
 #include "glob_climb_tree.h"
+
+static char **handle_brace_expansion(char const *pattern)
+{
+	//TODO
+	(void)pattern;
+
+	return (char **)42;
+}
 
 static t_bool tree_climber(char const *dir, char const *pattern, int depth, int flags)
 {
@@ -33,6 +41,9 @@ static t_bool tree_climber(char const *dir, char const *pattern, int depth, int 
 	// remove non-matching files
 	for(file in files):
 		if GLOB_ONLYDIR and is_a_dir(file):
+			files.pop(file)
+
+		if not GLOB_PERIOD and GLOB_MAGCHAR and file[0] == '.':
 			files.pop(file)
 
 		if not glob_match(
@@ -69,6 +80,12 @@ t_bool glob_climb_tree(char const *pattern, int flags)
 	//TODO: flags: we might want to pass the whole t_glob struct instead
 /*
 	handle_flags(GLOB_TILDE | GLOB_TILDE_CHECK)
+
+	if '{' in pattern and GLOB_BRACE:
+		patterns[] = handle_brace_expansion(pattern)
+			for pat in patterns:
+				if not glob_climb_tree(patn flags)
+					return false;
 
 	char *search_start = NULL
 	char *ptr = pattern

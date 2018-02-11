@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 21:09:16 by mc                #+#    #+#             */
-/*   Updated: 2018/02/10 11:56:20 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/12 00:18:46 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,110 @@
 #include "libft/glob.h"
 #include "glob_match.h"
 
+#ifdef DEBUG_MODE
+char const *g_pat = NULL;
+char const *g_str = NULL;
+# define DEBUGUX(_header, _pat, _str) do {						\
+	DEBUG(_header ": pat[%d]: %c", (int)(_pat - g_pat), *_pat); \
+	DEBUG(_header ": str[%d]: %c\n", (int)(_str - g_str), *_str); \
+} while (0)
+#else
+# define DEBUGUX(_header, _pat, _str) do {} while (0)
+#endif
+
+
+static t_bool handle_rev_char_class(char const *pat, char const *str, int flags, \
+								t_bool matched)
+{
+	DEBUG("REV_CHAR_CLASS: match: %d", matched);
+	DEBUGUX("REV_CHAR_CLASS", pat, str);
+
+	if (!*pat)
+		return FALSE; //TODO: unmatched bracket :/
+
+	if (*pat == '[' && *(pat + 1) == ']')
+		return matched & (*str != *pat) ? \
+			glob_match(pat + 2, str + 1, flags) : FALSE;
+
+	if (*pat == ']' && *(pat - 2) != '[')
+		return matched ? glob_match(pat + 1, str + 1, flags) : FALSE;
+
+	if (*(pat + 1) == '-' && *(pat + 2) != ']') //TODO: overflow on pat?
+		return handle_rev_char_class(pat + 3, str, flags, \
+						matched & (*str <= *pat || *str >= *(pat + 2)));
+
+	return handle_rev_char_class(pat + 1, str, flags, \
+						matched & (*str != *pat));
+}
+
+static t_bool handle_char_class(char const *pat, char const *str, int flags, \
+								t_bool matched)
+{
+	DEBUG("CHAR_CLASS: match: %d", matched);
+	DEBUGUX("CHAR_CLASS", pat, str);
+
+	if (!*pat)
+		return FALSE; //TODO: unmatched bracket :/
+
+	if (*pat == '[' && *(pat + 1) == ']')
+		return matched | (*str == *pat) ? \
+			glob_match(pat + 2, str + 1, flags) : FALSE;
+
+	if (*pat == ']' && *(pat - 1) != '[')
+		return matched ? glob_match(pat + 1, str + 1, flags) : FALSE;
+
+	if (*(pat + 1) == '-' && *(pat + 2) != ']')
+		return handle_char_class(pat + 3, str, flags, \
+						matched | (*str >= *pat && *str <= *(pat + 2)));
+
+	return handle_char_class(pat + 1, str, flags, \
+						matched | (*str == *pat));
+}
+
+static t_bool handle_str_wildcard(char const *pat, char const *str, int flags)
+{
+	DEBUGUX("STR_WILDCARD", pat, str);
+
+	if (glob_match(pat, str, flags)) //BOOOOM BABY!
+		return TRUE;
+
+	if (!*str)
+		return glob_match(pat, str, flags);
+
+	return handle_str_wildcard(pat, str + 1, flags);
+}
+
+//TODO: triple-check overflows
 t_bool glob_match(char const *pat, char const *str, int flags)
 {
-/*
-	handle_flags(GLOB_NOESCAPE | GLOB_PERIOD | GLOB_BRACE)
+# ifdef DEBUG_MODE
+	if (!g_pat) g_pat = pat;
+	if (!g_str) g_str = str;
+#endif
+	DEBUGUX("GLOB_MATCH", pat, str);
 
-*/
-	(void)pat; //TODO
-	(void)str; //TODO
-	(void)flags; //TODO
-	return 42; //TODO
+	if (*pat == '\\' && !(flags & GLOB_NOESCAPE))
+		return *(pat + 1) == *str ? glob_match(pat + 2, str + 1, flags) : FALSE;
+
+	if (*pat == '[')
+	{
+		if (*(pat + 1) == '!' || *(pat + 1) == '^')
+			return handle_rev_char_class(pat + 2, str, flags, TRUE);
+		else
+			return handle_char_class(pat + 1, str, flags, FALSE);
+	}
+
+	if (*pat == '*')
+		return handle_str_wildcard(pat + 1, str, flags);
+
+	if (*pat == '?')
+		return *str ? glob_match(pat + 1, str + 1, flags) : FALSE;
+
+	if (*pat != *str)
+		return FALSE;
+
+	if (!*pat)
+		return !*str ? TRUE : FALSE;
+
+	return glob_match(pat + 1, str + 1, flags);
 }
