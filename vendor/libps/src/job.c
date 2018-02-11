@@ -46,7 +46,6 @@ inline void		ps_jobkill(t_job *job)
 	{
 		if (kill(-job->pgid, SIGKILL) < 0)
 			g_errcb("kill (SIGKILL): %e\n", errno);
-		ft_putf(1, "killed %d\n", job->pgid);
 	}
 	ps_jobdtor(job);
 }
