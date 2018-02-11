@@ -44,6 +44,11 @@ inline pid_t		ps_lastpid(void)
 
 inline void			ps_dtor(void)
 {
+	size_t	i;
+
+	i = 0;
+	while (i < ps_poollen())
+		ps_jobkill(ps_poolget(i++));
 	ft_mapdtor(g_binaries, (t_dtor)ft_pfree, (t_dtor)ft_pfree);
 	ft_mapdtor(g_builtins, (t_dtor)ft_pfree, NULL);
 }
