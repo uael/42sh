@@ -10,6 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <sys/signal.h>
+#include <signal.h>
+
 #include "ps.h"
 
 inline void		ps_jobctor(t_job *job)
@@ -35,4 +38,15 @@ inline t_job	*ps_jobnext(t_job *job, t_job *right, t_andor andor)
 	job->next = ft_memdup(right, sizeof(t_job));
 	job = job->next;
 	return (job);
+}
+
+inline void		ps_jobkill(t_job *job)
+{
+	if (job->procs.len && !ps_jobcompleted(job))
+	{
+		if (kill(-job->pgid, SIGKILL) < 0)
+			g_errcb("kill (SIGKILL): %e\n", errno);
+		ft_putf(1, "killed %d\n", job->pgid);
+	}
+	ps_jobdtor(job);
 }
