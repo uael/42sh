@@ -43,8 +43,8 @@ inline int			sh_lexheredoc(int fd, t_tok *tok, char **it, char **ln)
 	tok->pos = (uint16_t)(*it - *ln);
 	st = 0;
 	while (!st)
-		if (!**it && (fd < 0 || (st = rl_catline(fd, 0, ln, it))))
-			st = st < 0 || !g_sh->tty ?
+		if (!**it && (fd < 0 || (st = rl_catline(fd, 0, ln, it)) || !**it))
+			st = LEX_SHOWE(st, fd) ?
 				sh_synerr(*ln, *it, UEE"`%s'", eof) : OUF;
 		else
 		{
