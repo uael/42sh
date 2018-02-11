@@ -63,6 +63,8 @@ static int		exelookup(char **env, char *exe, char const *path, char *buf)
 	uint32_t	i;
 
 	st = 0;
+	if (ft_strlen(exe) > PATH_MAX)
+		return (PROC_NOTFOUND);
 	if (ft_strchr(exe, '/'))
 		return (exetest(ft_strcpy(buf, exe)));
 	beg = ft_getenv(env, path);

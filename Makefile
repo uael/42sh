@@ -12,9 +12,9 @@
 
 NAME ?= 42sh
 CFLAGS += -Werror -Wextra -Wall
-RCFLAGS = -O3 -fomit-frame-pointer
+RCFLAGS = -O2 -fomit-frame-pointer
 DCFLAGS = -g3 -DDEBUG
-SCFLAGS = -fsanitize=address,undefined -ferror-limit=5
+SCFLAGS = $(DCFLAGS) -fsanitize=address,undefined -ferror-limit=5
 CC ?= gcc
 MAKE += -j4
 
