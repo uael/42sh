@@ -66,10 +66,10 @@ static inline char	*histat(char *not, ssize_t i, size_t rlen, t_bool *c)
 
 static inline char	*histfind(char *not, t_bool *c)
 {
-	size_t 	i;
-	size_t 	j;
-	size_t 	l;
-	char		word[MAX_INPUT + 1];
+	size_t	i;
+	size_t	j;
+	size_t	l;
+	char	word[MAX_INPUT + 1];
 
 	j = 1;
 	i = 0;
@@ -110,10 +110,7 @@ inline int			rl_histbi(void)
 		else
 			beg = histfind(not, &c);
 	}
-	if (c)
-	{
-		g_eln->idx = g_eln->str.len;
+	if (c && (g_eln->idx = g_eln->str.len) > 0)
 		rl_editprint();
-	}
 	return (c ? YEP : NOP);
 }
