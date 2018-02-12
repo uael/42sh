@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/08 23:54:42 by mc                #+#    #+#             */
-/*   Updated: 2018/02/10 11:58:47 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/12 17:56:14 by mcanal           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,12 +51,10 @@ int		globctor(const char *pattern, int flags, t_glob *pglob)
 
 void	globdtor(t_glob *pglob)
 {
-/*
-	for(arg in pglob->gl_pathv):
-		free(arg)
-	free(pglob->gl_pathv)
-	free(pglob)
-	//TODO: MOAR?
-*/
-	(void)pglob; //TODO
+	char **av;
+
+	av = pglob->gl_pathv + pglob->gl_offs;
+	while (*av)
+		free(av++);
+	free(pglob->gl_pathv);
 }
