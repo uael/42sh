@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef INC_21SH_SIGNAL_H
-# define INC_21SH_SIGNAL_H
+#ifndef LIBRL_SIGNAL_H
+# define LIBRL_SIGNAL_H
 
 extern int		rl_signalc(void);
 extern int		rl_signald(void);

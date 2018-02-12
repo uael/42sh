@@ -16,12 +16,24 @@
 # include "lex.h"
 # include "env.h"
 
-extern t_bool	g_shinteract;
-extern pid_t	g_shpgid;
-extern TTY		g_shmode;
-extern int		g_shfd;
-extern int		g_shstatus;
+# define SHLVL_MAX 255
 
+typedef struct	s_scope
+{
+	int			ac;
+	char		**av;
+	int			status;
+	pid_t		pid;
+	t_bool		tty;
+}				t_scope;
+
+extern t_scope	*g_sh;
+extern uint8_t	g_shlvl;
+extern int		g_shfd;
+
+extern uint8_t	sh_scope(void);
+extern uint8_t	sh_unscope(void);
+extern char		*sh_prompt(char *prompt, char *buf);
 extern int		sh_run(int fd, char *ln);
 extern int		sh_exit(int exitno, char const *fmt, ...);
 extern void		sh_complete(t_sds *cmd);

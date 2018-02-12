@@ -29,7 +29,7 @@ inline int		sh_evalredir(t_job *job, t_deq *toks, char **ln)
 		return (sh_evalraout(job, toks, ln));
 	if (tok->id == TOK_AMPR)
 		return (sh_evalampr(job, toks, ln));
-	if (tok->id == TOK_HEREDOC || tok->id == TOK_HEREDOCT)
+	if (tok->id == TOK_HEREDOC)
 		return (sh_evalheredoc(job, toks, ln));
 	if (tok->id == TOK_LAMP)
 		return (sh_evallamp(job, toks, ln));

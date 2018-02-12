@@ -12,19 +12,7 @@
 
 #include "ush/eval.h"
 
-#define UNEX "parse error: Unexpected token `%s'"
-
-static t_map		g_binaries_stack =
-{
-	0, 0, 0, 0, NULL, { (t_hashfn *)ft_strhash, (t_eqfn *)ft_streq },
-	sizeof(char *), sizeof(char *), NULL, NULL
-};
-t_map				*g_binaries = &g_binaries_stack;
-
-inline void			sh_evaldtor(void)
-{
-	ft_mapdtor(g_binaries, (t_dtor)ft_pfree, (t_dtor)ft_pfree);
-}
+#define UNEX "syntax error: Unexpected token `%s'"
 
 static inline int	evalfini(int ret, t_deq *toks)
 {
@@ -41,9 +29,10 @@ static inline int	evalfini(int ret, t_deq *toks)
 				sh_toknext(toks);
 				break ;
 			}
-		return (NOP);
 	}
-	return (YEP);
+	toks->cur = toks->len;
+	ft_deqclean(toks, (t_dtor)sh_tokdtor);
+	return (ret ? NOP : YEP);
 }
 
 inline int			sh_eval(int fd, t_deq *toks, char **ln)
@@ -58,7 +47,7 @@ inline int			sh_eval(int fd, t_deq *toks, char **ln)
 		if (!sh_tokpeek(toks))
 			return (evalfini(YEP, toks));
 		if ((st = sh_evallist(fd, toks, ln)) == OUF)
-			return (evalfini(NOP, toks));
+			return (evalfini(OUF, toks));
 		if (!(tok = sh_tokpeek(toks)) || tok->id == TOK_END)
 			return (evalfini(YEP, toks));
 	}

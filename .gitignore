@@ -2,10 +2,8 @@
 cmake-build-debug/
 out/
 obj/
-21sh
-21sh.exe
-21sh.dev
-21sh.dev.exe
-21sh.san
-21sh.san.exe
+42sh
+42sh.exe
+*.dev
+*.san
 *.a

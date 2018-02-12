@@ -103,7 +103,7 @@ ssize_t					ft_ifschr(t_ifs *self, size_t off, char c, char **out)
 	char	*chr;
 
 	if (off > self->rd - self->i)
-		return (ENO_THROW(WUT, EINVAL));
+		return (WUT);
 	if (!self->rd || self->i == self->rd)
 	{
 		if ((rd = ft_read(self->ifd, self->stack, BSZ)) <= 0)
@@ -121,5 +121,5 @@ ssize_t					ft_ifschr(t_ifs *self, size_t off, char c, char **out)
 		}
 	if (out)
 		*out = src;
-	return (chr - src + off + 1);
+	return (chr - src + 1);
 }

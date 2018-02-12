@@ -31,6 +31,7 @@ extern TTY		g_orig_mode;
 extern TTY		g_raw_mode;
 
 extern int		rl_readnotty(int fd, char **ln);
+extern int		rl_catnotty(int fd, char **ln, char c, char **it);
 extern void		rl_ttyfinalize(int fd);
 extern void		rl_ttydtor(void);
 extern void		rl_nottyfinalize(int fd);

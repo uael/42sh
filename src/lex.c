@@ -11,16 +11,77 @@
 /* ************************************************************************** */
 
 #include "ush/lex.h"
-#include "ush/tok.h"
+#include "ush/shell.h"
 
-#define UEB "parse error: Unexpected token `%c' while looking for matching `%c'"
 #define UEE "parse error: Unexpected EOF while looking for matching `%c'"
 #define UEC "parse error: Unexpected closing bracket `%c'"
+#define UEH "syntax error: Expected `<word>' after heredoc `%s' got `%s'"
+#define EXS "syntax error: Unexpected empty command between `%s'"
 
-static char			g_stack[1000] = { 0 };
-static int			g_stack_idx;
+static int			g_sidx;
 
-static inline int	lexone(int fd, t_tok *tok, char **it, char **ln)
+static inline int	tokitctor(t_tokit *tit, char **it, char **ln)
+{
+	if (!*it || !**it)
+		return (NOP);
+	!ln ? (ln = it) : 0;
+	tit->it = it;
+	tit->ln = ln;
+	return (YEP);
+}
+
+static inline int	reduce(int fd, t_deq *toks, char **it, char **ln)
+{
+	t_tok *tok;
+	t_tok *prev;
+	t_tok *end;
+
+	prev = NULL;
+	tok = (t_tok *)ft_deqbeg(toks) - 1;
+	end = ft_deqend(toks);
+	while (++tok < end)
+	{
+		if (TOK_ISWORD(tok->id) && prev)
+		{
+			if (prev->id == TOK_HEREDOC && sh_lexheredoc(fd, tok, it, ln))
+				return (OUF);
+		}
+		else if (prev && prev->id == TOK_HEREDOC)
+			return (sh_synerr(*ln, *ln + tok->pos, UEH, sh_tokstr(prev),
+				sh_tokstr(tok)));
+		else if (prev && prev->id == tok->id && TOK_ISSEP(tok->id))
+			return (sh_synerr(*ln, *ln + tok->pos, EXS, sh_tokstr(tok)));
+		if ((prev = tok)->id == TOK_END || tok->id == TOK_EOL)
+			break ;
+	}
+	return (YEP);
+}
+
+static inline int	check(int fd, t_tok *t, t_deq *deq, t_tokit *it)
+{
+	int st;
+
+	if (TOK_ISEND(t->id))
+	{
+		if ((st = reduce(fd, deq, it->it, it->ln)))
+			return (st);
+		if (!g_sidx)
+		{
+			deq->cur = 0;
+			return (NOP);
+		}
+		deq->cur = deq->len + 1;
+	}
+	else if (t->id == '(')
+		++g_sidx;
+	else if (g_sidx && t->id == ')')
+		--g_sidx;
+	else if (t->id == ')' && !g_sidx)
+		return (sh_synerr(*it->ln, *it->ln + t->pos, UEC, t->id));
+	return (YEP);
+}
+
+static inline int	tokenize(int fd, t_tok *tok, char **it, char **ln)
 {
 	int		st;
 
@@ -30,76 +91,57 @@ static inline int	lexone(int fd, t_tok *tok, char **it, char **ln)
 		else if (**it && ft_strchr(sh_varifs(), **it))
 			++*it;
 		else if (ISEOL(*it))
-		{
-			sh_tokpos(tok, ++*it, *ln)->id = TOK_EOL;
-			ft_sdscpush((t_sds *)tok, '\n');
-			return (YEP);
-		}
+			return ((sh_tokpos(tok, ++*it, *ln)->id = TOK_EOL) & 0);
 		else if (**it == '#')
 			while (**it && !ISEOL(*it))
 				++*it;
 		else if (!**it)
-			return (sh_tokpos(tok, *it, *ln)->id = TOK_END);
+			return ((sh_tokpos(tok, *it, *ln)->id = TOK_END) & 0);
 		else
 			break ;
 	sh_tokpos(tok, *it, *ln);
-	ft_isdigit(**it) ? ft_sdscpush((t_sds *)tok, *(*it)++) : 0;
+	ft_isdigit(**it) ? (++tok->len && ++*it) : 0;
 	return (st = sh_lexop(fd, tok, it, ln)) != NOP ||
-		(st = sh_lexword(fd, tok, it, ln)) != NOP
-		? st : sh_synerr(*ln, *it, "Unexpected token `%c'", **it);
+		(st = sh_lexword(fd, tok, it, ln)) != NOP ? st :
+		sh_synerr(*ln, *it, "Unexpected token `%c'", **it);
 }
 
-static inline int	lexline(int fd, t_deq *toks, char **it, char **ln)
+int					sh_lex(int fd, char **it, char **ln, t_tokcb *cb)
 {
 	int		st;
-	t_tok	*tok;
+	t_deq	*d;
+	t_tok	*t;
+	t_tokit	tit;
 
-	!ln ? (ln = it) : 0;
-	while (1)
-	{
-		ft_sdsgrow((t_sds *)(tok = ft_deqpush(toks)), 1);
-		*tok->val = '\0';
-		tok->len = 0;
-		if ((st = lexone(fd, tok, it, ln)))
-			return (st);
-		if (tok->id == TOK_EOL || tok->id == TOK_END)
-			break ;
-		if (ft_strchr("([{", tok->id))
-			g_stack[g_stack_idx++] = sh_rbracket(tok->id);
-		else if (g_stack_idx && tok->id == g_stack[g_stack_idx - 1])
-			--g_stack_idx;
-		else if (ft_strchr(")}]", tok->id) &&
-			(!g_stack_idx || tok->id != g_stack[g_stack_idx - 1]))
-			return (g_stack_idx ? sh_synerr(*ln, *ln + tok->pos, UEB, tok->id,
-				g_stack[g_stack_idx - 1]) : sh_synerr(*ln, *ln + tok->pos, UEC,
-				tok->id));
-	}
-	return (YEP);
-}
-
-int					sh_lex(int fd, t_deq *toks, char **it, char **ln)
-{
-	int		st;
-	size_t	sve;
-	size_t	cur;
-
-	if (!**it)
+	if (tokitctor(&tit, it, ln))
 		return (NOP);
-	g_stack_idx = 0;
-	sve = toks->cur;
+	ft_deqctor(d = alloca(sizeof(t_deq)), sizeof(t_tok));
+	d->buf = alloca((d->cap += 32) * sizeof(t_tok));
 	while (1)
 	{
-		cur = toks->len;
-		if ((st = lexline(fd, toks, it, ln)))
+		if (d->len == d->cap)
+		{
+			t = alloca((d->cap *= 2) * sizeof(t_tok));
+			ft_memcpy(t, d->buf, d->len * sizeof(t_tok));
+			d->buf = t;
+		}
+		ft_memset(t = (t_tok *)d->buf + d->len++, 0, sizeof(t_tok));
+		if ((st = tokenize(fd, t, it, ln)) || (st = check(fd, t, d, &tit)))
+		{
+			if (st == NOP)
+			{
+				if (cb(fd, d, ln))
+					g_sh->status = 1;
+				if (**it)
+				{
+					d->len = 0;
+					d->cur = 0;
+					continue ;
+				}
+			}
 			return (st);
-		toks->cur = cur;
-		if ((st = sh_lexreduce(fd, toks, it, ln)))
-			return (st);
-		toks->cur = sve;
-		if (!g_stack_idx)
-			return (YEP);
-		if (!**it && (fd < 0 || (st = rl_catline(fd, 0, ln, it))))
-			return (st < 0 || fd != 0 ?
-				sh_synerr(*ln, *it, UEE, g_stack[g_stack_idx - 1]) : OUF);
+		}
+		if (g_sidx && !**it && (fd < 0 || (st = rl_catline(fd, 0, ln, it))))
+			return (st < 0 || !g_sh->tty ? sh_synerr(*ln, *it, UEE, ')') : OUF);
 	}
 }

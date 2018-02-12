@@ -13,6 +13,30 @@
 #include "ush/eval.h"
 
 #define UEH "Expected `<word>' after redirection `%s' got `%s'"
+#define AMB ": Ambiguous redirect\n"
+
+inline char		*sh_redirword(t_job *job, char *dst, t_deq *toks, char *ln)
+{
+	t_tok	*tok;
+	t_proc	*proc;
+	t_sds	word;
+	char	buf[PATH_MAX];
+
+	proc = ft_vecback((t_vec *)&job->procs);
+	tok = sh_tokpeek(toks);
+	if (!sh_wordresolve(&word, ln + tok->pos, tok->len, NULL) ||
+		word.len >= PATH_MAX)
+	{
+		ft_sdsdtor(&word);
+		ps_procerr(proc, ft_strcat(ft_strncpy(buf, ln + tok->pos,
+			ft_u64max(tok->len, MAX_INPUT)), AMB), ln, tok->pos);
+		return (NULL);
+	}
+	ft_strcpy(dst, word.buf);
+	ft_sdsdtor(&word);
+	sh_toknext(toks);
+	return (dst);
+}
 
 inline int			sh_evalampr(t_job *job, t_deq *toks, char **ln)
 {
@@ -21,14 +45,14 @@ inline int			sh_evalampr(t_job *job, t_deq *toks, char **ln)
 	int		fd;
 	char	buf[PATH_MAX];
 
-	if ((tok = sh_toknext(toks))->id != TOK_WORD && !TOK_ISBOOL(tok->id))
+	if (!(tok = sh_toknext(toks)) || !TOK_ISWORD(tok->id))
 		return (sh_evalerr(*ln, tok, UEH, sh_tokstr(tok)));
-	sh_wordexpand((t_sds *)tok);
-	sh_toknext(toks);
+	if (!sh_redirword(job, buf, toks, *ln))
+		return (YEP);
 	proc = ft_vecback((t_vec *)&job->procs);
-	if ((fd = open(tok->val, O_WRONLY | O_CREAT | O_TRUNC, 0644)) < 0)
+	if ((fd = open(buf, O_WRONLY | O_CREAT | O_TRUNC, 0644)) < 0)
 	{
-		sh_procerr(proc, ft_strcat(ft_strcat(ft_strcpy(buf, tok->val), ": "),
+		ps_procerr(proc, ft_strcat(ft_strcat(buf, ": "),
 			ft_strerr(errno)), *ln, tok->pos);
 		return (YEP);
 	}

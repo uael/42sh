@@ -72,8 +72,8 @@ void		ft_setdtor(t_set *self, t_dtor kdtor)
 				++it;
 			}
 		}
-		free(self->bucks);
-		free(self->keys);
+		ft_pfree((void **)&self->bucks);
+		ft_pfree(&self->keys);
 	}
 }
 
