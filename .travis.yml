@@ -6,5 +6,6 @@ script:
   - git clone https://github.com/we-sh/42ShellTester.git st
   - make
   - make test
+  - bash st/42ShellTester.sh --filter minishell $PWD/42sh
   - bash st/42ShellTester.sh --filter 21sh $PWD/42sh
   - bash st/42ShellTester.sh --filter subshell $PWD/42sh

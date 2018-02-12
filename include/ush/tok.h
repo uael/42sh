@@ -28,7 +28,6 @@ enum			e_tok
 {
 	TOK_END = '\0',
 	TOK_HEREDOC = TOK_END + 1,
-	TOK_HEREDOCT,
 	TOK_RAOUT,
 	TOK_LAMP,
 	TOK_RAMP,

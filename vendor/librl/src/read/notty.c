@@ -18,7 +18,7 @@
 # define OPEN_MAX RLIMIT_NOFILE
 #endif
 
-static t_ifs	g_in[OPEN_MAX + 1] = { { 0, 0, 0, 0, { 0 } } };
+static t_ifs	g_in[OPEN_MAX + 1] = { { 0, 0, 0, 0, 0, { 0 } } };
 static t_sds	g_ln = { NULL, 0, 0 };
 static ssize_t	g_rd[OPEN_MAX + 1] = { 0 };
 
@@ -44,6 +44,8 @@ inline int		rl_readnotty(int fd, char **ln)
 		return (WUT);
 	if ((g_rd[fd] = ft_ifschr(g_in + fd, 0, '\n', &buf)) > 0)
 	{
+		if (g_rd[fd] >= UINT16_MAX)
+			return (NOP);
 		g_ln.len = 0;
 		ft_sdsmpush(&g_ln, buf, (size_t)g_rd[fd]);
 		*ln = g_ln.buf;
@@ -65,6 +67,8 @@ inline int		rl_catnotty(int fd, char **ln, char c, char **it)
 	g_in[fd].ifd = fd;
 	if ((rd = ft_ifschr(g_in + fd, (size_t)g_rd[fd], '\n', &buf)) > 0)
 	{
+		if (g_rd[fd] >= UINT16_MAX)
+			return (NOP);
 		if (c < 0)
 		{
 			middle = g_ln.len + c;
