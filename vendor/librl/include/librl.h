@@ -27,6 +27,9 @@ typedef void	(t_rlcomp)(t_sds *cmd);
 extern int		rl_histload(char const *filename);
 extern int		rl_histsave(char const *filename);
 extern char		*rl_histadd(char const *ln, size_t len);
+extern void		rl_histdump(void);
+extern void		rl_histdel(size_t nb);
+extern void		rl_histdtor(void);
 
 extern void		rl_hook(t_rlhook *hook);
 extern void		rl_complete(t_rlcomp *comp);

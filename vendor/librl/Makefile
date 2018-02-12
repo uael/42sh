@@ -35,7 +35,7 @@ endif
 SRC_NAME = \
 	edit.c edit/ctrl.c edit/hist.c edit/insert.c edit/move.c edit/print.c \
 	edit/return.c edit/ln.c edit/utf8.c \
-	hist.c hist/load.c hist/save.c \
+	hist.c hist/bi.c hist/load.c hist/save.c hist/op.c \
 	hook.c \
 	read.c read/notty.c read/tty.c \
 	screen.c \

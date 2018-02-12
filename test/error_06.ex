@@ -1,2 +1,3 @@
 ush: Expected `<filename>' got `>'
-cat < >      ^
+cat < >
+      ^

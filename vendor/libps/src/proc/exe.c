@@ -117,5 +117,5 @@ inline int		ps_procexelaunch(struct s_proc *prc)
 	execve(buf, prc->argv, prc->envv);
 	g_errcb("%s: %e\n", prc->argv[0], errno);
 	ps_procdtor(prc);
-	return (g_fatalcb(st, NULL));
+	return (g_fatalcb(EXIT_FAILURE, NULL));
 }
