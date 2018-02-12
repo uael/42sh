@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 21:09:16 by mc                #+#    #+#             */
-/*   Updated: 2018/02/12 00:18:46 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/12 13:56:31 by mcanal           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,9 +77,13 @@ static t_bool handle_char_class(char const *pat, char const *str, int flags, \
 						matched | (*str == *pat));
 }
 
-static t_bool handle_str_wildcard(char const *pat, char const *str, int flags)
+static t_bool handle_str_wildcard(char const *pat, char const *str, int flags, \
+								  int depth)
 {
 	DEBUGUX("STR_WILDCARD", pat, str);
+
+	if (depth > MAX_DEPTH)
+		return FALSE;
 
 	if (glob_match(pat, str, flags)) //BOOOOM BABY!
 		return TRUE;
@@ -87,7 +91,7 @@ static t_bool handle_str_wildcard(char const *pat, char const *str, int flags)
 	if (!*str)
 		return glob_match(pat, str, flags);
 
-	return handle_str_wildcard(pat, str + 1, flags);
+	return handle_str_wildcard(pat, str + 1, flags, depth + 1);
 }
 
 //TODO: triple-check overflows
@@ -111,7 +115,7 @@ t_bool glob_match(char const *pat, char const *str, int flags)
 	}
 
 	if (*pat == '*')
-		return handle_str_wildcard(pat + 1, str, flags);
+		return handle_str_wildcard(pat + 1, str, flags, 1);
 
 	if (*pat == '?')
 		return *str ? glob_match(pat + 1, str + 1, flags) : FALSE;

@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 20:57:25 by mc                #+#    #+#             */
-/*   Updated: 2018/02/10 11:16:53 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/12 13:55:07 by mcanal           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,16 @@
 # define GLOB_CLIMB_TREE_H
 
 # include "libft/tys.h" /* for t_bool */
+
+# ifndef TRUE
+#  define TRUE				1
+# endif
+
+# ifndef FALSE
+#  define FALSE				0
+# endif
+
+# define MAX_DEPTH			4242 //TODO
 
 /*
 ** Recursively check PAT on the matching directory tree

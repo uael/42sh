@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 22:23:43 by mc                #+#    #+#             */
-/*   Updated: 2018/02/12 00:02:52 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/12 13:54:15 by mcanal           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,10 @@ static char **handle_brace_expansion(char const *pattern)
 
 static t_bool tree_climber(char const *dir, char const *pattern, int depth, int flags)
 {
-	//TODO: define MAX_DEPTH
 /*
+	if (depth > MAX_DEPTH)
+		return FALSE;
+
 	ret[] = []  //TODO: choose data-struct: linked list?
 
 	subpats[] = pattern.split('/')
