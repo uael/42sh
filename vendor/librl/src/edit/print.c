@@ -15,7 +15,7 @@
 
 static uint16_t			g_icol;
 static uint16_t			g_iup;
-static t_ofs			g_edit_out_stack = {STDOUT_FILENO, 0, {0}};
+static t_ofs			g_edit_out_stack = {STDIN_FILENO, 0, {0}};
 static t_ofs			*g_out = &g_edit_out_stack;
 
 static inline void			onprint(t_editln *ln, t_ofs *out, char const *row,

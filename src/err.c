@@ -16,15 +16,18 @@
 static t_ofs	g_cerr_stack = { STDERR_FILENO, 0, { 0 } };
 static t_ofs	*g_cerr = &g_cerr_stack;
 
-int			sh_verr(char const *fmt, va_list ap)
+int				sh_verr(char const *fmt, va_list ap)
 {
-	ft_ofswrf(g_cerr, COLOR_BRED"ush: "COLOR_RESET);
+	if (isatty(STDERR_FILENO))
+		ft_ofswrf(g_cerr, COLOR_BRED"ush: "COLOR_RESET);
+	else
+		ft_ofswrf(g_cerr, "ush: ");
 	ft_ofsvwrf(g_cerr, fmt, ap);
 	ft_ofsflush(g_cerr);
 	return (WUT);
 }
 
-int			sh_err(char const *fmt, ...)
+int				sh_err(char const *fmt, ...)
 {
 	va_list	ap;
 
@@ -34,31 +37,53 @@ int			sh_err(char const *fmt, ...)
 	return (WUT);
 }
 
-int			sh_synerr(char const *ln, char const *it, char const *fmt, ...)
+static void		printline(char const *ln, char const *it)
 {
-	va_list	ap;
+	char const	*b;
+	char const	*e;
 
-	va_start(ap, fmt);
-	sh_verr(fmt, ap);
-	va_end(ap);
-	ft_ofswrc(g_cerr, '\n');
-	if (ln)
+	if (!*it)
+		--it;
+	b = ft_strrschr(ln, it, '\n');
+	if (!b)
+		b = ln;
+	e = ft_strchr(it, '\n');
+	if (!e)
+		e = ft_strchr(it, '\0');
+	if (b == e && ln < it)
 	{
-		ft_ofswrs(g_cerr, ln);
-		if (!it)
-			it = ft_strchr(ln, 0);
-		while (++ln <= it)
-			ft_ofswrc(g_cerr, ' ');
-		ft_ofswrs(g_cerr, COLOR_BRED"^"COLOR_RESET"\n");
+		b = ft_strrschr(ln, it - 1, '\n');
+		if (!b)
+			b = ln;
 	}
-	ft_ofsflush(g_cerr);
-	return (ERR);
+	if (b < e && *b == '\n')
+		++b;
+	ft_ofswr(g_cerr, b, e - b);
+	ft_ofswrc(g_cerr, '\n');
+	while (++b <= it)
+		ft_ofswrc(g_cerr, ' ');
+	ft_ofswrs(g_cerr, isatty(STDERR_FILENO) ? COLOR_BRED"^"COLOR_RESET"\n"
+		: "^\n");
 }
 
-int			sh_evalerr(char const *ln, t_tok *tok, char const *fmt, ...)
+int				sh_synerr(char const *ln, char const *it, char const *fmt, ...)
 {
-	va_list	ap;
-	char	*it;
+	va_list		ap;
+
+	va_start(ap, fmt);
+	sh_verr(fmt, ap);
+	va_end(ap);
+	ft_ofswrc(g_cerr, '\n');
+	if (ln)
+		printline(ln, it);
+	ft_ofsflush(g_cerr);
+	return (OUF);
+}
+
+int				sh_evalerr(char const *ln, t_tok *tok, char const *fmt, ...)
+{
+	va_list		ap;
+	char		*it;
 
 	va_start(ap, fmt);
 	sh_verr(fmt, ap);
@@ -66,15 +91,12 @@ int			sh_evalerr(char const *ln, t_tok *tok, char const *fmt, ...)
 	ft_ofswrc(g_cerr, '\n');
 	if (ln)
 	{
-		ft_ofswrs(g_cerr, ln);
 		if (!tok)
 			it = ft_strchr(ln, 0);
 		else
 			it = (char *)(ln + tok->pos);
-		while (++ln <= it)
-			ft_ofswrc(g_cerr, ' ');
-		ft_ofswrs(g_cerr, COLOR_BRED"^"COLOR_RESET"\n");
+		printline(ln, it);
 	}
 	ft_ofsflush(g_cerr);
-	return (ERR);
+	return (OUF);
 }

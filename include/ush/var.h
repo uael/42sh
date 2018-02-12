@@ -17,12 +17,11 @@
 
 # define SH_IFS " \t"
 
-extern void		sh_varscope(void);
-extern t_bool	sh_varunscope(void);
+extern void		sh_vardtor(void);
+extern int		sh_vardump(char **envv);
 extern void		sh_varset(char *var, char *val);
-extern char		*sh_varget(char *var);
-void			sh_vardump();
-
+extern char		*sh_varget(char *var, char **envv);
 extern char		*sh_varifs(void);
+extern size_t	sh_varexpand(t_sds *dst, char const *src);
 
 #endif

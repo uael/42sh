@@ -30,6 +30,7 @@ extern void		*ft_memset(void *b, int c, size_t len);
 extern void		*ft_memdup(void const *src, size_t n);
 
 extern char		*ft_strbegw(char const *s1, char const *s2);
+extern char		*ft_strendw(char const *s1, char const *s2);
 extern char		*ft_strcat(char *dest, char const *src);
 extern char		*ft_strchr(char const *s, int c);
 extern char		*ft_strmchr(char const *s, char const *c);
@@ -37,6 +38,7 @@ extern int		ft_strcmp(char const *s1, char const *s2);
 extern void		ft_strclr(char *s);
 extern char		*ft_strcpy(char *dest, char const *src);
 extern char		*ft_strdup(char const *src);
+extern char		*ft_strndup(char const *src, size_t n);
 extern size_t	ft_strlen(char const *str);
 extern size_t	ft_strlcpy(char *dst, char const *src, size_t size);
 extern size_t	ft_strlcat(char *dest, char const *src, size_t size);
@@ -51,5 +53,6 @@ extern char		*ft_strrchr(char const *s, int c);
 extern char		*ft_strstr(char const *haystack, char const *needle);
 extern size_t	ft_strword(char const *s, char c, char e);
 extern char		*ft_strscpy(char **dst, size_t *n, char *src);
+extern char		*ft_strrschr(char const *beg, char const *end, char c);
 
 #endif

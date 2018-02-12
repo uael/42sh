@@ -24,7 +24,7 @@ void			rd_sigwinch(int signo)
 {
 	(void)signo;
 	rl_screenget(g_screen);
-	if (g_mode == RL_INSERT)
+	if (g_mode != RL_OFF && g_mode != RL_NONE)
 		rl_editprint(g_edit_prompt, g_eln);
 }
 
@@ -46,18 +46,24 @@ int				rl_getline(int fd, char *prompt, char **ln)
 	char		*buf;
 	size_t		len;
 	int			st;
+	uint16_t	col;
 
+	len = 0;
 	if (fd != 0 || !isatty(fd) || rl_rawmode(fd))
 		return (rl_readnotty(fd, ln));
-	ft_puts(STDOUT_FILENO, prompt);
+	if (!rl_screenpos(NULL, &col) && col > 1)
+		ft_puts(STDIN_FILENO, TC_MR"%"TC_ME"\n");
+	ft_putf(STDIN_FILENO, "\033[0m%s", prompt);
 	signal(SIGWINCH, rd_sigwinch);
 	if (!g_screen_init && rl_screenget(g_screen) < 0)
 		st = WUT;
-	else if (!(st = rl_editln(prompt, &len, &buf, 0)) && len > 1)
-		*ln = rl_histadd(buf, len);
+	else if (!(st = rl_editln(prompt, &len, &buf, 0)) || st == RL_CLR)
+		*ln = len > 1 && st != RL_CLR ? rl_histadd(buf, len) : buf;
 	g_screen_init = 1;
 	rl_offmode(fd);
-	return (st);
+	if (st == RL_CLR)
+		st = YEP;
+	return (st <= 0 ? st : OUF);
 }
 
 int				rl_catline(int fd, char c, char **ln, char **it)
@@ -67,14 +73,14 @@ int				rl_catline(int fd, char c, char **ln, char **it)
 	int			st;
 
 	if (fd != 0 || !isatty(fd) || rl_rawmode(fd))
-		return (rl_readnotty(fd, it));
-	ft_puts(STDOUT_FILENO, "\033[31m>\033[0m ");
+		return (rl_catnotty(fd, ln, c, it));
+	ft_puts(STDIN_FILENO, "\033[0m\033[31m>\033[0m ");
 	signal(SIGWINCH, rd_sigwinch);
 	if (!g_screen_init && rl_screenget(g_screen) < 0)
 		st = WUT;
-	else if (!(st = rl_editln("\033[31m>\033[0m ", &len, &buf, 1)) && len > 1)
-		*it = rl_histcat(buf, len, c, ln);
+	else if (!(st = rl_editln("\033[31m>\033[0m ", &len, &buf, 1)))
+		*it = len ? rl_histcat(buf, len, c, ln) : buf;
 	g_screen_init = 1;
 	rl_offmode(fd);
-	return (st);
+	return (st <= 0 ? st : OUF);
 }

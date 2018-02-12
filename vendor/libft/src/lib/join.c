@@ -10,10 +10,12 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdarg.h>
+
 #include "libft/lib.h"
 #include "libft/str.h"
 
-inline char		*ft_join(char const *s1, char const *s2, char c)
+inline char			*ft_join(char const *s1, char const *s2, char c)
 {
 	size_t	l1;
 	size_t	l2;

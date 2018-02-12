@@ -24,7 +24,7 @@
 
 # define YEP (0)
 # define NOP (1)
-# define ERR (2)
+# define OUF (2)
 # define WUT (-1)
 
 # ifndef ELAST
@@ -34,7 +34,8 @@
 # define ENIMPL (ELAST + 1)
 # define EBOUND (ENIMPL + 1)
 # define ENOTRM (EBOUND + 1)
-# define FT_ELAST (ENOTRM)
+# define ENOARG (ENOTRM + 1)
+# define FT_ELAST (ENOARG)
 
 struct s_vec;
 
@@ -52,13 +53,12 @@ extern int		ft_fatal(int no, t_dtor dtor, void *arg, char const *msg, ...);
 extern int		ft_retf(int no, char const *msg, ...);
 extern int		ft_szret(int no, char const *msg, ...);
 
-extern void		ft_pfree(void **pptr);
+extern int		ft_pfree(void **pptr);
 extern void		ft_clean(void *ptr);
 
 extern char		*ft_join(char const *s1, char const *s2, char n);
-extern char		*ft_getenv(char **env, char *var);
+extern char		*ft_getenv(char **env, char const *var);
 extern void		ft_setenv(struct s_vec *env, char *var, char *val);
-
-# define GC(T) __attribute__((__cleanup__(ft_clean))) T
+extern t_bool	ft_unsetenv(struct s_vec *env, char *var, t_bool delm);
 
 #endif

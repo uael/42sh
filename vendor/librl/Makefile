@@ -10,68 +10,93 @@
 #                                                                              #
 # **************************************************************************** #
 
-NAME = librl.a
-CC = gcc
-CFLAGS = -Werror -Wextra -Wall -g2 -DDEBUG -fsanitize=address
+NAME ?= librl
+CFLAGS += -Werror -Wextra -Wall
+RCFLAGS = -O2 -fomit-frame-pointer
+DCFLAGS = -g3 -DDEBUG
+SCFLAGS = $(DCFLAGS) -fsanitize=address,undefined -ferror-limit=5
+CC ?= gcc
 
-SRC_PATH = ./src/
-OBJ_PATH = ./obj/
-3TH_PATH = ../libft/
-INC_PATH = ./include/ $(addprefix $(3TH_PATH), include/)
-LNK_PATH = ./ $(3TH_PATH)
+INC_PATH = include ../libft/include
+SRC_PATH = src
+OBJ_DIR ?= obj
+OBJ_PATH ?= $(OBJ_DIR)/rel
+3TH_PATH =
 
-OBJ_NAME = $(SRC_NAME:.c=.o)
+LIBS =
+ifneq (,$(findstring dev,$(NAME)))
+LIB_NAME = $(addsuffix .dev, $(LIBS))
+else ifneq (,$(findstring san,$(NAME)))
+LIB_NAME = $(addsuffix .san, $(LIBS))
+else
+LIB_NAME = $(LIBS)
+endif
 3TH_NAME =
 SRC_NAME = \
 	edit.c edit/ctrl.c edit/hist.c edit/insert.c edit/move.c edit/print.c \
-	edit/return.c edit/ln.c edit/search.c edit/utf8.c edit/visual.c \
-	hist.c hist/load.c hist/save.c \
+	edit/return.c edit/ln.c edit/utf8.c \
+	hist.c hist/bi.c hist/load.c hist/save.c hist/op.c \
 	hook.c \
 	read.c read/notty.c read/tty.c \
 	screen.c \
+	visual.c \
 	signal.c
 
-SRC = $(addprefix $(SRC_PATH), $(SRC_NAME))
-OBJ = $(addprefix $(OBJ_PATH), $(OBJ_NAME))
-INC = $(addprefix -I, $(INC_PATH))
-LNK = $(addprefix -L, $(LNK_PATH))
-3TH = $(addprefix -l, $(3TH_NAME))
-EXE =
-LIB = $(NAME)
+3TH = $(addprefix $(3TH_PATH)/, $(3TH_NAME))
+OBJ = $(addprefix $(OBJ_PATH)/, $(SRC_NAME:.c=.o))
+LNK = $(addprefix -L, $(3TH))
+INC = $(addprefix -I, $(INC_PATH) $(addsuffix /include, $(3TH)))
+LIB = $(addprefix -l, $(LIB_NAME))
+DEP = $(OBJ:%.o=%.d)
 
-all: $(EXE) $(LIB)
+all:
+ifneq ($(3TH_NAME),)
+	@+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th);)
+endif
+	@+$(MAKE) $(NAME).a "CFLAGS = $(RCFLAGS)" "OBJ_PATH = $(OBJ_DIR)/rel"
 
-$(LIB): 3th $(OBJ)
-	@ar -rc $(NAME) $(OBJ)
-	@ranlib $(NAME)
-	@printf  "%-25s\033[32m[✔]\033[0m\n" "$(NAME): lib"
+dev:
+ifneq ($(3TH_NAME),)
+	@+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) dev;)
+endif
+	@+$(MAKE) $(NAME).dev.a "NAME = $(NAME).dev" "CFLAGS = $(DCFLAGS)" \
+	  "OBJ_PATH = $(OBJ_DIR)/dev"
 
-$(EXE): 3th $(OBJ)
-	@$(CC) $(CFLAGS) $(LNK) $(INC) $(OBJ) -o $(NAME) $(3TH)
-	@printf  "%-25s\033[32m[✔]\033[0m\n" "$(NAME): exe"
+san:
+ifneq ($(3TH_NAME),)
+	@+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) san;)
+endif
+	@+$(MAKE) $(NAME).san.a "NAME = $(NAME).san" "CFLAGS = $(SCFLAGS)" \
+	  "OBJ_PATH = $(OBJ_DIR)/san"
 
-$(OBJ_PATH)%.o: $(SRC_PATH)%.c
+$(NAME).a: $(OBJ)
+	@ar -rc $(NAME).a $(OBJ)
+	@ranlib $(NAME).a
+	@printf  "%-20s\033[32m✔\033[0m\n" "$(NAME): lib"
+
+$(OBJ_PATH)/%.o: $(SRC_PATH)/%.c
 	@mkdir -p $(shell dirname $@)
-	@printf  "\r%-25s\033[34m[$<]\033[0m\n" "$(NAME):"
-	@$(CC) $(CFLAGS) $(INC) -o $@ -c $<
+	@printf "\r%-20s$<\n" "$(NAME):"
+	@$(CC) $(CFLAGS) $(INC) -MMD -MP -c $< -o $@
 	@printf "\033[A\033[2K"
 
 clean:
+ifneq ($(3TH_NAME),)
+	@+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) clean;)
+endif
 	@rm -rf $(OBJ_PATH)
-	@printf  "%-25s\033[32m[✔]\033[0m\n" "$(NAME): $@"
+	@printf  "%-20s\033[32m✔\033[0m\n" "$(NAME): $@"
 
-fclean: clean
-ifneq ($(3TH_PATH),)
-	@$(foreach lib,$(3TH_PATH),$(MAKE) -C $(lib) fclean;)
+fclean:
+ifneq ($(3TH_NAME),)
+	@+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) fclean;)
 endif
+	@rm -rf $(OBJ_PATH)
 	@rm -f $(NAME)
-	@printf  "%-25s\033[32m[✔]\033[0m\n" "$(NAME): $@"
-
-3th:
-ifneq ($(3TH_PATH),)
-	@$(foreach lib,$(3TH_PATH),$(MAKE) -C $(lib) -j4;)
-endif
+	@printf  "%-20s\033[32m✔\033[0m\n" "$(NAME): $@"
 
 re: fclean all
 
-.PHONY: all, 3th, $(NAME), clean, fclean, re
+-include $(DEP)
+
+.PHONY: all, dev, san, $(NAME).a, clean, fclean, re

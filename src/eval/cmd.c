@@ -20,7 +20,7 @@ inline int		sh_evalcmd(t_job *job, int fd, t_deq *toks, char **ln)
 	st = NOP;
 	if (!(tok = sh_tokpeek(toks)))
 		return (NOP);
-	if ((tok->id == TOK_WORD || TOK_ISREDIR(tok->id)) &&
+	if (TOK_ISCMDM(tok->id) &&
 		!(st = sh_evalsimple(job, fd, toks, ln)))
 		return (YEP);
 	if (tok->id == '(' && !(st = sh_evalcompound(job, fd, toks, ln)))
@@ -28,7 +28,7 @@ inline int		sh_evalcmd(t_job *job, int fd, t_deq *toks, char **ln)
 		while ((tok = sh_tokpeek(toks)))
 			if (TOK_ISREDIR(tok->id))
 			{
-				if ((st = sh_evalredir(job, fd, toks, ln)))
+				if ((st = sh_evalredir(job, toks, ln)))
 					return (st);
 			}
 			else

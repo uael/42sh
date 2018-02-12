@@ -11,168 +11,137 @@
 /* ************************************************************************** */
 
 #include "ush/lex.h"
+#include "ush/shell.h"
 
-#define UNXPTD_C "Unexpected token `%c' while looking for matching `%c'"
-#define UXPTD "Unexpected closing bracket `%c'"
+#define UEE "parse error: Unexpected EOF while looking for matching `%c'"
+#define UEC "parse error: Unexpected closing bracket `%c'"
+#define UEH "syntax error: Expected `<word>' after heredoc `%s' got `%s'"
+#define EXS "syntax error: Unexpected empty command between `%s'"
 
-static char		*g_tokidsstr[] =
+static int			g_sidx;
+
+static inline int	tokitctor(t_tokit *tit, char **it, char **ln)
 {
-	[TOK_END] = "<EOF>",
-	[TOK_HEREDOC] = "<<",
-	[TOK_HEREDOCT] = "<<-",
-	[TOK_RAOUT] = ">>",
-	[TOK_LAMP] = "<&",
-	[TOK_RAMP] = ">&",
-	[TOK_CMP] = "<>",
-	[TOK_EOL] = "<newline>",
-	[TOK_RPOUT] = ">|",
-	[TOK_AMPR] = "&>",
-	[TOK_LAND] = "&&",
-	[TOK_LOR] = "||",
-	[TOK_CASE] = "case",
-	[TOK_DO] = "do",
-	[TOK_DONE] = "done",
-	[TOK_ELIF] = "elif",
-	[TOK_ELSE] = "else",
-	[TOK_FUNCTION] = "function",
-	[TOK_FOR] = "for",
-	[TOK_FI] = "fi",
-	[TOK_IF] = "if",
-	[TOK_IN] = "in",
-	[TOK_ESAC] = "esac",
-	[TOK_SELECT] = "select",
-	[TOK_THEN] = "then",
-	[TOK_UNTIL] = "until",
-	[TOK_WHILE] = "while",
-	[TOK_WORD] = "<word>",
-	[TOK_NOT] = "!",
-	[TOK_AMP] = "&",
-	[TOK_LPAR] = "(",
-	[TOK_RPAR] = ")",
-	[TOK_HYPEN] = "-",
-	[TOK_SEMICOLON] = ";",
-	[TOK_RIN] = "<",
-	[TOK_ASSIGN] = "=",
-	[TOK_ROUT] = ">",
-	[TOK_LBRACKET] = "[",
-	[TOK_RBRACKET] = "]",
-	[TOK_LCURLY] = "{",
-	[TOK_PIPE] = "|",
-	[TOK_RCURLY] = "}"
-};
-
-inline char			*sh_tokidstr(uint8_t id)
-{
-	char *ret;
-
-	if (id > TOK_RCURLY)
-		return ("<unknown>");
-	return ((ret = g_tokidsstr[id]) ? ret : "<unknown>");
-}
-
-inline char			*sh_tokstr(t_tok *tok)
-{
-	char *ret;
-
-	if (!tok)
-		return (g_tokidsstr[TOK_END]);
-	if (tok->id > TOK_RCURLY)
-		return ("<unknown>");
-	if (tok->len)
-		return (tok->val);
-	return ((ret = g_tokidsstr[tok->id]) ? ret : "<unknown>");
-}
-
-static inline int	lex(int fd, t_tok *tok, char **it, char **ln)
-{
-	int	st;
-
-	tok->len = 0;
-	while (ft_strchr(sh_varifs(), **it))
-		++*it;
-	tok->pos = (uint16_t)(*it - *ln);
-	if (**it == '\n' || (**it == '\r' && *(*it + 1) == '\n'))
-	{
-		tok->id = TOK_EOL;
-		ft_sdscpush((t_sds *)tok, '\n');
-		++*it;
-		while (**it == '\n' || (**it == '\r' && *(*it + 1) == '\n'))
-			++*it;
-		return (YEP);
-	}
-	while (**it == '\\' && ((*(*it + 1) == '\n' && !*(*it + 2)) ||
-		((*(*it + 1) == '\r' && *(*it + 2) == '\n' && !*(*it + 3)))))
-		if ((st = fd < 0 ? NOP : rl_catline(fd, -2, ln, it)))
-			return (st);
-	if (**it == '#')
-		while (**it && (**it != '\n' || (**it != '\r' && *(*it + 1) != '\n')))
-			++*it;
-	if (!**it)
-	{
-		tok->id = TOK_END;
-		return (YEP);
-	}
-	while (ft_strchr(sh_varifs(), **it))
-		++*it;
-	if (ft_isdigit(**it))
-		ft_sdscpush((t_sds *)tok, *(*it)++);
-	if ((st = sh_lexop(fd, tok, it, ln)) != NOP)
-		return (st);
-	if ((st = sh_lexword(fd, tok, it, ln)) != NOP)
-		return (st);
-	return (sh_synerr(*ln, *it, "Unexpected token `%c'", **it));
-}
-
-int					sh_lex(int fd, t_deq *toks, char **it, char **ln)
-{
-	t_tok	*tok;
-	int		st;
-	char	stack[1000];
-	size_t	i;
-
-	if (!**it)
+	if (!*it || !**it)
 		return (NOP);
-	if (!ln)
-		ln = it;
-	i = 0;
-	while ((tok = ft_deqpush(toks)))
+	!ln ? (ln = it) : 0;
+	tit->it = it;
+	tit->ln = ln;
+	return (YEP);
+}
+
+static inline int	reduce(int fd, t_deq *toks, char **it, char **ln)
+{
+	t_tok *tok;
+	t_tok *prev;
+	t_tok *end;
+
+	prev = NULL;
+	tok = (t_tok *)ft_deqbeg(toks) - 1;
+	end = ft_deqend(toks);
+	while (++tok < end)
 	{
-		ft_sdsgrow((t_sds *)tok, 1);
-		*tok->val = '\0';
-		if (!**it)
+		if (TOK_ISWORD(tok->id) && prev)
 		{
-			if (!i)
-			{
-				tok->id = TOK_END;
-				break ;
-			}
-			if ((st = fd < 0 ? NOP : rl_catline(fd, -1, ln, it)))
-				return (st);
+			if (prev->id == TOK_HEREDOC && sh_lexheredoc(fd, tok, it, ln))
+				return (OUF);
 		}
-		if ((st = lex(fd, tok, it, ln)))
-			return (st);
-		if (!i && (tok->id == TOK_EOL || tok->id == TOK_END))
+		else if (prev && prev->id == TOK_HEREDOC)
+			return (sh_synerr(*ln, *ln + tok->pos, UEH, sh_tokstr(prev),
+				sh_tokstr(tok)));
+		else if (prev && prev->id == tok->id && TOK_ISSEP(tok->id))
+			return (sh_synerr(*ln, *ln + tok->pos, EXS, sh_tokstr(tok)));
+		if ((prev = tok)->id == TOK_END || tok->id == TOK_EOL)
 			break ;
-		if (ft_strchr("({[", tok->id))
-			stack[i++] = sh_isbracket(tok->id);
-		else if (i && tok->id == stack[i - 1])
-			--i;
-		else if (ft_strchr(")}]", tok->id) && (!i || tok->id != stack[i - 1]))
-			return (i ? sh_synerr(*ln, *ln + tok->pos, UNXPTD_C, tok->id,
-				stack[i - 1]) : sh_synerr(*ln, *ln + tok->pos, UXPTD, tok->id));
 	}
-	return (tok ? sh_lexreduce(fd, toks, it, ln) : YEP);
+	return (YEP);
 }
 
-int					sh_lexnext(int fd, t_deq *toks, char **ln)
+static inline int	check(int fd, t_tok *t, t_deq *deq, t_tokit *it)
 {
-	char	*it;
+	int st;
+
+	if (TOK_ISEND(t->id))
+	{
+		if ((st = reduce(fd, deq, it->it, it->ln)))
+			return (st);
+		if (!g_sidx)
+		{
+			deq->cur = 0;
+			return (NOP);
+		}
+		deq->cur = deq->len + 1;
+	}
+	else if (t->id == '(')
+		++g_sidx;
+	else if (g_sidx && t->id == ')')
+		--g_sidx;
+	else if (t->id == ')' && !g_sidx)
+		return (sh_synerr(*it->ln, *it->ln + t->pos, UEC, t->id));
+	return (YEP);
+}
+
+static inline int	tokenize(int fd, t_tok *tok, char **it, char **ln)
+{
 	int		st;
 
-	if (fd < 0)
+	while (1)
+		if ((st = sh_lexbslash(fd, it, ln)))
+			return (st);
+		else if (**it && ft_strchr(sh_varifs(), **it))
+			++*it;
+		else if (ISEOL(*it))
+			return (((sh_tokpos(tok, *it, *ln)->id = TOK_EOL) && ++*it) & 0);
+		else if (**it == '#')
+			while (**it && !ISEOL(*it))
+				++*it;
+		else if (!**it)
+			return ((sh_tokpos(tok, *it, *ln)->id = TOK_END) & 0);
+		else
+			break ;
+	sh_tokpos(tok, *it, *ln);
+	ft_isdigit(**it) ? (++tok->len && ++*it) : 0;
+	return (st = sh_lexop(fd, tok, it, ln)) != NOP ||
+		(st = sh_lexword(fd, tok, it, ln)) != NOP ? st :
+		sh_synerr(*ln, *it, "Unexpected token `%c'", **it);
+}
+
+int					sh_lex(int fd, char **it, char **ln, t_tokcb *cb)
+{
+	int		st;
+	t_deq	*d;
+	t_tok	*t;
+	t_tokit	tit;
+
+	if (tokitctor(&tit, it, ln))
 		return (NOP);
-	if (!(st = rl_catline(fd, ';', ln, &it)))
-		while (!(st = sh_lex(fd, toks, &it, ln)))
-			;
-	return (st);
+	ft_deqctor(d = alloca(sizeof(t_deq)), sizeof(t_tok));
+	d->buf = alloca((d->cap += 32) * sizeof(t_tok));
+	while (1)
+	{
+		if (d->len == d->cap)
+		{
+			t = alloca((d->cap *= 2) * sizeof(t_tok));
+			ft_memcpy(t, d->buf, d->len * sizeof(t_tok));
+			d->buf = t;
+		}
+		ft_memset(t = (t_tok *)d->buf + d->len++, 0, sizeof(t_tok));
+		if ((st = tokenize(fd, t, it, ln)) || (st = check(fd, t, d, &tit)))
+		{
+			if (st == NOP)
+			{
+				if (cb(fd, d, ln))
+					g_sh->status = 1;
+				if (**it)
+				{
+					d->len = 0;
+					d->cur = 0;
+					continue ;
+				}
+			}
+			return (st);
+		}
+		if (g_sidx && !**it && (fd < 0 || (st = rl_catline(fd, 0, ln, it)) || !**it))
+			return (LEX_SHOWE(st, fd) ? sh_synerr(*ln, *it, UEE, ')') : OUF);
+	}
 }

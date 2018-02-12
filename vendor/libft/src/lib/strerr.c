@@ -104,6 +104,7 @@ static char	*g_strerr[] =
 	[ENIMPL] = "Function not implemented",
 	[EBOUND] = "Enum out of bounds",
 	[ENOTRM] = "Terminal type not specified",
+	[ENOARG] = "Not enough arguments",
 };
 
 inline char	*ft_strerr(int errn)

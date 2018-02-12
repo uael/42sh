@@ -12,54 +12,38 @@
 
 #include "ush/var.h"
 
-static t_vec	g_scopes = { NULL, sizeof(t_map), 0, 0 };
-static t_map	*g_scope = NULL;
-
-inline void		sh_vardump(void)
+static t_map	g_locals_stack =
 {
-	uint32_t it;
+	0, 0, 0, 0, NULL, { (t_hashfn *)ft_strhash, (t_eqfn *)ft_streq },
+	sizeof(char *), sizeof(char *), NULL, NULL
+};
+static t_map	*g_locals = &g_locals_stack;
+
+inline int		sh_vardump(char **envv)
+{
+	uint32_t	it;
+	char		*val;
 
 	it = 0;
-	while (it < g_scope->cap)
+	if (envv)
+		while (*envv)
+			ft_putl(STDOUT_FILENO, *envv++);
+	while (it < g_locals->cap)
 	{
-		if (BUCKET_ISPOPULATED(g_scope->bucks, it))
-			ft_putl(1, ((char **)g_scope->vals)[it]);
+		if (BUCKET_ISPOPULATED(g_locals->bucks, it))
+		{
+			val = ((char **)g_locals->vals)[it];
+			ft_putf(STDOUT_FILENO, ft_strlen(val) ? "%s=%s\n" : "%s=''\n",
+				((char **)g_locals->keys)[it], val);
+		}
 		++it;
 	}
+	return (YEP);
 }
 
-inline void		sh_varscope(void)
+inline void		sh_vardtor(void)
 {
-	t_map		*scope;
-	uint32_t	it;
-	uint32_t	put;
-
-	scope = ft_vecpush(&g_scopes);
-	if (!scope->ksz)
-		ft_mapctor(scope, g_strhash, sizeof(char *), sizeof(char *));
-	it = 0;
-	if (g_scope)
-		while (it < g_scope->cap)
-		{
-			if (BUCKET_ISPOPULATED(g_scope->bucks, it) &&
-				ft_mapput(scope, ((char **)g_scope->keys)[it], &put))
-				((char **)scope->vals)[put] =
-					ft_strdup(((char **)g_scope->vals)[it]);
-			++it;
-		}
-	g_scope = scope;
-}
-
-inline t_bool	sh_varunscope(void)
-{
-	if (g_scope && ft_vecpop(&g_scopes, NULL))
-	{
-		ft_mapdtor(g_scope, (t_dtor)ft_pfree, (t_dtor)ft_pfree);
-		g_scope = ft_vecback(&g_scopes);
-		return (1);
-	}
-	ft_vecdtor(&g_scopes, NULL);
-	return (0);
+	ft_mapdtor(g_locals, (t_dtor)ft_pfree, (t_dtor)ft_pfree);
 }
 
 inline void		sh_varset(char *var, char *val)
@@ -67,28 +51,47 @@ inline void		sh_varset(char *var, char *val)
 	uint32_t	it;
 	char		*dvar;
 
-	if (!val)
+	if (val && sh_getenv(var))
+		sh_setenv(var, val);
+	else if (!val)
 	{
-		if (ft_mapget(g_scope, var, &it))
+		if (ft_mapget(g_locals, var, &it))
 		{
-			free(((char **)g_scope->keys)[it]);
-			free(((char **)g_scope->vals)[it]);
-			ft_mapdel(g_scope, it);
+			free(((char **)g_locals->keys)[it]);
+			free(((char **)g_locals->vals)[it]);
+			ft_mapdel(g_locals, it);
 		}
 	}
-	else if (ft_mapget(g_scope, var, &it))
-		((char **)g_scope->vals)[it] = ft_strdup(val);
-	else if (ft_mapput(g_scope, dvar = ft_strdup(var), &it))
-		((char **)g_scope->vals)[it] = ft_strdup(val);
+	else if (ft_mapget(g_locals, var, &it))
+	{
+		free(((char **)g_locals->vals)[it]);
+		((char **)g_locals->vals)[it] = ft_strdup(val);
+	}
+	else if (ft_mapput(g_locals, dvar = ft_strdup(var), &it))
+		((char **)g_locals->vals)[it] = ft_strdup(val);
 	else
 		free(dvar);
 }
 
-inline char		*sh_varget(char *var)
+inline char		*sh_varget(char *var, char **envv)
 {
 	uint32_t	it;
 
-	if (ft_mapget(g_scope, var, &it))
-		return (((char **)g_scope->vals)[it]);
-	return (sh_getenv(var));
+	if (ft_mapget(g_locals, var, &it))
+		return (((char **)g_locals->vals)[it]);
+	return (envv ? ft_getenv(envv, var) : NULL);
+}
+
+inline char		*sh_varifs(void)
+{
+	static char	*ifs = NULL;
+	char		*eol;
+
+	if (ifs)
+		return (ifs);
+	if (!(ifs = sh_getenv("IFS")))
+		ifs = SH_IFS;
+	else if ((eol = ft_strchr(ifs, '\n')))
+		*eol = ' ';
+	return (ifs);
 }

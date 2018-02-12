@@ -1,0 +1,13 @@
+/bin/ls | grep -o "42sh"
+/bin/ls -laF | grep -o "CMakeLists.txt*"
+/bin/ls -l -a -F | grep -o "CMakeLists.txt*"
+ls | grep "42sh"
+ls -laF | grep -o "CMakeLists.txt*"
+ls -l -a -F | grep -o "CMakeLists.txt*"
+unset PATH
+/bin/ls | /usr/bin/grep -o "42sh"
+/bin/ls -laF | /usr/bin/grep -o "CMakeLists.txt*"
+/bin/ls -l -a -F | /usr/bin/grep -o "CMakeLists.txt*"
+ls 2>&1 | /usr/bin/grep -o "ls"
+ls -laF 2>&1 | /usr/bin/grep -o "ls"
+ls -l -a -F 2>&1 |/usr/bin/grep -o "ls"

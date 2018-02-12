@@ -11,61 +11,61 @@
 /* ************************************************************************** */
 
 #include "ush/lex.h"
+#include "ush/shell.h"
 
-#define M(p, c) (s[p] == (c))
+#define ISQUOTE(IT) (*(IT) == '\'' || *(IT) == '"' || *(IT) == '`')
+#define UEC "parse error: Unexpected EOF while looking for matching `%c'"
 
-static inline uint8_t	wordid(char const *s, size_t l)
+static inline int	quote(int fd, t_tok *tok, char **it, char **ln)
 {
-	if (l == 2 && M(0, 'i') && (M(1, 'f') || M(1, 'n')))
-		return (M(1, 'f') ? TOK_IF : TOK_IN);
-	if (M(0, 'd') && M(1, 'o') && (l == 2 || (l < 5 && M(2, 'n') && M(3, 'e'))))
-		return (l == 2 ? TOK_DO : TOK_DONE);
-	if (l == 3 && M(0, 'f') && M(1, 'o') && M(2, 'r'))
-		return (TOK_FOR);
-	if (l == 4 && M(0, 'c') && M(1, 'a') && M(2, 's') && M(3, 'e'))
-		return (TOK_CASE);
-	if (l == 4 && M(0, 'e') && M(1, 's') && M(2, 'a') && M(3, 'c'))
-		return (TOK_ESAC);
-	if (l == 4 && M(0, 'e') && M(1, 'l') && M(2, 'i') && M(3, 'f'))
-		return (TOK_ELIF);
-	if (l == 4 && M(0, 'e') && M(1, 'l') && M(2, 's') && M(3, 'e'))
-		return (TOK_ELSE);
-	if (l == 4 && M(0, 't') && M(1, 'h') && M(2, 'e') && M(3, 'n'))
-		return (TOK_THEN);
-	if (l == 5 && M(0, 'w') && M(1, 'h') && M(2, 'i') && M(3, 'l') && M(4, 'e'))
-		return (TOK_WHILE);
-	if (l == 5 && M(0, 'u') && M(1, 'n') && M(2, 't') && M(3, 'i') && M(4, 'l'))
-		return (TOK_UNTIL);
-	if (l == 6 && ft_strcmp("select", s) == 0)
-		return (TOK_SELECT);
-	if (l == 8 && ft_strcmp("function", s) == 0)
-		return (TOK_FUNCTION);
-	return ((uint8_t)((l == 2 && M(0, 'f') && M(1, 'i')) ? TOK_FI : TOK_WORD));
+	char	q;
+	int		st;
+	int		bs;
+
+	bs = 0;
+	st = 0;
+	(++tok->len && (q = *(*it)++));
+	while (!st)
+		if (!bs && q == '"' && (st = sh_lexbslash(fd, it, ln)))
+			return (st);
+		else if (!**it && (fd < 0 || (st = rl_catline(fd, 0, ln, it)) || !**it))
+			return (LEX_SHOWE(st, fd) ? sh_synerr(*ln, *it, UEC, q) : OUF);
+		else if (bs && q != '\'')
+			(void)((++tok->len && ++*it) && (bs = 0));
+		else if (**it == q && (++tok->len && ++*it))
+			break ;
+		else if (!(bs = **it == '\\') && q == '"' && **it == '`')
+			st = quote(fd, tok, it, ln);
+		else if (q == '"' && **it == '$' && *(*it + 1) &&
+			!ft_isspace(*(*it + 1)) && !ft_strchr(sh_varifs(), *(*it + 1)))
+			st = sh_lexvar(fd, tok, it, ln);
+		else
+			(++tok->len && ++*it);
+	return (st);
 }
 
-inline int				sh_lexword(int fd, t_tok *tok, char **it, char **ln)
+inline int			sh_lexword(int fd, t_tok *tok, char **it, char **ln)
 {
-	char	*beg;
 	int		st;
+	int		bs;
 
-	beg = *it;
-	while (**it)
-		if (ft_isspace(**it) || ft_strchr("><&|!;(){}", **it))
+	st = 0;
+	bs = 0;
+	while (**it && !st)
+		if (!bs && (ft_isspace(**it) || ft_strchr("><&|!;()", **it) ||
+			(st = sh_lexbslash(fd, it, ln))))
 			break ;
-		else if ((**it == '\'' || **it == '"'))
-		{
-			if ((st = sh_lexquote(fd, tok, it, ln)))
-				return (st);
-		}
-		else if (**it == '\\' && ((*(*it + 1) == '\n' && !*(*it + 2)) ||
-			(*(*it + 1) == '\r' && *(*it + 2) == '\n' && !*(*it + 3))) &&
-			(st = fd < 0 ? NOP : rl_catline(fd, -2, ln, it)))
-			return (st);
+		else if (bs)
+			(void)((++tok->len && ++*it) && (bs = 0));
+		else if (!(bs = **it == '\\') && ISQUOTE(*it))
+			st = quote(fd, tok, it, ln);
+		else if (**it == '$' && *(*it + 1) && !ft_isspace(*(*it + 1)) &&
+			!ft_strchr(sh_varifs(), *(*it + 1)))
+			st = sh_lexvar(fd, tok, it, ln);
 		else
-			ft_sdscpush((t_sds *)tok, *(*it)++);
-	if (!tok->len && beg == *it)
-		return (NOP);
-	if ((tok->id = wordid(tok->val, tok->len)) == TOK_WORD)
-		sh_wordglob((t_sds *)tok);
-	return (YEP);
+			(++tok->len && ++*it);
+	if (st || !tok->len)
+		return (st ? st : NOP);
+	tok->id = TOK_WORD;
+	return (st);
 }

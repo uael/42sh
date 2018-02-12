@@ -12,26 +12,39 @@
 
 #include "ush.h"
 
-inline int	sh_biunset(int ac, char **av, char **env)
-{
-	int i;
+static char const	*g_usage = "usage: unset [NAME ...]\n"
+"\tThe unset builtin command is used to unset values and attributes\n"
+"\tof shell variables.\n";
 
-	(void)env;
-	i = 0;
+static int			unsetexhdl(int rcode, void *arg)
+{
+	if (!errno || errno == EBADF || errno == EIO)
+		return (rcode);
+	if (arg)
+		ft_putf(STDERR_FILENO, "unset: %s: %e\n",
+			arg, errno);
+	else
+		ft_putf(STDERR_FILENO, "unset: %e\n", errno);
+	if (errno == ENOARG)
+		ft_puts(STDERR_FILENO, g_usage);
+	if (errno == ENOMEM)
+		sh_exit(EXIT_FAILURE, NULL);
+	errno = 0;
+	return (rcode);
+}
+
+inline int			sh_biunset(int ac, char **av)
+{
+	ft_exbind(EXALL, ft_exhdl(unsetexhdl, NULL), NULL);
 	if (ac == 1)
-		ft_retf(NOP, "unset: not enough arguments");
-	while (++i < ac)
+		return (ENO_THROW(EXIT_FAILURE, ENOARG));
+	while (*++av)
 	{
-		if (av[i][0] == '-')
-		{
-			if (av[i][1] != 'v' && av[i][1] != 'f')
-				ft_retf(NOP, "bad option: -%c", av[i][1]);
-			else if (!av[i + 1] || (ft_strcmp(av[i], "-") == 0 && !av[i + 1]))
-				ft_retf(NOP, "unset: not enough arguments");
-		}
-		else if (sh_varget(av[i]))
-			sh_varset(av[1], NULL);
+		ft_exbind(EXALL, ft_exhdl(unsetexhdl, *av), NULL);
+		if (sh_isname(*av) && !ft_strchr(*av, '=') && sh_varget(*av, NULL))
+			sh_varset(*av, NULL);
+		else
+			sh_unsetenv(*av, 1);
 	}
-	sh_biunsetenv(ac, av, env);
-	return (YEP);
+	return (EXIT_SUCCESS);
 }

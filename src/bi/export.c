@@ -12,52 +12,46 @@
 
 #include "ush.h"
 
-static inline void		export(char *var, char *val)
+#define N "export: "
+
+static inline void		export(char *var, char *val, char **envv)
 {
 	char *local;
 
-	if ((local = sh_varget(var)) && !val)
+	if ((local = sh_varget(var, envv)) && !val)
 		val = local;
-	sh_setenv(var, val);
-	if (local)
-		sh_varset(var, NULL);
-}
-
-static inline t_bool	isname(char *word)
-{
-	if (!ft_isalpha(*word) && *word != '_')
-		return (0);
-	++word;
-	while (*word != '=')
+	if (!val)
+		sh_varset(var, "");
+	else
 	{
-		if (!ft_isalnum(*word) && *word != '_')
-			return (0);
-		++word;
+		sh_setenv(var, val);
+		if (local)
+			sh_varset(var, NULL);
 	}
-	return (1);
 }
 
-inline int				sh_biexport(int ac, char **av, char **env)
+inline int				sh_biexport(int ac, char **a, char **envv)
 {
 	char	*val;
 	int		i;
 
-	(void)env;
 	i = 0;
+	if (ac == 1)
+		return (sh_vardump(envv));
 	while (++i < ac)
-		if (*av[i] == '=')
-			ft_retf(EXIT_FAILURE, "%s: bad assignment", av[i]);
-		else if ((val = ft_strchr(av[i], '=')))
-			if (!isname(av[i]))
-				ft_retf(EXIT_FAILURE, "%s: bad assignment", av[i]);
+		if (*a[i] == '=')
+			return (ft_retf(EXIT_FAILURE, N"%s: bad assignment\n", a[i]));
+		else if ((val = ft_strchr(a[i], '=')))
+			if (!sh_isname(a[i]))
+				return (ft_retf(1, N"%s: not an identifier\n", a[i]));
 			else
 			{
 				*val = '\0';
-				export(av[i], ++val);
+				export(a[i], ++val, envv);
 			}
-		else if (isname(av[i]))
-			export(av[i], NULL);
+		else if (sh_isname(a[i]))
+			export(a[i], NULL, envv);
 		else
-			ft_retf(EXIT_FAILURE, "%s: bad assignment", av[i]);
+			return (ft_retf(EXIT_FAILURE, N"%s: Invalid argument\n", a[i]));
 	return (EXIT_SUCCESS);
 }

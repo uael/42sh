@@ -19,7 +19,7 @@ int		ft_ex_throw(int rcode, char const *fn, int line)
 {
 	t_ex_hdl *hdl;
 
-	if (fn)
+	if (fn && errno != EBADF && errno != EIO)
 		ft_putf(2, "In function: "COLOR_BOLD"'%s:%d':\n"COLOR_RESET, fn, line);
 	if ((hdl = ft_ex_get(errno)))
 		return (hdl->cb(rcode, hdl->arg));

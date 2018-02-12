@@ -14,38 +14,44 @@
 
 static inline int	onsemicolon(t_job *job, int fd, t_deq *toks, char **ln)
 {
-	int st;
+	int		st;
+	t_tok	*tok;
 
+	if (!job->procs.len)
+		return (NOP);
 	sh_toknext(toks);
 	if (job->procs.len)
 	{
-		sh_joblaunch(job, 1);
-		sh_jobctor(job);
+		g_sh->status = ps_joblaunch(job, 1);
+		ps_jobctor(job);
 	}
+	tok = sh_tokpeek(toks);
 	if ((st = sh_evalandor(job, fd, toks, ln)))
 	{
-		sh_jobctor(job);
-		return (st);
+		ps_jobdtor(job);
+		return (st == OUF || tok != sh_tokpeek(toks) ? st : YEP);
 	}
 	return (YEP);
 }
 
 static inline int	onamp(t_job *job, int fd, t_deq *toks, char **ln)
 {
-	int st;
+	int		st;
+	t_tok	*tok;
 
-	if (!g_shinteract)
-		return (onsemicolon(job, fd, toks, ln));
+	if (!job->procs.len)
+		return (NOP);
 	sh_toknext(toks);
 	if (job->procs.len)
 	{
-		sh_joblaunch(job, 0);
-		sh_jobctor(job);
+		g_sh->status = ps_joblaunch(ps_poolpush(job), 0);
+		ps_jobctor(job);
 	}
+	tok = sh_tokpeek(toks);
 	if ((st = sh_evalandor(job, fd, toks, ln)))
 	{
-		sh_jobctor(job);
-		return (st);
+		ps_jobdtor(job);
+		return (st == OUF || tok != sh_tokpeek(toks) ? st : YEP);
 	}
 	return (YEP);
 }
@@ -54,8 +60,8 @@ static inline int	oneof(t_job *job)
 {
 	if (job->procs.len)
 	{
-		sh_joblaunch(job, 1);
-		sh_jobctor(job);
+		g_sh->status = ps_joblaunch(job, 1);
+		ps_jobctor(job);
 	}
 	return (YEP);
 }
@@ -66,24 +72,24 @@ inline int			sh_evallist(int fd, t_deq *toks, char **ln)
 	t_job	job;
 	int		st;
 
-	sh_jobctor(&job);
-	if (sh_evalandor(&job, fd, toks, ln) == ERR)
-		return (ERR);
+	ps_jobctor(&job);
+	if (sh_evalandor(&job, fd, toks, ln) == OUF)
+		return (ft_dtor(OUF, (t_dtor)ps_jobdtor, &job, NULL));
 	while (1)
 		if (!(tok = sh_tokpeek(toks)))
-			return (ft_dtor(YEP, (t_dtor)sh_jobdtor, &job, NULL));
+			return (ft_dtor(YEP, (t_dtor)ps_jobdtor, &job, NULL));
 		else if (tok->id == TOK_AMP)
 		{
 			if ((st = onamp(&job, fd, toks, ln)))
-				return (st == NOP ? YEP : st);
+				return (st);
 		}
 		else if (tok->id == TOK_SEMICOLON)
 		{
 			if ((st = onsemicolon(&job, fd, toks, ln)))
-				return (st == NOP ? YEP : st);
+				return (st);
 		}
 		else if (tok->id == TOK_END || tok->id == TOK_EOL)
 			return (oneof(&job));
 		else
-			return (ft_dtor(YEP, (t_dtor)sh_jobdtor, &job, NULL));
+			return (ft_dtor(NOP, (t_dtor)ps_jobdtor, &job, NULL));
 }

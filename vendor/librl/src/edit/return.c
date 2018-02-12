@@ -14,15 +14,19 @@
 
 inline int	rl_editreturn(void)
 {
-	if (g_mode == RL_SEARCH)
-		return (rl_searchinsert('\n'));
-	if (g_eln->str.len)
-		ft_sdscpush(&g_eln->str, '\n');
-	ft_write(STDOUT_FILENO, "\n", 1);
-	if (!g_eln->str.len)
+	if (!rl_histbi())
 	{
-		rl_editprint(g_edit_prompt, g_eln);
-		return (YEP);
+		ft_write(STDIN_FILENO, "\n", 1);
+		ft_putf(STDIN_FILENO, "%s\n", g_eln->str.buf);
 	}
+	else if (g_eln->idx != g_eln->str.len)
+	{
+		g_eln->idx = (uint16_t)g_eln->str.len;
+		rl_editprint(g_edit_prompt, g_eln);
+		ft_write(STDIN_FILENO, "\n", 1);
+	}
+	else
+		ft_write(STDIN_FILENO, "\n", 1);
+	ft_sdscpush(&g_eln->str, '\n');
 	return (NOP);
 }

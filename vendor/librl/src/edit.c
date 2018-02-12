@@ -214,7 +214,9 @@ static inline int	keymap(char *key, ssize_t rd)
 		return (YEP);
 	if (st <= 0)
 		return (st);
-	return (st == RL_EXIT ? RL_EXIT : NOP);
+	if (st == 2)
+		return (YEP);
+	return (st == RL_EXIT || st == RL_CLR ? st : NOP);
 }
 
 int					rl_editln(char const *p, size_t *sz, char **ln, t_bool cat)
@@ -238,7 +240,7 @@ int					rl_editln(char const *p, size_t *sz, char **ln, t_bool cat)
 		}
 		else if (rl_editinsert(*key))
 			break ;
-	if (!st || st == NOP)
+	if (!st || st == NOP || st == RL_CLR)
 	{
 		*sz = g_eln->str.len;
 		*ln = g_eln->str.buf;

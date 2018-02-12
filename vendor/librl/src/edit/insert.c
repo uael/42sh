@@ -19,6 +19,8 @@ inline int	rl_editinsert(char c)
 		return (rl_searchinsert(c));
 	if (c == '\n' || c == '\r')
 		return (rl_editreturn());
+	if (g_eln->str.len >= UINT16_MAX)
+		return (YEP);
 	ft_sdscput(&g_eln->str, g_eln->idx++, c);
 	rl_editprint(g_edit_prompt, g_eln);
 	return (YEP);
@@ -50,7 +52,7 @@ inline int	rl_editbackspace(void)
 
 inline int	rl_editclear(void)
 {
-	ft_puts(STDOUT_FILENO, TC_ED_CUP);
+	ft_puts(STDIN_FILENO, TC_ED_CUP);
 	g_eln->row = 0;
 	g_eln->rows.len = 0;
 	rl_editprint(g_edit_prompt, g_eln);

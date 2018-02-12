@@ -6,6 +6,8 @@ project(libft C)
 
 set(BUILD_SHARED_LIBS OFF)
 set(libft_ENABLE_TEST ON)
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fno-omit-frame-pointer -fsanitize=address")
+set(CMAKE_LINKER_FLAGS_DEBUG "${CMAKE_STATIC_LINKER_FLAGS_DEBUG} -fno-omit-frame-pointer -fsanitize=address")
 
 set(libft_INC_DIR ${CMAKE_CURRENT_LIST_DIR}/include)
 set(libft_SRC_DIR ${CMAKE_CURRENT_LIST_DIR}/src)
@@ -43,8 +45,7 @@ if (MSVC)
     PRIVATE /O$<$<CONFIG:Debug>:d>$<$<CONFIG:Release>:x>)
 else ()
   target_compile_options(ft
-    PRIVATE -Wall -Werror -Wextra -fomit-frame-pointer -ansi
-    PRIVATE -Wno-missing-field-initializers -Wno-missing-braces
+    PRIVATE -Wall -Werror -Wextra
     PRIVATE -O$<$<CONFIG:Debug>:0 -g3>$<$<CONFIG:Release>:3>)
 endif ()
 

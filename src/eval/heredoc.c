@@ -12,43 +12,38 @@
 
 #include "ush/eval.h"
 
-static inline int	ouput(int ac, char **av, char **envv)
+static inline int	output(char *data)
 {
-	(void)ac;
-	(void)envv;
-	ft_putf(STDOUT_FILENO, av[0]);
+	ft_puts(STDOUT_FILENO, data);
 	return (EXIT_SUCCESS);
 }
 
-inline int			sh_evalheredoc(t_job *job, int fd, t_deq *toks, char **ln)
+inline int			sh_evalheredoc(t_job *job, t_deq *toks, char **ln)
 {
 	t_tok	*tok;
 	size_t	i;
 	t_tok	*op;
-	t_proc	out;
 	t_proc	*proc;
 
-	(void)fd;
-	(void)ln;
 	op = sh_tokpeek(toks);
 	tok = sh_toknext(toks);
 	i = job->procs.len - 1;
 	proc = ft_vecat((t_vec *)&job->procs, i);
-	if (ft_isdigit(*op->val))
-		proc->src[STDIN_FILENO] = *op->val - '0';
-	if (i > 0 && job->procs.buf[i - 1].u.fn == ouput)
-	{
-		free(job->procs.buf[i - 1].argv[0]);
-		job->procs.buf[i - 1].argv[0] = ft_strdup(tok->val);
-	}
-	else
-	{
-		sh_procfn(&out, ouput, NULL);
-		out.argv = ft_malloc(2 * sizeof(char **));
-		out.argv[0] = ft_strdup(tok->val);
-		out.argv[1] = NULL;
-		ft_veccput((t_vec *)&job->procs, i, &out);
-	}
+	if (ft_isdigit(*(*ln + op->pos)))
+		proc->src[STDIN_FILENO] = *(*ln + op->pos) - '0';
 	sh_toknext(toks);
+	if (i > 0 && (proc = job->procs.buf + i - 1)->u.fn.cb == (t_proccb *)output)
+	{
+		free(proc->u.fn.data);
+		proc->u.fn.data = ft_strndup(*ln + tok->pos, tok->len);
+		return (YEP);
+	}
+	if (proc->kind != PROC_NONE)
+	{
+		proc->piped = 1;
+		proc = ft_vecput((t_vec *)&job->procs, i);
+	}
+	ps_procfn(proc, (t_proccb *)output, (t_dtor)free,
+		ft_strndup(*ln + tok->pos, tok->len));
 	return (YEP);
 }
