@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "edit.h"
-#include "visual.h"
 #include "read.h"
 
 inline int	rl_signalc(void)

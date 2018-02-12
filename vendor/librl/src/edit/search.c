@@ -18,9 +18,10 @@ void			searchprint(void)
 
 	buf[0] = '(';
 	buf[1] = '\0';
+	ft_strcat(buf, COLOR_RED);
 	if (g_lookup->len)
 		ft_strcat(buf, g_lookup->buf);
-	ft_strcat(buf, ") ");
+	ft_strcat(buf, COLOR_RESET") ");
 	ft_strcat(buf, g_edit_prompt);
 	rl_editprint(buf, g_candidate);
 }

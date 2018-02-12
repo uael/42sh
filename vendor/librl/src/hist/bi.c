@@ -111,6 +111,6 @@ inline int			rl_histbi(void)
 			beg = histfind(not, &c);
 	}
 	if (c && (g_eln->idx = g_eln->str.len) > 0)
-		rl_editprint();
+		rl_editprint(g_edit_prompt, g_eln);
 	return (c ? YEP : NOP);
 }

@@ -33,13 +33,12 @@ LIB_NAME = $(LIBS)
 endif
 3TH_NAME =
 SRC_NAME = \
-	edit.c edit/ctrl.c edit/hist.c edit/insert.c edit/move.c edit/print.c \
-	edit/return.c edit/ln.c edit/utf8.c \
+	edit.c edit/ctrl.c edit/hist.c edit/insert.c edit/ln.c edit/move.c \
+	edit/print.c edit/return.c edit/search.c edit/utf8.c edit/visual.c \
 	hist.c hist/bi.c hist/load.c hist/save.c hist/op.c \
 	hook.c \
 	read.c read/notty.c read/tty.c \
 	screen.c \
-	visual.c \
 	signal.c
 
 3TH = $(addprefix $(3TH_PATH)/, $(3TH_NAME))
