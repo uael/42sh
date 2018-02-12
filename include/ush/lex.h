@@ -22,6 +22,7 @@
 # define TOK_ISEND(ID) ((ID)==TOK_EOL||(ID)==TOK_END)
 # define TOK_ISSEP(ID) ((ID)==TOK_SEMICOLON||(ID)==TOK_AMP)
 # define TOK_ISCMDM(ID) (TOK_ISWORD(ID)||TOK_ISREDIR(ID))
+# define LEX_SHOWE(ST, FD) ((ST) < 0 || (fd) < 0 || !g_sh->tty)
 
 typedef struct	s_tokit
 {

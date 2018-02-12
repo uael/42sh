@@ -66,3 +66,13 @@ inline char		*ft_strndup(char const *src, size_t n)
 	dup[n] = '\0';
 	return (dup);
 }
+
+inline char		*ft_strrschr(char const *beg, char const *end, char c)
+{
+	while (end > beg)
+		if (*end == c)
+			return ((char *)end);
+		else
+			--end;
+	return (NULL);
+}
