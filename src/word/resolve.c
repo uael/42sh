@@ -99,9 +99,8 @@ inline size_t			sh_wordresolve(t_sds *d, char const *s, size_t n,
 	size_t	len;
 
 	bs = 0;
-	q = 0;
 	g_flags = WORD_EXPLODE;
-	ft_sdsctor(d);
+	ft_memset(d, q = 0, sizeof(t_sds));
 	while (n && *s)
 		if (!(bs ^= 1))
 			onbslash(d, q, &s, &n);
@@ -118,5 +117,6 @@ inline size_t			sh_wordresolve(t_sds *d, char const *s, size_t n,
 		}
 		else if ((*ft_sdspush(d) = *s++))
 			--n;
-	return (((flags ? (*flags = g_flags) : 0) & 0) + d->len);
+	flags ? (*flags = g_flags) : 0;
+	return (d->len);
 }
