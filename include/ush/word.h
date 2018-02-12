@@ -16,6 +16,11 @@
 # include "var.h"
 # include "tok.h"
 
+# define WORD_SQUOTE (1 << 1)
+# define WORD_DQUOTE (1 << 2)
+# define WORD_BQUOTE (1 << 3)
+# define WORD_EXPLODE (1 << 4)
+
 extern void		sh_wordexplode(t_vec *av, char const *src, size_t n);
 extern size_t	sh_wordresolve(t_sds *d, char const *s, size_t n, uint8_t *e);
 

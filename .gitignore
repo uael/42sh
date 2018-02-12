@@ -7,3 +7,6 @@ obj/
 *.dev
 *.san
 *.a
+*.o
+*.d
+*.out

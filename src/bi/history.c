@@ -1,32 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   edit/return.c                                      :+:      :+:    :+:   */
+/*   ush/bi/history.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/13 08:23:58 by alucas-          ###   ########.fr       */
+/*   Created: 2017/11/07 09:52:30 by cmalfroy          #+#    #+#             */
+/*   Updated: 2017/12/06 12:00:10 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../edit.h"
+#include "ush/bi.h"
 
-inline int	rl_editreturn(void)
+inline int		sh_bihistory(int ac, char **av, char **env)
 {
-	if (!rl_histbi())
-	{
-		ft_write(STDIN_FILENO, "\n", 1);
-		ft_putf(STDIN_FILENO, "%s\n", g_eln->str.buf);
-	}
-	else if (g_eln->idx != g_eln->str.len)
-	{
-		g_eln->idx = (uint16_t)g_eln->str.len;
-		rl_editprint();
-		ft_write(STDIN_FILENO, "\n", 1);
-	}
-	else
-		ft_write(STDIN_FILENO, "\n", 1);
-	ft_sdscpush(&g_eln->str, '\n');
-	return (NOP);
+	(void)env;
+	if (ac >= 2 && !ft_strcmp(av[1], "-c"))
+		rl_histdtor();
+	else if (ac == 3 && !ft_strcmp(av[1], "-d"))
+		rl_histdel((uint8_t)ft_atoi(av[2]));
+	else if (ac == 1)
+		rl_histdump();
+	return (YEP);
 }

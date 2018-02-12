@@ -27,7 +27,7 @@ function job {
   echo -en "$(padme "$1: $2") "
   ($3 &> ${OUT}) &
   pid=$!
-  spinner ${pid}
+  test $TERM != "dumb" && spinner ${pid}
   wait ${pid}
   local RET=$?
   if [[ $RET != 0 ]]; then
@@ -64,12 +64,14 @@ function dotest {
   fi
   rm -f ${test_out}
   $1 ${test} &> ${test_out}
-  diff ${test_out} ${test_expected}
+  diff -y ${test_out} ${test_expected}
 }
 
 mkdir -p out
 ECODE=0
 for test in ./test/*.sh; do
+  test -z ${RELOU+x} && echo "$test" | grep -q relou && continue
+
   job "Test" "$(basename "${test%.*}")" "dotest ${EXE} /bin/bash ${test}"
   RET=$?
   if [[ $RET != 0 ]]; then

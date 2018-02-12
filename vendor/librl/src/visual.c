@@ -94,10 +94,25 @@ inline int		rl_visualpaste(void)
 {
 	if (g_clipboard->len)
 	{
-		ft_sdsmput(&g_eln->str, g_eln->idx, g_clipboard->buf,
-			g_clipboard->len);
-		g_eln->idx += g_clipboard->len;
-		rl_editprint();
+		if (g_clipboard->len + g_eln->str.len >= UINT16_MAX)
+		{
+			if (UINT16_MAX - g_eln->str.len - 1 > 0)
+			{
+				ft_sdsmput(&g_eln->str, g_eln->idx, g_clipboard->buf,
+					UINT16_MAX - g_eln->str.len - 1);
+				g_eln->idx += UINT16_MAX - g_eln->str.len - 1;
+				rl_editprint();
+			}
+			else
+				return (YEP);
+		}
+		else
+		{
+			ft_sdsmput(&g_eln->str, g_eln->idx, g_clipboard->buf,
+				g_clipboard->len);
+			g_eln->idx += g_clipboard->len;
+			rl_editprint();
+		}
 	}
 	return (YEP);
 }
