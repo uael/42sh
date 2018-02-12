@@ -23,4 +23,5 @@ inline void	sh_biregister(void)
 	ps_biregister("unset", (t_procbi *)sh_biunset);
 	ps_biregister("unsetenv", sh_biunsetenv);
 	ps_biregister("history", sh_bihistory);
+	ps_biregister("read", sh_biread);
 }
