@@ -26,15 +26,12 @@ inline int	rl_wstrlen(char *str)
 	while (i < ix)
 	{
 		++q;
-		if (!ft_strncmp("\033[32m", str + i, sizeof("\033[32m") - 1) &&
-			(i += sizeof("\033[32m") - 1))
+		if (*(str + i) == '\033')
+		{
+			while (*(str + ++i - 1) != 'm')
+				;
 			--q;
-		else if (!ft_strncmp("\033[31m", str + i, sizeof("\033[31m") - 1) &&
-			(i += sizeof("\033[31m") - 1))
-			--q;
-		else if (!ft_strncmp("\033[0m", str + i, sizeof("\033[0m") - 1) &&
-			(i += sizeof("\033[0m") - 1))
-			--q;
+		}
 		else if (!ft_strncmp(UNI, str + i, sizeof(UNI) - 1))
 			i += sizeof(UNI) - 1;
 		else
