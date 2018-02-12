@@ -21,7 +21,7 @@ static inline ssize_t	ifsbuf(t_ifs *self, char **out)
 	size_t	left;
 
 	left = self->rd - self->i;
-	if ((self->rd % BSZ) != 0)
+	if ((self->rd % BSZ) != 0 || (self->lim > 0 && self->rd + BSZ >= self->lim))
 		return (left);
 	if ((rd = ft_read(self->ifd, buf, BSZ)) <= 0)
 		return (rd ? (size_t)WUT : left);
