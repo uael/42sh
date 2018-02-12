@@ -22,7 +22,7 @@ static inline char	*histback(char *not, t_bool *c)
 	{
 		ft_sdsmput(&g_eln->str, not - g_eln->str.buf, ln->buf, ln->len - 1);
 		*c = 1;
-		return (g_eln->str.buf + (not - g_eln->str.buf) + ln->len - 1);
+		return (g_eln->str.buf + (not - g_eln->str.buf) + ln->len);
 	}
 	return (not + 1);
 }
@@ -44,7 +44,7 @@ static inline char	*histatc(char *not, t_bool *c)
 		{
 			ft_sdsmput(&g_eln->str, not - g_eln->str.buf, ln->buf, ln->len - 1);
 			*c = 1;
-			return (g_eln->str.buf + (not - g_eln->str.buf) + ln->len - 1);
+			return (g_eln->str.buf + (not - g_eln->str.buf) + ln->len;
 		}
 	}
 	return (not + 1);
@@ -59,7 +59,7 @@ static inline char	*histat(char *not, ssize_t i, size_t rlen, t_bool *c)
 	{
 		ft_sdsmput(&g_eln->str, not - g_eln->str.buf, ln->buf, ln->len - 1);
 		*c = 1;
-		return (g_eln->str.buf + (not - g_eln->str.buf) + ln->len - 1);
+		return (g_eln->str.buf + (not - g_eln->str.buf) + ln->len);
 	}
 	return (not + 1);
 }
