@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 22:23:43 by mc                #+#    #+#             */
-/*   Updated: 2018/02/12 13:54:15 by mcanal           ###   ########.fr       */
+/*   Updated: 2018/02/12 18:05:23 by mcanal           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,9 @@ static char **handle_brace_expansion(char const *pattern)
 	return (char **)42;
 }
 
-static t_bool tree_climber(char const *dir, char const *pattern, int depth, int flags)
+static t_bool tree_climber(char const *dir, char const *pattern, int flags, int depth)
 {
 /*
-	if (depth > MAX_DEPTH)
-		return FALSE;
-
 	ret[] = []  //TODO: choose data-struct: linked list?
 
 	subpats[] = pattern.split('/')
@@ -45,15 +42,17 @@ static t_bool tree_climber(char const *dir, char const *pattern, int depth, int 
 		if GLOB_ONLYDIR and is_a_dir(file):
 			files.pop(file)
 
-		if not GLOB_PERIOD and GLOB_MAGCHAR and file[0] == '.':
-			files.pop(file)
-
 		if not glob_match(
 			'/' + subpats[:depth - len(subpats)].join('/'),
 				// re-join pattern from the begin to i
 			file
 		):
 			files.pop(file)
+
+		if not GLOB_PERIOD and GLOB_MAGCHAR and file[0] == '.':
+			files.pop(file)
+
+		//TODO: should we reset the GLOB_MAGCHAR flag?
 
 	//no more recursion needed, just return matching files
 	if depth == 1:
@@ -65,6 +64,7 @@ static t_bool tree_climber(char const *dir, char const *pattern, int depth, int 
 			ret += tree_climber(
 				file,
 				pattern,
+				flags,
 				depth - 1
 			)
 
@@ -88,34 +88,26 @@ t_bool glob_climb_tree(char const *pattern, int flags)
 			for pat in patterns:
 				if not glob_climb_tree(patn flags)
 					return false;
-
-	char *search_start = NULL
-	char *ptr = pattern
-
-	// something like: search_start = dirname(pattern)  [+ handle GLOB_MAGCHAR]
-	while (*ptr && *ptr != GLOB_CHAR)
-		ptr++;
-	if (!*ptr and GLOB_NOMAGIC)
-		return false
-	flags |= GLOB_MAGCHAR
-	while (*ptr != '/')
-		ptr--;
-	*ptr = 0;
-	search_start = strdup(pattern)
-	*ptr = '/';
-
-	matched_files = check_dir_loop(
-		search_start,
-			// first dir we're gonna search on
-		pattern,
-			// the whole pattern
-		len(pattern.split('/')) - len(dir.split('/'))
-			// search depth
-	)
-
-	return matched_files  //TODO: return mismatch :o
 */
-	(void)pattern; //TODO
-	(void)flags; //TODO
-	return 42; //TODO
+	char const	*search_start;
+	int			depth;
+
+	depth = 1;
+	search_start = pattern;
+	while (*search_start)
+	{
+		if (*search_start == '/')
+			depth++;
+		search_start++;
+	}
+
+	if (depth > MAX_DEPTH)
+		return FALSE;
+	else if (depth == 1)
+		search_start = pattern; //TODO: concat $PWD instead?
+	else
+		while (*search_start != '/')
+			search_start--;
+
+	return tree_climber(search_start, pattern, flags, depth);
 }
