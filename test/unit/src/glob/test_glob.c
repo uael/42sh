@@ -6,7 +6,7 @@
 /*   By: mcanal <zboub@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/11/29 15:38:59 by mcanal            #+#    #+#             */
-/*   Updated: 2018/02/10 12:22:04 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/13 00:36:00 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 
 #include "super_test_3000.h"
 #include "glob_match.h"
+
 
 /*
  * The tests are all jammed together in one array to make it simpler
@@ -128,12 +129,22 @@ void test_glob()
 	char const *pat = NULL;
 	t_bool expected = 0;
 
+	char *pat_dup;
+	char *p_dup;
+
 	while (*p) {
 		expected = *p++ & 1;
 		pat = p;
 
 		p += strlen(p) + 1;
 		test_glob_match(pat, p, expected);
+
+		pat_dup = strdup(pat);
+		p_dup = strdup(p);
+		test_glob_match(pat, p, expected);
+		free(pat_dup);
+		free(p_dup);
+
 		p += strlen(p) + 1;
 	}
 }
