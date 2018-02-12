@@ -21,13 +21,14 @@ inline int		rl_histload(char const *filename)
 
 	if (ft_ifsopen(in = alloca(sizeof(t_ifs)), filename))
 		return (NOP);
+	in->lim = UINT16_MAX;
 	new = 1;
 	ln = NULL;
 	while ((sz = ft_ifschr(in, 0, '\n', &ln)) > 0)
 	{
 		if (sz == 1)
 			new = 1;
-		else
+		else if (sz < UINT16_MAX)
 		{
 			new ? rl_histadd(ln, (size_t)sz) : rl_histcat(ln, (size_t)sz, 0, 0);
 			new = 0;

@@ -12,15 +12,16 @@
 
 NAME ?= 42sh
 CFLAGS += -Werror -Wextra -Wall
-RCFLAGS = -O3 -fomit-frame-pointer
+RCFLAGS = -O2 -fomit-frame-pointer
 DCFLAGS = -g3 -DDEBUG
-SCFLAGS = -fsanitize=address,undefined -ferror-limit=5
+SCFLAGS = $(DCFLAGS) -fsanitize=address,undefined -ferror-limit=5
 CC ?= gcc
 MAKE += -j4
 
 INC_PATH = include
 SRC_PATH = src
-OBJ_PATH ?= obj
+OBJ_DIR ?= obj
+OBJ_PATH ?= $(OBJ_DIR)/rel
 3TH_PATH = vendor
 
 LIBS = ps rl ft
@@ -34,7 +35,7 @@ endif
 3TH_NAME = libft librl libps
 SRC_NAME = \
 	bi.c bi/cd.c bi/echo.c bi/env.c bi/exit.c bi/export.c bi/setenv.c \
-	bi/unset.c bi/unsetenv.c \
+	bi/unset.c bi/unsetenv.c bi/history.c \
 	comp.c \
 	env.c \
 	err.c \
@@ -61,21 +62,21 @@ all:
 ifneq ($(3TH_NAME),)
 	@+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th);)
 endif
-	@+$(MAKE) $(NAME) "CFLAGS = $(RCFLAGS)" "OBJ_PATH = $(OBJ_PATH)/rel"
+	@+$(MAKE) $(NAME) "CFLAGS = $(RCFLAGS)" "OBJ_PATH = $(OBJ_DIR)/rel"
 
 dev:
 ifneq ($(3TH_NAME),)
 	@+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) dev;)
 endif
 	@+$(MAKE) $(NAME).dev "NAME = $(NAME).dev" "CFLAGS = $(DCFLAGS)" \
-	  "OBJ_PATH = $(OBJ_PATH)/dev"
+	  "OBJ_PATH = $(OBJ_DIR)/dev"
 
 san:
 ifneq ($(3TH_NAME),)
 	@+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) san;)
 endif
 	@+$(MAKE) $(NAME).san "NAME = $(NAME).san" "CFLAGS = $(SCFLAGS)" \
-	  "OBJ_PATH = $(OBJ_PATH)/san"
+	  "OBJ_PATH = $(OBJ_DIR)/san"
 
 $(NAME): $(OBJ)
 	@$(CC) $(CFLAGS) $(INC) $(LNK) $(OBJ) $(LIB) -o $(NAME)

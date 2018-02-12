@@ -37,8 +37,8 @@ static inline int	varspecial(int fd, t_tok *tok, char **it, char **ln)
 	tok->len += var - *it;
 	*it += var - *it;
 	st = 0;
-	if (brace && !*var && (fd < 0 || (st = rl_catline(fd, 0, ln, it))))
-		return (st < 0 || !g_sh->tty ? sh_synerr(*ln, *it, UEE) : OUF);
+	if (brace && !*var && (fd < 0 || (st = rl_catline(fd, 0, ln, it)) || !**it))
+		return (LEX_SHOWE(st, fd) ? sh_synerr(*ln, *it, UEE) : OUF);
 	return (brace && **it != '}' ? sh_synerr(*ln, *it, UEC, **it) :
 		((brace && ++*it) & 0));
 }
@@ -54,8 +54,8 @@ static inline int	varuser(int fd, t_tok *tok, char **it, char **ln)
 		return (sh_synerr(*ln, *it, "Expected alpha _ or '{' got `%c'", **it));
 	while ((++tok->len && ++*it))
 		if (brace == '{' && !**it &&
-			(fd < 0 || (st = rl_catline(fd, 0, ln, it))))
-			return (st < 0 || !g_sh->tty ? sh_synerr(*ln, *it, UEE) : OUF);
+			(fd < 0 || (st = rl_catline(fd, 0, ln, it)) || !**it))
+			return (LEX_SHOWE(st, fd) ? sh_synerr(*ln, *it, UEE) : OUF);
 		else if (!**it)
 			break ;
 		else if (!ft_isalnum(**it) && **it != '_')
