@@ -18,8 +18,13 @@
 # define HIST_MAX (250)
 # define HIST_DELTA (5)
 
-extern void		rl_histdtor(void);
+extern t_sds	g_hist[HIST_MAX];
+extern uint8_t	g_hist_len;
+
 extern char		*rl_histcat(char const *ln, size_t len, char c, char **out);
 extern t_bool	rl_histcpy(uint8_t id, t_sds *dest);
+extern t_sds	*rl_histat(ssize_t idx);
+extern t_sds	*rl_histback(void);
+extern int		rl_histbi(void);
 
 #endif

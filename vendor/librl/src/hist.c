@@ -12,8 +12,8 @@
 
 #include "hist.h"
 
-static t_sds	g_hist[HIST_MAX] = { { 0, 0, 0 } };
-static uint8_t	g_hist_len = 0;
+t_sds			g_hist[HIST_MAX] = { { 0, 0, 0 } };
+uint8_t			g_hist_len = 0;
 
 inline char		*rl_histadd(char const *ln, size_t len)
 {
@@ -89,4 +89,16 @@ inline void		rl_histdtor(void)
 	while (i < g_hist_len)
 		ft_sdsdtor(g_hist + i++);
 	g_hist_len = 0;
+}
+
+inline void		rl_histdump(void)
+{
+	uint8_t i;
+
+	i = 0;
+	while (i < g_hist_len)
+	{
+		ft_putf(STDOUT_FILENO, "%d %s", i, (g_hist + i)->buf);
+		++i;
+	}
 }

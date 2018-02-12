@@ -57,6 +57,9 @@ static inline void	sh_init(int fd)
 	g_sh->pid = getpgrp();
 	if (!(g_sh->tty = (t_bool)isatty(fd)))
 		return ;
+	rl_complete(sh_complete);
+	if ((home = sh_getenv("HOME")))
+		rl_histload(ft_pathcat(ft_strcpy(buf, home), ".ushst"));
 	while (tcgetpgrp(fd) != g_sh->pid)
 		kill(-g_sh->pid, SIGTTIN);
 	signal(SIGINT, SIG_IGN);
@@ -70,9 +73,6 @@ static inline void	sh_init(int fd)
 		sh_exit(EXIT_FAILURE, "Couldn't put the shell in its own process "
 			"group");
 	tcsetpgrp(fd, g_sh->pid);
-	rl_complete(sh_complete);
-	if ((home = sh_getenv("HOME")))
-		rl_histload(ft_pathcat(ft_strcpy(buf, home), ".ushst"));
 }
 
 inline int			sh_run(int fd, char *ln)
