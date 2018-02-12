@@ -1,8 +1,9 @@
-1>&1 cat 2&>- <<EOL > /tmp/oops.oops; 1<&- >lol cat 2>&1 <<EOF > /tmp/oops1.oops
+1>&1 cat 2>&- <<EOL > /tmp/oops.oops; 1<&- >/tmp/lol cat 2>&1 <<EOF > /tmp/oops1.oops
 oops
 EOL
 oops 2
 EOF
+rm -f /tmp/lol
 cat Makefile 3>&1 >&3
 cat Makefile 3>&1 >&3 3>&-
 cat Makefile 5>&1 >&5
