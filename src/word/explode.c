@@ -20,9 +20,9 @@ inline void	sh_wordexplode(t_vec *av, char const *src, size_t n)
 	char	*eol;
 	char	sep[20];
 
-	if (!sh_wordresolve(&word, src, n, &e))
+	if (!(e = 0) && !sh_wordresolve(&word, src, n, &e))
 		return ;
-	if (!e)
+	if (!(e & WORD_EXPLODE))
 		beg = word.buf;
 	else
 	{

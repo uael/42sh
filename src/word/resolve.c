@@ -12,12 +12,13 @@
 
 #include <libps.h>
 
-#include "ush/eval.h"
 #include "ush/shell.h"
-#include "ush/word.h"
+#include "ush/eval.h"
 
 #define DQUOT(IT) ft_strchr("\\\n\"$", *(IT))
 #define QUOTE(IT) (*(IT) == '\'' && (*((IT) + 1) == '\''))
+
+static uint8_t			g_flags;
 
 static inline int		subshell(char *ln)
 {
@@ -36,7 +37,8 @@ static inline int		subshell(char *ln)
 	return (sh_exit(st, NULL));
 }
 
-static inline t_bool	inhib(t_sds *d, char quote, char const **s, size_t *n)
+static inline void		onbslash(t_sds *d, char quote, char const **s,
+	size_t *n)
 {
 	if ((quote == '"' && !DQUOT(*s)) || (quote == '\'' && !QUOTE(*s)))
 		*ft_sdspush(d) = (char)'\\';
@@ -44,9 +46,8 @@ static inline t_bool	inhib(t_sds *d, char quote, char const **s, size_t *n)
 	{
 		*ft_sdspush(d) = *(*s)++;
 		--*n;
-		return (1);
+		g_flags &= ~WORD_EXPLODE;
 	}
-	return (0);
 }
 
 static inline int		onquote(t_sds *d, char *q, char const **s, size_t *n)
@@ -59,6 +60,11 @@ static inline int		onquote(t_sds *d, char *q, char const **s, size_t *n)
 		*ft_sdspush(d) = **s;
 	++*s;
 	--*n;
+	if (*q)
+	{
+		g_flags &= ~WORD_EXPLODE;
+		g_flags |= *q == '"' ? WORD_DQUOTE : WORD_SQUOTE;
+	}
 	return (*q);
 }
 
@@ -71,9 +77,10 @@ static inline void		onbquote(t_sds *d, char const **s, size_t *n)
 	++*s;
 	--*n;
 	bs = 0;
+	g_flags |= WORD_BQUOTE;
 	while (*n && **s != '`' && **s)
 		if (!(bs ^= 1))
-			inhib(&cmd, '`', s, n);
+			onbslash(&cmd, '`', s, n);
 		else if ((bs = (t_bool)(**s == '\\')))
 			(void)(++*s && --*n);
 		else if ((*ft_sdspush(&cmd) = *(*s)++))
@@ -85,7 +92,7 @@ static inline void		onbquote(t_sds *d, char const **s, size_t *n)
 }
 
 inline size_t			sh_wordresolve(t_sds *d, char const *s, size_t n,
-	uint8_t *e)
+	uint8_t *flags)
 {
 	t_bool	bs;
 	char	q;
@@ -93,15 +100,15 @@ inline size_t			sh_wordresolve(t_sds *d, char const *s, size_t n,
 
 	bs = 0;
 	q = 0;
-	e ? (*e = 1) : 0;
+	g_flags = WORD_EXPLODE;
 	ft_sdsctor(d);
 	while (n && *s)
 		if (!(bs ^= 1))
-			inhib(d, q, &s, &n) && e ? (*e = 0) : 0;
+			onbslash(d, q, &s, &n);
 		else if ((bs = (t_bool)(*s == '\\')))
 			(void)(++s && --n);
 		else if (*s == '\'' || *s == '"')
-			onquote(d, &q, &s, &n) && e ? (*e = 0) : 0;
+			onquote(d, &q, &s, &n);
 		else if (*s == '`' && n && *(s + 1) && (!q || q == '"'))
 			onbquote(d, &s, &n);
 		else if (*s == '$' && n && *(s + 1) && (!q || q == '"'))
@@ -111,5 +118,5 @@ inline size_t			sh_wordresolve(t_sds *d, char const *s, size_t n,
 		}
 		else if ((*ft_sdspush(d) = *s++))
 			--n;
-	return (d->len);
+	return (((flags ? (*flags = g_flags) : 0) & 0) + d->len);
 }

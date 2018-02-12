@@ -64,7 +64,7 @@ function dotest {
   fi
   rm -f ${test_out}
   $1 ${test} &> ${test_out}
-  diff ${test_out} ${test_expected}
+  diff -y ${test_out} ${test_expected}
 }
 
 mkdir -p out
