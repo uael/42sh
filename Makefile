@@ -6,7 +6,7 @@
 #    By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/07 09:52:36 by alucas-           #+#    #+#              #
-#    Updated: 2018/02/10 17:10:14 by mc               ###   ########.fr        #
+#    Updated: 2018/02/12 17:11:13 by mcanal           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,6 +19,7 @@ CC ?= gcc
 MAKEFLAGS += -j$(shell nproc 2>/dev/null)
 
 INC_PATH = include
+SRC_PATH = src
 OBJ_DIR ?= obj
 OBJ_PATH ?= $(OBJ_DIR)/rel
 3TH_PATH = vendor
@@ -33,24 +34,23 @@ LIB_NAME = $(LIBS)
 endif
 3TH_NAME = libft librl libps
 SRC_NAME = \
-	bi.c cd.c echo.c bi_env.c exit.c \
-	export.c setenv.c unset.c unsetenv.c \
+	bi.c bi/cd.c bi/echo.c bi/env.c bi/exit.c bi/export.c bi/setenv.c \
+	bi/unset.c bi/unsetenv.c \
 	comp.c \
 	env.c \
 	err.c \
-	eval.c ampr.c andor.c argv.c assign.c cmd.c \
-	cmp.c compound.c heredoc.c lamp.c list.c \
-	pipeline.c ramp.c raout.c redir.c rin.c \
-	rout.c sep.c simple.c subshell.c \
-	lex.c lex_heredoc.c op.c utils.c lex_var.c word.c \
+	eval.c eval/ampr.c eval/andor.c eval/argv.c eval/assign.c eval/cmd.c \
+	eval/cmp.c eval/compound.c eval/heredoc.c eval/lamp.c eval/list.c \
+	eval/pipeline.c eval/ramp.c eval/raout.c eval/redir.c eval/rin.c \
+	eval/rout.c eval/sep.c eval/simple.c eval/subshell.c \
+	lex.c lex/heredoc.c lex/op.c lex/utils.c lex/var.c lex/word.c \
 	main.c \
 	prompt.c \
 	shell.c \
 	tok.c \
-	var.c expand.c \
-	explode.c resolve.c
+	var.c var/expand.c \
+	word/explode.c word/resolve.c
 
-VPATH = src src/bi src/eval src/lex src/var src/word
 3TH = $(addprefix $(3TH_PATH)/, $(3TH_NAME))
 OBJ = $(addprefix $(OBJ_PATH)/, $(SRC_NAME:.c=.o))
 LNK = $(addprefix -L, $(3TH))
@@ -78,17 +78,15 @@ endif
 	+$(MAKE) $(NAME).san "NAME = $(NAME).san" "CFLAGS = $(SCFLAGS)" \
 	  "OBJ_PATH = $(OBJ_DIR)/san" "CC = clang"
 
-$(NAME): $(OBJ_PATH) $(OBJ)
+$(NAME): $(OBJ)
 	$(CC) $(CFLAGS) $(INC) $(LNK) $(OBJ) $(LIB) -o $(NAME)
 	@printf  "%-20s\033[32m✔\033[0m\n" "$(NAME): exe"
 
-$(OBJ_PATH)/%.o: %.c
+$(OBJ_PATH)/%.o: $(SRC_PATH)/%.c
+	mkdir -p $(shell dirname $@)
 	@printf "\r%-20s$<\n" "$(NAME):"
 	$(CC) $(CFLAGS) $(INC) -MMD -MP -c $< -o $@
 	@printf "\033[A\033[2K"
-
-$(OBJ_PATH):
-	mkdir -p $(OBJ_PATH)
 
 clean:
 	rm -f $(OBJ) $(DEP)
@@ -100,14 +98,11 @@ fclean: clean
 ifneq ($(3TH_NAME),)
 	+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) fclean &&) true
 endif
-	test -d $(OBJ_DIR)/rel && rmdir $(OBJ_DIR)/rel || true
-	test -d $(OBJ_DIR)/dev && rmdir $(OBJ_DIR)/dev || true
-	test -d $(OBJ_DIR)/san && rmdir $(OBJ_DIR)/san || true
-	test -d $(OBJ_DIR) && rmdir $(OBJ_DIR) || true
+	test -d $(OBJ_DIR) && find $(OBJ_DIR) -type d | sort -r | xargs rmdir || true
 	rm -f $(NAME){,.san,.dev}
 	@printf  "%-20s\033[32m✔\033[0m\n" "$(NAME): $@"
 
-re: fclean all
+re: clean all
 
 test: all
 	./test.sh . $(NAME)

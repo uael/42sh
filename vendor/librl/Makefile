@@ -6,7 +6,7 @@
 #    By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/07 09:52:36 by alucas-           #+#    #+#              #
-#    Updated: 2018/02/10 17:12:46 by mc               ###   ########.fr        #
+#    Updated: 2018/02/12 17:11:28 by mcanal           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,6 +18,7 @@ SCFLAGS = -fsanitize=address,undefined -ferror-limit=5
 CC ?= gcc
 
 INC_PATH = include ../libft/include
+SRC_PATH = src
 OBJ_DIR ?= obj
 OBJ_PATH ?= $(OBJ_DIR)/rel
 3TH_PATH =
@@ -32,16 +33,15 @@ LIB_NAME = $(LIBS)
 endif
 3TH_NAME =
 SRC_NAME = \
-	edit.c ctrl.c edit_hist.c insert.c move.c print.c \
-	return.c ln.c utf8.c \
-	hist.c load.c save.c \
+	edit.c edit/ctrl.c edit/hist.c edit/insert.c edit/move.c edit/print.c \
+	edit/return.c edit/ln.c edit/utf8.c \
+	hist.c hist/load.c hist/save.c \
 	hook.c \
-	read.c notty.c tty.c \
+	read.c read/notty.c read/tty.c \
 	screen.c \
 	visual.c \
 	signal.c
 
-VPATH = src src/read src/hist src/edit
 3TH = $(addprefix $(3TH_PATH)/, $(3TH_NAME))
 OBJ = $(addprefix $(OBJ_PATH)/, $(SRC_NAME:.c=.o))
 LNK = $(addprefix -L, $(3TH))
@@ -69,18 +69,16 @@ endif
 	+$(MAKE) $(NAME).san.a "NAME = $(NAME).san" "CFLAGS = $(SCFLAGS)" \
 	  "OBJ_PATH = $(OBJ_DIR)/san" "CC = clang"
 
-$(NAME).a: $(OBJ_PATH) $(OBJ)
+$(NAME).a: $(OBJ)
 	ar -rc $(NAME).a $(OBJ)
 	ranlib $(NAME).a
 	@printf  "%-20s\033[32m✔\033[0m\n" "$(NAME): lib"
 
-$(OBJ_PATH)/%.o: %.c
+$(OBJ_PATH)/%.o: $(SRC_PATH)/%.c
+	mkdir -p $(shell dirname $@)
 	@printf "\r%-20s$<\n" "$(NAME):"
 	$(CC) $(CFLAGS) $(INC) -MMD -MP -c $< -o $@
 	@printf "\033[A\033[2K"
-
-$(OBJ_PATH):
-	mkdir -p $(OBJ_PATH)
 
 clean:
 	rm -f $(OBJ) $(DEP)
@@ -92,14 +90,11 @@ fclean: clean
 ifneq ($(3TH_NAME),)
 	+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) fclean &&) true
 endif
-	test -d $(OBJ_DIR)/rel && rmdir $(OBJ_DIR)/rel || true
-	test -d $(OBJ_DIR)/dev && rmdir $(OBJ_DIR)/dev || true
-	test -d $(OBJ_DIR)/san && rmdir $(OBJ_DIR)/san || true
-	test -d $(OBJ_DIR) && rmdir $(OBJ_DIR) || true
+	test -d $(OBJ_DIR) && find $(OBJ_DIR) -type d | sort -r | xargs rmdir || true
 	rm -f $(NAME){,.san,.dev}.a
 	@printf  "%-20s\033[32m✔\033[0m\n" "$(NAME): $@"
 
-re: fclean all
+re: clean all
 
 -include $(DEP)
 
