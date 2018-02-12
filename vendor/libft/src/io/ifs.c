@@ -20,7 +20,7 @@ inline void				ft_ifsctor(t_ifs *self, int ifd)
 	self->i = 0;
 	self->rd = 0;
 	self->buf = NULL;
-	self->limit = UINT16_MAX;
+	self->lim = -1;
 }
 
 inline void				ft_ifsdtor(t_ifs *self)
