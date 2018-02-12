@@ -23,7 +23,7 @@ void			searchprint(void)
 		ft_strcat(buf, g_lookup->buf);
 	ft_strcat(buf, COLOR_RESET") ");
 	ft_strcat(buf, g_edit_prompt);
-	rl_editprint(buf, g_candidate);
+	rl_editprint(buf, g_eln);
 }
 
 inline int		rl_searchtoggle(void)
@@ -52,7 +52,6 @@ inline int		rl_searchtoggle(void)
 		g_lookup->len = 0;
 		g_screen->col = 0;
 		g_idx = 0;
-		ft_memset(g_candidate, 0, sizeof(t_editln));
 		searchprint();
 	}
 	return (YEP);
@@ -60,19 +59,77 @@ inline int		rl_searchtoggle(void)
 
 inline int		rl_searchinsert(char c)
 {
+	ssize_t	i;
+	t_sds	*h;
+
 	if (c == '\n' || c == '\r')
 		return (YEP);
 	ft_sdscput(g_lookup, g_idx++, c);
-	searchprint();
+	if (g_hist_len)
+	{
+		i = g_hist_len;
+		while (i > 0)
+		{
+			h = g_hist + --i;
+			if (ft_strstr(h->buf, g_lookup->buf))
+			{
+				g_edit_idx = (uint8_t)i;
+				g_eln = g_edit + g_edit_idx;
+				g_eln->idx = (uint16_t)g_eln->str.len;
+				g_eln->row = (g_eln + 1)->row;
+				g_eln->rows.len = (g_eln + 1)->rows.len;
+				i = -1;
+				break ;
+			}
+		}
+		if (i != -1)
+		{
+			g_edit_idx = (uint8_t)g_edit_len;
+			g_eln = g_edit + g_edit_idx;
+			g_eln->idx = (uint16_t)g_eln->str.len;
+			g_eln->row = (g_eln + 1)->row;
+			g_eln->rows.len = (g_eln + 1)->rows.len;
+		}
+		searchprint();
+	}
 	return (YEP);
 }
 
 inline int		rl_searchbackspace(void)
 {
+	ssize_t	i;
+	t_sds	*h;
+
 	if (g_idx && g_lookup->len)
 	{
 		ft_sdsrem(g_lookup, --g_idx, NULL);
-		searchprint();
+		if (g_hist_len)
+		{
+			i = g_hist_len;
+			while (i > 0)
+			{
+				h = g_hist + --i;
+				if (ft_strstr(h->buf, g_lookup->buf))
+				{
+					g_edit_idx = (uint8_t)i;
+					g_eln = g_edit + g_edit_idx;
+					g_eln->idx = (uint16_t)g_eln->str.len;
+					g_eln->row = (g_eln + 1)->row;
+					g_eln->rows.len = (g_eln + 1)->rows.len;
+					i = -1;
+					break ;
+				}
+			}
+			if (i != -1)
+			{
+				g_edit_idx = (uint8_t)(g_edit_len - 1);
+				g_eln = g_edit + g_edit_idx;
+				g_eln->idx = (uint16_t)g_eln->str.len;
+				g_eln->row = (g_eln + 1)->row;
+				g_eln->rows.len = (g_eln + 1)->rows.len;
+			}
+			searchprint();
+		}
 	}
 	return (YEP);
 }
