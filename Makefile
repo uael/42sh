@@ -6,7 +6,7 @@
 #    By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/07 09:52:36 by alucas-           #+#    #+#              #
-#    Updated: 2018/02/10 12:02:40 by mc               ###   ########.fr        #
+#    Updated: 2018/02/13 00:10:17 by mc               ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ RCFLAGS = -O2 -fomit-frame-pointer
 DCFLAGS = -g3 -DDEBUG
 SCFLAGS = $(DCFLAGS) -fsanitize=address,undefined -ferror-limit=5
 CC ?= gcc
-MAKE += -j4
+MAKEFLAGS += -j$(shell nproc 2>/dev/null)
 
 INC_PATH = include
 SRC_PATH = src
@@ -61,70 +61,72 @@ DEP = $(OBJ:%.o=%.d)
 
 all:
 ifneq ($(3TH_NAME),)
-	@+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th);)
+	+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) &&) true
 endif
-	@+$(MAKE) $(NAME) "CFLAGS = $(RCFLAGS)" "OBJ_PATH = $(OBJ_DIR)/rel"
+	+$(MAKE) $(NAME) "CFLAGS = $(RCFLAGS)" "OBJ_PATH = $(OBJ_DIR)/rel"
 
 dev:
 ifneq ($(3TH_NAME),)
-	@+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) dev;)
+	+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) dev &&) true
 endif
-	@+$(MAKE) $(NAME).dev "NAME = $(NAME).dev" "CFLAGS = $(DCFLAGS)" \
+	+$(MAKE) $(NAME).dev "NAME = $(NAME).dev" "CFLAGS = $(DCFLAGS)" \
 	  "OBJ_PATH = $(OBJ_DIR)/dev"
 
 san:
 ifneq ($(3TH_NAME),)
-	@+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) san;)
+	+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) san &&) true
 endif
-	@+$(MAKE) $(NAME).san "NAME = $(NAME).san" "CFLAGS = $(SCFLAGS)" \
-	  "OBJ_PATH = $(OBJ_DIR)/san"
+	+$(MAKE) $(NAME).san "NAME = $(NAME).san" "CFLAGS = $(SCFLAGS)" \
+	  "OBJ_PATH = $(OBJ_DIR)/san" "CC = clang"
 
 $(NAME): $(OBJ)
-	@$(CC) $(CFLAGS) $(INC) $(LNK) $(OBJ) $(LIB) -o $(NAME)
+	$(CC) $(CFLAGS) $(INC) $(LNK) $(OBJ) $(LIB) -o $(NAME)
 	@printf  "%-20s\033[32m✔\033[0m\n" "$(NAME): exe"
 
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.c
-	@mkdir -p $(shell dirname $@)
+	mkdir -p $(shell dirname $@)
 	@printf "\r%-20s$<\n" "$(NAME):"
-	@$(CC) $(CFLAGS) $(INC) -MMD -MP -c $< -o $@
+	$(CC) $(CFLAGS) $(INC) -MMD -MP -c $< -o $@
 	@printf "\033[A\033[2K"
 
 clean:
-ifneq ($(3TH_NAME),)
-	@+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) clean;)
-endif
-	@test -d $(UNIT_TEST_PATH) && $(MAKE) -C $(UNIT_TEST_PATH) clean
-	@rm -rf $(OBJ_PATH)
+	rm -f $(OBJ) $(DEP)
+	rm -f $(OBJ:$(OBJ_DIR)/rel%=$(OBJ_DIR)/dev%) $(DEP:$(OBJ_DIR)/rel%=$(OBJ_DIR)/dev%)
+	rm -f $(OBJ:$(OBJ_DIR)/rel%=$(OBJ_DIR)/san%) $(DEP:$(OBJ_DIR)/rel%=$(OBJ_DIR)/san%)
 	@printf  "%-20s\033[32m✔\033[0m\n" "$(NAME): $@"
 
-fclean:
+fclean: clean
 ifneq ($(3TH_NAME),)
-	@+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) fclean;)
+	+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) fclean &&) true
 endif
-	@test -d $(UNIT_TEST_PATH) && $(MAKE) -C $(UNIT_TEST_PATH) fclean
-	@rm -rf $(OBJ_PATH)
-	@rm -f $(NAME)
+	test -d $(UNIT_TEST_PATH) && $(MAKE) -C $(UNIT_TEST_PATH) fclean || true
+	test -d $(OBJ_DIR) && find $(OBJ_DIR) -type d | sort -r | xargs rmdir || true
+	rm -f $(NAME){,.san,.dev}
 	@printf  "%-20s\033[32m✔\033[0m\n" "$(NAME): $@"
 
-re: fclean all
+re: clean all
 
 test: all
-	@test -d $(UNIT_TEST_PATH) && $(MAKE) -C $(UNIT_TEST_PATH)
-	@./test.sh . $(NAME)
+	test -d $(UNIT_TEST_PATH) && $(MAKE) -C $(UNIT_TEST_PATH) || true
+	./test.sh . $(NAME)
 
 testdev: dev
-	@test -d $(UNIT_TEST_PATH) && $(MAKE) -C $(UNIT_TEST_PATH) debug
-	@./test.sh . $(NAME).dev
+	test -d $(UNIT_TEST_PATH) && $(MAKE) -C $(UNIT_TEST_PATH) debug || true
+	./test.sh . $(NAME).dev
 
 testsan: san
-	@test -d $(UNIT_TEST_PATH) && $(MAKE) -C $(UNIT_TEST_PATH) sanitize
-	@./test.sh . $(NAME).san
+	test -d $(UNIT_TEST_PATH) && $(MAKE) -C $(UNIT_TEST_PATH) sanitize || true
+	./test.sh . $(NAME).san
 
 valgrind: dev
-	@test -d $(UNIT_TEST_PATH) && $(MAKE) -C $(UNIT_TEST_PATH) debug
-	@./valgrind.sh . $(NAME).dev
+	test -d $(UNIT_TEST_PATH) && $(MAKE) -C $(UNIT_TEST_PATH) debug || true
+	./valgrind.sh . $(NAME).dev
 
 -include $(DEP)
+
+ifndef VERBOSE
+.SILENT:
+endif
 
 .PHONY: all, dev, san, $(NAME), clean, fclean, re, test, testdev, testsan, \
   valgrind
