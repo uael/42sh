@@ -27,7 +27,7 @@ inline int		rl_histload(char const *filename)
 	{
 		if (sz == 1)
 			new = 1;
-		else
+		else if (sz < UINT16_MAX)
 		{
 			new ? rl_histadd(ln, (size_t)sz) : rl_histcat(ln, (size_t)sz, 0, 0);
 			new = 0;
