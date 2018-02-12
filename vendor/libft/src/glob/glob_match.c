@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 21:09:16 by mc                #+#    #+#             */
-/*   Updated: 2018/02/12 13:56:31 by mcanal           ###   ########.fr       */
+/*   Updated: 2018/02/13 00:50:37 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,20 +20,20 @@
 #ifdef DEBUG_MODE
 char const *g_pat = NULL;
 char const *g_str = NULL;
-# define DEBUGUX(_header, _pat, _str) do {						\
-	DEBUG(_header ": pat[%d]: %c", (int)(_pat - g_pat), *_pat); \
-	DEBUG(_header ": str[%d]: %c\n", (int)(_str - g_str), *_str); \
+# define _DEBUGUX(_header, _pat, _str) do {						\
+	_DEBUG(_header ": pat[%d]: %c", (int)(_pat - g_pat), *_pat); \
+	_DEBUG(_header ": str[%d]: %c\n", (int)(_str - g_str), *_str); \
 } while (0)
 #else
-# define DEBUGUX(_header, _pat, _str) do {} while (0)
+# define _DEBUGUX(_header, _pat, _str) do {} while (0)
 #endif
 
 
 static t_bool handle_rev_char_class(char const *pat, char const *str, int flags, \
 								t_bool matched)
 {
-	DEBUG("REV_CHAR_CLASS: match: %d", matched);
-	DEBUGUX("REV_CHAR_CLASS", pat, str);
+	_DEBUG("REV_CHAR_CLASS: match: %d", matched);
+	_DEBUGUX("REV_CHAR_CLASS", pat, str);
 
 	if (!*pat)
 		return FALSE; //TODO: unmatched bracket :/
@@ -56,8 +56,8 @@ static t_bool handle_rev_char_class(char const *pat, char const *str, int flags,
 static t_bool handle_char_class(char const *pat, char const *str, int flags, \
 								t_bool matched)
 {
-	DEBUG("CHAR_CLASS: match: %d", matched);
-	DEBUGUX("CHAR_CLASS", pat, str);
+	_DEBUG("CHAR_CLASS: match: %d", matched);
+	_DEBUGUX("CHAR_CLASS", pat, str);
 
 	if (!*pat)
 		return FALSE; //TODO: unmatched bracket :/
@@ -80,7 +80,7 @@ static t_bool handle_char_class(char const *pat, char const *str, int flags, \
 static t_bool handle_str_wildcard(char const *pat, char const *str, int flags, \
 								  int depth)
 {
-	DEBUGUX("STR_WILDCARD", pat, str);
+	_DEBUGUX("STR_WILDCARD", pat, str);
 
 	if (depth > MAX_DEPTH)
 		return FALSE;
@@ -101,7 +101,7 @@ t_bool glob_match(char const *pat, char const *str, int flags)
 	if (!g_pat) g_pat = pat;
 	if (!g_str) g_str = str;
 #endif
-	DEBUGUX("GLOB_MATCH", pat, str);
+	_DEBUGUX("GLOB_MATCH", pat, str);
 
 	if (*pat == '\\' && !(flags & GLOB_NOESCAPE))
 		return *(pat + 1) == *str ? glob_match(pat + 2, str + 1, flags) : FALSE;
