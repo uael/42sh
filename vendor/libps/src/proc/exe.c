@@ -63,6 +63,8 @@ static int		exelookup(char **env, char *exe, char const *path, char *buf)
 	uint32_t	i;
 
 	st = 0;
+	if (ft_strlen(exe) > PATH_MAX)
+		return (PROC_NOTFOUND);
 	if (ft_strchr(exe, '/'))
 		return (exetest(ft_strcpy(buf, exe)));
 	beg = ft_getenv(env, path);
@@ -115,5 +117,5 @@ inline int		ps_procexelaunch(struct s_proc *prc)
 	execve(buf, prc->argv, prc->envv);
 	g_errcb("%s: %e\n", prc->argv[0], errno);
 	ps_procdtor(prc);
-	return (g_fatalcb(st, NULL));
+	return (g_fatalcb(EXIT_FAILURE, NULL));
 }

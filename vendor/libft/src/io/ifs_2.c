@@ -21,7 +21,7 @@ static inline ssize_t	ifsbuf(t_ifs *self, char **out)
 	size_t	left;
 
 	left = self->rd - self->i;
-	if ((self->rd % BSZ) != 0)
+	if ((self->rd % BSZ) != 0 || (self->lim > 0 && self->rd + BSZ >= self->lim))
 		return (left);
 	if ((rd = ft_read(self->ifd, buf, BSZ)) <= 0)
 		return (rd ? (size_t)WUT : left);
@@ -30,7 +30,7 @@ static inline ssize_t	ifsbuf(t_ifs *self, char **out)
 		ft_memmove(*out, *out + self->i, left);
 	else
 	{
-		*out = ft_memcpy(ft_malloc(self->rd + BSZ),
+		*out = ft_memcpy(ft_malloc(self->rd + BSZ + 1),
 			*out + self->i, left);
 		self->buf ? free(self->buf) : 0;
 		self->buf = *out;
@@ -38,6 +38,7 @@ static inline ssize_t	ifsbuf(t_ifs *self, char **out)
 	}
 	ft_memcpy(*out + left, buf, (size_t)rd);
 	self->rd = left + rd;
+	(*out)[self->rd] = '\0';
 	return (self->i = 0);
 }
 

@@ -18,6 +18,8 @@ inline int	rl_editinsert(char c)
 {
 	if (c == '\n' || c == '\r')
 		return (rl_editreturn());
+	if (g_eln->str.len >= UINT16_MAX)
+		return (YEP);
 	ft_sdscput(&g_eln->str, g_eln->idx++, c);
 	rl_editprint();
 	return (YEP);

@@ -70,6 +70,8 @@ function dotest {
 mkdir -p out
 ECODE=0
 for test in ./test/*.sh; do
+  test -z ${RELOU+x} && echo "$test" | grep -q relou && continue
+
   job "Test" "$(basename "${test%.*}")" "dotest ${EXE} /bin/bash ${test}"
   RET=$?
   if [[ $RET != 0 ]]; then

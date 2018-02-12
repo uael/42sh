@@ -40,6 +40,7 @@ typedef struct	s_jb
 
 extern void		ps_jobctor(t_job *job);
 extern void		ps_jobdtor(t_job *job);
+extern void		ps_jobkill(t_job *job);
 extern int		ps_joblaunch(t_job *job, int fg);
 extern t_job	*ps_jobnext(t_job *job, t_job *next, t_andor andor);
 extern t_job	*ps_poolpush(t_job *job);

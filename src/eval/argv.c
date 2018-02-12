@@ -63,10 +63,11 @@ static inline int	makeargv(t_job *job, t_vec *av, t_deq *toks, char **ln)
 
 inline int			sh_evalargv(t_job *job, t_map *vars, t_deq *toks, char **ln)
 {
-	t_tok	*tok;
-	t_proc	*prc;
-	t_bool	own;
-	t_vec	av;
+	t_tok		*tok;
+	t_proc		*prc;
+	t_bool		own;
+	t_vec		av;
+	t_redirs	r;
 
 	ft_vecctor(&av, sizeof(char *));
 	tok = sh_tokpeek(toks);
@@ -79,13 +80,18 @@ inline int			sh_evalargv(t_job *job, t_map *vars, t_deq *toks, char **ln)
 	}
 	prc = ft_vecback((t_vec *)&job->procs);
 	prc->argv = av.buf;
+	ft_memcpy(&r, &prc->redirs, sizeof(t_redirs));
+	ft_memset(&prc->redirs, 0, sizeof(t_redirs));
 	if (!(own = (t_bool)ft_strcmp("true", prc->argv[0])) ||
 		!ft_strcmp("false", prc->argv[0]))
 	{
 		ps_procbit(prc, (t_bool)(own ? 1 : 0));
+		ft_memcpy(&prc->redirs, &r, sizeof(t_redirs));
 		return (makeargv(job, NULL, toks, ln));
 	}
+
 	ps_procexe(prc, "PATH", prc->argv[0], makeenv(vars, &own));
+	ft_memcpy(&prc->redirs, &r, sizeof(t_redirs));
 	prc->ownenv = own;
 	if (makeargv(job, &av, toks, ln) == OUF)
 		return (OUF);
