@@ -91,7 +91,7 @@ static inline int	tokenize(int fd, t_tok *tok, char **it, char **ln)
 		else if (**it && ft_strchr(sh_varifs(), **it))
 			++*it;
 		else if (ISEOL(*it))
-			return ((sh_tokpos(tok, ++*it, *ln)->id = TOK_EOL) & 0);
+			return (((sh_tokpos(tok, *it, *ln)->id = TOK_EOL) && ++*it) & 0);
 		else if (**it == '#')
 			while (**it && !ISEOL(*it))
 				++*it;
@@ -141,7 +141,7 @@ int					sh_lex(int fd, char **it, char **ln, t_tokcb *cb)
 			}
 			return (st);
 		}
-		if (g_sidx && !**it && (fd < 0 || (st = rl_catline(fd, 0, ln, it))))
-			return (st < 0 || !g_sh->tty ? sh_synerr(*ln, *it, UEE, ')') : OUF);
+		if (g_sidx && !**it && (fd < 0 || (st = rl_catline(fd, 0, ln, it)) || !**it))
+			return (LEX_SHOWE(st, fd) ? sh_synerr(*ln, *it, UEE, ')') : OUF);
 	}
 }
