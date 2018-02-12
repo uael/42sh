@@ -1,1 +1,1 @@
-python -c 'print("mkdir test1; cd test1; ls -a | wc -c | grep -v 5; cd ..; rm -rf test1; " * 800)' | "$EXE"
+python -c 'print("mkdir test1; cd test1; ls -a | wc -c | grep -v 5; cd ..; rm -rf test1; " * 1000)' | "$EXE"
