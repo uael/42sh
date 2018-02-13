@@ -22,4 +22,3 @@ typedef int		(t_procbi)(int ac, char **av, char **envv);
 extern void		ps_biregister(char const *name, t_procbi *fn);
 
 #endif
-

@@ -13,7 +13,7 @@
 #ifndef LIBPS_JOB_H
 # define LIBPS_JOB_H
 
-#include <librl.h>
+# include <librl.h>
 
 # include "proc.h"
 # include "redir.h"
