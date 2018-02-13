@@ -6,12 +6,17 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 20:57:25 by mc                #+#    #+#             */
-/*   Updated: 2018/02/13 12:37:36 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/13 14:14:47 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GLOB_CLIMB_TREE_H
 # define GLOB_CLIMB_TREE_H
+
+#include <sys/types.h> /* for {open,read,close}dir */
+#include <dirent.h> /* for {open,read,close}dir */
+
+# define IS_DIR(dirent) ((dirent)->d_type == DT_DIR)
 
 # include "libft/str.h" /* for ft_strchr */
 # include "libft/zob.h" /* for ft_shellsort */
