@@ -20,16 +20,17 @@
 #define READ_I 1 << 6
 #define READ_L 1 << 7
 
-static ssize_t 		g_timeout = 0;
-static char 		g_delim = '\n';
-static int 			g_fd = STDIN_FILENO;
+static ssize_t		g_timeout = 0;
+static char			g_delim = '\n';
+static int			g_fd = STDIN_FILENO;
 static char			*g_prompt = NULL;
 static uint8_t		g_flags = 0;
 static int			g_nchars = 0;
 
 static inline int	readparse(int ac, char *av[])
 {
-	int opt;
+	int		opt;
+	int64_t	time;
 
 	g_optind = 1;
 	while ((opt = ft_getopt(ac, av, "rst:n:u:p:d:")) != -1)
@@ -38,7 +39,10 @@ static inline int	readparse(int ac, char *av[])
 		else if (opt == 's')
 			g_flags |= READ_S;
 		else if (opt == 't' && (g_flags |= READ_T))
-			g_timeout = ft_atoi(g_optarg);
+			if ((time = ft_atoi(g_optarg)))
+				g_timeout = time;
+			else
+				g_timeout = -1;
 		else if (opt == 'n' && (g_flags |= READ_L))
 			g_nchars = (int)ft_atoi(g_optarg);
 		else if (opt == 'u' && (g_flags |= READ_U))
@@ -85,9 +89,9 @@ inline static int	readloop(t_sds *ln)
 	i = 0;
 	if (g_prompt && (g_flags & READ_I))
 		ft_puts(1, g_prompt);
-	while (42)
+	while (1)
 	{
-		if ((ret = (int)read(g_fd, buf, 4)) <= 0)
+		if ((ret = (int)read(g_fd, buf, 1)) <= 0)
 			return (ret);
 		buf[ret] = 0;
 		ft_putc(1, (char)(g_flags & READ_S ? 0 : *buf));
@@ -105,14 +109,14 @@ inline static int	readloop(t_sds *ln)
 
 inline int			sh_biread(int ac, char **av, char **env)
 {
-
 	t_sds			ln;
 	int				i;
 	struct termios	term;
+	int				st;
 
 	(void)env;
 	ft_sdsctor(&ln);
-	if (!isatty(STDIN_FILENO) || (i = readparse(ac, av)) < 0)
+	if (!isatty(STDIN_FILENO) || (i = readparse(ac, av)) < 0 || g_timeout == -1)
 		return (EXIT_FAILURE);
 	g_flags |= READ_I;
 	if (tcgetattr(STDIN_FILENO, &term))
@@ -123,8 +127,8 @@ inline int			sh_biread(int ac, char **av, char **env)
 	term.c_cc[VEOL] = (cc_t)g_delim;
 	if (tcsetattr(STDIN_FILENO, TCSANOW, &term))
 		return (ft_retf(EXIT_FAILURE, "read: %e\n", errno));
-	if (readloop(&ln) || !ln.buf)
-		return (EXIT_FAILURE);
+	if ((st = readloop(&ln)) || !ln.buf)
+		return (st ? st : EXIT_FAILURE);
 	ac == i ? sh_varset("REPLY", ln.buf) : readarg(ac, av, ln.buf, i);
 	return (YEP);
 }
