@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/08 23:54:42 by mc                #+#    #+#             */
-/*   Updated: 2018/02/13 02:27:15 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/13 09:43:31 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,30 +18,63 @@
 #include "libft/glob.h"
 #include "glob_climb_tree.h"
 
+//TODO: move this to new file (listutil)
+static size_t list_len(t_match *match_list)
+{
+	int ret;
+
+	ret = 0;
+	while (match_list)
+	{
+		ret++;
+		match_list = match_list->next;
+	}
+
+	return ret;
+}
+
 static int super_cmp(const void *a, const void *b, size_t n)
 {
-	(void)n; //this is the of one element eheh
+	(void)n; //this is the size of one element eheh
 	return ft_strcmp((char *)a, (char *)b);
 }
 
-static int copy_match_to_glob_struct(t_match *match_list, t_glob *pglob)
+static t_bool copy_match_to_glob_struct(t_match *match_list, t_glob *pglob)
 {
-/*
-	if ((pglob->gl_flags & GLOB_DOOFFS))
-		handle_offset();
+	char	**av;
 
+/*
 	if ((pglob->gl_flags & GLOB_APPEND))
 		append_to_something(); //TODO: ???
-
-	copy();
-
 */
+	pglob->gl_pathc = list_len(match_list); //TODO: find another way
+
+	if ((pglob->gl_flags & GLOB_DOOFFS))
+	{
+		if (!(pglob->gl_pathv = malloc(sizeof(char *) *
+								   (pglob->gl_pathc + pglob->gl_offs + 1))))
+			return FALSE;
+		av = pglob->gl_pathv + pglob->gl_offs;
+	}
+	else
+	{
+		if (!(pglob->gl_pathv = malloc(sizeof(char *) * (pglob->gl_pathc + 1))))
+			return FALSE;
+		av = pglob->gl_pathv;
+	}
+
+	while (match_list)
+	{
+		*av = match_list->buf; //TODO: wait, how are we gonna free the match_list?
+		av++;
+		match_list = match_list->next;
+	}
+	*av = NULL;
+
 	if (!(pglob->gl_flags & GLOB_NOSORT))
 		ft_shellsort(pglob->gl_pathv, pglob->gl_pathc, sizeof(char *), super_cmp);
 
-	(void)match_list; //TODO
-
-	return GLOB_SUCCESS;
+	return TRUE;
 }
 
 int		globctor(const char *pattern, int flags, t_glob *pglob)
@@ -71,8 +104,13 @@ void	globdtor(t_glob *pglob)
 {
 	char **av;
 
-	av = pglob->gl_pathv + pglob->gl_offs;
+	if ((pglob->gl_flags & GLOB_DOOFFS))
+		av = pglob->gl_pathv + pglob->gl_offs;
+	else
+		av = pglob->gl_pathv;
+
 	while (*av)
 		free(av++);
+
 	free(pglob->gl_pathv);
 }
