@@ -20,7 +20,7 @@ typedef struct	s_ifs
 	int			ifd;
 	size_t		i;
 	size_t		rd;
-	size_t		limit;
+	ssize_t		lim;
 	char		*buf;
 	char		stack[FT_PAGE_SIZE + 1];
 }				t_ifs;

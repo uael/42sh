@@ -18,22 +18,22 @@
 # define OPEN_MAX RLIMIT_NOFILE
 #endif
 
-static t_ifs	g_in[OPEN_MAX + 1] = { { 0, 0, 0, 0, 0, { 0 } } };
+static t_ifs	g_in[OPEN_MAX + 1] = { { 0, 0, 0, -1, 0, { 0 } } };
 static t_sds	g_ln = { NULL, 0, 0 };
 static ssize_t	g_rd[OPEN_MAX + 1] = { 0 };
 
-inline void		rl_nottydtor(void)
+inline void				rl_nottydtor(void)
 {
 	ft_sdsdtor(&g_ln);
 }
 
-inline void		rl_nottyfinalize(int fd)
+inline void				rl_nottyfinalize(int fd)
 {
 	if (g_in[fd].ifd > 0)
 		ft_ifsclose(g_in + fd);
 }
 
-inline int		rl_readnotty(int fd, char **ln)
+inline int				rl_readnotty(int fd, char **ln)
 {
 	char *buf;
 
@@ -56,7 +56,27 @@ inline int		rl_readnotty(int fd, char **ln)
 	return (NOP);
 }
 
-inline int		rl_catnotty(int fd, char **ln, char c, char **it)
+static inline size_t	catmiddle(char c, ssize_t rd, char *buf)
+{
+	size_t	middle;
+
+	if (c < 0)
+	{
+		middle = g_ln.len + c;
+		ft_sdsnpop(&g_ln, (size_t)-c, NULL);
+	}
+	else if (c)
+	{
+		middle = g_ln.len + 1;
+		ft_sdscpush(&g_ln, c);
+	}
+	else
+		middle = g_ln.len;
+	ft_sdsmpush(&g_ln, buf, (size_t)rd);
+	return (middle);
+}
+
+inline int				rl_catnotty(int fd, char **ln, char c, char **it)
 {
 	char	*buf;
 	size_t	middle;
@@ -69,19 +89,7 @@ inline int		rl_catnotty(int fd, char **ln, char c, char **it)
 	{
 		if (g_rd[fd] >= UINT16_MAX)
 			return (NOP);
-		if (c < 0)
-		{
-			middle = g_ln.len + c;
-			ft_sdsnpop(&g_ln, (size_t)-c, NULL);
-		}
-		else if (c)
-		{
-			middle = g_ln.len + 1;
-			ft_sdscpush(&g_ln, c);
-		}
-		else
-			middle = g_ln.len;
-		ft_sdsmpush(&g_ln, buf, (size_t)rd);
+		middle = catmiddle(c, rd, buf);
 		*ln = g_ln.buf;
 		*it = g_ln.buf + middle;
 		g_rd[fd] += rd;
