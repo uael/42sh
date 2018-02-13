@@ -6,7 +6,7 @@
 #    By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/07 09:52:36 by alucas-           #+#    #+#              #
-#    Updated: 2018/02/12 17:11:28 by mcanal           ###   ########.fr        #
+#    Updated: 2018/02/13 14:55:54 by mc               ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -72,19 +72,27 @@ endif
 $(NAME).a: $(OBJ)
 	ar -rc $(NAME).a $(OBJ)
 	ranlib $(NAME).a
+ifndef VERBOSE
 	@printf  "%-20s\033[32m✔\033[0m\n" "$(NAME): lib"
+endif
 
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.c
 	mkdir -p $(shell dirname $@)
+ifndef VERBOSE
 	@printf "\r%-20s$<\n" "$(NAME):"
+endif
 	$(CC) $(CFLAGS) $(INC) -MMD -MP -c $< -o $@
+ifndef VERBOSE
 	@printf "\033[A\033[2K"
+endif
 
 clean:
 	rm -f $(OBJ) $(DEP)
 	rm -f $(OBJ:$(OBJ_DIR)/rel%=$(OBJ_DIR)/dev%) $(DEP:$(OBJ_DIR)/rel%=$(OBJ_DIR)/dev%)
 	rm -f $(OBJ:$(OBJ_DIR)/rel%=$(OBJ_DIR)/san%) $(DEP:$(OBJ_DIR)/rel%=$(OBJ_DIR)/san%)
+ifndef VERBOSE
 	@printf  "%-20s\033[32m✔\033[0m\n" "$(NAME): $@"
+endif
 
 fclean: clean
 ifneq ($(3TH_NAME),)
@@ -92,7 +100,9 @@ ifneq ($(3TH_NAME),)
 endif
 	test -d $(OBJ_DIR) && find $(OBJ_DIR) -type d | sort -r | xargs rmdir || true
 	rm -f $(NAME){,.san,.dev}.a
+ifndef VERBOSE
 	@printf  "%-20s\033[32m✔\033[0m\n" "$(NAME): $@"
+endif
 
 re: clean all
 
