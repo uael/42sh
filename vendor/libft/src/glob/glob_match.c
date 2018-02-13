@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 21:09:16 by mc                #+#    #+#             */
-/*   Updated: 2018/02/13 00:50:37 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/13 11:42:25 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,8 @@ t_bool glob_match(char const *pat, char const *str, int flags)
 	if (!g_str) g_str = str;
 #endif
 	_DEBUGUX("GLOB_MATCH", pat, str);
+
+	//TODO: set GLOB_MAGCHAR
 
 	if (*pat == '\\' && !(flags & GLOB_NOESCAPE))
 		return *(pat + 1) == *str ? glob_match(pat + 2, str + 1, flags) : FALSE;

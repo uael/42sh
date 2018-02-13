@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 22:23:43 by mc                #+#    #+#             */
-/*   Updated: 2018/02/13 09:59:01 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/13 13:09:20 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,9 @@
 #include "libft/glob.h"
 #include "glob_climb_tree.h"
 
+int tree_climber(char const *dir, char const *pattern, int flags, t_match **match_list, int depth); //TODO: ooops
+
+/*
 static char **handle_brace_expansion(char const *pattern)
 {
 	//TODO
@@ -24,59 +27,69 @@ static char **handle_brace_expansion(char const *pattern)
 
 	return (char **)42;
 }
+*/
 
-static int tree_climber(char const *dir, char const *pattern, int flags, int depth)
+static int tree_climber_loop(char const *file, char const *pattern, int flags, t_match **match_list, int depth) //TODO: ooops
 {
 /*
-	ret[] = []  //TODO: choose data-struct: linked list?
+	int			ret;
+	t_match		*match;
 
-	subpats[] = pattern.split('/')
+	if ((flags & GLOB_ONLYDIR) && is_a_dir(file))
+		return GLOB_SUCCESS;
 
-	files[] = ls(dir)
-	if read_error and GLOB_ERR:
-		return false
+	//TODO: should we reset the GLOB_MAGCHAR flag?
+	if (!glob_match(
+		'/' + subpats[:depth - len(subpats)].join('/'),
+			// re-join pattern from the begin to i
+		file
+	))
+		return GLOB_SUCCESS;
 
-	// remove non-matching files
-	for(file in files):
-		if GLOB_ONLYDIR and is_a_dir(file):
-			files.pop(file)
+	if ((flags & GLOB_PERIOD) && !(flags & GLOB_MAGCHAR) && *file == '.')
+		return GLOB_SUCCESS;
 
-		if not glob_match(
-			'/' + subpats[:depth - len(subpats)].join('/'),
-				// re-join pattern from the begin to i
-			file
-		):
-			files.pop(file)
+	if (is_a_dir_or_link(file))
+	{
+		ret = tree_climber(file, pattern, flags, match_list, depth - 1); //BOOOOM BABY!
+		if (ret != GLOB_SUCCESS)
+			return ret;
+	}
 
-		if not GLOB_PERIOD and GLOB_MAGCHAR and file[0] == '.':
-			files.pop(file)
-
-		//TODO: should we reset the GLOB_MAGCHAR flag?
-
-	//no more recursion needed, just return matching files
-	if depth == 1:
-		return files
-
-	// loop on matching dirs/links
-	for(file in files):
-		if is_a_dir_or_link(file):
-			ret += tree_climber(
-				file,
-				pattern,
-				flags,
-				depth - 1
-			)
-
-	return ret  //TODO: return mismatch :o
+	if (!(match = matchctor(file, ft_strlen(file))))
+		return GLOB_NOSPACE;
+	add_match_to_list(match, match_list);
 */
-	(void)dir; //TODO
-	(void)pattern; //TODO
-	(void)depth; //TODO
-	(void)flags; //TODO
 
 	return GLOB_SUCCESS;
 }
 
+int tree_climber(char const *dir, char const *pattern, int flags, t_match **match_list, int depth)
+{
+/*
+	int			ret;
+
+	if (!depth)
+		return GLOB_SUCCESS;
+
+	files[] = ls(dir)
+	if (read_error && (flags & GLOB_ERR))
+		return GLOB_ABORTED;
+
+	subpats[] = pattern.split('/');
+
+	for (file in files)
+	{
+		ret = tree_climber_loop(file, pattern, flags, match_list, depth);
+		if (ret != GLOB_SUCCESS)
+			return ret;
+	}
+*/
+
+	return GLOB_SUCCESS;
+}
+
+//TODO: test
 int glob_climb_tree(char const *pattern, int flags, t_match **match_list)
 {
 	//TODO: flags: we might want to pass the whole t_glob struct instead
@@ -110,7 +123,7 @@ int glob_climb_tree(char const *pattern, int flags, t_match **match_list)
 		while (*search_start != '/')
 			search_start--;
 
-	ret = tree_climber(search_start, pattern, flags, depth);
+	ret = tree_climber(search_start, pattern, flags, match_list, depth);
 /*
 	if GLOB_NOCHECK and not files:
 		return pattern

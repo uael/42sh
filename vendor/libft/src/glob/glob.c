@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/08 23:54:42 by mc                #+#    #+#             */
-/*   Updated: 2018/02/13 11:22:21 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/13 12:38:54 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ int		globctor(const char *pattern, int flags, t_glob *pglob)
 	t_match *match_list;
 	int		ret;
 
+	//TODO: test
 	if ((flags & ~__GLOB_FLAGS))
 		return GLOB_NOSYS;
 
@@ -78,10 +79,16 @@ int		globctor(const char *pattern, int flags, t_glob *pglob)
 	match_list = NULL;
 	ret = glob_climb_tree(pattern, flags, &match_list);
 	if (ret != GLOB_SUCCESS)
+	{
+		matchdtor(match_list);
 		return ret;
+	}
 
 	if (!copy_match_to_glob_struct(match_list, pglob))
+	{
+		matchdtor(match_list);
 		return GLOB_NOSPACE;
+	}
 
 	return GLOB_SUCCESS;
 }
