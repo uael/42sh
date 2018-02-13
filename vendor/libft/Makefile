@@ -54,7 +54,7 @@ SRC_NAME = \
 	mem/alloc.c \
 	str/mem.c str/mem_2.c str/str.c str/str_2.c str/str_3.c str/str_4.c \
 	str/str_5.c \
-	get_opt/getoptlong.c get_opt/getoptlonglong.c get_opt/getopt.c
+	getopt.c
 
 3TH = $(addprefix $(3TH_PATH)/, $(3TH_NAME))
 OBJ = $(addprefix $(OBJ_PATH)/, $(SRC_NAME:.c=.o))

@@ -12,41 +12,44 @@
 
 #include "ush.h"
 
-enum				e_readopt
+#define READ_T 1 << 1
+#define READ_U 1 << 2
+#define READ_D 1 << 3
+#define READ_R 1 << 4
+#define READ_S 1 << 5
+#define READ_I 1 << 6
+#define READ_L 1 << 7
+
+static ssize_t 		g_timeout = 0;
+static char 		g_delim = '\n';
+static int 			g_fd = STDIN_FILENO;
+static char			*g_prompt = NULL;
+static uint8_t		g_flags = 0;
+static int			g_nchars = 0;
+
+static inline int	readparse(int ac, char *av[])
 {
-	READ_T = 1 << 1,
-	READ_U = 1 << 2,
-	READ_D = 1 << 3,
-};
+	int opt;
 
-typedef struct		s_readopt
-{
-	ssize_t 		timeout;
-	char 			delim;
-	ssize_t 		read_fd;
-}					t_readopt;
-
-static t_readopt	g_opt = {0, '\n', 0};
-
-static inline int	parsearg(int ac, char *av[], uint8_t *flags)
-{
-	char	*a;
-	int		i;
-
-	i = 0;
-	while (++i < ac)
-		if (*av[i] == '-' && (a = av[i]))
-			if (*++a  == 't' && (*flags |= READ_T))
-				av[++i] ? g_opt.timeout = ft_atoi(av[i]) : 0;
-			else if (*a == 'u' && (*flags |= READ_U))
-				av[++i] ? g_opt.read_fd = ft_atoi(av[i]) : 0;
-			else if (*a == 'd' && (*flags |= READ_D))
-				av[++i] && ft_strlen(av[i]) == 1 ? g_opt.delim = av[i][0] : 0;
-			else
-				return (ft_retf(WUT, "read: %s: invalid option\n", a));
+	g_optind = 1;
+	while ((opt = ft_getopt(ac, av, "rst:n:u:p:d:")) != -1)
+		if (opt == 'r')
+			g_flags |= READ_R;
+		else if (opt == 's')
+			g_flags |= READ_S;
+		else if (opt == 't' && (g_flags |= READ_T))
+			g_timeout = ft_atoi(g_optarg);
+		else if (opt == 'n' && (g_flags |= READ_L))
+			g_nchars = (int)ft_atoi(g_optarg);
+		else if (opt == 'u' && (g_flags |= READ_U))
+			g_fd = (int)ft_atoi(g_optarg);
+		else if (opt == 'p')
+			g_prompt = g_optarg;
+		else if (opt == 'd' && (g_flags |= READ_D))
+			g_delim = *g_optarg;
 		else
-			return (i);
-	return (YEP);
+			return (WUT);
+	return (g_optind);
 }
 
 inline static void	readarg(int ac, char **av, char *ln, int i)
@@ -57,7 +60,7 @@ inline static void	readarg(int ac, char **av, char *ln, int i)
 	{
 		if (!(chr = ft_strmchr(ln, " \t\n")))
 		{
-			sh_varset(av[i], ln);
+			sh_isname(av[i]) ? sh_varset(av[i], ln) : 0;
 			break ;
 		}
 		if (i + 1 < ac)
@@ -66,34 +69,62 @@ inline static void	readarg(int ac, char **av, char *ln, int i)
 			while (ft_strchr(" \t\n", *chr))
 				++chr;
 		}
-		sh_varset(av[i++], ln);
+		sh_isname(av[i]) ? sh_varset(av[i++], ln) : 0;
 		ln = chr;
 	}
 }
 
+inline static int	readloop(t_sds *ln)
+{
+	int		i;
+	int		esc;
+	int		ret;
+	char	buf[2];
+
+	esc = 0;
+	i = 0;
+	if (g_prompt && (g_flags & READ_I))
+		ft_puts(1, g_prompt);
+	while (42)
+	{
+		if ((ret = (int)read(g_fd, buf, 4)) <= 0)
+			return (ret);
+		buf[ret] = 0;
+		ft_putc(1, (char)(g_flags & READ_S ? 0 : *buf));
+		if (!esc && *buf == g_delim)
+			break ;
+		esc = esc ? 0 : !(g_flags & READ_R) && (*buf == '\\');
+		ft_sdsapd(ln, buf);
+		if (*buf == '\n' && !(g_flags & (READ_R | READ_S | READ_I)))
+			ft_puts(1, "> ");
+		if ((g_flags & READ_L) && ++i >= g_nchars)
+			break ;
+	}
+	return (0);
+}
+
 inline int			sh_biread(int ac, char **av, char **env)
 {
-	struct termios	term;
-	uint8_t			flags;
-	ssize_t 		rd;
-	t_ifs			ifs;
-	char			*ln;
+
+	t_sds			ln;
 	int				i;
+	struct termios	term;
 
 	(void)env;
-	ft_ifsctor(&ifs, (int)g_opt.read_fd);
-	flags = 0;
-	if ((i = parsearg(ac, av, &flags)) < 0)
+	ft_sdsctor(&ln);
+	if (!isatty(STDIN_FILENO) || (i = readparse(ac, av)) < 0)
 		return (EXIT_FAILURE);
-	term.c_cc[VTIME] = (cc_t)(g_opt.timeout * 10);
-	term.c_cc[VMIN] = (cc_t)(g_opt.timeout ? 0 : 1);
-	term.c_cc[VEOL] = (cc_t)g_opt.delim;
-	if ((rd = ft_ifschr(&ifs, 0, '\n', &ln)) < 0)
+	g_flags |= READ_I;
+	if (tcgetattr(STDIN_FILENO, &term))
+		return (ft_retf(EXIT_FAILURE, "read: %e\n", errno));
+	term.c_lflag &= ~(ECHO | ICANON);
+	term.c_cc[VTIME] = (cc_t)(g_timeout * 10);
+	term.c_cc[VMIN] = (cc_t)(g_timeout ? 0 : 1);
+	term.c_cc[VEOL] = (cc_t)g_delim;
+	if (tcsetattr(STDIN_FILENO, TCSANOW, &term))
+		return (ft_retf(EXIT_FAILURE, "read: %e\n", errno));
+	if (readloop(&ln) || !ln.buf)
 		return (EXIT_FAILURE);
-	if (rd == 0)
-		return (EXIT_SUCCESS);
-	rd > 1 ? ln[rd - 1] = '\0' : 0;
-	ac == i ? sh_varset("REPLY", ln) : readarg(ac, av, ln, i);
-	ft_ifsdtor(&ifs);
+	ac == i ? sh_varset("REPLY", ln.buf) : readarg(ac, av, ln.buf, i);
 	return (YEP);
 }
