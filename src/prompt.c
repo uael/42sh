@@ -14,10 +14,6 @@
 
 static char		*promptreduce(char *p, char *r, char *home)
 {
-	*r++ = '\033';
-	*r++ = '[';
-	*r++ = '2';
-	*r++ = 'm';
 	while (*p)
 		if (*p == '/' && *(p + 1) && (home = ft_strchr(p + 1, '/')))
 		{
@@ -27,11 +23,6 @@ static char		*promptreduce(char *p, char *r, char *home)
 		}
 		else
 			*r++ = *p++;
-	*r++ = '\033';
-	*r++ = '[';
-	*r++ = '2';
-	*r++ = '2';
-	*r++ = 'm';
 	*r = '\0';
 	return (r);
 }
