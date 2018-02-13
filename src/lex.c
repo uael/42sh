@@ -103,8 +103,8 @@ static inline int	tokenize(int fd, t_tok *tok, char **it, char **ln)
 	sh_tokpos(tok, *it, *ln);
 	ft_isdigit(**it) ? (++tok->len && ++*it) : 0;
 	return (st = sh_lexop(fd, tok, it, ln)) != NOP ||
-		(st = sh_lexword(fd, tok, it, ln)) != NOP ? st :
-		sh_synerr(*ln, *it, "Unexpected token `%c'", **it);
+	(st = sh_lexword(fd, tok, it, ln)) != NOP ? st :
+	sh_synerr(*ln, *it, "Unexpected token `%c'", **it);
 }
 
 int					sh_lex(int f, char **i, char **l, t_tokcb *cb)
@@ -123,7 +123,7 @@ int					sh_lex(int f, char **i, char **l, t_tokcb *cb)
 			d->buf = ft_memcpy(alloca((d->cap *= 2) * sizeof(t_tok)),
 				d->buf, d->len * sizeof(t_tok));
 		ft_memset(t = (t_tok *)d->buf + d->len++, 0, sizeof(t_tok));
-		if ((st = tokenize(f, t, i, l)) || (st = check(f, t, d, &tit)))
+		if ((st = tokenize(f, t, i, l)) || (st += check(f, t, d, &tit)))
 		{
 			if (st == NOP && cb(f, d, l))
 				g_sh->status = 1;

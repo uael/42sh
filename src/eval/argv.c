@@ -12,7 +12,7 @@
 
 #include "ush/eval.h"
 
-static inline char	**makeenv(t_map *vars, t_bool *owned)
+static inline char		**makeenv(t_map *vars, t_bool *owned)
 {
 	t_vec		*e;
 	char		**envv;
@@ -36,7 +36,7 @@ static inline char	**makeenv(t_map *vars, t_bool *owned)
 	return (e->buf);
 }
 
-static inline int	makeargv(t_job *job, t_vec *av, t_deq *toks, char **ln)
+static inline int		makeargv(t_job *job, t_vec *av, t_deq *toks, char **ln)
 {
 	t_tok *tok;
 
@@ -61,25 +61,34 @@ static inline int	makeargv(t_job *job, t_vec *av, t_deq *toks, char **ln)
 	return (YEP);
 }
 
-inline int			sh_evalargv(t_job *job, t_map *vars, t_deq *toks, char **ln)
+static inline t_proc	*explodesome(t_vec *av, t_job *job, t_deq *t, char **ln)
 {
 	t_tok		*tok;
+	t_proc		*prc;
+
+	ft_vecctor(av, sizeof(char *));
+	tok = sh_tokpeek(t);
+	while (!av->len)
+	{
+		if (!tok || !TOK_ISWORD(tok->id))
+			return (NULL);
+		sh_wordexplode(av, *ln + tok->pos, tok->len);
+		tok = sh_toknext(t);
+	}
+	prc = ft_vecback((t_vec *)&job->procs);
+	prc->argv = av->buf;
+	return (prc);
+}
+
+inline int				sh_evalargv(t_job *j, t_map *v, t_deq *toks, char **ln)
+{
 	t_proc		*prc;
 	t_bool		own;
 	t_vec		av;
 	t_redirs	r;
 
-	ft_vecctor(&av, sizeof(char *));
-	tok = sh_tokpeek(toks);
-	while (!av.len)
-	{
-		if (!tok || !TOK_ISWORD(tok->id))
-			return (NOP);
-		sh_wordexplode(&av, *ln + tok->pos, tok->len);
-		tok = sh_toknext(toks);
-	}
-	prc = ft_vecback((t_vec *)&job->procs);
-	prc->argv = av.buf;
+	if (!(prc = explodesome(&av, j, toks, ln)))
+		return (NOP);
 	ft_memcpy(&r, &prc->redirs, sizeof(t_redirs));
 	ft_memset(&prc->redirs, 0, sizeof(t_redirs));
 	if (!(own = (t_bool)ft_strcmp("true", prc->argv[0])) ||
@@ -87,15 +96,14 @@ inline int			sh_evalargv(t_job *job, t_map *vars, t_deq *toks, char **ln)
 	{
 		ps_procbit(prc, (t_bool)(own ? 1 : 0));
 		ft_memcpy(&prc->redirs, &r, sizeof(t_redirs));
-		return (makeargv(job, NULL, toks, ln));
+		return (makeargv(j, NULL, toks, ln));
 	}
-
-	ps_procexe(prc, "PATH", prc->argv[0], makeenv(vars, &own));
+	ps_procexe(prc, "PATH", prc->argv[0], makeenv(v, &own));
 	ft_memcpy(&prc->redirs, &r, sizeof(t_redirs));
 	prc->ownenv = own;
-	if (makeargv(job, &av, toks, ln) == OUF)
+	if (makeargv(j, &av, toks, ln) == OUF)
 		return (OUF);
 	*(char **)ft_vecpush(&av) = NULL;
-	((t_proc *)ft_vecback((t_vec *)&job->procs))->argv = av.buf;
+	((t_proc *)ft_vecback((t_vec *)&j->procs))->argv = av.buf;
 	return (YEP);
 }
