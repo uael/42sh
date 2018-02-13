@@ -16,7 +16,7 @@ RCFLAGS = -O2 -fomit-frame-pointer
 DCFLAGS = -g3 -DDEBUG
 SCFLAGS = $(DCFLAGS) -fsanitize=address,undefined -ferror-limit=5
 CC ?= gcc
-MAKEFLAGS += -j$(shell nproc 2>/dev/null)
+MAKE += -j4
 
 INC_PATH = include
 SRC_PATH = src
@@ -58,6 +58,14 @@ INC = $(addprefix -I, $(INC_PATH) $(addsuffix /include, $(3TH)))
 LIB = $(addprefix -l, $(LIB_NAME))
 DEP = $(OBJ:%.o=%.d)
 
+ifneq (,$(findstring dev,$(NAME)))
+3DE = $(shell echo "$(3TH_NAME)" | sed -E "s|([\.a-zA-Z]+)|$(3TH_PATH)/\1/\1.dev.a|g")
+else ifneq (,$(findstring san,$(NAME)))
+3DE = $(shell echo "$(3TH_NAME)" | sed -E "s|([\.a-zA-Z]+)|$(3TH_PATH)/\1/\1.san.a|g")
+else
+3DE = $(shell echo "$(3TH_NAME)" | sed -E "s|([\.a-zA-Z]+)|$(3TH_PATH)/\1/\1.a|g")
+endif
+
 all:
 ifneq ($(3TH_NAME),)
 	+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) &&) true
@@ -78,7 +86,7 @@ endif
 	+$(MAKE) $(NAME).san "NAME = $(NAME).san" "CFLAGS = $(SCFLAGS)" \
 	  "OBJ_PATH = $(OBJ_DIR)/san" "CC = clang"
 
-$(NAME): $(OBJ)
+$(NAME): $(3DE) $(OBJ)
 	$(CC) $(CFLAGS) $(INC) $(LNK) $(OBJ) $(LIB) -o $(NAME)
 	@printf  "%-20s\033[32m✔\033[0m\n" "$(NAME): exe"
 
