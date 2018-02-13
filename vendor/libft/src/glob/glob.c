@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/08 23:54:42 by mc                #+#    #+#             */
-/*   Updated: 2018/02/13 09:43:31 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/13 10:00:46 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,21 +17,6 @@
 
 #include "libft/glob.h"
 #include "glob_climb_tree.h"
-
-//TODO: move this to new file (listutil)
-static size_t list_len(t_match *match_list)
-{
-	int ret;
-
-	ret = 0;
-	while (match_list)
-	{
-		ret++;
-		match_list = match_list->next;
-	}
-
-	return ret;
-}
 
 static int super_cmp(const void *a, const void *b, size_t n)
 {

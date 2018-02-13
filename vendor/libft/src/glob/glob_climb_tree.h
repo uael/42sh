@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 20:57:25 by mc                #+#    #+#             */
-/*   Updated: 2018/02/13 02:09:35 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/13 10:04:46 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,5 +33,15 @@ struct					s_match
 ** @pat: Shell-style pattern to match, e.g. "*.[ch]".
 */
 int		glob_climb_tree(char const *pattern, int flags, t_match **match_list);
+
+
+
+/*
+** in glob_list.c:
+*/
+t_match	*matchctor(char const *path, size_t len);
+void	matchdtor(t_match *match);
+t_bool	add_match_to_list(t_match *match, t_match *match_list, int flags);
+size_t	list_len(t_match *match_list);
 
 #endif /* GLOB_CLIMB_TREE_H */
