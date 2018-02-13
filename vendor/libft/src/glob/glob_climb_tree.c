@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 22:23:43 by mc                #+#    #+#             */
-/*   Updated: 2018/02/12 18:05:23 by mcanal           ###   ########.fr       */
+/*   Updated: 2018/02/13 14:39:53 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,12 @@
 */
 
 #include "libft/glob.h"
-#include "glob_match.h"
 #include "glob_climb_tree.h"
 
+int tree_climber(char *search_start, char const *pattern, \
+				 int flags, t_match **match_list, int depth); //TODO: ooops
+
+/*
 static char **handle_brace_expansion(char const *pattern)
 {
 	//TODO
@@ -25,59 +28,119 @@ static char **handle_brace_expansion(char const *pattern)
 
 	return (char **)42;
 }
-
-static t_bool tree_climber(char const *dir, char const *pattern, int flags, int depth)
-{
-/*
-	ret[] = []  //TODO: choose data-struct: linked list?
-
-	subpats[] = pattern.split('/')
-
-	files[] = ls(dir)
-	if read_error and GLOB_ERR:
-		return false
-
-	// remove non-matching files
-	for(file in files):
-		if GLOB_ONLYDIR and is_a_dir(file):
-			files.pop(file)
-
-		if not glob_match(
-			'/' + subpats[:depth - len(subpats)].join('/'),
-				// re-join pattern from the begin to i
-			file
-		):
-			files.pop(file)
-
-		if not GLOB_PERIOD and GLOB_MAGCHAR and file[0] == '.':
-			files.pop(file)
-
-		//TODO: should we reset the GLOB_MAGCHAR flag?
-
-	//no more recursion needed, just return matching files
-	if depth == 1:
-		return files
-
-	// loop on matching dirs/links
-	for(file in files):
-		if is_a_dir_or_link(file):
-			ret += tree_climber(
-				file,
-				pattern,
-				flags,
-				depth - 1
-			)
-
-	return ret  //TODO: return mismatch :o
 */
-	(void)dir; //TODO
-	(void)pattern; //TODO
-	(void)depth; //TODO
-	(void)flags; //TODO
-	return 42; //TODO
+
+
+static int glob_open_dir(DIR **dir, char *search_start, char const *pattern, \
+						 int flags)
+{
+	char	swap;
+
+	swap = *search_start; // '/' or 0
+	*search_start = '\0';
+	//TODO: are we supposed to check if it's a dir before opendir?
+	if (!(*dir = opendir(pattern)))
+	{
+		*search_start = swap;
+		if ((flags & GLOB_ERR))
+			return GLOB_ABORTED; //TODO: is it a "read" error?
+
+		//TODO: not sure what to do here
+		return GLOB_SUCCESS;
+	}
+	*search_start = swap;
+
+	return GLOB_SUCCESS;
+}
+static int glob_close_dir(DIR *dir, int flags)
+{
+	if (closedir(dir))
+	{
+		if ((flags & GLOB_ERR))
+			return GLOB_ABORTED; //TODO: is it a "read" error?
+
+		//TODO: not sure what to do here
+		return GLOB_SUCCESS;
+	}
+
+	return GLOB_SUCCESS;
 }
 
-t_bool glob_climb_tree(char const *pattern, int flags)
+static int tree_climber_loop(struct dirent *dirent, char const *pattern, \
+							 int flags, t_match **match_list, int depth) //TODO: ooops
+{
+	int			ret;
+	t_match		*match;
+	char		*next_slash;
+
+	if ((flags & GLOB_ONLYDIR) && IS_DIR(dirent))
+		return GLOB_SUCCESS;
+
+	//TODO: could check depth instead
+	if ((next_slash = ft_strchr(pattern + dirent->d_reclen, '/')))
+	{
+		*next_slash = '\0';
+		if (!glob_match(pattern, dirent->d_name, flags))
+			return GLOB_SUCCESS;
+		*next_slash = '/';
+	}
+	else if (!glob_match(pattern, dirent->d_name, flags))
+		return GLOB_SUCCESS;
+	//TODO: should we reset the GLOB_MAGCHAR flag?
+
+	if ((flags & GLOB_PERIOD) && !(flags & GLOB_MAGCHAR) \
+			&& *(dirent->d_name) == '.')
+		return GLOB_SUCCESS;
+
+	if (!(match = matchctor(dirent->d_name, dirent->d_reclen)))
+		return GLOB_NOSPACE;
+	add_match_to_list(match, match_list);
+
+	if (IS_DIR(dirent))
+	{
+		ret = tree_climber(dirent->d_name, pattern,		\
+						   flags, match_list, depth - 1); //BOOOOM BABY!
+		if (ret != GLOB_SUCCESS)
+			return ret;
+	}
+
+	return GLOB_SUCCESS;
+}
+
+int tree_climber(char *search_start, char const *pattern, \
+				 int flags, t_match **match_list, int depth) //TODO: ooops
+{
+	DIR				*dir;
+	struct dirent	*dirent;
+	int				ret;
+
+	if (!depth)
+		return GLOB_SUCCESS;
+
+	ret = glob_open_dir(&dir, search_start, pattern, flags);
+	if (ret != GLOB_SUCCESS)
+		return ret;
+
+	while ((dirent = readdir(dir)))
+	{
+		ret = tree_climber_loop(dirent, pattern, flags, match_list, depth);
+		if (ret != GLOB_SUCCESS)
+		{
+			glob_close_dir(dir, flags);
+			return ret;
+		}
+	}
+/*
+	//TODO: errno
+	if (read_error && (flags & GLOB_ERR))
+		return GLOB_ABORTED;
+*/
+
+	return glob_close_dir(dir, flags);
+}
+
+//TODO: test
+int glob_climb_tree(char const *pattern, int flags, t_match **match_list)
 {
 	//TODO: flags: we might want to pass the whole t_glob struct instead
 /*
@@ -91,6 +154,7 @@ t_bool glob_climb_tree(char const *pattern, int flags)
 */
 	char const	*search_start;
 	int			depth;
+	int			ret;
 
 	depth = 1;
 	search_start = pattern;
@@ -102,12 +166,21 @@ t_bool glob_climb_tree(char const *pattern, int flags)
 	}
 
 	if (depth > MAX_DEPTH)
-		return FALSE;
-	else if (depth == 1)
-		search_start = pattern; //TODO: concat $PWD instead?
-	else
-		while (*search_start != '/')
-			search_start--;
+		return GLOB_NOSPACE;
 
-	return tree_climber(search_start, pattern, flags, depth);
+	search_start = pattern;
+	if (depth != 1)
+		search_start = pattern;
+		while (*search_start != '/')
+			search_start++;
+
+	ret = tree_climber((char *)(unsigned long)(search_start), /* const? nop */ \
+					   pattern, flags, match_list, depth);
+/*
+	if GLOB_NOCHECK and not files:
+		return pattern
+	if GLOB_NOMAGIC and not GLOB_MAGCHAR:
+		return pattern
+*/
+	return ret;
 }

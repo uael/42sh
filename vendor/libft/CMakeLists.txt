@@ -22,7 +22,7 @@ if (COVERAGE AND NOT MSVC)
   set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} --coverage")
 endif ()
 
-set(libft_HDR ${libft_INC_DIR}/libft.h src/get_opt/getopt.c)
+set(libft_HDR ${libft_INC_DIR}/libft.h src/getopt.c)
 file(GLOB_RECURSE libft_HDRS ${libft_HDRS}
   ${libft_INC_DIR}/libft/*.h)
 file(GLOB_RECURSE libft_SRCS ${libft_SRCS}

@@ -32,7 +32,7 @@ extern int		sh_evalcmd(t_job *job, int fd, t_deq *toks, char **ln);
 extern int		sh_evalsimple(t_job *job, int fd, t_deq *toks, char **ln);
 extern int		sh_evalcompound(t_job *job, int fd, t_deq *toks, char **ln);
 extern int		sh_evalsubshell(t_job *job, int fd, t_deq *toks, char **ln);
-extern int		sh_evalargv(t_job *job, t_map *vars, t_deq *toks, char **ln);
+extern int		sh_evalargv(t_job *j, t_map *v, t_deq *toks, char **ln);
 extern char		*sh_redirword(t_job *job, char *dst, t_deq *toks, char *ln);
 extern int		sh_evalrin(t_job *job, t_deq *toks, char **ln);
 extern int		sh_evalrout(t_job *job, t_deq *toks, char **ln);

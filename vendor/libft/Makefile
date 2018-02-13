@@ -6,7 +6,7 @@
 #    By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/07 09:52:36 by alucas-           #+#    #+#              #
-#    Updated: 2018/02/12 23:59:58 by mc               ###   ########.fr        #
+#    Updated: 2018/02/13 14:43:45 by mc               ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -42,7 +42,7 @@ SRC_NAME = \
 	ds/map_2.c ds/set.c ds/set_2.c \
 	ex/ex.c ex/ex_2.c \
 	fs/fs.c fs/fs_2.c fs/fs_3.c fs/fs_4.c \
-	glob/glob.c glob/glob_match.c glob/glob_climb_tree.c\
+	glob/glob.c glob/glob_match.c glob/glob_climb_tree.c glob/glob_list.c \
 	hash/hash.c hash/hash_2.c \
 	int/len.c int/str.c \
 	io/fcntl.c io/ifs.c io/ifs_2.c io/ofs.c io/ofs_2.c io/ofs_3.c io/padn.c \
@@ -55,7 +55,8 @@ SRC_NAME = \
 	mem/alloc.c \
 	str/mem.c str/mem_2.c str/str.c str/str_2.c str/str_3.c str/str_4.c \
 	str/str_5.c \
-	get_opt/getoptlong.c get_opt/getoptlonglong.c get_opt/getopt.c
+	getopt.c \
+	zob/ft_shellsort.c
 
 3TH = $(addprefix $(3TH_PATH)/, $(3TH_NAME))
 OBJ = $(addprefix $(OBJ_PATH)/, $(SRC_NAME:.c=.o))

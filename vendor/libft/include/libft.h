@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2018/02/09 19:22:55 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/13 01:07:42 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@
 # include "libft/mem.h"
 # include "libft/str.h"
 # include "libft/tys.h"
+# include "libft/zob.h"
 # include "libft/getopt.h"
 
 #endif

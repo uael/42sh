@@ -1,30 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libps.h                                            :+:      :+:    :+:   */
+/*   libft/zob.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/09 07:00:16 by alucas-          ###   ########.fr       */
+/*   Updated: 2018/02/13 01:15:44 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBPS_H
-# define LIBPS_H
+#ifndef LIBFT_ZOB_H
+# define LIBFT_ZOB_H
 
-# include <libft.h>
+# include <string.h>
 
-# include "libps/job.h"
-# include "libps/proc.h"
-# include "libps/redir.h"
+typedef unsigned char	t_uchar;
+typedef int				t_ncmp(const void *a, const void *b, size_t n);
 
-typedef int		(t_errcb)(char const *fmt, ...);
-typedef int		(t_fatalcb)(int code, char const *fmt, ...);
-
-extern void		ps_read(t_sds *dst, t_proccb *cb, t_dtor dtor, void *data);
-extern int		ps_init(int fd, t_errcb *errcb, t_fatalcb *fatalcb);
-extern void		ps_dtor(void);
-extern pid_t	ps_lastpid(void);
+/*
+** famous Ziggerman's Open Boards sort algorithm, also known as shell-sort
+**
+** length = length of the array
+** n = sizeof(*array)
+*/
+void					ft_shellsort(void *arr, size_t length, \
+							size_t sizeof_element, t_ncmp *cmp);
 
 #endif

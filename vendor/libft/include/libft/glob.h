@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/08 23:55:49 by mc                #+#    #+#             */
-/*   Updated: 2018/02/11 23:17:12 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/13 02:30:15 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,9 @@
 #  define CLR_WHITE "\033[37;01m"
 #  define CLR_RESET "\033[0m"
 #  define DEBUG_HEADER CLR_MAGENTA "[DEBUG] " CLR_RESET
-#  define DEBUG(str, ...) fprintf(stderr, DEBUG_HEADER str CLR_RESET "\n", ##__VA_ARGS__)
+#  define _DEBUG(str, ...) fprintf(stderr, DEBUG_HEADER str CLR_RESET "\n", ##__VA_ARGS__)
 # else
-#  define DEBUG(str, ...) do {} while (0)
+#  define _DEBUG(str, ...) do {} while (0)
 # endif
 
 # ifndef _GLOB_H
@@ -63,6 +63,13 @@
 #  define GLOB_ONLYDIR (1 << 13) /* Match only directories.  */
 #  define GLOB_TILDE_CHECK (1 << 14) /* Like GLOB_TILDE but return an error
 										if the user name is not available.  */
+
+# define __GLOB_FLAGS	(GLOB_ERR | /* GLOB_MARK | */ GLOB_NOSORT |  GLOB_DOOFFS |  \
+						 GLOB_NOESCAPE /* | GLOB_NOCHECK | GLOB_APPEND | */	\
+						 /* GLOB_PERIOD | GLOB_ALTDIRFUNC | GLOB_BRACE | */	\
+						 /* GLOB_NOMAGIC | GLOB_TILDE | GLOB_ONLYDIR | GLOB_TILDE_CHECK */)
+
+
 /* Error returns from `globctor'.  */
 #  define GLOB_NOSPACE 1	/* Ran out of memory.  */
 #  define GLOB_ABORTED 2	/* Read error.  */

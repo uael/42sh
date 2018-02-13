@@ -36,7 +36,7 @@ endif
 3TH_NAME = libft librl libps
 SRC_NAME = \
 	bi.c bi/cd.c bi/echo.c bi/env.c bi/exit.c bi/export.c bi/setenv.c \
-	bi/unset.c bi/unsetenv.c bi/history.c \
+	bi/unset.c bi/unsetenv.c bi/history.c bi/read.c\
 	comp.c \
 	env.c \
 	err.c \
