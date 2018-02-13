@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 22:23:43 by mc                #+#    #+#             */
-/*   Updated: 2018/02/12 18:05:23 by mcanal           ###   ########.fr       */
+/*   Updated: 2018/02/13 02:09:42 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,20 @@
 */
 
 #include "libft/glob.h"
-#include "glob_match.h"
 #include "glob_climb_tree.h"
+
+static t_bool add_match_to_list(t_match *match, t_match *match_list, int flags)
+{
+	(void)match; //TODO
+	(void)match_list; //TODO
+
+/*
+		if ((flags & GLOB_MARK))
+			append_slash_to_each_name();
+*/
+
+	return TRUE;
+}
 
 static char **handle_brace_expansion(char const *pattern)
 {
@@ -26,7 +38,7 @@ static char **handle_brace_expansion(char const *pattern)
 	return (char **)42;
 }
 
-static t_bool tree_climber(char const *dir, char const *pattern, int flags, int depth)
+static int tree_climber(char const *dir, char const *pattern, int flags, int depth)
 {
 /*
 	ret[] = []  //TODO: choose data-struct: linked list?
@@ -74,10 +86,11 @@ static t_bool tree_climber(char const *dir, char const *pattern, int flags, int 
 	(void)pattern; //TODO
 	(void)depth; //TODO
 	(void)flags; //TODO
-	return 42; //TODO
+
+	return GLOB_SUCCESS;
 }
 
-t_bool glob_climb_tree(char const *pattern, int flags)
+int glob_climb_tree(char const *pattern, int flags, t_match **match_list)
 {
 	//TODO: flags: we might want to pass the whole t_glob struct instead
 /*
@@ -91,6 +104,7 @@ t_bool glob_climb_tree(char const *pattern, int flags)
 */
 	char const	*search_start;
 	int			depth;
+	int			ret;
 
 	depth = 1;
 	search_start = pattern;
@@ -102,12 +116,19 @@ t_bool glob_climb_tree(char const *pattern, int flags)
 	}
 
 	if (depth > MAX_DEPTH)
-		return FALSE;
+		return GLOB_NOSPACE;
 	else if (depth == 1)
 		search_start = pattern; //TODO: concat $PWD instead?
 	else
 		while (*search_start != '/')
 			search_start--;
 
-	return tree_climber(search_start, pattern, flags, depth);
+	ret = tree_climber(search_start, pattern, flags, depth);
+/*
+	if GLOB_NOCHECK and not files:
+		return pattern
+	if GLOB_NOMAGIC and not GLOB_MAGCHAR:
+		return pattern
+*/
+	return ret;
 }

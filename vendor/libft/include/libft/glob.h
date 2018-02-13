@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/08 23:55:49 by mc                #+#    #+#             */
-/*   Updated: 2018/02/13 00:49:37 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/13 02:30:15 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,13 @@
 #  define GLOB_ONLYDIR (1 << 13) /* Match only directories.  */
 #  define GLOB_TILDE_CHECK (1 << 14) /* Like GLOB_TILDE but return an error
 										if the user name is not available.  */
+
+# define __GLOB_FLAGS	(GLOB_ERR | /* GLOB_MARK | */ GLOB_NOSORT |  GLOB_DOOFFS |  \
+						 GLOB_NOESCAPE /* | GLOB_NOCHECK | GLOB_APPEND | */	\
+						 /* GLOB_PERIOD | GLOB_ALTDIRFUNC | GLOB_BRACE | */	\
+						 /* GLOB_NOMAGIC | GLOB_TILDE | GLOB_ONLYDIR | GLOB_TILDE_CHECK */)
+
+
 /* Error returns from `globctor'.  */
 #  define GLOB_NOSPACE 1	/* Ran out of memory.  */
 #  define GLOB_ABORTED 2	/* Read error.  */

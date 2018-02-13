@@ -6,25 +6,16 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 20:57:25 by mc                #+#    #+#             */
-/*   Updated: 2018/02/12 20:23:16 by mcanal           ###   ########.fr       */
+/*   Updated: 2018/02/13 02:09:35 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GLOB_CLIMB_TREE_H
 # define GLOB_CLIMB_TREE_H
 
-# include "libft/tys.h" /* for t_bool */
 # include "libft/str.h" /* for ft_strchr */
-
-# ifndef TRUE
-#  define TRUE				1
-# endif
-
-# ifndef FALSE
-#  define FALSE				0
-# endif
-
-# define MAX_DEPTH			4242 //TODO
+# include "libft/zob.h" /* for ft_shellsort */
+# include "glob_match.h" /* for glob_match */
 
 
 /* Structure describing a glob match.  */
@@ -41,6 +32,6 @@ struct					s_match
 **
 ** @pat: Shell-style pattern to match, e.g. "*.[ch]".
 */
-t_bool glob_climb_tree(char const *pattern, int flags);
+int		glob_climb_tree(char const *pattern, int flags, t_match **match_list);
 
 #endif /* GLOB_CLIMB_TREE_H */
