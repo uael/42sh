@@ -6,7 +6,7 @@
 #    By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/07 09:52:36 by alucas-           #+#    #+#              #
-#    Updated: 2018/02/13 10:03:01 by mc               ###   ########.fr        #
+#    Updated: 2018/02/13 14:43:45 by mc               ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -55,7 +55,7 @@ SRC_NAME = \
 	mem/alloc.c \
 	str/mem.c str/mem_2.c str/str.c str/str_2.c str/str_3.c str/str_4.c \
 	str/str_5.c \
-	get_opt/getoptlong.c get_opt/getoptlonglong.c get_opt/getopt.c \
+	getopt.c \
 	zob/ft_shellsort.c
 
 3TH = $(addprefix $(3TH_PATH)/, $(3TH_NAME))

@@ -15,9 +15,9 @@
 
 # include <libft.h>
 
-#include "libps/job.h"
-#include "libps/proc.h"
-#include "libps/redir.h"
+# include "libps/job.h"
+# include "libps/proc.h"
+# include "libps/redir.h"
 
 typedef int		(t_errcb)(char const *fmt, ...);
 typedef int		(t_fatalcb)(int code, char const *fmt, ...);

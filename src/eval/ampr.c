@@ -38,7 +38,7 @@ inline char		*sh_redirword(t_job *job, char *dst, t_deq *toks, char *ln)
 	return (dst);
 }
 
-inline int			sh_evalampr(t_job *job, t_deq *toks, char **ln)
+inline int		sh_evalampr(t_job *job, t_deq *toks, char **ln)
 {
 	t_tok	*tok;
 	t_proc	*proc;

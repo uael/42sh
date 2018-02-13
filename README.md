@@ -23,5 +23,4 @@ Optional feature (five of theses are mandatory to validate the project):
 
 Optional feature highly appreciated:
 - [x] Job Control and builtins `job`, `fg`, `bg` and operand `&`.
-- [ ] Shell Scripting in POSIX standards: for, while, until, if/elif/else, {}, bang (!), case, functions, variable assignements
-
+- [X] Shell Scripting: bang (!), variable assignements

@@ -20,13 +20,14 @@
 
 static int			g_sidx;
 
-static inline int	tokitctor(t_tokit *tit, char **it, char **ln)
+static inline int	lexctor(t_tokit *tit, char **it, char **ln, t_deq *d)
 {
 	if (!*it || !**it)
 		return (NOP);
 	!ln ? (ln = it) : 0;
 	tit->it = it;
 	tit->ln = ln;
+	ft_deqctor(d, sizeof(t_tok));
 	return (YEP);
 }
 
@@ -102,46 +103,35 @@ static inline int	tokenize(int fd, t_tok *tok, char **it, char **ln)
 	sh_tokpos(tok, *it, *ln);
 	ft_isdigit(**it) ? (++tok->len && ++*it) : 0;
 	return (st = sh_lexop(fd, tok, it, ln)) != NOP ||
-		(st = sh_lexword(fd, tok, it, ln)) != NOP ? st :
-		sh_synerr(*ln, *it, "Unexpected token `%c'", **it);
+	(st = sh_lexword(fd, tok, it, ln)) != NOP ? st :
+	sh_synerr(*ln, *it, "Unexpected token `%c'", **it);
 }
 
-int					sh_lex(int fd, char **it, char **ln, t_tokcb *cb)
+int					sh_lex(int f, char **i, char **l, t_tokcb *cb)
 {
 	int		st;
 	t_deq	*d;
 	t_tok	*t;
 	t_tokit	tit;
 
-	if (tokitctor(&tit, it, ln))
+	if (lexctor(&tit, i, l, d = alloca(sizeof(t_deq))))
 		return (NOP);
-	ft_deqctor(d = alloca(sizeof(t_deq)), sizeof(t_tok));
 	d->buf = alloca((d->cap += 32) * sizeof(t_tok));
 	while (1)
 	{
 		if (d->len == d->cap)
-		{
-			t = alloca((d->cap *= 2) * sizeof(t_tok));
-			ft_memcpy(t, d->buf, d->len * sizeof(t_tok));
-			d->buf = t;
-		}
+			d->buf = ft_memcpy(alloca((d->cap *= 2) * sizeof(t_tok)),
+				d->buf, d->len * sizeof(t_tok));
 		ft_memset(t = (t_tok *)d->buf + d->len++, 0, sizeof(t_tok));
-		if ((st = tokenize(fd, t, it, ln)) || (st = check(fd, t, d, &tit)))
+		if ((st = tokenize(f, t, i, l)) || (st += check(f, t, d, &tit)))
 		{
-			if (st == NOP)
-			{
-				if (cb(fd, d, ln))
-					g_sh->status = 1;
-				if (**it)
-				{
-					d->len = 0;
-					d->cur = 0;
-					continue ;
-				}
-			}
+			if (st == NOP && cb(f, d, l))
+				g_sh->status = 1;
+			if (st == NOP && **i && !(d->len -= d->len) && !(d->cur -= d->cur))
+				continue ;
 			return (st);
 		}
-		if (g_sidx && !**it && (fd < 0 || (st = rl_catline(fd, 0, ln, it)) || !**it))
-			return (LEX_SHOWE(st, fd) ? sh_synerr(*ln, *it, UEE, ')') : OUF);
+		if (g_sidx && !**i && (f < 0 || (st = rl_catline(f, 0, l, i)) || !**i))
+			return (LEX_SHOWE(st, f) ? sh_synerr(*l, *i, UEE, ')') : OUF);
 	}
 }
