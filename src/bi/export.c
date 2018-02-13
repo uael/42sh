@@ -12,12 +12,22 @@
 
 #include "ush.h"
 
+#define EXPORT_N (1 << 1)
+#define EXPORT_F (1 << 2)
+#define EXPORT_P (1 << 3)
 #define N "export: "
+
+static uint8_t			g_flags = 0;
 
 static inline void		export(char *var, char *val, char **envv)
 {
 	char *local;
 
+	if (!val && (g_flags & EXPORT_N))
+	{
+		sh_unsetenv(var, 1);
+		return ;
+	}
 	if ((local = sh_varget(var, envv)) && !val)
 		val = local;
 	if (!val)
@@ -30,14 +40,44 @@ static inline void		export(char *var, char *val, char **envv)
 	}
 }
 
+static inline int		exportparse(int ac, char *av[])
+{
+	int opt;
+
+	g_optind = 1;
+	while ((opt = ft_getopt(ac, av, "fnp")) != WUT)
+		if (opt == 'f')
+		{
+			if ((g_flags & (EXPORT_P | EXPORT_F | EXPORT_N)))
+				return (ft_retf(WUT, N"%c : %e\n", EINVAL));
+			g_flags |= EXPORT_F;
+		}
+		else if (opt == 'n')
+		{
+			if ((g_flags & (EXPORT_P | EXPORT_F | EXPORT_N)))
+				return (ft_retf(WUT, N"%c : %e\n", EINVAL));
+			g_flags |= EXPORT_N;
+		}
+		else if (opt == 'p')
+		{
+			if ((g_flags & (EXPORT_P | EXPORT_F | EXPORT_N)))
+				return (ft_retf(WUT, N"%c : %e\n", EINVAL));
+			g_flags |= EXPORT_P;
+		}
+		else
+			return (WUT);
+	return (g_optind);
+}
+
 inline int				sh_biexport(int ac, char **a, char **envv)
 {
 	char	*val;
 	int		i;
 
-	i = 0;
-	if (ac == 1)
-		return (sh_vardump(envv));
+	g_flags = 0;
+	if ((i = exportparse(ac, a)) == ac || (i < 0))
+		return (i == ac ? sh_vardump(envv) : EXIT_FAILURE);
+	--i;
 	while (++i < ac)
 		if (*a[i] == '=')
 			return (ft_retf(EXIT_FAILURE, N"%s: bad assignment\n", a[i]));
