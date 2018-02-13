@@ -57,7 +57,7 @@ inline char	*ft_strendw(char const *s1, char const *s2)
 	return (s2 == s4 ? (char *)s3 : NULL);
 }
 
-inline char		*ft_strndup(char const *src, size_t n)
+inline char	*ft_strndup(char const *src, size_t n)
 {
 	char	*dup;
 
@@ -67,7 +67,7 @@ inline char		*ft_strndup(char const *src, size_t n)
 	return (dup);
 }
 
-inline char		*ft_strrschr(char const *beg, char const *end, char c)
+inline char	*ft_strrschr(char const *beg, char const *end, char c)
 {
 	while (end > beg)
 		if (*end == c)
