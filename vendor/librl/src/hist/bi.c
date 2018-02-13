@@ -16,13 +16,15 @@
 static inline char	*histback(char *not, t_bool *c)
 {
 	t_sds	*ln;
+	size_t	sz;
 
 	ft_sdsnrem(&g_eln->str, not - g_eln->str.buf, 2, NULL);
-	if ((ln = rl_histback()) && ln->len - 1 + g_eln->str.len < UINT16_MAX)
+	if ((ln = rl_histback()) && (ln->len - 1 + g_eln->str.len < UINT16_MAX))
 	{
-		ft_sdsmput(&g_eln->str, not - g_eln->str.buf, ln->buf, ln->len - 1);
+		sz = not - g_eln->str.buf;
+		ft_sdsmput(&g_eln->str, sz, ln->buf, ln->len - 1);
 		*c = 1;
-		return (g_eln->str.buf + (not - g_eln->str.buf) + ln->len);
+		return (g_eln->str.buf + sz + ln->len);
 	}
 	return (not + 1);
 }
@@ -32,6 +34,7 @@ static inline char	*histatc(char *not, t_bool *c)
 	t_sds	*ln;
 	int64_t i;
 	size_t	l;
+	size_t	sz;
 
 	if (*(not + 1) == '-' && !ft_isdigit(*(not + 2)))
 		ft_sdsnrem(&g_eln->str, not - g_eln->str.buf, 2, NULL);
@@ -40,11 +43,12 @@ static inline char	*histatc(char *not, t_bool *c)
 		i = ft_atoi(not + 1);
 		l = ft_intlen(i, 10);
 		ft_sdsnrem(&g_eln->str, not - g_eln->str.buf, 1 + l + (i < 0), NULL);
-		if ((ln = rl_histat(i)) && ln->len - 1 + g_eln->str.len < UINT16_MAX)
+		if ((ln = rl_histat(i)) && (ln->len - 1 + g_eln->str.len < UINT16_MAX))
 		{
-			ft_sdsmput(&g_eln->str, not - g_eln->str.buf, ln->buf, ln->len - 1);
+			sz = not - g_eln->str.buf;
+			ft_sdsmput(&g_eln->str, sz, ln->buf, ln->len - 1);
 			*c = 1;
-			return (g_eln->str.buf + (not - g_eln->str.buf) + ln->len);
+			return (g_eln->str.buf + sz + ln->len);
 		}
 	}
 	return (not + 1);
@@ -53,13 +57,15 @@ static inline char	*histatc(char *not, t_bool *c)
 static inline char	*histat(char *not, ssize_t i, size_t rlen, t_bool *c)
 {
 	t_sds	*ln;
+	size_t	sz;
 
 	ft_sdsnrem(&g_eln->str, not - g_eln->str.buf, 1 + rlen, NULL);
-	if ((ln = rl_histat(i)) && ln->len - 1 + g_eln->str.len < UINT16_MAX)
+	if ((ln = rl_histat(i)) && (ln->len - 1 + g_eln->str.len < UINT16_MAX))
 	{
-		ft_sdsmput(&g_eln->str, not - g_eln->str.buf, ln->buf, ln->len - 1);
+		sz = not - g_eln->str.buf;
+		ft_sdsmput(&g_eln->str, sz, ln->buf, ln->len - 1);
 		*c = 1;
-		return (g_eln->str.buf + (not - g_eln->str.buf) + ln->len);
+		return (g_eln->str.buf + sz + ln->len);
 	}
 	return (not + 1);
 }
