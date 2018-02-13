@@ -6,7 +6,7 @@
 #    By: mcanal <mcanal@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/11/29 13:16:03 by mcanal            #+#    #+#              #
-#    Updated: 2018/02/10 19:12:51 by mc               ###   ########.fr        #
+#    Updated: 2018/02/13 18:44:14 by mcanal           ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 
@@ -20,7 +20,8 @@ NAME =		flextest3000
 # file-names of the sources
 SRCS =		main.c		\
 			test_env.c	\
-			test_glob.c
+			test_glob.c	\
+			test_glob_match.c
 
 # folder-names of the sources
 VPATH =		src						src/glob

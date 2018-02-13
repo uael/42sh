@@ -6,7 +6,7 @@
 /*   By: mcanal <zboub@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/15 11:32:38 by mcanal            #+#    #+#             */
-/*   Updated: 2018/02/08 23:45:08 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/13 18:46:56 by mcanal           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ static void suites_me(char *search)
 {
 	MU_TEST_SUITE suite_42sh = {
 		{test_env, "env"},
+		{test_glob_match, "glob_match"},
 		{test_glob, "glob"},
 	};
 

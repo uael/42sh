@@ -6,7 +6,7 @@
 /*   By: mc </var/spool/mail/mc>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/31 00:30:12 by mc                #+#    #+#             */
-/*   Updated: 2018/02/08 23:45:19 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/13 18:43:33 by mcanal           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,5 +28,6 @@
 */
 void test_env(void);
 void test_glob(void);
+void test_glob_match(void);
 
 #endif
