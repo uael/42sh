@@ -72,7 +72,7 @@ UNAME_S=$(uname -s)
 mkdir -p out
 ECODE=0
 for test_file in ./test/*.sh; do
-  test "$UNAME_S" == Linux && echo "$test_file" | grep -q mac-only && continue
+  test "$UNAME_S" == Linux && echo "$test_file" | grep -q maconly && continue
   test -z ${RELOU+x} && echo "$test_file" | grep -q relou && continue
 
   job "Test" "$(basename "${test_file%.*}")" "dotest ${EXE} /bin/bash ${test_file}"
