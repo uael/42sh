@@ -33,8 +33,8 @@ static inline int	getopt2(char const *s, int ac, char *av[], char const *fmt)
 		g_opterr && *fmt != ':' ? ft_putf(2, ERR0, av[0], g_optopt) : 0;
 		return (BADCH);
 	}
-	if (s[1] != ':')
-		*g_place == (char)(g_optarg = NULL) ? ++g_optind : 0;
+	if (s[1] != ':' && !(g_optarg = NULL))
+		!*g_place ? ++g_optind : 0;
 	else
 	{
 		if (*g_place)

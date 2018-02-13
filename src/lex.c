@@ -101,7 +101,7 @@ static inline int	tokenize(int fd, t_tok *tok, char **it, char **ln)
 		else
 			break ;
 	sh_tokpos(tok, *it, *ln);
-	ft_isdigit(**it) ? (++tok->len && ++*it) : 0;
+	ft_isdigit(**it) ? (void)(++tok->len && ++*it) : 0;
 	return (st = sh_lexop(fd, tok, it, ln)) != NOP ||
 	(st = sh_lexword(fd, tok, it, ln)) != NOP ? st :
 	sh_synerr(*ln, *it, "Unexpected token `%c'", **it);
