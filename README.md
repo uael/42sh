@@ -18,7 +18,7 @@ Optional feature (five of theses are mandatory to validate the project):
 - [x] Local variable and builtin `unset` and `export`.
 - [x] History with builtin `history`and `!` with options.
 - [x] Advanced line edition.
-- [ ] File descriptors and builtin `read` with options.
+- [x] File descriptors and builtin `read` with options.
 - [x] Dynamical autocompletion.
 
 Optional feature highly appreciated:
