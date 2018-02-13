@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/08 23:54:42 by mc                #+#    #+#             */
-/*   Updated: 2018/02/13 10:00:46 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/13 11:22:21 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ static t_bool copy_match_to_glob_struct(t_match *match_list, t_glob *pglob)
 
 	while (match_list)
 	{
-		*av = match_list->buf; //TODO: wait, how are we gonna free the match_list?
+		*av = (char *)(match_list->buf);
 		av++;
 		match_list = match_list->next;
 	}
@@ -62,6 +62,7 @@ static t_bool copy_match_to_glob_struct(t_match *match_list, t_glob *pglob)
 	return TRUE;
 }
 
+//TODO: handle errors libft tools?
 int		globctor(const char *pattern, int flags, t_glob *pglob)
 {
 	t_match *match_list;
@@ -95,7 +96,11 @@ void	globdtor(t_glob *pglob)
 		av = pglob->gl_pathv;
 
 	while (*av)
-		free(av++);
+	{
+		//TODO: doc + test
+		free((t_byte *)(*av) - sizeof(t_match) + sizeof(t_byte)); // magic list!
+		av++;
+	}
 
 	free(pglob->gl_pathv);
 }

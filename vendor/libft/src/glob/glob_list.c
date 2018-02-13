@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/13 09:57:56 by mc                #+#    #+#             */
-/*   Updated: 2018/02/13 10:04:57 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/13 11:04:52 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ t_match	*matchctor(char const *path, size_t len)
 	return (new);
 }
 
+/* TODO: this shouldn't be needed
 void	matchdtor(t_match *match)
 {
 	t_match *prev;
@@ -46,13 +47,12 @@ void	matchdtor(t_match *match)
 		free(prev);
 	}
 }
+*/
 
-t_bool	add_match_to_list(t_match *match, t_match *match_list, int flags)
+void	add_match_to_list(t_match *match, t_match **match_list)
 {
-	(void)match; //TODO
-	(void)match_list; //TODO
-
-	return TRUE;
+	match->next = *match_list;
+	*match_list = match;
 }
 
 size_t	list_len(t_match *match_list)
