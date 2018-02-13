@@ -1,33 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libft.h                                            :+:      :+:    :+:   */
+/*   libft/zob.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2018/02/13 01:07:42 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/13 01:15:44 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFT_H
-# define LIBFT_H
+#ifndef LIBFT_ZOB_H
+# define LIBFT_ZOB_H
 
-# include "libft/buf.h"
-# include "libft/cty.h"
-# include "libft/ds.h"
-# include "libft/ex.h"
-# include "libft/fs.h"
-# include "libft/glob.h"
-# include "libft/hash.h"
-# include "libft/int.h"
-# include "libft/io.h"
-# include "libft/lib.h"
-# include "libft/math.h"
-# include "libft/mem.h"
-# include "libft/str.h"
-# include "libft/tys.h"
-# include "libft/zob.h"
-# include "libft/getopt.h"
+# include <string.h>
+
+typedef unsigned char	t_uchar;
+typedef int				t_ncmp(const void *a, const void *b, size_t n);
+
+/*
+** famous Ziggerman's Open Boards sort algorithm, also known as shell-sort
+**
+** length = length of the array
+** n = sizeof(*array)
+*/
+void					ft_shellsort(void *arr, size_t length, \
+							size_t sizeof_element, t_ncmp *cmp);
 
 #endif
