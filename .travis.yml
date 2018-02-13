@@ -10,3 +10,4 @@ script:
   - bash st/42ShellTester.sh --filter minishell $PWD/42sh
   - bash st/42ShellTester.sh --filter 21sh $PWD/42sh
   - bash st/42ShellTester.sh --filter subshell $PWD/42sh
+  - bash st/42ShellTester.sh --filter export $PWD/42sh

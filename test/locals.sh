@@ -62,3 +62,8 @@ echo sdf$OOPSe$OOPSghj
 echo $OOPSf$OOPShjk
 echo "sdf$OOPSg$OOPShjkl"
 echo "$OOPSh$OOPShjkl"
+FOO=bar BAR=baz BAZ=foo echo $FOO $BAR $BAZ; echo $FOO $BAR $BAZ
+echo $FOO $BAR $BAZ
+unset FOO BAR BAZ; echo $FOO $BAR $BAZ
+echo $FOO $BAR $BAZ
+echo $1 $2 $3 $4 $5 $6 $7 $8 $9
