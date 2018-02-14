@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 22:23:43 by mc                #+#    #+#             */
-/*   Updated: 2018/02/14 17:47:54 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/14 21:47:28 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,20 +66,40 @@ static int glob_close_dir(DIR *dir, int flags)
 	return GLOBUX_SUCCESS;
 }
 
+static void glob_append_dir_name(char const *pattern)
+{
+	char		*buf;
+	int			depth;
+
+	depth = 0;
+	buf = g_dirname_buf;
+	while (*buf)
+	{
+		if (*buf == '/')
+			depth++;
+		buf++;
+	}
+
+	while (depth && pattern++)
+		if (*pattern == '/')
+			depth--;
+
+	ft_strcpy(buf, pattern);
+}
+
 static int tree_climber_loop(struct dirent *dirent, char const *pattern, \
 							 int flags, t_match **match_list, int depth) //TODO: ooops
 {
 	int			ret;
 	t_match		*match;
-	char		*next_slash;
 
 	if ((flags & GLOBUX_ONLYDIR) && IS_DIR(dirent))
 		return GLOBUX_SUCCESS;
 
 	//TODO: could check depth instead
-	if ((next_slash = ft_strchr(pattern + dirent->d_reclen, '/')))
+	if (depth != 1)
 	{
-		ft_memcpy(g_dirname_buf, pattern, (size_t)(next_slash - pattern)); //TODO: opti
+		glob_append_dir_name(pattern);
 		if (!glob_match(pattern, dirent->d_name, flags))
 			return GLOBUX_SUCCESS;
 	}
