@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 20:57:25 by mc                #+#    #+#             */
-/*   Updated: 2018/02/14 17:33:52 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/14 21:59:08 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,6 @@ int		glob_climb_tree(char const *pattern, int flags, t_match **match_list);
 int tree_climber(char const *pattern, int flags, t_match **match_list, int depth);
 
 
-
 /*
 ** in glob_list.c:
 */
@@ -51,5 +50,13 @@ t_match	*matchctor(char const *path, size_t len);
 void	matchdtor(t_match *match);
 void	add_match_to_list(t_match *match, t_match **match_list);
 size_t	list_len(t_match *match_list);
+
+
+/*
+** in glob_dir.c:
+*/
+int		glob_open_dir(DIR **dir, int flags);
+int		glob_close_dir(DIR *dir, int flags);
+void	glob_append_dir_name(char const *pattern);
 
 #endif /* GLOB_CLIMB_TREE_H */

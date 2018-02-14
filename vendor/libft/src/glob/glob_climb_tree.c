@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 22:23:43 by mc                #+#    #+#             */
-/*   Updated: 2018/02/14 21:47:28 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/14 21:57:06 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,63 +29,6 @@ static char **handle_brace_expansion(char const *pattern)
 	return (char **)42;
 }
 */
-
-static int glob_open_dir(DIR **dir, int flags)
-{
-	if (!(*dir = opendir(g_dirname_buf)))
-	{
-		if ((flags & GLOBUX_ERR))
-			return GLOBUX_ABORTED; //TODO: is it a "read" error?
-
-		/*
-		  TODO: not sure what to do here:
-				open failed, but we shouldn't stop
-				maybe print an error message?
-		*/
-		return GLOBUX_SUCCESS;
-	}
-
-	return GLOBUX_SUCCESS;
-}
-
-static int glob_close_dir(DIR *dir, int flags)
-{
-	if (closedir(dir))
-	{
-		if ((flags & GLOBUX_ERR))
-			return GLOBUX_ABORTED; //TODO: is it a "read" error?
-
-		/*
-		  TODO: not sure what to do here:
-				close failed, but we shouldn't stop
-				maybe print an error message?
-		*/
-		return GLOBUX_SUCCESS;
-	}
-
-	return GLOBUX_SUCCESS;
-}
-
-static void glob_append_dir_name(char const *pattern)
-{
-	char		*buf;
-	int			depth;
-
-	depth = 0;
-	buf = g_dirname_buf;
-	while (*buf)
-	{
-		if (*buf == '/')
-			depth++;
-		buf++;
-	}
-
-	while (depth && pattern++)
-		if (*pattern == '/')
-			depth--;
-
-	ft_strcpy(buf, pattern);
-}
 
 static int tree_climber_loop(struct dirent *dirent, char const *pattern, \
 							 int flags, t_match **match_list, int depth) //TODO: ooops
