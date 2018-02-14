@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 22:23:43 by mc                #+#    #+#             */
-/*   Updated: 2018/02/14 15:21:59 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/14 17:47:54 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@
 #include "libft/ft_glob.h"
 #include "glob_climb_tree.h"
 
-int tree_climber(char *slash, char const *pattern, \
-				 int flags, t_match **match_list, int depth); //TODO: ooops
+#define DIRNAME_BUF_SIZE 255
+char *g_dirname_buf; //TODO: don't
 
 /*
 static char **handle_brace_expansion(char const *pattern)
@@ -30,18 +30,10 @@ static char **handle_brace_expansion(char const *pattern)
 }
 */
 
-
-static int glob_open_dir(DIR **dir, char *slash, char const *pattern, \
-						 int flags)
+static int glob_open_dir(DIR **dir, int flags)
 {
-	char	swap;
-
-	swap = *slash; // '/' or 0
-	*slash = '\0';
-	//TODO: are we supposed to check if it's a dir before opendir?
-	if (!(*dir = opendir(pattern)))
+	if (!(*dir = opendir(g_dirname_buf)))
 	{
-		*slash = swap;
 		if ((flags & GLOBUX_ERR))
 			return GLOBUX_ABORTED; //TODO: is it a "read" error?
 
@@ -52,7 +44,6 @@ static int glob_open_dir(DIR **dir, char *slash, char const *pattern, \
 		*/
 		return GLOBUX_SUCCESS;
 	}
-	*slash = swap;
 
 	return GLOBUX_SUCCESS;
 }
@@ -88,10 +79,9 @@ static int tree_climber_loop(struct dirent *dirent, char const *pattern, \
 	//TODO: could check depth instead
 	if ((next_slash = ft_strchr(pattern + dirent->d_reclen, '/')))
 	{
-		*next_slash = '\0';
+		ft_memcpy(g_dirname_buf, pattern, (size_t)(next_slash - pattern)); //TODO: opti
 		if (!glob_match(pattern, dirent->d_name, flags))
 			return GLOBUX_SUCCESS;
-		*next_slash = '/';
 	}
 	else if (!glob_match(pattern, dirent->d_name, flags))
 		return GLOBUX_SUCCESS;
@@ -107,8 +97,7 @@ static int tree_climber_loop(struct dirent *dirent, char const *pattern, \
 
 	if (IS_DIR(dirent))
 	{
-		ret = tree_climber(dirent->d_name, pattern,		\
-						   flags, match_list, depth - 1); //BOOOOM BABY!
+		ret = tree_climber(pattern,	flags, match_list, depth - 1); //BOOOOM BABY!
 		if (ret != GLOBUX_SUCCESS)
 			return ret;
 	}
@@ -116,8 +105,7 @@ static int tree_climber_loop(struct dirent *dirent, char const *pattern, \
 	return GLOBUX_SUCCESS;
 }
 
-int tree_climber(char *slash, char const *pattern, \
-				 int flags, t_match **match_list, int depth) //TODO: ooops
+int tree_climber(char const *pattern, int flags, t_match **match_list, int depth)
 {
 	DIR				*dir;
 	struct dirent	*dirent;
@@ -126,7 +114,7 @@ int tree_climber(char *slash, char const *pattern, \
 	if (!depth)
 		return GLOBUX_SUCCESS;
 
-	ret = glob_open_dir(&dir, slash, pattern, flags);
+	ret = glob_open_dir(&dir, flags);
 	if (ret != GLOBUX_SUCCESS)
 		return ret;
 
@@ -152,6 +140,7 @@ int tree_climber(char *slash, char const *pattern, \
 int glob_climb_tree(char const *pattern, int flags, t_match **match_list)
 {
 	//TODO: flags: we might want to pass the whole t_glob struct instead
+	//TODO: opti for trivial (no magic) case
 /*
 	handle_flags(GLOBUX_TILDE | GLOBUX_TILDE_CHECK)
 
@@ -164,6 +153,10 @@ int glob_climb_tree(char const *pattern, int flags, t_match **match_list)
 	char const	*slash;
 	int			depth;
 	int			ret;
+	char		hopefully_this_variable_wont_used_too_much[DIRNAME_BUF_SIZE];
+
+	g_dirname_buf = hopefully_this_variable_wont_used_too_much;
+	ft_bzero(g_dirname_buf, DIRNAME_BUF_SIZE);
 
 	depth = 1;
 	slash = pattern;
@@ -174,19 +167,27 @@ int glob_climb_tree(char const *pattern, int flags, t_match **match_list)
 		slash++;
 	}
 
+/*
+	// this should be already caught
+	if ((size_t)(slash - pattern) > DIRNAME_BUF_SIZE)
+		return GLOBUX_NOSPACE;
+*/
+
 	if (depth > MAX_DEPTH)
 		return GLOBUX_NOSPACE;
 
+
 	slash = pattern;
 	if (depth != 1)
+	{
 		while (*slash != '/')
 			slash++;
+		ft_memcpy(g_dirname_buf, pattern, (size_t)(slash - pattern));
+	}
+	else
+		*g_dirname_buf = *pattern == '/' ? '/' : '.';
 
-	/* if (*pattern == '/') */
-
-
-	ret = tree_climber((char *)(unsigned long)(slash), /* const? nop */ \
-					   pattern, flags, match_list, depth);
+	ret = tree_climber(pattern, flags, match_list, depth);
 /*
 	if GLOBUX_NOCHECK and not files:
 		return pattern
