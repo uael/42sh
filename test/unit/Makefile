@@ -6,7 +6,7 @@
 #    By: mcanal <mcanal@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/11/29 13:16:03 by mcanal            #+#    #+#              #
-#    Updated: 2018/02/14 16:19:32 by mc               ###   ########.fr        #
+#    Updated: 2018/02/14 16:23:45 by mc               ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 
@@ -202,16 +202,22 @@ mrproper: fclean $(O_DIR)
 
 # create binary (link)
 $(NAME): $(OBJS) $(LFT) $(LRL) $(LPS) $(MIN) $(TEST_OBJS)
+ifndef VERBOSE
 	@$(ECHO) "$(BLUE)$(OBJS) $(TEST_OBJS)$(WHITE)->$(RED) $@ $(BASIC)"
+endif
 	$(CC) $(CFLAGS) $(I_DIR) $(TEST_INCS) $(OBJS) $(TEST_OBJS) $(LDLIBS) -o $@ $(LDFLAGS)
+ifndef VERBOSE
 	@$(ECHO) "$(WHITE)cflags:$(BASIC) $(CFLAGS)"
 	@$(ECHO) "$(WHITE)ccpflags:$(BASIC) $(CPPFLAGS)"
 	@$(ECHO) "$(WHITE)libs:$(BASIC) $(LIBS)"
 	@$(ECHO) "$(WHITE)compi:$(BASIC) $(CC)"
+endif
 
 # create object files (compile)
 $(O_DIR)/%.o: %.c
+ifndef VERBOSE
 	@$(ECHO) "$(WHITE)$<\t->$(BLUE) $@ $(BASIC)"
+endif
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(I_DIR) $(TEST_INCS) -MMD -c $< -o $@
 
 # create directory for compilation sub-products
