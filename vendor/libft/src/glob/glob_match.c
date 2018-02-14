@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 21:09:16 by mc                #+#    #+#             */
-/*   Updated: 2018/02/13 11:42:25 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/14 15:21:59 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 ** glob_match - glob util function to check if a pattern actually match
 */
 
-#include "libft/glob.h"
+#include "libft/ft_glob.h"
 #include "glob_match.h"
 
 #ifdef DEBUG_MODE
@@ -103,9 +103,9 @@ t_bool glob_match(char const *pat, char const *str, int flags)
 #endif
 	_DEBUGUX("GLOB_MATCH", pat, str);
 
-	//TODO: set GLOB_MAGCHAR
+	//TODO: set GLOBUX_MAGCHAR
 
-	if (*pat == '\\' && !(flags & GLOB_NOESCAPE))
+	if (*pat == '\\' && !(flags & GLOBUX_NOESCAPE))
 		return *(pat + 1) == *str ? glob_match(pat + 2, str + 1, flags) : FALSE;
 
 	if (*pat == '[')

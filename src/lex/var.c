@@ -63,7 +63,7 @@ static inline int	varuser(int fd, t_tok *tok, char **it, char **ln)
 			if (brace == '{' && **it != '}')
 				return (sh_synerr(*ln, *it, UEH, **it));
 			if (brace == '{')
-				(++tok->len && ++*it);
+				(void)(++tok->len && ++*it);
 			break ;
 		}
 	return (YEP);
@@ -75,7 +75,7 @@ inline int			sh_lexvar(int fd, t_tok *tok, char **it, char **ln)
 
 	if (**it != '$')
 		return (NOP);
-	(++tok->len && ++*it);
+	(void)(++tok->len && ++*it);
 	if ((st = varspecial(fd, tok, it, ln)) > NOP)
 		return (st);
 	if (st && (st = varuser(fd, tok, it, ln)))

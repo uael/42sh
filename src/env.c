@@ -16,7 +16,7 @@ char			**g_env = NULL;
 static t_vec	g_venv_stack = { 0, sizeof(char *), 0, 0 };
 static t_vec	*g_venv = &g_venv_stack;
 
-#define PATH_DFL "PATH=usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:."
+#define PATH_DFL "PATH=/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:."
 
 inline void		sh_envdtor(void)
 {

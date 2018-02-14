@@ -19,7 +19,7 @@ set(CMAKE_C_FLAGS "")
 set(CMAKE_C_FLAGS_DEBUG "")
 set(CMAKE_C_FLAGS_RELEASE "")
 
-set(42sh_HDR ${42sh_INC_DIR}/ush.h src/bi/cd.c)
+set(42sh_HDR ${42sh_INC_DIR}/ush.h)
 file(GLOB_RECURSE 42sh_HDRS ${42sh_HDRS} ${42sh_INC_DIR}/ush/*.h)
 file(GLOB_RECURSE 42sh_SRCS ${42sh_SRCS} ${42sh_SRC_DIR}/*.c)
 file(GLOB_RECURSE 42sh_SRCS ${42sh_SRCS} ${42sh_SRC_DIR}/*.h)
