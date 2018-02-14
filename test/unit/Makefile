@@ -6,7 +6,7 @@
 #    By: mcanal <mcanal@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/11/29 13:16:03 by mcanal            #+#    #+#              #
-#    Updated: 2018/02/13 18:44:14 by mcanal           ###   ########.fr        #
+#    Updated: 2018/02/14 16:19:32 by mc               ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 
@@ -57,7 +57,8 @@ MIN_LIB =
 I_DIR =		-Iinclude	-I$(ROOT_DIR)/include	$(MIN_I_DIR)	$(LFT_I_DIR)	$(LRL_I_DIR)	$(LPS_I_DIR)
 
 # extra libraries needed for linking
-LIBS =		$(LFT_LIB)		$(LRL_LIB)		$(LPS_LIB)		$(MIN_LIB)		-lm
+# LIBS =		$(LFT_LIB)		$(LRL_LIB)		$(LPS_LIB)		$(MIN_LIB)		-lm
+LIBS =		$(LFT)		$(LRL)		$(LPS)	-lm
 
 
 
@@ -69,7 +70,10 @@ LIBS =		$(LFT_LIB)		$(LRL_LIB)		$(LPS_LIB)		$(MIN_LIB)		-lm
 O_DIR =		obj
 OBJS =		$(SRCS:%.c=$(O_DIR)/%.o)
 DEPS =		$(OBJS:%.o=%.d)
-TEST_OBJS =	$(shell find $(ROOT_DIR)/obj/rel -name \*.o 2>/dev/null | grep -v main) #TODO
+
+
+TEST_O_DIR = $(ROOT_DIR)/obj/rel
+TEST_OBJS =	$(shell find $(TEST_O_DIR) -name \*.o 2>/dev/null | grep -v main) #TODO
 TEST_INCS =	$(shell find $(ROOT_DIR)/{include,vendor} -name \*.h 2>/dev/null | sed -E "s|(.*)/.*\.h|-I\1|" | sort | uniq) #fuck
 
 # specify flags for commands used in the following rules
@@ -143,26 +147,32 @@ endif
 
 # classic build
 all: $(O_DIR)
-	$(MAKE) -C $(ROOT_DIR) $(FLAGS)
+#	$(MAKE) -C $(ROOT_DIR) $(FLAGS)
 	$(MAKE) $(NAME) $(FLAGS)
 	./$(NAME)
 
 # build for gdb/valgrind debugging
-debug: FLAGS = "CFLAGS = -D DEBUG -g -ggdb"
-debug: all
+debug: FLAGS = \
+CFLAGS="-D DEBUG -g -ggdb" \
+LFT=$(LFT:.a=.dev.a) LRL=$(LRL:.a=.dev.a) LPS=$(LPS:.a=.dev.a) \
+TEST_O_DIR=$(TEST_O_DIR:rel=dev)
+debug: fclean all
 
 # build for clang runtime debugging (fsanitize)
-sanitize: FLAGS = "CFLAGS = -D DEBUG -g -ggdb -fsanitize=address,undefined \
--ferror-limit=5"
-sanitize: all
+sanitize: FLAGS = \
+CFLAGS="-D DEBUG -g -ggdb -fsanitize=address,undefined -ferror-limit=5" \
+LFT=$(LFT:.a=.san.a) LRL=$(LRL:.a=.san.a) LPS=$(LPS:.a=.san.a) \
+TEST_O_DIR=$(TEST_O_DIR:rel=san)
+sanitize: fclean all
 
 # masochist build
-me_cry: FLAGS = "CFLAGS = -Wpedantic -Wshadow -Wconversion -Wcast-align \
+me_cry: FLAGS = \
+CFLAGS="-Wpedantic -Wshadow -Wconversion -Wcast-align \
 -Wstrict-prototypes -Wmissing-prototypes -Wunreachable-code -Winit-self \
 -Wmissing-declarations -Wfloat-equal -Wbad-function-cast -Wundef \
 -Waggregate-return -Wstrict-overflow=5 -Wold-style-definition  \
--Wredundant-decls -Wall -Werror -Wextra" #-Wcast-qual -Wpadded
-me_cry: all
+-Wredundant-decls -Wall -Werror -Wextra"  #-Wcast-qual -Wpadded
+me_cry: fclean all
 
 # clean build and recompile
 re: fclean all
