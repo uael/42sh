@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 20:57:25 by mc                #+#    #+#             */
-/*   Updated: 2018/02/12 13:54:57 by mcanal           ###   ########.fr       */
+/*   Updated: 2018/02/14 15:21:59 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@
 **
 ** @pat: Shell-style pattern to match, e.g. "*.[ch]".
 ** @str: String to match.  The pattern must match the entire string.
-** @flags: cf glob.h (GLOB_NOESCAPE | GLOB_PERIOD | GLOB_BRACE)
+** @flags: cf ft_glob.h (GLOBUX_NOESCAPE | GLOBUX_PERIOD | GLOBUX_BRACE)
 */
 t_bool glob_match(char const *pat, char const *str, int flags);
 

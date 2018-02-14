@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/08 23:54:42 by mc                #+#    #+#             */
-/*   Updated: 2018/02/13 12:38:54 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/14 15:21:59 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 ** find pathnames matching a pattern, free memory from globctor()
 */
 
-#include "libft/glob.h"
+#include "libft/ft_glob.h"
 #include "glob_climb_tree.h"
 
 static int super_cmp(const void *a, const void *b, size_t n)
@@ -29,12 +29,12 @@ static t_bool copy_match_to_glob_struct(t_match *match_list, t_glob *pglob)
 	char	**av;
 
 /*
-	if ((pglob->gl_flags & GLOB_APPEND))
+	if ((pglob->gl_flags & GLOBUX_APPEND))
 		append_to_something(); //TODO: ???
 */
 	pglob->gl_pathc = list_len(match_list); //TODO: find another way
 
-	if ((pglob->gl_flags & GLOB_DOOFFS))
+	if ((pglob->gl_flags & GLOBUX_DOOFFS))
 	{
 		if (!(pglob->gl_pathv = malloc(sizeof(char *) *
 								   (pglob->gl_pathc + pglob->gl_offs + 1))))
@@ -56,7 +56,7 @@ static t_bool copy_match_to_glob_struct(t_match *match_list, t_glob *pglob)
 	}
 	*av = NULL;
 
-	if (!(pglob->gl_flags & GLOB_NOSORT))
+	if (!(pglob->gl_flags & GLOBUX_NOSORT))
 		ft_shellsort(pglob->gl_pathv, pglob->gl_pathc, sizeof(char *), super_cmp);
 
 	return TRUE;
@@ -69,8 +69,11 @@ int		globctor(const char *pattern, int flags, t_glob *pglob)
 	int		ret;
 
 	//TODO: test
-	if ((flags & ~__GLOB_FLAGS))
-		return GLOB_NOSYS;
+	if (!*pattern)
+		return GLOBUX_NOMATCH;
+	if ((flags & ~__GLOBUX_FLAGS))
+		return GLOBUX_NOSYS;
+	//TODO: handle weird pglob?
 
 	pglob->gl_flags = flags;
 	pglob->gl_pathv = NULL;
@@ -78,26 +81,29 @@ int		globctor(const char *pattern, int flags, t_glob *pglob)
 
 	match_list = NULL;
 	ret = glob_climb_tree(pattern, flags, &match_list);
-	if (ret != GLOB_SUCCESS)
+	if (ret != GLOBUX_SUCCESS)
 	{
 		matchdtor(match_list);
 		return ret;
 	}
 
+	if (!match_list)
+		return GLOBUX_NOMATCH;
+
 	if (!copy_match_to_glob_struct(match_list, pglob))
 	{
 		matchdtor(match_list);
-		return GLOB_NOSPACE;
+		return GLOBUX_NOSPACE;
 	}
 
-	return GLOB_SUCCESS;
+	return GLOBUX_SUCCESS;
 }
 
 void	globdtor(t_glob *pglob)
 {
 	char **av;
 
-	if ((pglob->gl_flags & GLOB_DOOFFS))
+	if ((pglob->gl_flags & GLOBUX_DOOFFS))
 		av = pglob->gl_pathv + pglob->gl_offs;
 	else
 		av = pglob->gl_pathv;
