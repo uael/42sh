@@ -22,7 +22,7 @@ eoF2
 env -i ${EXE} <<EOL
   (env | grep -o PATH)
   (env | wc -l | grep -o 1)
-  (env | grep -o "PATH=usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:.")
+  (env | grep -o "PATH=/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:.")
   (echo $PATH | grep -o "usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:.")
   exit 0
 EOL
@@ -31,7 +31,7 @@ EOL
   env -i ${EXE} <<EOL
     (env | grep -o PATH)
     (env | wc -l | grep -o 1)
-    (env | grep -o "PATH=usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:.")
+    (env | grep -o "PATH=/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:.")
     (echo $PATH | grep -o "usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:.")
     exit 0
 EOL
@@ -39,7 +39,7 @@ EOL
     env -i ${EXE} <<EOL
       (env | grep -o PATH)
       (env | wc -l | grep -o 1)
-      (env | grep -o "PATH=usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:.")
+      (env | grep -o "PATH=/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:.")
       (echo $PATH | grep -o "usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:.")
       exit 0
 EOL
@@ -47,7 +47,7 @@ EOL
       env -i ${EXE} <<EOL
         (env | grep -o PATH)
         (env | wc -l | grep -o 1)
-        (env | grep -o "PATH=usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:.")
+        (env | grep -o "PATH=/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:.")
         (echo $PATH | grep -o "usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:.")
         exit 0
 EOL
@@ -55,7 +55,7 @@ EOL
         env -i ${EXE} <<EOL
           (env | grep -o PATH)
           (env | wc -l | grep -o 1)
-          (env | grep -o "PATH=usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:.")
+          (env | grep -o "PATH=/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:.")
           (echo $PATH | grep -o "usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:.")
           exit 0
 EOL

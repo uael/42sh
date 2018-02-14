@@ -16,6 +16,15 @@
 
 #define BUFS 4096
 
+static t_map		g_binaries_stack = {
+	0, 0, 0, 0, NULL, { (t_hashfn *)ft_strhash, (t_eqfn *)ft_streq },
+	sizeof(char *), sizeof(char *), NULL, NULL
+};
+static t_map		g_builtins_stack = {
+	0, 0, 0, 0, NULL, { (t_hashfn *)ft_strhash, (t_eqfn *)ft_streq },
+	sizeof(char *), sizeof(t_procbi *), NULL, NULL
+};
+
 t_map				*g_binaries = &g_binaries_stack;
 t_map				*g_builtins = &g_builtins_stack;
 t_errcb				*g_errcb;
