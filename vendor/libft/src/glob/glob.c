@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/08 23:54:42 by mc                #+#    #+#             */
-/*   Updated: 2018/02/14 15:21:59 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/14 23:24:54 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,6 @@ int		globctor(const char *pattern, int flags, t_glob *pglob)
 	t_match *match_list;
 	int		ret;
 
-	//TODO: test
 	if (!*pattern)
 		return GLOBUX_NOMATCH;
 	if ((flags & ~__GLOBUX_FLAGS))

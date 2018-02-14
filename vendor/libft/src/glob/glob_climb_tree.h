@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 20:57:25 by mc                #+#    #+#             */
-/*   Updated: 2018/02/14 21:59:08 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/15 00:11:50 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include <dirent.h> /* for {open,read,close}dir */
 
 # define IS_DIR(dirent) ((dirent)->d_type == DT_DIR)
+# define DIRNAME_BUF_SIZE 255
 
 # include "libft/str.h" /* for ft_strchr */
 # include "libft/zob.h" /* for ft_shellsort */
@@ -40,7 +41,7 @@ struct					s_match
 */
 int		glob_climb_tree(char const *pattern, int flags, t_match **match_list);
 
-int tree_climber(char const *pattern, int flags, t_match **match_list, int depth);
+int		glob_read_dir(char const *pattern, int flags, t_match **match_list, int depth);
 
 
 /*
@@ -55,8 +56,9 @@ size_t	list_len(t_match *match_list);
 /*
 ** in glob_dir.c:
 */
+int		glob_count_depth(char const *pattern);
 int		glob_open_dir(DIR **dir, int flags);
 int		glob_close_dir(DIR *dir, int flags);
-void	glob_append_dir_name(char const *pattern);
+int		glob_append_dir_name(char const *pattern);
 
 #endif /* GLOB_CLIMB_TREE_H */
