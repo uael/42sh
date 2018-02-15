@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 21:09:16 by mc                #+#    #+#             */
-/*   Updated: 2018/02/14 15:21:59 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/15 02:07:33 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,9 @@ static t_bool handle_str_wildcard(char const *pat, char const *str, int flags, \
 
 	if (depth > MAX_DEPTH)
 		return FALSE;
+
+	if (!*pat)
+		return TRUE;
 
 	if (glob_match(pat, str, flags)) //BOOOOM BABY!
 		return TRUE;

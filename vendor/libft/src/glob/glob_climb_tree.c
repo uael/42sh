@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 22:23:43 by mc                #+#    #+#             */
-/*   Updated: 2018/02/15 00:12:08 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/15 02:01:39 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,10 @@ static int	glob_check_file(struct dirent *dirent, char const *pattern, \
 		return GLOBUX_NOSPACE;
 	add_match_to_list(match, match_list);
 
-	if (IS_DIR(dirent))
+	if (IS_DIR(dirent)) //TODO: not '.' and '..'
 	{
+		//TODO: the recursion fuck up g_dirname_buf
+		//TODO: ps: this buffer is way too small anyway
 		ret = glob_read_dir(pattern, flags, match_list, depth - 1); //BOOOOM BABY!
 		if (ret != GLOBUX_SUCCESS)
 			return ret;
