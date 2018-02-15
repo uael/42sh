@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libps/proc/fn.h                                    :+:      :+:    :+:   */
+/*   ush/proc/bit.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,22 +10,15 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBPS_PROC_FN_H
-# define LIBPS_PROC_FN_H
+#ifndef USH_PROC_BIT_H
+# define USH_PROC_BIT_H
 
 # include <libft.h>
 
 struct s_proc;
 
-typedef int		(t_proccb)(void *data);
+typedef t_bool	t_procbit;
 
-typedef struct	s_procfn
-{
-	t_proccb	*cb;
-	t_dtor		dtor;
-	void		*data;
-}				t_procfn;
-
-extern void		ps_procfn(struct s_proc *p, t_proccb *cb, t_dtor dtor, void *d);
+extern void		ps_procbit(struct s_proc *proc, t_bool bit);
 
 #endif

@@ -13,7 +13,7 @@
 #ifndef USH_BI_H
 # define USH_BI_H
 
-# include <libps.h>
+# include "ps.h"
 
 extern void		sh_biregister(void);
 extern int		sh_biecho(int ac, char **argv, char **env);

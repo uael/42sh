@@ -10,11 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <libps.h>
-
 #include "ush/eval.h"
-#include "ush/shell.h"
-#include "ush/word.h"
 
 #define DQUOT(IT) ft_strchr("\\\n\"$", *(IT))
 #define QUOTE(IT) (*(IT) == '\'' && (*((IT) + 1) == '\''))

@@ -16,7 +16,7 @@
 # include <librl.h>
 # include <libft.h>
 
-# include "libps.h"
+# include "ush/ps.h"
 # include "pool.h"
 
 extern t_map		*g_binaries;

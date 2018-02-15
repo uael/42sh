@@ -1,30 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libps.h                                            :+:      :+:    :+:   */
+/*   ush/proc/exe.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/09 07:00:16 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/06 12:00:10 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBPS_H
-# define LIBPS_H
+#ifndef USH_PROC_EXE_H
+# define USH_PROC_EXE_H
 
 # include <libft.h>
 
-# include "libps/job.h"
-# include "libps/proc.h"
-# include "libps/redir.h"
+# define PROC_NOTFOUND (127)
+# define PROC_NORIGHTS (126)
+# define PROC_ISDIR (1)
 
-typedef int		(t_errcb)(char const *fmt, ...);
-typedef int		(t_fatalcb)(int code, char const *fmt, ...);
+struct s_proc;
 
-extern void		ps_read(t_sds *dst, t_proccb *cb, t_dtor dtor, void *data);
-extern int		ps_init(int fd, t_errcb *errcb, t_fatalcb *fatalcb);
-extern void		ps_dtor(void);
-extern pid_t	ps_lastpid(void);
+typedef struct	s_procexe
+{
+	char const	*pvar;
+}				t_procexe;
+
+extern void		ps_procexe(struct s_proc *ps, char const *p, char *e, char **v);
 
 #endif

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libps/proc/bi.h                                    :+:      :+:    :+:   */
+/*   ush/redir.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,15 +10,23 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBPS_PROC_BI_H
-# define LIBPS_PROC_BI_H
+#ifndef LIBPS_REDIR_H
+# define LIBPS_REDIR_H
 
 # include <libft.h>
 
-struct s_proc;
+typedef struct	s_redir
+{
+	int			to;
+	int			from;
+}				t_redir;
 
-typedef int		(t_procbi)(int ac, char **av, char **envv);
-
-extern void		ps_biregister(char const *name, t_procbi *fn);
+typedef struct	s_redirs
+{
+	t_redir		*buf;
+	size_t		isz;
+	size_t		cap;
+	size_t		len;
+}				t_redirs;
 
 #endif

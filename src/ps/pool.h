@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libps/proc/bit.h                                   :+:      :+:    :+:   */
+/*   libps/pool.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,15 +10,25 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBPS_PROC_BIT_H
-# define LIBPS_PROC_BIT_H
+#ifndef LIBPS_POOL_H
+# define LIBPS_POOL_H
 
-# include <libft.h>
+# include "ush/ps/job.h"
 
-struct s_proc;
+# ifndef CHILD_MAX
+#  define CHILD_MAX 255
+# endif
 
-typedef t_bool	t_procbit;
+typedef struct	s_pool
+{
+	t_job		jobs[CHILD_MAX];
+	size_t		len;
+}				t_pool;
 
-extern void		ps_procbit(struct s_proc *proc, t_bool bit);
+extern size_t	ps_poollen(void);
+extern t_job	*ps_poolget(size_t idx);
+extern t_bool	ps_poolrem(size_t idx, t_job *out);
+extern int		ps_poolmark(pid_t pid, int status);
+extern void		ps_poolnotify(void);
 
 #endif

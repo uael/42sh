@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libps/proc/exe.h                                   :+:      :+:    :+:   */
+/*   ush/proc/bi.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,22 +10,15 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBPS_PROC_EXE_H
-# define LIBPS_PROC_EXE_H
+#ifndef USH_PROC_BI_H
+# define USH_PROC_BI_H
 
 # include <libft.h>
 
-# define PROC_NOTFOUND (127)
-# define PROC_NORIGHTS (126)
-# define PROC_ISDIR (1)
-
 struct s_proc;
 
-typedef struct	s_procexe
-{
-	char const	*pvar;
-}				t_procexe;
+typedef int		(t_procbi)(int ac, char **av, char **envv);
 
-extern void		ps_procexe(struct s_proc *ps, char const *p, char *e, char **v);
+extern void		ps_biregister(char const *name, t_procbi *fn);
 
 #endif

@@ -10,8 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <libps.h>
-
+#include "ush/ps.h"
 #include "ush/var.h"
 #include "ush/shell.h"
 

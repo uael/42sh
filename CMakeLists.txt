@@ -4,7 +4,6 @@ cmake_policy(SET CMP0045 OLD)
 
 project(42sh C)
 add_subdirectory(vendor/libft)
-add_subdirectory(vendor/libps)
 add_subdirectory(vendor/librl)
 
 set(BUILD_SHARED_LIBS OFF)
@@ -27,7 +26,7 @@ file(GLOB_RECURSE 42sh_SRCS ${42sh_SRCS} ${42sh_SRC_DIR}/*.h)
 add_executable(42sh ${42sh_HDR} ${42sh_HDRS} ${42sh_SRCS})
 set_property(TARGET 42sh PROPERTY C_STANDARD 90)
 target_include_directories(42sh PUBLIC ${42sh_INC_DIR})
-target_link_libraries(42sh PUBLIC debug ft debug rl debug ps)
+target_link_libraries(42sh PUBLIC debug ft debug rl)
 
 target_compile_definitions(42sh
   PRIVATE $<$<CONFIG:Debug>:DEBUG>$<$<CONFIG:Release>:NDEBUG>)

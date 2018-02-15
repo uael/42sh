@@ -13,8 +13,7 @@
 #ifndef USH_EVAL_H
 # define USH_EVAL_H
 
-# include <libps.h>
-
+# include "ps.h"
 # include "shell.h"
 # include "tok.h"
 

@@ -1,30 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libps/proc/err.h                                   :+:      :+:    :+:   */
+/*   ush/ps.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
+/*   Created: 2017/11/07 09:52:30 by cmalfroy          #+#    #+#             */
 /*   Updated: 2017/12/06 12:00:10 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBPS_PROC_ERR_H
-# define LIBPS_PROC_ERR_H
+#ifndef USH_PS_H
+# define USH_PS_H
 
 # include <libft.h>
 
-struct s_proc;
+# include "ps/job.h"
+# include "ps/proc.h"
+# include "ps/redir.h"
 
-typedef struct		s_procerr
-{
-	int				st;
-	char			*msg;
-	char			*ln;
-	size_t			pos;
-}					t_procerr;
+typedef int		(t_errcb)(char const *fmt, ...);
+typedef int		(t_fatalcb)(int code, char const *fmt, ...);
 
-extern t_procerr	*ps_procerr(struct s_proc *pr, char *m, char *ln, size_t p);
+extern void		ps_read(t_sds *dst, t_proccb *cb, t_dtor dtor, void *data);
+extern int		ps_init(int fd, t_errcb *errcb, t_fatalcb *fatalcb);
+extern void		ps_dtor(void);
+extern pid_t	ps_lastpid(void);
 
 #endif

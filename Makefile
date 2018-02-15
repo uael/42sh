@@ -24,7 +24,7 @@ OBJ_DIR ?= obj
 OBJ_PATH ?= $(OBJ_DIR)/rel
 3TH_PATH = vendor
 
-LIBS = ps rl ft
+LIBS = rl ft
 ifneq (,$(findstring dev,$(NAME)))
 LIB_NAME = $(addsuffix .dev, $(LIBS))
 else ifneq (,$(findstring san,$(NAME)))
@@ -32,7 +32,7 @@ LIB_NAME = $(addsuffix .san, $(LIBS))
 else
 LIB_NAME = $(LIBS)
 endif
-3TH_NAME = libft librl libps
+3TH_NAME = libft librl
 SRC_NAME = \
 	bi.c bi/cd.c bi/echo.c bi/env.c bi/exit.c bi/export.c bi/setenv.c \
 	bi/unset.c bi/unsetenv.c bi/history.c bi/read.c\
@@ -44,6 +44,13 @@ SRC_NAME = \
 	eval/pipeline.c eval/ramp.c eval/raout.c eval/redir.c eval/rin.c \
 	eval/rout.c eval/sep.c eval/simple.c eval/subshell.c \
 	lex.c lex/heredoc.c lex/op.c lex/utils.c lex/var.c lex/word.c \
+	ps/ps.c ps/bi/bg.c ps/bi/fg.c ps/bi/jobs.c \
+	ps/job.c ps/job/bg.c ps/job/cont.c ps/job/debug.c ps/job/fg.c \
+	ps/job/mark.c ps/job/launch.c ps/job/state.c ps/job/wait.c ps/job/pipe.c \
+	ps/pool.c ps/pool/mark.c ps/pool/notify.c \
+    ps/proc.c ps/proc/bi.c ps/proc/bit.c ps/proc/err.c ps/proc/exe.c \
+    ps/proc/fn.c ps/proc/fork.c \
+    ps/redir.c \
 	main.c \
 	prompt.c \
 	shell.c \
