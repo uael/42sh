@@ -49,11 +49,13 @@ int				rl_getline(int fd, char *prompt, char **ln)
 	uint16_t	col;
 
 	len = 0;
-	if (fd != 0 || !isatty(fd) || rl_rawmode(fd))
+	if (fd != 0 || !isatty(fd) || (!rl_isdumb() && rl_rawmode(fd)))
 		return (rl_readnotty(fd, ln));
-	if (!rl_screenpos(NULL, &col) && col > 1)
+	if (!rl_isdumb() && !rl_screenpos(NULL, &col) && col > 1)
 		ft_puts(STDIN_FILENO, TC_MR"%"TC_ME"\n");
 	ft_putf(STDIN_FILENO, "\033[0m%s", prompt);
+	if (rl_isdumb())
+		return (rl_readnotty(fd, ln));
 	signal(SIGWINCH, rd_sigwinch);
 	if (!g_screen_init && rl_screenget(g_screen) < 0)
 		st = WUT;
@@ -72,9 +74,11 @@ int				rl_catline(int fd, char c, char **ln, char **it)
 	size_t		len;
 	int			st;
 
-	if (fd != 0 || !isatty(fd) || rl_rawmode(fd))
+	if (fd != 0 || !isatty(fd) || (!rl_isdumb() && rl_rawmode(fd)))
 		return (rl_catnotty(fd, ln, c, it));
 	ft_puts(STDIN_FILENO, "\033[0m\033[31m>\033[0m ");
+	if (rl_isdumb())
+		return (rl_catnotty(fd, ln, c, it));
 	signal(SIGWINCH, rd_sigwinch);
 	if (!g_screen_init && rl_screenget(g_screen) < 0)
 		st = WUT;
