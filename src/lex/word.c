@@ -15,8 +15,22 @@
 
 #define ISQUOTE(IT) (*(IT) == '\'' || *(IT) == '"' || *(IT) == '`')
 #define UEC "parse error: Unexpected EOF while looking for matching `%c'"
+#define M(p, c) (s[p] == (c))
 
-static inline int	quote(int fd, t_tok *tok, char **it, char **ln)
+static inline uint8_t	wordid(char const *s, size_t l)
+{
+	if (l == 2 && M(0, 'i') && M(1, 'f'))
+		return (TOK_IF);
+	if (l == 4 && M(0, 'e') && M(1, 'l') && M(2, 'i') && M(3, 'f'))
+		return (TOK_ELIF);
+	if (l == 4 && M(0, 'e') && M(1, 'l') && M(2, 's') && M(3, 'e'))
+		return (TOK_ELSE);
+	if (l == 4 && M(0, 't') && M(1, 'h') && M(2, 'e') && M(3, 'n'))
+		return (TOK_THEN);
+	return ((uint8_t)((l == 2 && M(0, 'f') && M(1, 'i')) ? TOK_FI : TOK_WORD));
+}
+
+static inline int		quote(int fd, t_tok *tok, char **it, char **ln)
 {
 	char	q;
 	int		st;
@@ -44,7 +58,7 @@ static inline int	quote(int fd, t_tok *tok, char **it, char **ln)
 	return (st);
 }
 
-inline int			sh_lexword(int fd, t_tok *tok, char **it, char **ln)
+inline int				sh_lexword(int fd, t_tok *tok, char **it, char **ln)
 {
 	int		st;
 	int		bs;
@@ -66,6 +80,6 @@ inline int			sh_lexword(int fd, t_tok *tok, char **it, char **ln)
 			(void)(++tok->len && ++*it);
 	if (st || !tok->len)
 		return (st ? st : NOP);
-	tok->id = TOK_WORD;
+	tok->id = wordid(*ln + tok->pos, tok->len);
 	return (st);
 }
