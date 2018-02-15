@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 22:23:43 by mc                #+#    #+#             */
-/*   Updated: 2018/02/15 02:01:39 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/15 22:46:19 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 ** glob_climb_tree - glob util function to check recursively a directory tree
 */
 
-#include "libft/ft_glob.h"
 #include "glob_climb_tree.h"
 
 char *g_dirname_buf; //TODO: don't
@@ -98,7 +97,7 @@ int			glob_read_dir(char const *pattern, int flags, \
 	return glob_close_dir(dir, flags);
 }
 
-int			glob_climb_tree(char const *pattern, int flags, t_match **match_list)
+int			glob_climb_tree(char const *pattern, t_glob *pglob, t_match **match_list)
 {
 /*
 	handle_flags(GLOBUX_TILDE | GLOBUX_TILDE_CHECK)
@@ -120,12 +119,25 @@ int			glob_climb_tree(char const *pattern, int flags, t_match **match_list)
 	if (depth > MAX_DEPTH)
 		return GLOBUX_NOSPACE;
 
-	ret = glob_read_dir(pattern, flags, match_list, depth);
-/*
-	if GLOBUX_NOCHECK and not files:
-		return pattern
-	if GLOBUX_NOMAGIC and not GLOBUX_MAGCHAR:
-		return pattern
-*/
+	/* DEBUG */
+	char const	*magic;
+
+	if ((magic = is_magic(pattern, pglob->gl_flags)))
+	{
+		pglob->gl_flags |= GLOBUX_MAGCHAR;
+		//TODO: open(magic);
+		//TODO: glob_read_dir(?, pglob->gl_flags, match_list, depth)
+	}
+	else if ((pglob->gl_flags & GLOBUX_NOMAGIC))
+	{
+		if (!(*match_list = matchctor(pattern, ft_strlen(pattern))))
+			return GLOBUX_NOSPACE;
+		return GLOBUX_SUCCESS;
+	}
+	/* DEBUG */
+
+	//TODO: pass t_glob (you'll need ac too)
+	ret = glob_read_dir(pattern, pglob->gl_flags, match_list, depth);
+
 	return ret;
 }

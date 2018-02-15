@@ -6,11 +6,10 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/14 21:56:00 by mc                #+#    #+#             */
-/*   Updated: 2018/02/15 00:11:56 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/15 15:21:17 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/ft_glob.h"
 #include "glob_climb_tree.h"
 
 extern char *g_dirname_buf;

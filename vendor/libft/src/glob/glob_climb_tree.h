@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 20:57:25 by mc                #+#    #+#             */
-/*   Updated: 2018/02/15 00:11:50 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/15 15:19:27 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 
 # include "libft/str.h" /* for ft_strchr */
 # include "libft/zob.h" /* for ft_shellsort */
+# include "libft/ft_glob.h" /* for t_glob and GLOBUX flags */
 # include "glob_match.h" /* for glob_match */
 
 typedef unsigned char	t_byte;
@@ -39,7 +40,7 @@ struct					s_match
 **
 ** @pat: Shell-style pattern to match, e.g. "*.[ch]".
 */
-int		glob_climb_tree(char const *pattern, int flags, t_match **match_list);
+int		glob_climb_tree(char const *pattern, t_glob *pglob, t_match **match_list);
 
 int		glob_read_dir(char const *pattern, int flags, t_match **match_list, int depth);
 
