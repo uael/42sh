@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/08 23:54:42 by mc                #+#    #+#             */
-/*   Updated: 2018/02/14 23:24:54 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/15 00:54:46 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 static int super_cmp(const void *a, const void *b, size_t n)
 {
 	(void)n; //this is the size of one element eheh
-	return ft_strcmp((char *)a, (char *)b);
+	return ft_strcmp(*(char **)a, *(char **)b);
 }
 
 static t_bool copy_match_to_glob_struct(t_match *match_list, t_glob *pglob)
@@ -57,7 +57,9 @@ static t_bool copy_match_to_glob_struct(t_match *match_list, t_glob *pglob)
 	*av = NULL;
 
 	if (!(pglob->gl_flags & GLOBUX_NOSORT))
-		ft_shellsort(pglob->gl_pathv, pglob->gl_pathc, sizeof(char *), super_cmp);
+		ft_shellsort((pglob->gl_flags & GLOBUX_DOOFFS) ? \
+						pglob->gl_pathv : pglob->gl_pathv + pglob->gl_offs, \
+					 pglob->gl_pathc, sizeof(char *), super_cmp);
 
 	return TRUE;
 }
@@ -102,17 +104,21 @@ void	globdtor(t_glob *pglob)
 {
 	char **av;
 
+	if (!pglob->gl_pathv)
+		return;
+
 	if ((pglob->gl_flags & GLOBUX_DOOFFS))
 		av = pglob->gl_pathv + pglob->gl_offs;
 	else
 		av = pglob->gl_pathv;
 
-	while (*av)
-	{
-		//TODO: doc + test
-		free((t_byte *)(*av) - sizeof(t_match) + sizeof(t_byte)); // magic list!
-		av++;
-	}
+	if ((pglob->gl_flags & GLOBUX_SUCCESS))
+		while (pglob->gl_pathc--)
+		{
+			//TODO: doc + test
+			free((t_byte *)(*av) - sizeof(t_match) + sizeof(t_byte)); // magic list!
+			av++;
+		}
 
 	free(pglob->gl_pathv);
 }
