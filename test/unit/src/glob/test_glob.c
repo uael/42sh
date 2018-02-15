@@ -6,7 +6,7 @@
 /*   By: mcanal <zboub@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/11/29 15:38:59 by mcanal            #+#    #+#             */
-/*   Updated: 2018/02/15 00:25:20 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/15 12:43:38 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,8 @@ static struct s_test_glob test_glob_arr[] = {
 	{".*", 0, {0, NULL, 0, 0}},
 	{"*.*", 0, {0, NULL, 0, 0}},
 	{"*", 0, {0, NULL, 0, 0}},
+	{"*/*", 0, {0, NULL, 0, 0}},
+	{"*/*/*", 0, {0, NULL, 0, 0}},
 
 	{"/*ab*cd*", 0, {0, NULL, 0, 0}},
 	{"/*abcd*", 0, {0, NULL, 0, 0}},
@@ -124,6 +126,7 @@ static struct s_test_glob test_glob_arr[] = {
 	{"/.*", 0, {0, NULL, 0, 0}},
 	{"/*.*", 0, {0, NULL, 0, 0}},
 	{"/*", 0, {0, NULL, 0, 0}},
+	{"/*/*/*", 0, {0, NULL, 0, 0}},
 
 	{"/usr/lib/*ab*cd*", 0, {0, NULL, 0, 0}},
 	{"/usr/lib/*abcd*", 0, {0, NULL, 0, 0}},
@@ -154,6 +157,8 @@ static struct s_test_glob test_glob_arr[] = {
 	{"/usr/lib/.*", 0, {0, NULL, 0, 0}},
 	{"/usr/lib/*.*", 0, {0, NULL, 0, 0}},
 	{"/usr/lib/*", 0, {0, NULL, 0, 0}},
+	{"/usr/lib/*/*/*", 0, {0, NULL, 0, 0}},
+
 };
 
 
@@ -332,6 +337,8 @@ void test_glob()
 			test_glob_arr[i].flags,
 			&(test_glob_arr[i].pglob)
 		);
+		globfree(&ctrl_glob_struct);
+		globdtor(&test_glob_arr[i].pglob);
 	}
 
 }
