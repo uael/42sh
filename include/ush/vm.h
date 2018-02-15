@@ -58,15 +58,23 @@ static int		vm_evalbin(t_op *op, t_vec *av, t_vec *env, char *ln)
 {
 	av->len = 0;
 	while (!av->len)
-	{
-		if (!(op->flags & OP_LOCK))
+		if ((op->flags & OP_LOCK))
+			*(char **)ft_vecpush(av) = ft_strndup(ln + op++->pos, op->len);
+		else
 		{
 			sh_wordexplode(av, ln + op->pos, op->len);
 			if (!av->len && ++op->kind != OP_ARG)
 				return (vm_eval(op, av, env, ln));
 		}
-		else
-			*(char **)ft_vecpush(av) = ft_strndup(ln + op++->pos, op->len);
+	if (!ft_strcmp(*(char **)av->buf, "true"))
+	{
+		g_sh->status = 0;
+		return (vm_eval(g_ops + op->jump, av, env, ln));
+	}
+	if (!ft_strcmp(*(char **)av->buf, "false"))
+	{
+		g_sh->status = 1;
+		return (vm_eval(g_ops + op->jump, av, env, ln));
 	}
 	return (vm_eval(++op, av, env, ln));
 }

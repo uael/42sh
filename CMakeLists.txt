@@ -40,3 +40,18 @@ else ()
     PRIVATE -Wall -Werror -Wextra
     PRIVATE -O$<$<CONFIG:Debug>:0 -g3>$<$<CONFIG:Release>:3>)
 endif ()
+
+add_executable(vm_test test/vm.c)
+target_link_libraries(vm_test debug ft)
+target_compile_definitions(vm_test
+        PRIVATE $<$<CONFIG:Debug>:DEBUG>$<$<CONFIG:Release>:NDEBUG>)
+if (MSVC)
+  target_compile_options(vm_test
+          PRIVATE /MT$<$<CONFIG:Debug>:d> /Oy /W3
+          PRIVATE /D_CRT_SECURE_NO_WARNINGS /Dinline=__inline
+          PRIVATE /O$<$<CONFIG:Debug>:d>$<$<CONFIG:Release>:x>)
+else ()
+  target_compile_options(vm_test
+          PRIVATE -Wall -Werror -Wextra
+          PRIVATE -O$<$<CONFIG:Debug>:0 -g3>$<$<CONFIG:Release>:3>)
+endif ()
