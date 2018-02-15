@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 21:09:16 by mc                #+#    #+#             */
-/*   Updated: 2018/02/15 02:07:33 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/15 13:36:46 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,6 @@ static t_bool handle_str_wildcard(char const *pat, char const *str, int flags, \
 	return handle_str_wildcard(pat, str + 1, flags, depth + 1);
 }
 
-//TODO: triple-check overflows
 t_bool glob_match(char const *pat, char const *str, int flags)
 {
 # ifdef DEBUG_MODE
