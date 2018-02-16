@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/08 23:54:42 by mc                #+#    #+#             */
-/*   Updated: 2018/02/15 15:28:48 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/16 19:46:39 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,19 +114,17 @@ void	globdtor(t_glob *pglob)
 
 	if (!pglob->gl_pathv)
 		return;
-
 	if ((pglob->gl_flags & GLOBUX_DOOFFS))
 		av = pglob->gl_pathv + pglob->gl_offs;
 	else
 		av = pglob->gl_pathv;
 
-	if ((pglob->gl_flags & GLOBUX_SUCCESS))
-		while (pglob->gl_pathc--)
-		{
-			//TODO: doc + test
-			free((t_byte *)(*av) - sizeof(t_match) + sizeof(t_byte)); // magic list!
-			av++;
-		}
+	while (pglob->gl_pathc--)
+	{
+		//TODO: doc
+		free((t_byte *)(*av) - sizeof(t_match) + sizeof(t_byte *)); // magic list!
+		av++;
+	}
 
 	free(pglob->gl_pathv);
 }
