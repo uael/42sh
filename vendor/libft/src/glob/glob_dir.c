@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/14 21:56:00 by mc                #+#    #+#             */
-/*   Updated: 2018/02/16 12:02:17 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/16 15:33:40 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,8 @@ int			glob_count_depth(char const *pattern)
 
 int			glob_open_dir(DIR **dir, char const *dir_name, int flags)
 {
-	if (!(*dir = opendir(dir_name)))
+	*dir = opendir(dir_name);
+	if (!*dir)
 	{
 		if ((flags & GLOBUX_ERR))
 			return GLOBUX_ABORTED; //TODO: is it a "read" error?
@@ -41,7 +42,7 @@ int			glob_open_dir(DIR **dir, char const *dir_name, int flags)
 				open failed, but we shouldn't stop
 				maybe print an error message?
 		*/
-		return GLOBUX_SUCCESS;
+		return GLOBUX_NOBODY_GIVES_A_DAMN;
 	}
 
 	return GLOBUX_SUCCESS;
@@ -59,7 +60,7 @@ int			glob_close_dir(DIR *dir, int flags)
 				close failed, but we shouldn't stop
 				maybe print an error message?
 		*/
-		return GLOBUX_SUCCESS;
+		return GLOBUX_NOBODY_GIVES_A_DAMN;
 	}
 
 	return GLOBUX_SUCCESS;
@@ -126,6 +127,7 @@ char const	*glob_get_sub_pattern(char const *pattern, int depth)
 	if (len + 1 > FILE_MAX)
 		return NULL; // this shouldn't happen. ever
 
+	ft_bzero(sub_pat_buf, FILE_MAX);
 	ft_memcpy(sub_pat_buf, pat, len);
 	if (*dir_end)
 		*(sub_pat_buf + len) = '\0';

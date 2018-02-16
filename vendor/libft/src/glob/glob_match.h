@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 20:57:25 by mc                #+#    #+#             */
-/*   Updated: 2018/02/15 13:41:14 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/16 14:36:00 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,6 @@ t_bool		glob_match(char const *pat, char const *str, int flags);
 ** @pat: Shell-style pattern to match, e.g. "*.[ch]".
 ** @flags: cf ft_glob.h (GLOBUX_NOESCAPE)
 */
-char const	*is_magic(char const *pattern, int flags);
+char const	*is_magic(char const *pattern, int *flags);
 
 #endif /* GLOB_MATCH_H */

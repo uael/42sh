@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 20:57:25 by mc                #+#    #+#             */
-/*   Updated: 2018/02/16 12:42:49 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/16 15:05:27 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 # define FILE_MAX 256  //TODO: pretty sure this exists already (cf man readdir -> d_name)
 
 # define GLOBUX_BOOM_BABY 5
+# define GLOBUX_NOBODY_GIVES_A_DAMN 6
 /* # define GLOBUX_INITIALIZED (1 << 15) */
 
 
