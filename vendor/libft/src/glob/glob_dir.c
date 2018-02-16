@@ -6,15 +6,13 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/14 21:56:00 by mc                #+#    #+#             */
-/*   Updated: 2018/02/15 15:21:17 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/16 12:02:17 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "glob_climb_tree.h"
 
-extern char *g_dirname_buf;
-
-int		glob_count_depth(char const *pattern)
+int			glob_count_depth(char const *pattern)
 {
 	char const	*slash;
 	int			depth;
@@ -31,9 +29,9 @@ int		glob_count_depth(char const *pattern)
 	return depth;
 }
 
-int		glob_open_dir(DIR **dir, int flags)
+int			glob_open_dir(DIR **dir, char const *dir_name, int flags)
 {
-	if (!(*dir = opendir(g_dirname_buf)))
+	if (!(*dir = opendir(dir_name)))
 	{
 		if ((flags & GLOBUX_ERR))
 			return GLOBUX_ABORTED; //TODO: is it a "read" error?
@@ -49,7 +47,7 @@ int		glob_open_dir(DIR **dir, int flags)
 	return GLOBUX_SUCCESS;
 }
 
-int		glob_close_dir(DIR *dir, int flags)
+int			glob_close_dir(DIR *dir, int flags)
 {
 	if (closedir(dir))
 	{
@@ -67,36 +65,70 @@ int		glob_close_dir(DIR *dir, int flags)
 	return GLOBUX_SUCCESS;
 }
 
-int		glob_append_dir_name(char const *pattern)
+
+/*
+** Write into PATH_BUF buffer the PREVIOUS_DIR path followed by the NEW_DIR
+*/
+int			glob_append_dir_name(char *path_buf, char const *prev_dir, \
+							 char const *new_dir, size_t new_size)
 {
-	char		*buf;
-	char const	*dir_end;
-	int			depth;
+	size_t prev_size;
 
-	depth = 0;
-	buf = g_dirname_buf;
-	while (*buf)
-	{
-		if (*buf == '/')
-			depth++;
-		buf++;
-	}
-
-	while (depth && pattern++)
-		if (*pattern == '/')
-			depth--;
-
-	dir_end = pattern;
-	while (*dir_end && *dir_end != '/')
-		dir_end++;
-	//TODO: opti for trivial (no magic) case
-
-	if ((size_t)(buf - g_dirname_buf + dir_end - pattern) + 1 > DIRNAME_BUF_SIZE)
+	prev_size = ft_strlen(prev_dir);
+	if (prev_size + new_size + 2 > PATH_MAX)
 		return GLOBUX_NOSPACE;
 
-	ft_memcpy(buf, pattern, (size_t)(dir_end - pattern));
-	if (*dir_end)
-		*(buf + (size_t)(dir_end - pattern)) = '\0';
+	ft_memcpy(path_buf, prev_dir, prev_size);
+
+	if (*(path_buf + prev_size - 1) != '/')
+	{
+		*(path_buf + prev_size) = '/';
+		ft_memcpy(path_buf + prev_size + 1, new_dir, new_size + 1);
+	}
+	else
+		ft_memcpy(path_buf + prev_size, new_dir, new_size + 1);
 
 	return GLOBUX_SUCCESS;
+}
+
+
+
+/*
+** return the current sub-pattern that should be check at the given depth
+** eg: pattern='/?a/?b/?c/?d' depth=2 -> '?c'
+**
+** the sub-pattern is stored in some buffer, don't worry about it
+*/
+char const	*glob_get_sub_pattern(char const *pattern, int depth)
+{
+/* TODO:
+   maybe create this buffer before and send the address,
+   so it won't stay forever on the stack
+*/
+	static char	sub_pat_buf[FILE_MAX]; //we'll only need one buffer for all stacks
+	char const	*dir_end;
+	char const	*pat;
+	size_t		len;
+
+	pat = pattern;
+	while (*pat)
+		pat++;
+
+	while (depth && pat != pattern && pat--)
+		if (*pat == '/')
+			depth--;
+
+	dir_end = pat;
+	while (*dir_end && *dir_end != '/')
+		dir_end++;
+
+	len = (size_t)(dir_end - pat);
+	if (len + 1 > FILE_MAX)
+		return NULL; // this shouldn't happen. ever
+
+	ft_memcpy(sub_pat_buf, pat, len);
+	if (*dir_end)
+		*(sub_pat_buf + len) = '\0';
+
+	return sub_pat_buf;
 }

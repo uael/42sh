@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/15 13:36:27 by mc                #+#    #+#             */
-/*   Updated: 2018/02/15 14:05:59 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/16 13:00:03 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 */
 
 #include "libft/ft_glob.h"
-#include "glob_match.h"
+#include "glob_climb_tree.h"
 
 static t_bool		is_escaped(char const *pattern, char const *pat, int flags)
 {
@@ -43,14 +43,24 @@ static t_bool		is_there_a_closing_bracket(char const *pattern, int flags)
 
 static char const	*previous_dir(char const *pattern, char const *pat)
 {
+	static	char	magic_buf[FILE_MAX]; //TODO: berk
+	size_t			len;
+
 	while (pat != pattern)
 	{
 		if (*pat == '/')
-			return pat; //TODO: pat - 1?
+		{
+			len = (size_t)(pat - pattern);
+			if (len + 1 > FILE_MAX)
+				return NULL;
+			ft_memcpy(magic_buf, pattern, len);
+			*(magic_buf + len + 1) = '\0';
+			return magic_buf;
+		}
 		pat--;
 	}
 
-	return pat;
+	return NULL;
 }
 
 
