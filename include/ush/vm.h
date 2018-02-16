@@ -42,7 +42,7 @@ typedef struct	s_op
 
 typedef int		(t_opc)(t_op *op, t_vec *av, t_vec *env, char *ln);
 
-static t_op		g_ops[OP_MAX];
+static t_op		g_op[OP_MAX];
 
 int				vm_evalbin(t_op *op, t_vec *av, t_vec *env, char *ln);
 
@@ -69,12 +69,12 @@ static int		vm_evalbin(t_op *op, t_vec *av, t_vec *env, char *ln)
 	if (!ft_strcmp(*(char **)av->buf, "true"))
 	{
 		g_sh->status = 0;
-		return (vm_eval(g_ops + op->jump, av, env, ln));
+		return (vm_eval(g_op + op->jump, av, env, ln));
 	}
 	if (!ft_strcmp(*(char **)av->buf, "false"))
 	{
 		g_sh->status = 1;
-		return (vm_eval(g_ops + op->jump, av, env, ln));
+		return (vm_eval(g_op + op->jump, av, env, ln));
 	}
 	return (vm_eval(++op, av, env, ln));
 }

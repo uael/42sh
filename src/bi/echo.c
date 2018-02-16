@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ush/bi.h"
+#include <libft.h>
 
-inline int	sh_biecho(int ac, char **argv, char **env)
+int	sh_biecho(int ac, char **argv, char **env)
 {
 	int i;
 	int n_flag;

@@ -12,9 +12,7 @@
 
 #include <sys/stat.h>
 #include <limits.h>
-
-#include "ush/bi.h"
-#include "ush/env.h"
+#include <libft.h>
 
 #define CD "cd: "
 #define USAGE "cd: usage: cd [-L|-P] [dir]\n"
@@ -65,8 +63,9 @@ static int		cd_test(char *path)
 static int		cd_chdir(char *real, char **envv)
 {
 	int		st;
-	char	*pwd;
+	//char	*pwd;
 
+	(void)envv;
 	if (chdir(real))
 	{
 		st = ft_retf(NOP, CD"%s: %e\n", real, errno);
@@ -75,14 +74,14 @@ static int		cd_chdir(char *real, char **envv)
 	}
 	if (g_hyphen)
 		ft_putl(STDOUT_FILENO, real);
-	if ((pwd = ft_getenv(envv, "PWD")))
+	/*if ((pwd = ft_getenv(envv, "PWD")))
 		sh_setenv("OLDPWD", pwd);
-	sh_setenv("PWD", real);
+	sh_setenv("PWD", real);*/
 	free(real);
 	return (YEP);
 }
 
-inline int		sh_bicd(int ac, char **av, char **env)
+int		sh_bicd(int ac, char **av, char **env)
 {
 	char	buf[PATH_MAX + 1];
 	char	*path;

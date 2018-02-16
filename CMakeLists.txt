@@ -41,7 +41,7 @@ else ()
     PRIVATE -O$<$<CONFIG:Debug>:0 -g3>$<$<CONFIG:Release>:3>)
 endif ()
 
-add_executable(vm_test test/vm.c)
+add_executable(vm_test src/bi/cd.c src/bi/echo.c test/vm.c)
 target_link_libraries(vm_test debug ft)
 target_compile_definitions(vm_test
         PRIVATE $<$<CONFIG:Debug>:DEBUG>$<$<CONFIG:Release>:NDEBUG>)
