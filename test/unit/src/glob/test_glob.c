@@ -6,7 +6,7 @@
 /*   By: mcanal <zboub@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/11/29 15:38:59 by mcanal            #+#    #+#             */
-/*   Updated: 2018/02/15 12:43:38 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/16 13:09:43 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ static char *glob_ret_strings[] = {
 	"GLOB_ABORTED",
 	"GLOB_NOMATCH",
 	"GLOB_NOSYS",
+	"GLOBUX_BOOM_BABY",
 };
 
 static char *glob_flags_strings[] = {
@@ -48,9 +49,10 @@ static char *glob_flags_strings[] = {
 	"GLOB_TILDE",
 	"GLOB_ONLYDIR",
 	"GLOB_TILDE_CHECK",
+	"GLOB_CUSTOM",
 };
 
-#define BIG (1 << 16) //yolo
+#define BIG (1 << 20) //yolo
 #define SMALL (1 << 8) //yolo
 
 static char print_buffer[BIG] = {0};
@@ -255,13 +257,15 @@ static void get_debug_string(char const *pat, int flags, int ctrl, int test, \
 		glob_input->gl_offs,
 		flags_input_buffer,
 
-		glob_ret_strings[ctrl],
+		((size_t)ctrl + 1 > sizeof(glob_ret_strings) / sizeof(*glob_ret_strings)) ? \
+			"UNKOWN_RETURN_CODE" : glob_ret_strings[ctrl],
 		glob_ctrl->gl_pathc,
 		argv_ctrl_buffer,
 		glob_ctrl->gl_offs,
 		flags_ctrl_buffer,
 
-		glob_ret_strings[test],
+		((size_t)test + 1 > sizeof(glob_ret_strings) / sizeof(*glob_ret_strings)) ? \
+			"UNKOWN_RETURN_CODE" : glob_ret_strings[test],
 		glob_test->gl_pathc,
 		argv_test_buffer,
 		glob_test->gl_offs,
