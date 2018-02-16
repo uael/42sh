@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 20:57:25 by mc                #+#    #+#             */
-/*   Updated: 2018/02/15 00:11:50 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/16 12:42:49 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,18 @@
 #include <sys/types.h> /* for {open,read,close}dir */
 #include <dirent.h> /* for {open,read,close}dir */
 
-# define IS_DIR(dirent) ((dirent)->d_type == DT_DIR)
-# define DIRNAME_BUF_SIZE 255
-
 # include "libft/str.h" /* for ft_strchr */
 # include "libft/zob.h" /* for ft_shellsort */
+# include "libft/ft_glob.h" /* for t_glob and GLOBUX flags */
 # include "glob_match.h" /* for glob_match */
+
+# define IS_DIR(dirent) ((dirent)->d_type == DT_DIR)
+# define PATH_MAX 4096  //TODO: include?
+# define FILE_MAX 256  //TODO: pretty sure this exists already (cf man readdir -> d_name)
+
+# define GLOBUX_BOOM_BABY 5
+/* # define GLOBUX_INITIALIZED (1 << 15) */
+
 
 typedef unsigned char	t_byte;
 
@@ -39,26 +45,29 @@ struct					s_match
 **
 ** @pat: Shell-style pattern to match, e.g. "*.[ch]".
 */
-int		glob_climb_tree(char const *pattern, int flags, t_match **match_list);
+int			glob_climb_tree(char const *pattern, t_glob *pglob, t_match **match_list);
 
-int		glob_read_dir(char const *pattern, int flags, t_match **match_list, int depth);
+int			glob_read_dir(char const *pattern, int flags, \
+						  t_match **match_list, int depth, char const *previous_dir);
 
 
 /*
 ** in glob_list.c:
 */
-t_match	*matchctor(char const *path, size_t len);
-void	matchdtor(t_match *match);
-void	add_match_to_list(t_match *match, t_match **match_list);
-size_t	list_len(t_match *match_list);
+t_match		*matchctor(char const *path, size_t len);
+void		matchdtor(t_match *match);
+void		add_match_to_list(t_match *match, t_match **match_list);
+size_t		list_len(t_match *match_list);
 
 
 /*
 ** in glob_dir.c:
 */
-int		glob_count_depth(char const *pattern);
-int		glob_open_dir(DIR **dir, int flags);
-int		glob_close_dir(DIR *dir, int flags);
-int		glob_append_dir_name(char const *pattern);
+int			glob_count_depth(char const *pattern);
+int			glob_open_dir(DIR **dir, char const *dir_name, int flags);
+int			glob_close_dir(DIR *dir, int flags);
+char const	*glob_get_sub_pattern(char const *pattern, int depth);
+int			glob_append_dir_name(char *path_buf, char const *prev_dir, \
+							 char const *new_dir, size_t new_size);
 
 #endif /* GLOB_CLIMB_TREE_H */

@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/08 23:54:42 by mc                #+#    #+#             */
-/*   Updated: 2018/02/15 00:54:46 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/15 15:28:48 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ int		globctor(const char *pattern, int flags, t_glob *pglob)
 {
 	t_match *match_list;
 	int		ret;
+	//TODO: set GLOB_NOCHECK | GLOB_ONLYDIR in pglob when ???
 
 	if (!*pattern)
 		return GLOBUX_NOMATCH;
@@ -77,11 +78,9 @@ int		globctor(const char *pattern, int flags, t_glob *pglob)
 	//TODO: handle weird pglob?
 
 	pglob->gl_flags = flags;
-	pglob->gl_pathv = NULL;
-	pglob->gl_pathc = 0;
 
 	match_list = NULL;
-	ret = glob_climb_tree(pattern, flags, &match_list);
+	ret = glob_climb_tree(pattern, pglob, &match_list);
 	if (ret != GLOBUX_SUCCESS)
 	{
 		matchdtor(match_list);
@@ -89,7 +88,16 @@ int		globctor(const char *pattern, int flags, t_glob *pglob)
 	}
 
 	if (!match_list)
-		return GLOBUX_NOMATCH;
+	{
+		if (!(flags & GLOBUX_NOCHECK))
+		{
+			pglob->gl_flags = (pglob->gl_flags & ~GLOBUX_MAGCHAR);
+			return GLOBUX_NOMATCH;
+		}
+		if (!(match_list = matchctor(pattern, ft_strlen(pattern))))
+			return GLOBUX_NOSPACE;
+		return GLOBUX_SUCCESS;
+	}
 
 	if (!copy_match_to_glob_struct(match_list, pglob))
 	{

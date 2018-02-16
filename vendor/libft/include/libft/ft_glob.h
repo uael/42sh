@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/08 23:55:49 by mc                #+#    #+#             */
-/*   Updated: 2018/02/14 15:21:59 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/16 11:16:18 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,9 @@
 #  define CLR_WHITE "\033[37;01m"
 #  define CLR_RESET "\033[0m"
 #  define DEBUG_HEADER CLR_MAGENTA "[DEBUG] " CLR_RESET
-#  define _DEBUG(str, ...) fprintf(stderr, DEBUG_HEADER str CLR_RESET "\n", ##__VA_ARGS__)
+#  define DEBUGF(str, ...) fprintf(stderr, DEBUG_HEADER str CLR_RESET "\n", ##__VA_ARGS__)
 # else
-#  define _DEBUG(str, ...) do {} while (0)
+#  define DEBUGF(str, ...) do {} while (0)
 # endif
 
 /* Bits set in the FLAGS argument to `globctor'.  */
@@ -63,9 +63,9 @@
 										if the user name is not available.  */
 
 # define __GLOBUX_FLAGS	(GLOBUX_ERR | /* GLOBUX_MARK | */ GLOBUX_NOSORT |  GLOBUX_DOOFFS |  \
-						 GLOBUX_NOESCAPE /* | GLOBUX_NOCHECK | GLOBUX_APPEND | */	\
+						 GLOBUX_NOESCAPE | GLOBUX_NOCHECK | /* GLOBUX_APPEND | */	\
 						 /* GLOBUX_PERIOD | GLOBUX_ALTDIRFUNC | GLOBUX_BRACE | */	\
-						 /* GLOBUX_NOMAGIC | GLOBUX_TILDE | GLOBUX_ONLYDIR | GLOBUX_TILDE_CHECK */)
+						 GLOBUX_NOMAGIC /* | GLOBUX_TILDE */ | GLOBUX_ONLYDIR /* | GLOBUX_TILDE_CHECK */)
 
 
 /* Error returns from `globctor'.  */
