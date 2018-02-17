@@ -120,9 +120,7 @@ inline size_t			sh_wordresolve(t_sds *d, char const *s, size_t n,
 		}
 		else
 		{
-			if (!quote && '\\' ==  *s)
-				*ft_sdspush(d) = '\\';
-			else if (quote && ft_strchr(MAGIC, *s))
+			if (quote && ft_strchr(MAGIC, *s))
 				*ft_sdspush(d) = '\\';
 			*ft_sdspush(d) = *s++;
 			--n;
