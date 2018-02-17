@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 20:57:25 by mc                #+#    #+#             */
-/*   Updated: 2018/02/16 12:42:49 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/17 13:52:30 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 # define FILE_MAX 256  //TODO: pretty sure this exists already (cf man readdir -> d_name)
 
 # define GLOBUX_BOOM_BABY 5
+# define GLOBUX_NOBODY_GIVES_A_DAMN 6
 /* # define GLOBUX_INITIALIZED (1 << 15) */
 
 
@@ -67,7 +68,9 @@ int			glob_count_depth(char const *pattern);
 int			glob_open_dir(DIR **dir, char const *dir_name, int flags);
 int			glob_close_dir(DIR *dir, int flags);
 char const	*glob_get_sub_pattern(char const *pattern, int depth);
-int			glob_append_dir_name(char *path_buf, char const *prev_dir, \
-							 char const *new_dir, size_t new_size);
+char const *glob_get_folder_name(char const *path);
+int			glob_append_file_name(char *path_buf, char const *new_file);
+int			glob_store_dir_name(char *path_buf, char const *prev_dir, \
+								char const *new_dir);
 
 #endif /* GLOB_CLIMB_TREE_H */

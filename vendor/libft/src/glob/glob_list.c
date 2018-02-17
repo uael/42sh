@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/13 09:57:56 by mc                #+#    #+#             */
-/*   Updated: 2018/02/14 15:21:59 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/17 13:00:40 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ t_match	*matchctor(char const *path, size_t len)
 	if (!(new = malloc(sizeof(t_match) + len)))
 		return (NULL);
 
-	ft_bzero(new, sizeof(t_match));
+	ft_bzero(new, sizeof(t_match) + len);
 	ft_memcpy(new->buf, path, len);
 
 	return (new);

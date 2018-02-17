@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/15 13:36:27 by mc                #+#    #+#             */
-/*   Updated: 2018/02/16 13:00:03 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/16 14:39:17 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,9 @@
 
 static t_bool		is_escaped(char const *pattern, char const *pat, int flags)
 {
-	return !(flags & GLOBUX_NOESCAPE) && pat != pattern && *(pat - 1) == '\\';
+	if ((flags & GLOBUX_NOESCAPE))
+		return FALSE;
+	return pat != pattern && *(pat - 1) == '\\';
 }
 
 static t_bool		is_there_a_closing_bracket(char const *pattern, int flags)
@@ -64,7 +66,7 @@ static char const	*previous_dir(char const *pattern, char const *pat)
 }
 
 
-char const			*is_magic(char const *pattern, int flags)
+char const			*is_magic(char const *pattern, int *flags)
 {
 	char const *pat;
 
@@ -73,14 +75,20 @@ char const			*is_magic(char const *pattern, int flags)
 	{
 		if (*pat == '*' || *pat == '?')
 		{
-			if (!is_escaped(pattern, pat, flags))
+			if (!is_escaped(pattern, pat, *flags))
+			{
+				*flags |= GLOBUX_MAGCHAR;
 				return previous_dir(pattern, pat);
+			}
 		}
 		else if (*pat == '[')
 		{
-			if (!is_escaped(pattern, pat, flags) \
-					&& is_there_a_closing_bracket(pat, flags))
+			if (!is_escaped(pattern, pat, *flags) \
+					&& is_there_a_closing_bracket(pat, *flags))
+			{
+				*flags |= GLOBUX_MAGCHAR;
 				return previous_dir(pattern, pat);
+			}
 		}
 
 		pat++;

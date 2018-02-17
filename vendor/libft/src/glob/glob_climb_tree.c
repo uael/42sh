@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 22:23:43 by mc                #+#    #+#             */
-/*   Updated: 2018/02/16 13:10:28 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/17 13:52:37 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,32 +26,38 @@ static char **handle_brace_expansion(char const *pattern)
 }
 */
 
+static t_bool show_hidden_files(int flags, char pat_start)
+{
+	return !(flags & GLOBUX_MAGCHAR) || (flags & GLOBUX_PERIOD) || pat_start == '.';
+}
 
-static int	glob_check_file(struct dirent *dirent, char const *pattern, \
-							 int flags, t_match **match_list, int depth) //TODO: ooops
+static int	glob_check_file(struct dirent *dirent, char const *sub_pat, \
+							int flags, t_match **match_list, int depth, char *path_buf) //TODO: ooops
 {
 	t_match		*match;
-	char const	*sub_pat;
 
 	if ((flags & GLOBUX_ONLYDIR) && !IS_DIR(dirent))
 		return GLOBUX_SUCCESS;
 
-	if (!(sub_pat = glob_get_sub_pattern(pattern, depth)))
-		return GLOBUX_NOSPACE;
 	if (!glob_match(sub_pat, dirent->d_name, flags))
 		return GLOBUX_SUCCESS;
 
-	if ((flags & GLOBUX_PERIOD) && !(flags & GLOBUX_MAGCHAR) \
-			&& *(dirent->d_name) == '.')
+	if (*(dirent->d_name) == '.' && !show_hidden_files(flags, *sub_pat))
 		return GLOBUX_SUCCESS;
 
-	if (!(match = matchctor(dirent->d_name, dirent->d_reclen)))
-		return GLOBUX_NOSPACE;
-	add_match_to_list(match, match_list);
-
-	if (IS_DIR(dirent) \
+	if (depth == 1)
+	{
+		//TODO: if (!ft_memcmp(dirname, $PWD + "/", ft_strlen($PWD))) s|^$PWD/||
+		//TODO: if (!ft_memcmp(dirname, "./", 2) && ft_memcmp(pattern, "./", 2)) s|^./||
+		if (glob_append_file_name(path_buf, dirent->d_name) != GLOBUX_SUCCESS)
+			return GLOBUX_NOSPACE;
+		if (!(match = matchctor(path_buf, ft_strlen(path_buf))))
+			return GLOBUX_NOSPACE;
+		add_match_to_list(match, match_list);
+	}
+	else if (IS_DIR(dirent)								\
 		&& ft_strcmp(dirent->d_name, ".") && ft_strcmp(dirent->d_name, ".."))
-		return GLOBUX_BOOM_BABY;
+		return GLOBUX_BOOM_BABY; //TODO: handle links
 
 	return GLOBUX_SUCCESS;
 }
@@ -63,40 +69,49 @@ int			glob_read_dir(char const *pattern, int flags, \
 	struct dirent	*dirent;
 	int				ret;
 	char			path_buf[PATH_MAX]; //we'll need a fresh buffer for each call
+	char const		*sub_pat;
 
 	if (!depth)
 		return GLOBUX_SUCCESS;
-	ft_bzero(&path_buf, PATH_MAX);
+
 
 	if (!dir_name)
 	{
-		*path_buf = *pattern == '/' ? '/' : '.';
+		ft_memcpy(path_buf, *pattern == '/' ? "/" : ".", 2);
 		dir_name = path_buf;
 	}
+	else
+		ft_strcpy(path_buf, dir_name);
 
-	ret = glob_open_dir(&dir, dir_name, flags);
-	if (ret != GLOBUX_SUCCESS)
-		return ret;
+	if (glob_open_dir(&dir, glob_get_folder_name(dir_name), flags) == GLOBUX_ABORTED)
+		return GLOBUX_ABORTED;
+	if (!dir)
+		return GLOBUX_SUCCESS;
+
+	if (!(sub_pat = glob_get_sub_pattern(pattern, depth)))
+		return GLOBUX_NOSPACE;
 
 	while ((dirent = readdir(dir)))
 	{
-		ret = glob_check_file(dirent, pattern, flags, match_list, depth);
-		if (ret != GLOBUX_SUCCESS)
-		{
-			glob_close_dir(dir, flags);
-			return ret;
-		}
+		ret = glob_check_file(dirent, sub_pat, flags, match_list, depth, path_buf);
 		if (ret == GLOBUX_BOOM_BABY)
 		{
-			if (glob_append_dir_name(path_buf, dir_name, \
-					 dirent->d_name, dirent->d_reclen) != GLOBUX_SUCCESS)
+			if (glob_store_dir_name(path_buf, dir_name, dirent->d_name) != GLOBUX_SUCCESS)
 				return GLOBUX_NOSPACE;
+
 			ret = glob_read_dir(pattern, flags, match_list, depth - 1, path_buf);
 			if (ret != GLOBUX_SUCCESS)
 			{
 				glob_close_dir(dir, flags);
 				return ret;
 			}
+			if (!(sub_pat = glob_get_sub_pattern(pattern, depth)))
+				return GLOBUX_NOSPACE;
+		}
+		if (ret != GLOBUX_SUCCESS)
+		{
+			glob_close_dir(dir, flags);
+			return ret;
 		}
 	}
 /*
@@ -105,7 +120,10 @@ int			glob_read_dir(char const *pattern, int flags, \
 		return GLOBUX_ABORTED;
 */
 
-	return glob_close_dir(dir, flags);
+
+	if (glob_close_dir(dir, flags) == GLOBUX_ABORTED)
+		return GLOBUX_ABORTED;
+	return GLOBUX_SUCCESS;
 }
 
 int			glob_climb_tree(char const *pattern, t_glob *pglob, t_match **match_list)
@@ -127,12 +145,9 @@ int			glob_climb_tree(char const *pattern, t_glob *pglob, t_match **match_list)
 	if (depth > MAX_DEPTH)
 		return GLOBUX_NOSPACE;
 
-	if ((magic = is_magic(pattern, pglob->gl_flags)))
-	{
-		pglob->gl_flags |= GLOBUX_MAGCHAR;
+	if ((magic = is_magic(pattern, &(pglob->gl_flags))))
 		return glob_read_dir(pattern, pglob->gl_flags, match_list, depth, \
 							 magic == pattern ? NULL : magic);
-	}
 
 	if ((pglob->gl_flags & GLOBUX_NOMAGIC))
 	{
