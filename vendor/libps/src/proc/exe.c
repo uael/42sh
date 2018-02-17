@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include <sys/stat.h>
+#include <glob.h>
 
 #include "../ps.h"
 
@@ -105,17 +106,17 @@ inline int		ps_procexelaunch(struct s_proc *prc)
 	int		st;
 	char	buf[PATH_MAX + 1];
 
-	if ((st = exelookup(prc->envv, prc->argv[0], prc->u.exe.pvar, buf)))
+	if ((st = exelookup(prc->envv, prc->argv.gl_pathv[0], prc->u.exe.pvar, buf)))
 	{
 		if (st == PROC_ISDIR)
-			g_errcb("%s: Is a directory\n", prc->argv[0]);
+			g_errcb("%s: Is a directory\n", prc->argv.gl_pathv[0]);
 		else
-			g_errcb(st == PROC_NOTFOUND && !ft_strchr(prc->argv[0], '/') ?
-			"%s: Command not found\n" : "%s: %e\n", prc->argv[0], errno);
+			g_errcb(st == PROC_NOTFOUND && !ft_strchr(prc->argv.gl_pathv[0], '/') ?
+			"%s: Command not found\n" : "%s: %e\n", prc->argv.gl_pathv[0], errno);
 		g_fatalcb(st, NULL);
 	}
-	execve(buf, prc->argv, prc->envv);
-	g_errcb("%s: %e\n", prc->argv[0], errno);
+	execve(buf, prc->argv.gl_pathv, prc->envv);
+	g_errcb("%s: %e\n", prc->argv.gl_pathv[0], errno);
 	ps_procdtor(prc);
 	return (g_fatalcb(EXIT_FAILURE, NULL));
 }

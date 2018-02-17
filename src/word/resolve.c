@@ -15,8 +15,8 @@
 #include "ush/shell.h"
 #include "ush/eval.h"
 
-#define DQUOT(IT) ft_strchr("\\\n\"$", *(IT))
 #define QUOTE(IT) (*(IT) == '\'' && (*((IT) + 1) == '\''))
+#define MAGIC "?{[]}*!^"
 
 static uint8_t			g_flags;
 
@@ -40,7 +40,10 @@ static inline int		subshell(char *ln)
 static inline void		onbslash(t_sds *d, char quote, char const **s,
 	size_t *n)
 {
-	if ((quote == '"' && !DQUOT(*s)) || (quote == '\'' && !QUOTE(*s)))
+	if ((quote == '"' && !ft_strchr("\\\n\"$", **s)) ||
+		(quote == '\'' && !QUOTE(*s)))
+		*ft_sdspush(d) = (char)'\\';
+	else if (quote != '\'' && ft_strchr("\\"MAGIC, **s))
 		*ft_sdspush(d) = (char)'\\';
 	else
 	{
@@ -95,28 +98,35 @@ inline size_t			sh_wordresolve(t_sds *d, char const *s, size_t n,
 	uint8_t *flags)
 {
 	t_bool	bs;
-	char	q;
+	char	quote;
 	size_t	len;
 
 	bs = 0;
 	g_flags = WORD_EXPLODE;
-	ft_memset(d, q = 0, sizeof(t_sds));
+	ft_memset(d, quote = 0, sizeof(t_sds));
 	while (n && *s)
 		if (!(bs ^= 1))
-			onbslash(d, q, &s, &n);
+			onbslash(d, quote, &s, &n);
 		else if ((bs = (t_bool)(*s == '\\')))
 			(void)(++s && --n);
 		else if (*s == '\'' || *s == '"')
-			onquote(d, &q, &s, &n);
-		else if (*s == '`' && n && *(s + 1) && (!q || q == '"'))
+			onquote(d, &quote, &s, &n);
+		else if (*s == '`' && n && *(s + 1) && (!quote || quote == '"'))
 			onbquote(d, &s, &n);
-		else if (*s == '$' && n && *(s + 1) && (!q || q == '"'))
+		else if (*s == '$' && n && *(s + 1) && (!quote || quote == '"'))
 		{
 			s += (len = sh_varexpand(d, s + 1) + 1);
 			len > n ? (n = 0) : (n -= len);
 		}
-		else if ((*ft_sdspush(d) = *s++))
+		else
+		{
+			if (!quote && '\\' ==  *s)
+				*ft_sdspush(d) = '\\';
+			else if (quote && ft_strchr(MAGIC, *s))
+				*ft_sdspush(d) = '\\';
+			*ft_sdspush(d) = *s++;
 			--n;
+		}
 	flags ? (*flags = g_flags) : 0;
 	return (d->len);
 }

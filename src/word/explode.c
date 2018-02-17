@@ -10,9 +10,13 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <glob.h>
+
 #include "ush/word.h"
 
-inline void	sh_wordexplode(t_vec *av, char const *src, size_t n)
+#define _G_FLAGS (GLOB_BRACE | GLOB_TILDE | GLOB_APPEND | GLOB_NOCHECK)
+
+inline void	sh_wordexplode(glob_t *av, char const *src, size_t n)
 {
 	uint8_t	e;
 	t_sds	word;
@@ -31,12 +35,12 @@ inline void	sh_wordexplode(t_vec *av, char const *src, size_t n)
 		while ((eol = ft_strmchr(beg, sep)))
 		{
 			*eol = '\0';
-			*(char **)ft_vecpush(av) = beg == word.buf ? beg :
-				ft_strndup(beg, eol - beg);
+			glob(beg, _G_FLAGS, NULL, av) ? THROW(WUT) : 0;
 			while (*++eol && ft_strchr(sep, *eol))
 				;
 			beg = eol;
 		}
 	}
-	*(char **)ft_vecpush(av) = beg == word.buf ? beg : ft_strdup(beg);
+	glob(beg, _G_FLAGS, NULL, av) ? THROW(WUT) : 0;
+	free(word.buf);
 }

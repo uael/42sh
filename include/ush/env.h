@@ -15,7 +15,7 @@
 
 # include <libft.h>
 
-extern char		**g_env;
+extern char		**environ;
 
 extern void		sh_envdtor(void);
 extern void		sh_envinit(char **envv);

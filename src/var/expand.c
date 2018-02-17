@@ -47,7 +47,7 @@ inline size_t			sh_varexpand(t_sds *dst, char const *src)
 	int		n;
 
 	len = getvar(src, var);
-	if ((val = sh_varget(var, g_env)))
+	if ((val = sh_varget(var, environ)))
 		ft_sdsapd(dst, val);
 	else if (ft_isdigit(*var) && (n = (int)ft_atoi(var)) < g_sh->ac && n >= 0)
 		ft_sdsapd(dst, g_sh->av[n]);
