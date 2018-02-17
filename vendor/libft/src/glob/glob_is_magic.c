@@ -20,8 +20,8 @@
 static t_bool		is_escaped(char const *pattern, char const *pat, int flags)
 {
 	if ((flags & GLOBUX_NOESCAPE))
-		return FALSE;
-	return pat != pattern && *(pat - 1) == '\\';
+		return (FALSE);
+	return (pat != pattern && *(pat - 1) == '\\');
 }
 
 static t_bool		is_there_a_closing_bracket(char const *pattern, int flags)
@@ -34,18 +34,18 @@ static t_bool		is_there_a_closing_bracket(char const *pattern, int flags)
 		if (*pat == ']' && pat != pattern + 1)
 		{
 			if (!is_escaped(pattern, pat, flags))
-				return TRUE;
+				return (TRUE);
 		}
 
 		pat++;
 	}
 
-	return FALSE;
+	return (FALSE);
 }
 
 static char const	*previous_dir(char const *pattern, char const *pat)
 {
-	static	char	magic_buf[FILE_MAX]; //TODO: berk
+	static	char	magic_buf[NAME_MAX]; //TODO: berk
 	size_t			len;
 
 	while (pat != pattern)
@@ -53,16 +53,16 @@ static char const	*previous_dir(char const *pattern, char const *pat)
 		if (*pat == '/')
 		{
 			len = (size_t)(pat - pattern);
-			if (len + 1 > FILE_MAX)
-				return NULL;
+			if (len + 1 > NAME_MAX)
+				return (NULL);
 			ft_memcpy(magic_buf, pattern, len);
 			*(magic_buf + len + 1) = '\0';
-			return magic_buf;
+			return (magic_buf);
 		}
 		pat--;
 	}
 
-	return NULL;
+	return (NULL);
 }
 
 
@@ -78,7 +78,7 @@ char const			*is_magic(char const *pattern, int *flags)
 			if (!is_escaped(pattern, pat, *flags))
 			{
 				*flags |= GLOBUX_MAGCHAR;
-				return previous_dir(pattern, pat);
+				return (previous_dir(pattern, pat));
 			}
 		}
 		else if (*pat == '[')
@@ -87,12 +87,12 @@ char const			*is_magic(char const *pattern, int *flags)
 					&& is_there_a_closing_bracket(pat, *flags))
 			{
 				*flags |= GLOBUX_MAGCHAR;
-				return previous_dir(pattern, pat);
+				return (previous_dir(pattern, pat));
 			}
 		}
 
 		pat++;
 	}
 
-	return NULL;
+	return (NULL);
 }

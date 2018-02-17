@@ -26,7 +26,7 @@ int			glob_count_depth(char const *pattern)
 		slash++;
 	}
 
-	return depth;
+	return (depth);
 }
 
 int			glob_open_dir(DIR **dir, char const *dir_name, int flags)
@@ -35,17 +35,17 @@ int			glob_open_dir(DIR **dir, char const *dir_name, int flags)
 	if (!*dir)
 	{
 		if ((flags & GLOBUX_ERR))
-			return GLOBUX_ABORTED; //TODO: is it a "read" error?
+			return (GLOBUX_ABORTED); //TODO: is it a "read" error?
 
 		/*
 		  TODO: not sure what to do here:
 				open failed, but we shouldn't stop
 				maybe print an error message?
 		*/
-		return GLOBUX_NOBODY_GIVES_A_DAMN;
+		return (GLOBUX_NOBODY_GIVES_A_DAMN);
 	}
 
-	return GLOBUX_SUCCESS;
+	return (GLOBUX_SUCCESS);
 }
 
 int			glob_close_dir(DIR *dir, int flags)
@@ -53,17 +53,17 @@ int			glob_close_dir(DIR *dir, int flags)
 	if (closedir(dir))
 	{
 		if ((flags & GLOBUX_ERR))
-			return GLOBUX_ABORTED; //TODO: is it a "read" error?
+			return (GLOBUX_ABORTED); //TODO: is it a "read" error?
 
 		/*
 		  TODO: not sure what to do here:
 				close failed, but we shouldn't stop
 				maybe print an error message?
 		*/
-		return GLOBUX_NOBODY_GIVES_A_DAMN;
+		return (GLOBUX_NOBODY_GIVES_A_DAMN);
 	}
 
-	return GLOBUX_SUCCESS;
+	return (GLOBUX_SUCCESS);
 }
 
 
@@ -81,11 +81,11 @@ int			glob_append_file_name(char *path_buf, char const *new_file)
 	new_size = ft_strlen(new_file);
 	path = ft_strrchr(path_buf, '/') + 1;
 	if ((size_t)(path - path_buf) + new_size + 1 > PATH_MAX)
-		return GLOBUX_NOSPACE;
+		return (GLOBUX_NOSPACE);
 
 	ft_memcpy(path, new_file, new_size + 1);
 
-	return GLOBUX_SUCCESS;
+	return (GLOBUX_SUCCESS);
 }
 
 /*
@@ -103,7 +103,7 @@ int			glob_store_dir_name(char *path_buf, char const *prev_dir, \
 	prev_size = ft_strlen(prev_dir);
 	new_size = ft_strlen(new_dir);
 	if (prev_size + new_size + 3 > PATH_MAX)
-		return GLOBUX_NOSPACE;
+		return (GLOBUX_NOSPACE);
 
 	ft_memcpy(path_buf, prev_dir, prev_size);
 
@@ -122,7 +122,7 @@ int			glob_store_dir_name(char *path_buf, char const *prev_dir, \
 
 	//TODO: realpath
 
-	return GLOBUX_SUCCESS;
+	return (GLOBUX_SUCCESS);
 }
 
 
@@ -138,16 +138,16 @@ char const *glob_get_folder_name(char const *path)
 
 	len = ft_strlen(path);
 	if (len < 3)
-		return path;
+		return (path);
 
 	pathux = path + len - 2;
 	while (pathux != path && *pathux != '/')
 		pathux--;
 
 	if (pathux != path)
-		return pathux + 1;
+		return (pathux + 1);
 
-	return path;
+	return (path);
 }
 
 /*
@@ -162,7 +162,7 @@ char const	*glob_get_sub_pattern(char const *pattern, int depth)
    maybe create this buffer before and send the address,
    so it won't stay forever on the stack
 */
-	static char	sub_pat_buf[FILE_MAX]; //we'll only need one buffer for all stacks
+	static char	sub_pat_buf[NAME_MAX]; //we'll only need one buffer for all stacks
 	char const	*dir_end;
 	char const	*pat;
 	size_t		len;
@@ -181,13 +181,13 @@ char const	*glob_get_sub_pattern(char const *pattern, int depth)
 		dir_end++;
 
 	len = (size_t)(dir_end - pat);
-	if (len + 1 > FILE_MAX)
-		return NULL; // this shouldn't happen. ever
+	if (len + 1 > NAME_MAX)
+		return (NULL); // this shouldn't happen. ever
 
-	ft_bzero(sub_pat_buf, FILE_MAX);
+	ft_bzero(sub_pat_buf, NAME_MAX);
 	ft_memcpy(sub_pat_buf, pat, len);
 	if (*dir_end)
 		*(sub_pat_buf + len) = '\0';
 
-	return sub_pat_buf;
+	return (sub_pat_buf);
 }

@@ -22,12 +22,12 @@ t_match	*matchctor(char const *path, size_t len)
 */
 
 	if (!(new = malloc(sizeof(t_match) + len)))
-		return (NULL);
+		return ((NULL));
 
 	ft_bzero(new, sizeof(t_match) + len);
 	ft_memcpy(new->buf, path, len);
 
-	return (new);
+	return ((new));
 }
 
 void	matchdtor(t_match *match)
@@ -64,5 +64,5 @@ size_t	list_len(t_match *match_list)
 		match_list = match_list->next;
 	}
 
-	return ret;
+	return (ret);
 }

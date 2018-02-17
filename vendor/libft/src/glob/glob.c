@@ -21,7 +21,7 @@
 static int super_cmp(const void *a, const void *b, size_t n)
 {
 	(void)n; //this is the size of one element eheh
-	return ft_strcmp(*(char **)a, *(char **)b);
+	return (ft_strcmp(*(char **)a, *(char **)b));
 }
 
 static t_bool copy_match_to_glob_struct(t_match *match_list, t_glob *pglob)
@@ -38,13 +38,13 @@ static t_bool copy_match_to_glob_struct(t_match *match_list, t_glob *pglob)
 	{
 		if (!(pglob->gl_pathv = malloc(sizeof(char *) *
 								   (pglob->gl_pathc + pglob->gl_offs + 1))))
-			return FALSE;
+			return (FALSE);
 		av = pglob->gl_pathv + pglob->gl_offs;
 	}
 	else
 	{
 		if (!(pglob->gl_pathv = malloc(sizeof(char *) * (pglob->gl_pathc + 1))))
-			return FALSE;
+			return (FALSE);
 		av = pglob->gl_pathv;
 	}
 
@@ -55,13 +55,13 @@ static t_bool copy_match_to_glob_struct(t_match *match_list, t_glob *pglob)
 		match_list = match_list->next;
 	}
 	*av = NULL;
-
+/*
 	if (!(pglob->gl_flags & GLOBUX_NOSORT))
 		ft_shellsort((pglob->gl_flags & GLOBUX_DOOFFS) ? \
 						pglob->gl_pathv : pglob->gl_pathv + pglob->gl_offs, \
 					 pglob->gl_pathc, sizeof(char *), super_cmp);
-
-	return TRUE;
+*/
+	return (TRUE);
 }
 
 //TODO: handle errors libft tools?
@@ -72,9 +72,9 @@ int		globctor(const char *pattern, int flags, t_glob *pglob)
 	//TODO: set GLOB_NOCHECK | GLOB_ONLYDIR in pglob when ???
 
 	if (!*pattern)
-		return GLOBUX_NOMATCH;
+		return (GLOBUX_NOMATCH);
 	if ((flags & ~__GLOBUX_FLAGS))
-		return GLOBUX_NOSYS;
+		return (GLOBUX_NOSYS);
 	//TODO: handle weird pglob?
 
 	pglob->gl_flags = flags;
@@ -84,7 +84,7 @@ int		globctor(const char *pattern, int flags, t_glob *pglob)
 	if (ret != GLOBUX_SUCCESS)
 	{
 		matchdtor(match_list);
-		return ret;
+		return (ret);
 	}
 
 	if (!match_list)
@@ -92,20 +92,20 @@ int		globctor(const char *pattern, int flags, t_glob *pglob)
 		if (!(flags & GLOBUX_NOCHECK))
 		{
 			pglob->gl_flags = (pglob->gl_flags & ~GLOBUX_MAGCHAR);
-			return GLOBUX_NOMATCH;
+			return (GLOBUX_NOMATCH);
 		}
 		if (!(match_list = matchctor(pattern, ft_strlen(pattern))))
-			return GLOBUX_NOSPACE;
-		return GLOBUX_SUCCESS;
+			return (GLOBUX_NOSPACE);
+		return (GLOBUX_SUCCESS);
 	}
 
 	if (!copy_match_to_glob_struct(match_list, pglob))
 	{
 		matchdtor(match_list);
-		return GLOBUX_NOSPACE;
+		return (GLOBUX_NOSPACE);
 	}
 
-	return GLOBUX_SUCCESS;
+	return (GLOBUX_SUCCESS);
 }
 
 void	globdtor(t_glob *pglob)

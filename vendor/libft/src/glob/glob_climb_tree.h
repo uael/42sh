@@ -14,16 +14,15 @@
 # define GLOB_CLIMB_TREE_H
 
 #include <sys/types.h> /* for {open,read,close}dir */
+#include <sys/syslimits.h> /* for PATH_MAX */
 #include <dirent.h> /* for {open,read,close}dir */
 
 # include "libft/str.h" /* for ft_strchr */
-# include "libft/zob.h" /* for ft_shellsort */
+# include "libft/sort.h" /* for ft_shellsort */
 # include "libft/ft_glob.h" /* for t_glob and GLOBUX flags */
 # include "glob_match.h" /* for glob_match */
 
 # define IS_DIR(dirent) ((dirent)->d_type == DT_DIR)
-# define PATH_MAX 4096  //TODO: include?
-# define FILE_MAX 256  //TODO: pretty sure this exists already (cf man readdir -> d_name)
 
 # define GLOBUX_BOOM_BABY 5
 # define GLOBUX_NOBODY_GIVES_A_DAMN 6

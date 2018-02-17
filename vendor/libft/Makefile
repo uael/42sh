@@ -57,7 +57,7 @@ SRC_NAME = \
 	str/mem.c str/mem_2.c str/str.c str/str_2.c str/str_3.c str/str_4.c \
 	str/str_5.c \
 	getopt.c \
-	zob/ft_shellsort.c
+	sort/ft_shellsort.c
 
 3TH = $(addprefix $(3TH_PATH)/, $(3TH_NAME))
 OBJ = $(addprefix $(OBJ_PATH)/, $(SRC_NAME:.c=.o))
