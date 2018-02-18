@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 22:23:43 by mc                #+#    #+#             */
-/*   Updated: 2018/02/18 14:42:51 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/18 15:07:07 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,9 +154,11 @@ int			glob_climb_tree(char const *pattern, t_glob *pglob, t_match **match_list)
 	//TODO: I guess a trailing slashes in pattern fuck everything up
 
 
+	depth = glob_count_depth(pattern);
 	if ((magic = is_magic(pattern, &(pglob->gl_flags))))
 	{
-		depth = 1 + glob_count_depth(pattern) - glob_count_depth(magic); //maths!
+		if (magic != pattern)
+			depth = 1 + glob_count_depth(pattern) - glob_count_depth(magic); //maths!
 		if (depth > MAX_DEPTH || depth < 1)
 			return (GLOBUX_NOSPACE);
 		return glob_read_dir(pattern, pglob->gl_flags, match_list, depth, \
@@ -170,7 +172,6 @@ int			glob_climb_tree(char const *pattern, t_glob *pglob, t_match **match_list)
 		return (GLOBUX_SUCCESS);
 	}
 
-	depth = glob_count_depth(pattern);
 	if (depth > MAX_DEPTH)
 		return (GLOBUX_NOSPACE);
 	return (glob_read_dir(pattern, pglob->gl_flags, match_list, depth, NULL));
