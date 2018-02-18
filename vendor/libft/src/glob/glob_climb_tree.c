@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 22:23:43 by mc                #+#    #+#             */
-/*   Updated: 2018/02/18 14:18:44 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/18 14:42:51 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ int			glob_read_dir(char const *pattern, int flags, \
 		ret = glob_check_file(dirent, sub_pat, flags, match_list, depth, path_buf, pattern);
 		if (ret == GLOBUX_BOOM_BABY)
 		{
-			if (glob_store_dir_name(path_buf, dir_name, dirent->d_name, depth) != GLOBUX_SUCCESS)
+			if (glob_store_dir_name(path_buf, dir_name, dirent->d_name) != GLOBUX_SUCCESS)
 				return (GLOBUX_NOSPACE);
 
 			ret = glob_read_dir(pattern, flags, match_list, depth - 1, path_buf);
