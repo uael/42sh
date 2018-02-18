@@ -6,7 +6,7 @@
 /*   By: mcanal <zboub@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/11/29 15:38:59 by mcanal            #+#    #+#             */
-/*   Updated: 2018/02/18 19:24:48 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/18 22:08:34 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,14 +163,15 @@ static struct s_test_glob test_glob_arr[] = {
 	{"????*/??*", TEST_FLAGS, {0, NULL, 0, 0}},
 	{"/did/you/think/about/it", TEST_FLAGS, {0, NULL, 0, 0}},
 	{"good", TEST_FLAGS, {0, NULL, 0, 0}},
-	{"/and/this/", TEST_FLAGS, {0, NULL, 0, 0}},
 
+	{"/and/this/", TEST_FLAGS, {0, NULL, 0, 0}},
 	{"///", TEST_FLAGS, {0, NULL, 0, 0}},
 	{"./", TEST_FLAGS, {0, NULL, 0, 0}},
 	{"*/", TEST_FLAGS, {0, NULL, 0, 0}},
 	{".//////", TEST_FLAGS, {0, NULL, 0, 0}},
 	{"././././*", TEST_FLAGS, {0, NULL, 0, 0}},
 	{"././.././*", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"../*/../*", TEST_FLAGS, {0, NULL, 0, 0}},
 
 	{"/usr/lib/", TEST_FLAGS, {0, NULL, 0, 0}},
 	{"//usr//lib//", TEST_FLAGS, {0, NULL, 0, 0}},
@@ -180,30 +181,29 @@ static struct s_test_glob test_glob_arr[] = {
 	{"//usr///lib/////*/", TEST_FLAGS, {0, NULL, 0, 0}},
 	{"//usr///lib/////*////", TEST_FLAGS, {0, NULL, 0, 0}},
 
-	{"~", TEST_FLAGS | GLOBUX_TILDE, {0, NULL, 0, 0}},
-	{"~/..", TEST_FLAGS | GLOBUX_TILDE, {0, NULL, 0, 0}},
-	{"~/*", TEST_FLAGS | GLOBUX_TILDE, {0, NULL, 0, 0}},
-	{"~/*/???", TEST_FLAGS | GLOBUX_TILDE, {0, NULL, 0, 0}},
-	{"/~/..", TEST_FLAGS | GLOBUX_TILDE, {0, NULL, 0, 0}},
-	{"~/.emacs.d/*/*~", TEST_FLAGS | GLOBUX_TILDE, {0, NULL, 0, 0}},
-
-	{"{src}", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0}},
-	{"{src,obj}", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0}},
-	{"{src,obj,include}", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0}},
-	{"./{,obj,include}", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0}},
-	{"./{src}/*", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0}},
-	{"./{src,obj}/*", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0}},
-	{"./{src,obj,include}/*", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0}},
-	{"./{,obj,include}/*", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0}},
-	{"/usr/{bin,share}", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0}},
-	{"/usr/{bin,share}/*", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0}},
-
 	{"*/*", TEST_FLAGS, {0, NULL, 0, 0}},
 	{"*/*/*", TEST_FLAGS, {0, NULL, 0, 0}},
-	/* {"/\*\/\*", TEST_FLAGS, {0, NULL, 0, 0}}, */
-	/* {"/\*\/\*\/\*", TEST_FLAGS, {0, NULL, 0, 0}}, */
-	/* {"/usr/lib/\*\/\*\/\*", TEST_FLAGS, {0, NULL, 0, 0}}, */
+	{"/*/*", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/*/*/*", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/usr/lib/*/*/*", TEST_FLAGS, {0, NULL, 0, 0}},
 
+	/* {"~", TEST_FLAGS | GLOBUX_TILDE, {0, NULL, 0, 0}}, */
+	/* {"~/..", TEST_FLAGS | GLOBUX_TILDE, {0, NULL, 0, 0}}, */
+	/* {"~/\*", TEST_FLAGS | GLOBUX_TILDE, {0, NULL, 0, 0}}, */
+	/* {"~/\*\/???", TEST_FLAGS | GLOBUX_TILDE, {0, NULL, 0, 0}}, */
+	/* {"/~/..", TEST_FLAGS | GLOBUX_TILDE, {0, NULL, 0, 0}}, */
+	/* {"~/.emacs.d/\*\/\*~", TEST_FLAGS | GLOBUX_TILDE, {0, NULL, 0, 0}}, */
+
+	/* {"{src}", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0}}, */
+	/* {"{src,obj}", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0}}, */
+	/* {"{src,obj,include}", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0}}, */
+	/* {"./{,obj,include}", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0}}, */
+	/* {"./{src}/\*", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0}}, */
+	/* {"./{src,obj}/\*", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0}}, */
+	/* {"./{src,obj,include}/\*", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0}}, */
+	/* {"./{,obj,include}/\*", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0}}, */
+	/* {"/usr/{bin,share}", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0}}, */
+	/* {"/usr/{bin,share}/\*", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0}}, */
 };
 
 
@@ -378,19 +378,21 @@ static void glob_testux(char const *pat, int flags, t_glob *pglob)
 
 void test_glob()
 {
-	for (unsigned int i = 0; i < sizeof(test_glob_arr) / sizeof(struct s_test_glob); i++) {
-		ctrl_glob_struct.gl_pathc = test_glob_arr[i].pglob.gl_pathc;
-		ctrl_glob_struct.gl_pathv = test_glob_arr[i].pglob.gl_pathv; //TODO
-		ctrl_glob_struct.gl_offs = test_glob_arr[i].pglob.gl_offs;
-		ctrl_glob_struct.gl_flags = test_glob_arr[i].pglob.gl_flags;
+	for (int flag = 0; flag <= GLOB_NOCHECK; flag += GLOB_NOCHECK) {
+		for (unsigned int i = 0; i < sizeof(test_glob_arr) / sizeof(struct s_test_glob); i++) {
+			ctrl_glob_struct.gl_pathc = test_glob_arr[i].pglob.gl_pathc;
+			ctrl_glob_struct.gl_pathv = test_glob_arr[i].pglob.gl_pathv; //TODO
+			ctrl_glob_struct.gl_offs = test_glob_arr[i].pglob.gl_offs;
+			ctrl_glob_struct.gl_flags = test_glob_arr[i].pglob.gl_flags;
 
-		glob_testux(
-			test_glob_arr[i].pattern,
-			test_glob_arr[i].flags,
-			&(test_glob_arr[i].pglob)
-		);
-		globfree(&ctrl_glob_struct);
-		globdtor(&test_glob_arr[i].pglob);
+			glob_testux(
+				test_glob_arr[i].pattern,
+				test_glob_arr[i].flags | flag,
+				&(test_glob_arr[i].pglob)
+			);
+			globfree(&ctrl_glob_struct);
+			globdtor(&test_glob_arr[i].pglob);
+		}
 	}
 
 }
