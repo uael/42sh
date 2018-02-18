@@ -6,7 +6,7 @@
 /*   By: mcanal <zboub@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/11/29 15:38:59 by mcanal            #+#    #+#             */
-/*   Updated: 2018/02/18 15:07:49 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/18 19:24:48 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,123 +66,143 @@ static char flags_ctrl_buffer[SMALL] = {0};
 
 static glob_t ctrl_glob_struct;
 
+#define TEST_FLAGS (GLOB_NOCHECK)
+
 static struct s_test_glob test_glob_arr[] = {
 
-	{"*ab*cd*", 0, {0, NULL, 0, 0}},
-	{"*abcd*", 0, {0, NULL, 0, 0}},
-	{"*abcd*abcdef*", 0, {0, NULL, 0, 0}},
-	{"*a*b*[ef]*[cd]*g*", 0, {0, NULL, 0, 0}},
-	{"*a*b*[bc]*[ef]*g*", 0, {0, NULL, 0, 0}},
-	{"*ac*ae*ag*", 0, {0, NULL, 0, 0}},
-	{"*ac*", 0, {0, NULL, 0, 0}},
-	{"*bc", 0, {0, NULL, 0, 0}},
-	{"*b", 0, {0, NULL, 0, 0}},
-	{"?*?", 0, {0, NULL, 0, 0}},
-	{"??*", 0, {0, NULL, 0, 0}},
-	{"*??", 0, {0, NULL, 0, 0}},
-	{"?x?", 0, {0, NULL, 0, 0}},
-	{"??", 0, {0, NULL, 0, 0}},
-	{"?", 0, {0, NULL, 0, 0}},
-	{"[!]a-ceg-ik[]", 0, {0, NULL, 0, 0}},
-	{"[]a-ceg-ik[]", 0, {0, NULL, 0, 0}},
-	{"[a-c-e-g]", 0, {0, NULL, 0, 0}},
-	{"[a-c]", 0, {0, NULL, 0, 0}},
-	{"[!ab]", 0, {0, NULL, 0, 0}},
-	{"[ab]", 0, {0, NULL, 0, 0}},
-	{"[!a]", 0, {0, NULL, 0, 0}},
-	{"[a]", 0, {0, NULL, 0, 0}},
-	{"", 0, {0, NULL, 0, 0}},
-	{"a", 0, {0, NULL, 0, 0}},
-	{".", 0, {0, NULL, 0, 0}},
-	{".*", 0, {0, NULL, 0, 0}},
-	{"*.*", 0, {0, NULL, 0, 0}},
-	{"*", 0, {0, NULL, 0, 0}},
+	{"*ab*cd*", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"*abcd*", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"*abcd*abcdef*", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"*a*b*[ef]*[cd]*g*", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"*a*b*[bc]*[ef]*g*", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"*ac*ae*ag*", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"*ac*", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"*bc", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"*b", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"?*?", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"??*", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"*??", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"?x?", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"??", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"?", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"[!]a-ceg-ik[]", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"[]a-ceg-ik[]", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"[a-c-e-g]", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"[a-c]", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"[!ab]", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"[ab]", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"[!a]", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"[a]", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"a", TEST_FLAGS, {0, NULL, 0, 0}},
+	{".", TEST_FLAGS, {0, NULL, 0, 0}},
+	{".*", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"*.*", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"*", TEST_FLAGS, {0, NULL, 0, 0}},
 
-	{"/*ab*cd*", 0, {0, NULL, 0, 0}},
-	{"/*abcd*", 0, {0, NULL, 0, 0}},
-	{"/*abcd*abcdef*", 0, {0, NULL, 0, 0}},
-	{"/*a*b*[ef]*[cd]*g*", 0, {0, NULL, 0, 0}},
-	{"/*a*b*[bc]*[ef]*g*", 0, {0, NULL, 0, 0}},
-	{"/*ac*ae*ag*", 0, {0, NULL, 0, 0}},
-	{"/*ac*", 0, {0, NULL, 0, 0}},
-	{"/*bc", 0, {0, NULL, 0, 0}},
-	{"/*b", 0, {0, NULL, 0, 0}},
-	{"/?*?", 0, {0, NULL, 0, 0}},
-	{"/??*", 0, {0, NULL, 0, 0}},
-	{"/*??", 0, {0, NULL, 0, 0}},
-	{"/?x?", 0, {0, NULL, 0, 0}},
-	{"/??", 0, {0, NULL, 0, 0}},
-	{"/?", 0, {0, NULL, 0, 0}},
-	{"/[!]a-ceg-ik[]", 0, {0, NULL, 0, 0}},
-	{"/[]a-ceg-ik[]", 0, {0, NULL, 0, 0}},
-	{"/[a-c-e-g]", 0, {0, NULL, 0, 0}},
-	{"/[a-c]", 0, {0, NULL, 0, 0}},
-	{"/[!ab]", 0, {0, NULL, 0, 0}},
-	{"/[ab]", 0, {0, NULL, 0, 0}},
-	{"/[!a]", 0, {0, NULL, 0, 0}},
-	{"/[a]", 0, {0, NULL, 0, 0}},
-	{"/", 0, {0, NULL, 0, 0}},
-	{"/a", 0, {0, NULL, 0, 0}},
-	{"/.", 0, {0, NULL, 0, 0}},
-	{"/.*", 0, {0, NULL, 0, 0}},
-	{"/*.*", 0, {0, NULL, 0, 0}},
-	{"/*", 0, {0, NULL, 0, 0}},
+	{"/*ab*cd*", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/*abcd*", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/*abcd*abcdef*", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/*a*b*[ef]*[cd]*g*", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/*a*b*[bc]*[ef]*g*", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/*ac*ae*ag*", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/*ac*", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/*bc", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/*b", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/?*?", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/??*", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/*??", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/?x?", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/??", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/?", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/[!]a-ceg-ik[]", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/[]a-ceg-ik[]", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/[a-c-e-g]", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/[a-c]", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/[!ab]", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/[ab]", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/[!a]", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/[a]", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/a", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/.", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/.*", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/*.*", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/*", TEST_FLAGS, {0, NULL, 0, 0}},
 
-	{"/usr/lib/*ab*cd*", 0, {0, NULL, 0, 0}},
-	{"/usr/lib/*abcd*", 0, {0, NULL, 0, 0}},
-	{"/usr/lib/*abcd*abcdef*", 0, {0, NULL, 0, 0}},
-	{"/usr/lib/*a*b*[ef]*[cd]*g*", 0, {0, NULL, 0, 0}},
-	{"/usr/lib/*a*b*[bc]*[ef]*g*", 0, {0, NULL, 0, 0}},
-	{"/usr/lib/*ac*ae*ag*", 0, {0, NULL, 0, 0}},
-	{"/usr/lib/*ac*", 0, {0, NULL, 0, 0}},
-	{"/usr/lib/*bc", 0, {0, NULL, 0, 0}},
-	{"/usr/lib/*b", 0, {0, NULL, 0, 0}},
-	{"/usr/lib/?*?", 0, {0, NULL, 0, 0}},
-	{"/usr/lib/??*", 0, {0, NULL, 0, 0}},
-	{"/usr/lib/*??", 0, {0, NULL, 0, 0}},
-	{"/usr/lib/?x?", 0, {0, NULL, 0, 0}},
-	{"/usr/lib/??", 0, {0, NULL, 0, 0}},
-	{"/usr/lib/?", 0, {0, NULL, 0, 0}},
-	{"/usr/lib/[!]a-ceg-ik[]", 0, {0, NULL, 0, 0}},
-	{"/usr/lib/[]a-ceg-ik[]", 0, {0, NULL, 0, 0}},
-	{"/usr/lib/[a-c-e-g]", 0, {0, NULL, 0, 0}},
-	{"/usr/lib/[a-c]", 0, {0, NULL, 0, 0}},
-	{"/usr/lib/[!ab]", 0, {0, NULL, 0, 0}},
-	{"/usr/lib/[ab]", 0, {0, NULL, 0, 0}},
-	{"/usr/lib/[!a]", 0, {0, NULL, 0, 0}},
-	{"/usr/lib/[a]", 0, {0, NULL, 0, 0}},
-	{"/usr/lib", 0, {0, NULL, 0, 0}},
-	{"/usr/lib/a", 0, {0, NULL, 0, 0}},
-	{"/usr/lib/.", 0, {0, NULL, 0, 0}},
-	{"/usr/lib/.*", 0, {0, NULL, 0, 0}},
-	{"/usr/lib/*.*", 0, {0, NULL, 0, 0}},
-	{"/usr/lib/*", 0, {0, NULL, 0, 0}},
+	{"/usr/lib/*ab*cd*", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/usr/lib/*abcd*", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/usr/lib/*abcd*abcdef*", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/usr/lib/*a*b*[ef]*[cd]*g*", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/usr/lib/*a*b*[bc]*[ef]*g*", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/usr/lib/*ac*ae*ag*", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/usr/lib/*ac*", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/usr/lib/*bc", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/usr/lib/*b", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/usr/lib/?*?", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/usr/lib/??*", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/usr/lib/*??", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/usr/lib/?x?", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/usr/lib/??", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/usr/lib/?", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/usr/lib/[!]a-ceg-ik[]", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/usr/lib/[]a-ceg-ik[]", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/usr/lib/[a-c-e-g]", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/usr/lib/[a-c]", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/usr/lib/[!ab]", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/usr/lib/[ab]", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/usr/lib/[!a]", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/usr/lib/[a]", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/usr/lib", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/usr/lib/a", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/usr/lib/.", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/usr/lib/.*", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/usr/lib/*.*", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/usr/lib/*", TEST_FLAGS, {0, NULL, 0, 0}},
 
-	{"????*/??*", 0, {0, NULL, 0, 0}},
-	{"/did/you/think/about/it", 0, {0, NULL, 0, 0}},
-	{"good", 0, {0, NULL, 0, 0}},
-	{"/and/this/", 0, {0, NULL, 0, 0}},
+	{"????*/??*", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/did/you/think/about/it", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"good", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"/and/this/", TEST_FLAGS, {0, NULL, 0, 0}},
 
-	/* {"///", 0, {0, NULL, 0, 0}}, */
-	/* {"./", 0, {0, NULL, 0, 0}}, */
-	/* {"*\/", 0, {0, NULL, 0, 0}}, */
-	/* {".//////", 0, {0, NULL, 0, 0}}, */
-	/* {"././././\*", 0, {0, NULL, 0, 0}}, */
-	/* {"././.././\*", 0, {0, NULL, 0, 0}}, */
+	{"///", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"./", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"*/", TEST_FLAGS, {0, NULL, 0, 0}},
+	{".//////", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"././././*", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"././.././*", TEST_FLAGS, {0, NULL, 0, 0}},
 
-	/* {"/usr/lib/", 0, {0, NULL, 0, 0}}, */
-	/* {"//usr//lib//", 0, {0, NULL, 0, 0}}, */
-	/* {"//usr//lib//\*", 0, {0, NULL, 0, 0}}, */
-	/* {"//usr///lib/////", 0, {0, NULL, 0, 0}}, */
-	/* {"//usr///lib/////\*", 0, {0, NULL, 0, 0}}, */
-	/* {"//usr///lib/////\*\/", 0, {0, NULL, 0, 0}}, */
-	/* {"//usr///lib/////\*\////", 0, {0, NULL, 0, 0}}, */
+	{"/usr/lib/", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"//usr//lib//", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"//usr//lib//*", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"//usr///lib/////", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"//usr///lib/////*", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"//usr///lib/////*/", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"//usr///lib/////*////", TEST_FLAGS, {0, NULL, 0, 0}},
 
-	{"*/*", 0, {0, NULL, 0, 0}},
-	{"*/*/*", 0, {0, NULL, 0, 0}},
-	{"/*/*", 0, {0, NULL, 0, 0}},
-	/* {"/\*\/\*\/\*", 0, {0, NULL, 0, 0}}, */
-	/* {"/usr/lib/\*\/\*\/\*", 0, {0, NULL, 0, 0}}, */
+	{"~", TEST_FLAGS | GLOBUX_TILDE, {0, NULL, 0, 0}},
+	{"~/..", TEST_FLAGS | GLOBUX_TILDE, {0, NULL, 0, 0}},
+	{"~/*", TEST_FLAGS | GLOBUX_TILDE, {0, NULL, 0, 0}},
+	{"~/*/???", TEST_FLAGS | GLOBUX_TILDE, {0, NULL, 0, 0}},
+	{"/~/..", TEST_FLAGS | GLOBUX_TILDE, {0, NULL, 0, 0}},
+	{"~/.emacs.d/*/*~", TEST_FLAGS | GLOBUX_TILDE, {0, NULL, 0, 0}},
+
+	{"{src}", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0}},
+	{"{src,obj}", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0}},
+	{"{src,obj,include}", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0}},
+	{"./{,obj,include}", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0}},
+	{"./{src}/*", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0}},
+	{"./{src,obj}/*", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0}},
+	{"./{src,obj,include}/*", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0}},
+	{"./{,obj,include}/*", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0}},
+	{"/usr/{bin,share}", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0}},
+	{"/usr/{bin,share}/*", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0}},
+
+	{"*/*", TEST_FLAGS, {0, NULL, 0, 0}},
+	{"*/*/*", TEST_FLAGS, {0, NULL, 0, 0}},
+	/* {"/\*\/\*", TEST_FLAGS, {0, NULL, 0, 0}}, */
+	/* {"/\*\/\*\/\*", TEST_FLAGS, {0, NULL, 0, 0}}, */
+	/* {"/usr/lib/\*\/\*\/\*", TEST_FLAGS, {0, NULL, 0, 0}}, */
 
 };
 
@@ -296,6 +316,15 @@ static void get_debug_string(char const *pat, int flags, int ctrl, int test, \
 	);
 }
 
+static int compare_argv(char **a, char **b)
+{
+	for (int i = 0; a && a[i]; i++) {
+		if (strcmp(a[i], b[i]))
+			return 42;
+	}
+	return 0;
+}
+
 static void glob_testux(char const *pat, int flags, t_glob *pglob)
 {
 	t_glob input;
@@ -340,15 +369,11 @@ static void glob_testux(char const *pat, int flags, t_glob *pglob)
 	if (pglob->gl_pathc != ctrl_glob_struct.gl_pathc)
 		return;
 
-	for (int i = 0; pglob->gl_pathv && pglob->gl_pathv[i]; i++) {
-		MU_ASSERT(
-			!strcmp(pglob->gl_pathv[i], ctrl_glob_struct.gl_pathv[i]),
-			"t_glob->gl_pathv mismatch:\n" "%s",
-			print_buffer
-		);
-		if (strcmp(pglob->gl_pathv[i], ctrl_glob_struct.gl_pathv[i]))
-			return;
-	}
+	MU_ASSERT(
+		!compare_argv(pglob->gl_pathv, ctrl_glob_struct.gl_pathv),
+		"t_glob->gl_pathv mismatch:\n" "%s",
+		print_buffer
+	);
 }
 
 void test_glob()
