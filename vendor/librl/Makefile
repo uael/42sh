@@ -6,7 +6,7 @@
 #    By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/07 09:52:36 by alucas-           #+#    #+#              #
-#    Updated: 2018/02/13 14:55:54 by mc               ###   ########.fr        #
+#    Updated: 2018/02/18 15:59:02 by mc               ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -109,7 +109,9 @@ re: clean all
 -include $(DEP)
 
 ifndef VERBOSE
+ ifndef TRAVIS
 .SILENT:
+ endif
 endif
 
 .PHONY: all, dev, san, $(NAME).a, clean, fclean, re

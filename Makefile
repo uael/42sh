@@ -6,7 +6,7 @@
 #    By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/07 09:52:36 by alucas-           #+#    #+#              #
-#    Updated: 2018/02/18 15:50:51 by mc               ###   ########.fr        #
+#    Updated: 2018/02/18 15:57:09 by mc               ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -67,7 +67,6 @@ else
 endif
 
 all:
-	#$(shell env)
 ifneq ($(3TH_NAME),)
 	+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) &&) true
 endif
@@ -137,9 +136,11 @@ valgrind: dev
 
 -include $(DEP)
 
-# ifndef VERBOSE
-# .SILENT:
-# endif
+ifndef VERBOSE
+ ifndef TRAVIS
+.SILENT:
+ endif
+endif
 
 .PHONY: all, dev, san, $(NAME), clean, fclean, re, test, testdev, testsan, \
   valgrind
