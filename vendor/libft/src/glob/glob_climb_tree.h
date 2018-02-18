@@ -6,15 +6,22 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 20:57:25 by mc                #+#    #+#             */
-/*   Updated: 2018/02/17 13:52:30 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/18 14:31:30 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GLOB_CLIMB_TREE_H
 # define GLOB_CLIMB_TREE_H
 
+# ifndef PATH_MAX
+#  ifdef OSX
+#   include <sys/syslimits.h> /* for PATH_MAX */
+#  elseif LINUX
+#   include <linux/limits.h> /* for PATH_MAX */
+#  endif
+# endif
+
 #include <sys/types.h> /* for {open,read,close}dir */
-#include <sys/syslimits.h> /* for PATH_MAX */
 #include <dirent.h> /* for {open,read,close}dir */
 
 # include "libft/str.h" /* for ft_strchr */

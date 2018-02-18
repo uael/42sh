@@ -6,7 +6,7 @@
 #    By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/07 09:52:36 by alucas-           #+#    #+#              #
-#    Updated: 2018/02/15 15:13:46 by mc               ###   ########.fr        #
+#    Updated: 2018/02/17 23:25:23 by mc               ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -66,6 +66,34 @@ INC = $(addprefix -I, $(INC_PATH) $(addsuffix /include, $(3TH)))
 LIB = $(addprefix -l, $(LIB_NAME))
 DEP = $(OBJ:%.o=%.d)
 
+ifeq ($(OS), Windows_NT)
+  CCFLAGS += -D WIN32
+  ifeq ($(PROCESSOR_ARCHITECTURE), AMD64)
+    CCFLAGS += -D AMD64
+  else ifeq ($(PROCESSOR_ARCHITECTURE), x86)
+    CCFLAGS += -D IA32
+  endif
+else
+  UNAME_S = $(shell uname -s)
+  ifeq ($(UNAME_S), Linux)
+    CCFLAGS += -D LINUX
+  else ifeq ($(UNAME_S), Darwin)
+    CCFLAGS += -D OSX
+  endif
+  UNAME_P = $(shell uname -p)
+  ifeq ($(UNAME_P), unknown)
+    UNAME_P = $(shell uname -m)
+  endif
+  ifeq ($(UNAME_P), x86_64)
+    CCFLAGS += -D AMD64
+  else ifneq ($(filter %86, $(UNAME_P)), )
+    CCFLAGS += -D IA32
+  else ifneq ($(filter arm%, $(UNAME_P)), )
+    CCFLAGS += -D ARM
+  endif
+endif
+
+
 all:
 ifneq ($(3TH_NAME),)
 	+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) &&) true
@@ -98,7 +126,7 @@ $(OBJ_PATH)/%.o: $(SRC_PATH)/%.c
 ifndef VERBOSE
 	@printf "\r%-20s$<\n" "$(NAME):"
 endif
-	$(CC) $(CFLAGS) $(INC) -MMD -MP -c $< -o $@
+	$(CC) $(CFLAGS) $(CCFLAGS) $(INC) -MMD -MP -c $< -o $@
 ifndef VERBOSE
 	@printf "\033[A\033[2K"
 endif

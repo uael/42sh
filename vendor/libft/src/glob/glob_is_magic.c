@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/15 13:36:27 by mc                #+#    #+#             */
-/*   Updated: 2018/02/16 14:39:17 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/18 13:42:05 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,9 +52,9 @@ static char const	*previous_dir(char const *pattern, char const *pat)
 	{
 		if (*pat == '/')
 		{
-			len = (size_t)(pat - pattern);
+			len = (size_t)(pat - pattern) + 1;
 			if (len + 1 > NAME_MAX)
-				return (NULL);
+				return (pattern);
 			ft_memcpy(magic_buf, pattern, len);
 			*(magic_buf + len + 1) = '\0';
 			return (magic_buf);
@@ -62,7 +62,7 @@ static char const	*previous_dir(char const *pattern, char const *pat)
 		pat--;
 	}
 
-	return (NULL);
+	return (pattern);
 }
 
 

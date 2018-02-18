@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/14 21:56:00 by mc                #+#    #+#             */
-/*   Updated: 2018/02/17 13:56:56 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/18 14:31:36 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,16 +14,17 @@
 
 int			glob_count_depth(char const *pattern)
 {
-	char const	*slash;
 	int			depth;
 
 	depth = 1;
-	slash = pattern;
-	while (*slash)
+	if (*pattern == '/')
+		pattern++;
+
+	while (*pattern)
 	{
-		if (*slash == '/')
+		if (*pattern == '/')
 			depth++;
-		slash++;
+		pattern++;
 	}
 
 	return (depth);
@@ -174,7 +175,7 @@ char const	*glob_get_sub_pattern(char const *pattern, int depth)
 		if (*pat == '/')
 			depth--;
 
-	if (pat != pattern)
+	if (pat != pattern || *pat == '/')
 		pat++;
 	dir_end = pat;
 	while (*dir_end && *dir_end != '/')

@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 22:23:43 by mc                #+#    #+#             */
-/*   Updated: 2018/02/17 13:52:37 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/18 14:18:44 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,10 +47,10 @@ static int	glob_check_file(struct dirent *dirent, char const *sub_pat, \
 
 	if (depth == 1)
 	{
-		if (!ft_memcmp(path_buf, "./", 2) && ft_memcmp(pattern, "./", 2))
-			path_buf += 2;
 		if (glob_append_file_name(path_buf, dirent->d_name) != GLOBUX_SUCCESS)
 			return (GLOBUX_NOSPACE);
+		if (!ft_memcmp(path_buf, "./", 2) && ft_memcmp(pattern, "./", 2))
+			path_buf += 2;
 		if (!(match = matchctor(path_buf, ft_strlen(path_buf))))
 			return (GLOBUX_NOSPACE);
 		add_match_to_list(match, match_list);
@@ -60,6 +60,17 @@ static int	glob_check_file(struct dirent *dirent, char const *sub_pat, \
 		return (GLOBUX_BOOM_BABY); //TODO: handle links
 
 	return (GLOBUX_SUCCESS);
+}
+
+static void remove_last_dir_from_path(char *path_buf)
+{
+	char	*path;
+
+	path = path_buf + ft_strlen(path_buf) - 2;
+	while (path != path_buf && *path != '/')
+		path--;
+	if (path != path_buf)
+		*(path + 1) = '\0';
 }
 
 int			glob_read_dir(char const *pattern, int flags, \
@@ -77,7 +88,7 @@ int			glob_read_dir(char const *pattern, int flags, \
 
 	if (!dir_name)
 	{
-		ft_memcpy(path_buf, *pattern == '/' ? "/" : ".", 2);
+		*pattern == '/' ? ft_memcpy(path_buf, "/", 2) : ft_memcpy(path_buf, "./", 3);
 		dir_name = path_buf;
 	}
 	else
@@ -85,7 +96,7 @@ int			glob_read_dir(char const *pattern, int flags, \
 
 	if (glob_open_dir(&dir, glob_get_folder_name(dir_name), flags) == GLOBUX_ABORTED)
 		return (GLOBUX_ABORTED);
-	if (!dir)
+	if (!dir && glob_open_dir(&dir, dir_name, flags))
 		return (GLOBUX_SUCCESS);
 
 	if (!(sub_pat = glob_get_sub_pattern(pattern, depth)))
@@ -96,7 +107,7 @@ int			glob_read_dir(char const *pattern, int flags, \
 		ret = glob_check_file(dirent, sub_pat, flags, match_list, depth, path_buf, pattern);
 		if (ret == GLOBUX_BOOM_BABY)
 		{
-			if (glob_store_dir_name(path_buf, dir_name, dirent->d_name) != GLOBUX_SUCCESS)
+			if (glob_store_dir_name(path_buf, dir_name, dirent->d_name, depth) != GLOBUX_SUCCESS)
 				return (GLOBUX_NOSPACE);
 
 			ret = glob_read_dir(pattern, flags, match_list, depth - 1, path_buf);
@@ -107,6 +118,7 @@ int			glob_read_dir(char const *pattern, int flags, \
 			}
 			if (!(sub_pat = glob_get_sub_pattern(pattern, depth)))
 				return (GLOBUX_NOSPACE);
+			remove_last_dir_from_path(path_buf);
 		}
 		if (ret != GLOBUX_SUCCESS)
 		{
@@ -141,20 +153,25 @@ int			glob_climb_tree(char const *pattern, t_glob *pglob, t_match **match_list)
 	char const	*magic;
 	//TODO: I guess a trailing slashes in pattern fuck everything up
 
-	depth = glob_count_depth(pattern);
-	if (depth > MAX_DEPTH)
-		return (GLOBUX_NOSPACE);
 
 	if ((magic = is_magic(pattern, &(pglob->gl_flags))))
+	{
+		depth = 1 + glob_count_depth(pattern) - glob_count_depth(magic); //maths!
+		if (depth > MAX_DEPTH || depth < 1)
+			return (GLOBUX_NOSPACE);
 		return glob_read_dir(pattern, pglob->gl_flags, match_list, depth, \
 							 magic == pattern ? NULL : magic);
+	}
 
-	if ((pglob->gl_flags & GLOBUX_NOMAGIC))
+	if ((pglob->gl_flags & GLOBUX_NOMAGIC) || !ft_strcmp("/", pattern)) //shit happens
 	{
 		if (!(*match_list = matchctor(pattern, ft_strlen(pattern))))
 			return (GLOBUX_NOSPACE);
 		return (GLOBUX_SUCCESS);
 	}
 
+	depth = glob_count_depth(pattern);
+	if (depth > MAX_DEPTH)
+		return (GLOBUX_NOSPACE);
 	return (glob_read_dir(pattern, pglob->gl_flags, match_list, depth, NULL));
 }
