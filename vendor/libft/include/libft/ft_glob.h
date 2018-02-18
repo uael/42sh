@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/08 23:55:49 by mc                #+#    #+#             */
-/*   Updated: 2018/02/18 17:48:22 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/18 21:41:45 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,9 +77,9 @@
 # define GLOBUX_TILDE_CHECK (1 << 14) /* Like GLOBUX_TILDE but return an error
 										if the user name is not available.  */
 
-# define __GLOBUX_FLAGS	(GLOBUX_ERR | /* GLOBUX_MARK | */ GLOBUX_NOSORT |  GLOBUX_DOOFFS |  \
+# define __GLOBUX_FLAGS	(GLOBUX_ERR |  GLOBUX_MARK | GLOBUX_NOSORT |  GLOBUX_DOOFFS |  \
 						 GLOBUX_NOESCAPE | GLOBUX_NOCHECK | /* GLOBUX_APPEND | */	\
-						 /* GLOBUX_PERIOD | GLOBUX_ALTDIRFUNC | GLOBUX_BRACE | */	\
+						 GLOBUX_PERIOD | /* GLOBUX_ALTDIRFUNC | GLOBUX_BRACE | */	\
 						 GLOBUX_NOMAGIC /* | GLOBUX_TILDE */ | GLOBUX_ONLYDIR /* | GLOBUX_TILDE_CHECK */)
 
 

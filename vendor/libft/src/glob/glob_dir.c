@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/14 21:56:00 by mc                #+#    #+#             */
-/*   Updated: 2018/02/18 14:31:36 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/18 21:41:34 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,17 +74,23 @@ int			glob_close_dir(DIR *dir, int flags)
 **
 ** assume we'll find a slash in PATH_BUF (cf. glob_store_dir_name())
 */
-int			glob_append_file_name(char *path_buf, char const *new_file)
+int			glob_append_file_name(char *path_buf, char const *new_file, int flags)
 {
 	char	*path;
 	size_t	new_size;
 
 	new_size = ft_strlen(new_file);
 	path = ft_strrchr(path_buf, '/') + 1;
-	if ((size_t)(path - path_buf) + new_size + 1 > PATH_MAX)
+	if ((size_t)(path - path_buf) + new_size + 2 > PATH_MAX)
 		return (GLOBUX_NOSPACE);
 
 	ft_memcpy(path, new_file, new_size + 1);
+
+	if ((flags & GLOBUX_MARK) && *(path + new_size - 1) != '/')
+	{
+		*(path + new_size) = '/';
+		*(path + new_size + 1) = '\0';
+	}
 
 	return (GLOBUX_SUCCESS);
 }
