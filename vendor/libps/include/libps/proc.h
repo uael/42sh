@@ -6,14 +6,14 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/06 12:00:10 by alucas-          ###   ########.fr       */
+/*   Updated: 2018/02/18 17:39:21 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LIBPS_PROC_H
 # define LIBPS_PROC_H
 
-#include <glob.h>
+#include "libft/ft_glob.h"
 # include "proc/bi.h"
 # include "proc/bit.h"
 # include "proc/err.h"
@@ -54,7 +54,7 @@ typedef struct	s_proc
 	t_procst	state;
 	t_prockd	kind;
 	int			status;
-	glob_t		argv;
+	T_GLOB		argv;
 	char		**envv;
 	t_bool		ownenv;
 	t_bool		child;
