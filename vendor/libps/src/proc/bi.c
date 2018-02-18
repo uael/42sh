@@ -6,11 +6,11 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2018/01/06 11:10:01 by alucas-          ###   ########.fr       */
+/*   Updated: 2018/02/18 17:38:50 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <glob.h>
+#include "libft/ft_glob.h"
 #include "../ps.h"
 
 static int		exhdl(int rcode, void *arg)

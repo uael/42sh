@@ -6,12 +6,12 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2018/01/06 11:10:01 by alucas-          ###   ########.fr       */
+/*   Updated: 2018/02/18 17:39:57 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <signal.h>
-#include <glob.h>
+#include "libft/ft_glob.h"
 
 #include "ps.h"
 
@@ -36,7 +36,7 @@ inline void			ps_procdtor(t_proc *p)
 {
 	char	**av;
 
-	globfree(&p->argv);
+	DUMMY_GLOBDTOR(&p->argv);
 	if (p->ownenv && (av = p->envv))
 	{
 		while (*av)

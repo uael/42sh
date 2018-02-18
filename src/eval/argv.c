@@ -6,11 +6,11 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2018/01/06 11:10:01 by alucas-          ###   ########.fr       */
+/*   Updated: 2018/02/18 17:29:44 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <glob.h>
+#include "libft/ft_glob.h"
 #include "ush/eval.h"
 
 static inline char		**makeenv(t_map *vars, t_bool *owned)
@@ -37,7 +37,7 @@ static inline char		**makeenv(t_map *vars, t_bool *owned)
 	return (e->buf);
 }
 
-static inline int		makeargv(t_job *job, glob_t *av, t_deq *toks, char **ln)
+static inline int		makeargv(t_job *job, T_GLOB *av, t_deq *toks, char **ln)
 {
 	t_tok *tok;
 
@@ -52,7 +52,7 @@ static inline int		makeargv(t_job *job, glob_t *av, t_deq *toks, char **ln)
 		{
 			if (sh_evalredir(job, toks, ln) == OUF)
 			{
-				av ? globfree(av) : 0;
+				av ? DUMMY_GLOBDTOR(av) : 0;
 				return (OUF);
 			}
 			tok = sh_tokpeek(toks);
@@ -84,12 +84,12 @@ inline int				sh_evalargv(t_job *j, t_map *v, t_deq *toks, char **ln)
 	t_proc		*prc;
 	t_bool		own;
 	t_redirs	r;
-	glob_t		g;
+	T_GLOB		g;
 
 	if (!(prc = explodesome(j, toks, ln)))
 		return (NOP);
 	ft_memcpy(&r, &prc->redirs, sizeof(t_redirs));
-	ft_memcpy(&g, &prc->argv, sizeof(glob_t));
+	ft_memcpy(&g, &prc->argv, sizeof(T_GLOB));
 	ft_memset(&prc->redirs, 0, sizeof(t_redirs));
 	if (!(own = (t_bool)ft_strcmp("true", prc->argv.gl_pathv[0])) ||
 		!ft_strcmp("false", prc->argv.gl_pathv[0]))
@@ -100,7 +100,7 @@ inline int				sh_evalargv(t_job *j, t_map *v, t_deq *toks, char **ln)
 	}
 	ps_procexe(prc, "PATH", prc->argv.gl_pathv[0], makeenv(v, &own));
 	ft_memcpy(&prc->redirs, &r, sizeof(t_redirs));
-	ft_memcpy(&prc->argv, &g, sizeof(glob_t));
+	ft_memcpy(&prc->argv, &g, sizeof(T_GLOB));
 	prc->ownenv = own;
 	if (makeargv(j, &prc->argv, toks, ln) == OUF)
 		return (OUF);

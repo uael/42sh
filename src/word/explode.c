@@ -6,17 +6,16 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2018/01/06 11:10:01 by alucas-          ###   ########.fr       */
+/*   Updated: 2018/02/18 17:30:51 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <glob.h>
-
+#include "libft/ft_glob.h"
 #include "ush/word.h"
 
-#define _G_FLAGS (GLOB_BRACE | GLOB_TILDE | GLOB_APPEND | GLOB_NOCHECK)
+#define _G_FLAGS (GLOBUX_BRACE | GLOBUX_TILDE | GLOBUX_APPEND | GLOBUX_NOCHECK)
 
-inline void	sh_wordexplode(glob_t *av, char const *src, size_t n)
+inline void	sh_wordexplode(T_GLOB *av, char const *src, size_t n)
 {
 	uint8_t	e;
 	t_sds	word;
@@ -35,12 +34,12 @@ inline void	sh_wordexplode(glob_t *av, char const *src, size_t n)
 		while ((eol = ft_strmchr(beg, sep)))
 		{
 			*eol = '\0';
-			glob(beg, _G_FLAGS, NULL, av) ? THROW(WUT) : 0;
+			DUMMY_GLOBCTOR(beg, _G_FLAGS, av) ? THROW(WUT) : 0;
 			while (*++eol && ft_strchr(sep, *eol))
 				;
 			beg = eol;
 		}
 	}
-	glob(beg, _G_FLAGS, NULL, av) ? THROW(WUT) : 0;
+	DUMMY_GLOBCTOR(beg, _G_FLAGS, av) ? THROW(WUT) : 0;
 	free(word.buf);
 }

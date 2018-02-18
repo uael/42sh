@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/08 23:55:49 by mc                #+#    #+#             */
-/*   Updated: 2018/02/16 11:16:18 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/18 17:48:22 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,19 @@
 
 # include <stdlib.h>
 
+/* DEBUG */
+# define DUMMY_GLOB
+# ifdef DUMMY_GLOB
+#  include <glob.h>
+#  define T_GLOB glob_t
+#  define DUMMY_GLOBCTOR(pattern, flags, pglob) glob((pattern), (flags), NULL, (pglob))
+#  define DUMMY_GLOBDTOR(pglob) globfree((pglob))
+# else
+#  define T_GLOB t_glob
+#  define DUMMY_GLOBCTOR(pattern, flags, pglob) globctor((pattern), (flags), (pglob))
+#  define DUMMY_GLOBDTOR(pglob) globdtor((pglob))
+#endif
+
 /* # define DEBUG_MODE */
 # ifdef DEBUG_MODE
 #  include <stdio.h>
@@ -42,6 +55,8 @@
 # else
 #  define DEBUGF(str, ...) do {} while (0)
 # endif
+/* DEBUG */
+
 
 /* Bits set in the FLAGS argument to `globctor'.  */
 # define GLOBUX_ERR (1 << 0) /* Return on read errors.  */

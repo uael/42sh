@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 20:57:25 by mc                #+#    #+#             */
-/*   Updated: 2018/02/18 14:31:30 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/18 16:43:30 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,8 @@
 # ifndef PATH_MAX
 #  ifdef OSX
 #   include <sys/syslimits.h> /* for PATH_MAX */
-#  elseif LINUX
+#  endif
+#  ifdef LINUX
 #   include <linux/limits.h> /* for PATH_MAX */
 #  endif
 # endif
