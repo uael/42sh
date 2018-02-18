@@ -1,3 +1,6 @@
+echo $PS1
+echo ls ./\*
+
 echo -n a
 echo a
 echo -l a

@@ -6,24 +6,30 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 20:57:25 by mc                #+#    #+#             */
-/*   Updated: 2018/02/17 13:52:30 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/18 14:31:30 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GLOB_CLIMB_TREE_H
 # define GLOB_CLIMB_TREE_H
 
+# ifndef PATH_MAX
+#  ifdef OSX
+#   include <sys/syslimits.h> /* for PATH_MAX */
+#  elseif LINUX
+#   include <linux/limits.h> /* for PATH_MAX */
+#  endif
+# endif
+
 #include <sys/types.h> /* for {open,read,close}dir */
 #include <dirent.h> /* for {open,read,close}dir */
 
 # include "libft/str.h" /* for ft_strchr */
-# include "libft/zob.h" /* for ft_shellsort */
+# include "libft/sort.h" /* for ft_shellsort */
 # include "libft/ft_glob.h" /* for t_glob and GLOBUX flags */
 # include "glob_match.h" /* for glob_match */
 
 # define IS_DIR(dirent) ((dirent)->d_type == DT_DIR)
-# define PATH_MAX 4096  //TODO: include?
-# define FILE_MAX 256  //TODO: pretty sure this exists already (cf man readdir -> d_name)
 
 # define GLOBUX_BOOM_BABY 5
 # define GLOBUX_NOBODY_GIVES_A_DAMN 6

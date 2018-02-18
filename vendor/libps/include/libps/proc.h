@@ -13,6 +13,7 @@
 #ifndef LIBPS_PROC_H
 # define LIBPS_PROC_H
 
+#include <glob.h>
 # include "proc/bi.h"
 # include "proc/bit.h"
 # include "proc/err.h"
@@ -53,7 +54,7 @@ typedef struct	s_proc
 	t_procst	state;
 	t_prockd	kind;
 	int			status;
-	char		**argv;
+	glob_t		argv;
 	char		**envv;
 	t_bool		ownenv;
 	t_bool		child;

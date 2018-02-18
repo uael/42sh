@@ -32,7 +32,7 @@ static int		envrmvar(t_vec *env, char *var)
 		{
 			ft_vecrem(env, i, it);
 			free(*it);
-			g_env = env->buf;
+			environ = env->buf;
 			return (1);
 		}
 		else
@@ -79,12 +79,10 @@ static int		env_parse_opts(char **av, void **o, t_vec *e)
 
 static int		env_finalize(char *path, char **argv, char **envv)
 {
-	t_vec	av;
-	t_proc	proc;
+	/*t_proc	proc;
 	t_job	*job;
 
 	ps_procexe(&proc, path, argv[0], envv);
-	ft_vecctor(&av, sizeof(char *));
 	while (*argv)
 		*(char **)ft_vecpush(&av) = ft_strdup(*argv++);
 	*(char **)ft_vecpush(&av) = NULL;
@@ -92,7 +90,11 @@ static int		env_finalize(char *path, char **argv, char **envv)
 	proc.ownenv = 1;
 	ps_jobctor(job = alloca(sizeof(t_job)));
 	*(t_proc *)ft_vecpush((t_vec *)&job->procs) = proc;
-	return (ps_joblaunch(job, 1));
+	return (ps_joblaunch(job, 1));*/
+	(void)path;
+	(void)argv;
+	(void)envv;
+	return (0);
 }
 
 inline int		sh_bienv(int ac, char **av, char **ev)

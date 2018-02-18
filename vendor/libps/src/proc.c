@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include <signal.h>
+#include <glob.h>
 
 #include "ps.h"
 
@@ -33,14 +34,9 @@ inline void			ps_procctor(t_proc *proc)
 
 inline void			ps_procdtor(t_proc *p)
 {
-	char **av;
+	char	**av;
 
-	if ((av = p->argv))
-	{
-		while (*av)
-			free(*av++);
-		ft_pfree((void **)&p->argv);
-	}
+	globfree(&p->argv);
 	if (p->ownenv && (av = p->envv))
 	{
 		while (*av)
