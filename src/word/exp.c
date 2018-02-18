@@ -13,6 +13,7 @@
 #include "ush/word.h"
 
 static char *g_ifs;
+static char *g_origine;
 
 int expbackslash(t_sds *word, char **words)
 {
@@ -49,6 +50,11 @@ int expglob(t_sds *word, char **words, t_vec *av)
 
 }
 
+int expbrace(t_sds *word, char **words, t_vec *av)
+{
+
+}
+
 int sh_wordexp(t_vec *av, char const *src, size_t n, t_bool quote)
 {
 	t_sds word;
@@ -66,6 +72,7 @@ int sh_wordexp(t_vec *av, char const *src, size_t n, t_bool quote)
 		ft_strncpy(words, src, n);
 	if (!(g_ifs = getenv("IFS")))
 		g_ifs = " \t\n";
+	g_origine = words;
 	ft_sdsctor(&word);
 	while (*words)
 		if (*words == '\\')
@@ -88,6 +95,8 @@ int sh_wordexp(t_vec *av, char const *src, size_t n, t_bool quote)
 		}
 		else if (*words == '~')
 			exptidle(&word, &words, av->len);
+		else if (*words == '{')
+			expbrace(&word, &words, av);
 		else if (ft_strchr("*[?", *words))
 			expglob(&word, &words, av);
 		else if (ft_strchr(" \t", *words))
