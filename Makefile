@@ -6,7 +6,7 @@
 #    By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/07 09:52:36 by alucas-           #+#    #+#              #
-#    Updated: 2018/02/18 15:57:09 by mc               ###   ########.fr        #
+#    Updated: 2018/02/18 16:18:08 by mc               ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -58,6 +58,8 @@ INC = $(addprefix -I, $(INC_PATH) $(addsuffix /include, $(3TH)))
 LIB = $(addprefix -l, $(LIB_NAME))
 DEP = $(OBJ:%.o=%.d)
 
+PRINTF=test $(VERBOSE)$(TRAVIS) || printf
+
 ifneq (,$(findstring dev,$(NAME)))
 3DE = $(shell echo "$(3TH_NAME)" | sed -E "s|([\.a-zA-Z]+)|$(3TH_PATH)/\1/\1.dev.a|g")
 else ifneq (,$(findstring san,$(NAME)))
@@ -88,27 +90,19 @@ endif
 
 $(NAME): $(3DE) $(OBJ)
 	$(CC) $(CFLAGS) $(INC) $(LNK) $(OBJ) $(LIB) -o $(NAME)
-ifndef VERBOSE
-	@printf  "%-20s\033[32m✔\033[0m\n" "$(NAME): exe"
-endif
+	@$(PRINTF) "%-20s\033[32m✔\033[0m\n" "$(NAME): exe"
 
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.c
 	mkdir -p $(shell dirname $@)
-ifndef VERBOSE
-	@printf "\r%-20s$<\n" "$(NAME):"
-endif
+	@$(PRINTF) "\r%-20s$<\n" "$(NAME):"
 	$(CC) $(CFLAGS) $(INC) -MMD -MP -c $< -o $@
-ifndef VERBOSE
-	@printf "\033[A\033[2K"
-endif
+	@$(PRINTF) "\033[A\033[2K"
 
 clean:
 	rm -f $(OBJ) $(DEP)
 	rm -f $(OBJ:$(OBJ_DIR)/rel%=$(OBJ_DIR)/dev%) $(DEP:$(OBJ_DIR)/rel%=$(OBJ_DIR)/dev%)
 	rm -f $(OBJ:$(OBJ_DIR)/rel%=$(OBJ_DIR)/san%) $(DEP:$(OBJ_DIR)/rel%=$(OBJ_DIR)/san%)
-ifndef VERBOSE
-	@printf  "%-20s\033[32m✔\033[0m\n" "$(NAME): $@"
-endif
+	@$(PRINTF) "%-20s\033[32m✔\033[0m\n" "$(NAME): $@"
 
 fclean: clean
 ifneq ($(3TH_NAME),)
@@ -116,9 +110,7 @@ ifneq ($(3TH_NAME),)
 endif
 	test -d $(OBJ_DIR) && find $(OBJ_DIR) -type d | sort -r | xargs rmdir || true
 	rm -f $(NAME){,.san,.dev}
-ifndef VERBOSE
-	@printf  "%-20s\033[32m✔\033[0m\n" "$(NAME): $@"
-endif
+	@$(PRINTF) "%-20s\033[32m✔\033[0m\n" "$(NAME): $@"
 
 re: clean all
 
