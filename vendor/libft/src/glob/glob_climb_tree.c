@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 22:23:43 by mc                #+#    #+#             */
-/*   Updated: 2018/02/18 18:40:43 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/18 21:42:54 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ static int	glob_check_file(struct dirent *dirent, char const *sub_pat, \
 
 	if (depth == 1)
 	{
-		if (glob_append_file_name(path_buf, dirent->d_name) != GLOBUX_SUCCESS)
+		if (glob_append_file_name(path_buf, dirent->d_name, flags) != GLOBUX_SUCCESS)
 			return (GLOBUX_NOSPACE);
 		if (!ft_memcmp(path_buf, "./", 2) && ft_memcmp(pattern, "./", 2))
 			path_buf += 2;

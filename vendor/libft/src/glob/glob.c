@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/08 23:54:42 by mc                #+#    #+#             */
-/*   Updated: 2018/02/16 19:46:39 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/18 22:07:46 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,10 +71,10 @@ int		globctor(const char *pattern, int flags, t_glob *pglob)
 	int		ret;
 	//TODO: set GLOB_NOCHECK | GLOB_ONLYDIR in pglob when ???
 
-	if (!*pattern)
-		return (GLOBUX_NOMATCH);
 	if ((flags & ~__GLOBUX_FLAGS))
 		return (GLOBUX_NOSYS);
+	if (!(flags & GLOBUX_NOCHECK) && !*pattern)
+		return (GLOBUX_NOMATCH);
 	//TODO: handle weird pglob?
 
 	pglob->gl_flags = flags;
@@ -94,9 +94,10 @@ int		globctor(const char *pattern, int flags, t_glob *pglob)
 			pglob->gl_flags = (pglob->gl_flags & ~GLOBUX_MAGCHAR);
 			return (GLOBUX_NOMATCH);
 		}
+		else
+
 		if (!(match_list = matchctor(pattern, ft_strlen(pattern))))
 			return (GLOBUX_NOSPACE);
-		return (GLOBUX_SUCCESS);
 	}
 
 	if (!copy_match_to_glob_struct(match_list, pglob))
@@ -110,7 +111,7 @@ int		globctor(const char *pattern, int flags, t_glob *pglob)
 
 void	globdtor(t_glob *pglob)
 {
-	char **av;
+	char	**av;
 
 	if (!pglob->gl_pathv)
 		return;
@@ -127,4 +128,5 @@ void	globdtor(t_glob *pglob)
 	}
 
 	free(pglob->gl_pathv);
+	pglob->gl_pathv = NULL; //kdo
 }
