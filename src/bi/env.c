@@ -32,7 +32,7 @@ static int		envrmvar(t_vec *env, char *var)
 		{
 			ft_vecrem(env, i, it);
 			free(*it);
-			g_env = env->buf;
+			environ = env->buf;
 			return (1);
 		}
 		else
