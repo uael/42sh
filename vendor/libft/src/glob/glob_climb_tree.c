@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 22:23:43 by mc                #+#    #+#             */
-/*   Updated: 2018/02/18 15:07:07 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/18 18:40:43 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,8 +69,7 @@ static void remove_last_dir_from_path(char *path_buf)
 	path = path_buf + ft_strlen(path_buf) - 2;
 	while (path != path_buf && *path != '/')
 		path--;
-	if (path != path_buf)
-		*(path + 1) = '\0';
+	*(path + 1) = '\0';
 }
 
 int			glob_read_dir(char const *pattern, int flags, \
@@ -111,6 +110,7 @@ int			glob_read_dir(char const *pattern, int flags, \
 				return (GLOBUX_NOSPACE);
 
 			ret = glob_read_dir(pattern, flags, match_list, depth - 1, path_buf);
+			remove_last_dir_from_path(path_buf);
 			if (ret != GLOBUX_SUCCESS)
 			{
 				glob_close_dir(dir, flags);
@@ -118,7 +118,6 @@ int			glob_read_dir(char const *pattern, int flags, \
 			}
 			if (!(sub_pat = glob_get_sub_pattern(pattern, depth)))
 				return (GLOBUX_NOSPACE);
-			remove_last_dir_from_path(path_buf);
 		}
 		if (ret != GLOBUX_SUCCESS)
 		{
