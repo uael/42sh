@@ -12,11 +12,37 @@
 
 #include "ush/exp.h"
 
+int	onparentheses(t_sds *word, char **words, t_vec *av, char quote)
+{
+	int		i;
+	int		depth;
+
+	if (*(*words + 2) == '(')
+	{
+		i = 3;
+		depth = 0;
+		while ((*words)[i] && !(!depth && (*words)[i] == ')'))
+		{
+			if ((*words)[i] == '(')
+				++depth;
+			else if ((*words)[i] == ')')
+				--depth;
+			++i;
+		}
+		if ((*words)[i] == ')' && (*words)[i + 1] == ')')
+		{
+			*words += 3;
+			return (sh_exparith(word, words, 0));
+		}
+	}
+	*words += 2;
+	return (sh_expcomm(word, words, quote ? NULL : av));
+}
+
 int	sh_expdollars(t_sds *word, char **words, t_vec *av, char quote)
 {
 	char	c;
-	int		i;
-	int		depth;
+
 
 	c = *(*words + 1);
 	if (!c || c == '\'' || c == '"')
@@ -25,28 +51,7 @@ int	sh_expdollars(t_sds *word, char **words, t_vec *av, char quote)
 		return (YEP);
 	}
 	else if (c == '(')
-	{
-		if (*(*words + 2) == '(')
-		{
-			i = 3;
-			depth = 0;
-			while ((*words)[i] && !(!depth && (*words)[i] == ')'))
-			{
-				if ((*words)[i] == '(')
-					++depth;
-				else if ((*words)[i] == ')')
-					--depth;
-				++i;
-			}
-			if ((*words)[i] == ')' && (*words)[i + 1] == ')')
-			{
-				*words += 3;
-				return (sh_exparith(word, words, 0));
-			}
-		}
-		*words += 2;
-		return (sh_expcomm(word, words, quote ? NULL : av));
-	}
+		return (onparentheses(word, words, av, quote));
 	else if (c == '[')
 	{
 		*words += 2;
