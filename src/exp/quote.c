@@ -1,27 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ush.h                                              :+:      :+:    :+:   */
+/*   exp/comm.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/23 17:28:28 by null             ###   ########.fr       */
+/*   Updated: 2018/01/06 11:10:01 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef USH_H
-# define USH_H
+#include "ush/exp.h"
 
-# include "ush/bi.h"
-# include "ush/env.h"
-# include "ush/err.h"
-# include "ush/lex.h"
-# include "ush/eval.h"
-# include "ush/exp.h"
-# include "ush/shell.h"
-# include "ush/tok.h"
-# include "ush/var.h"
-# include "ush/word.h"
+int	sh_expdquote(t_sds *word, char **words, t_vec *av)
+{
+	--*words;
+	while (*++*words)
+		if (**words == '"')
+			return (YEP);
+		else if (**words == '$')
+			sh_expdollars(word, words, av, 1);
+		else if (**words == '`')
+		{
+			++*words;
+			sh_expbacktick(word, words, av);
+		}
+		else if (**words == '\\')
+			sh_expbackslash(word, words, 1);
+		else
+			*ft_sdspush(word) = **words;
+	return (NOP);
+}
 
-#endif
+int	sh_expsquote(t_sds *word, char **words)
+{
+	return (42);
+}
