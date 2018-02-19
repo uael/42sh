@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "ush/eval.h"
+#include "ush/exp.h"
 
 static inline char		**makeenv(t_map *vars, t_bool *owned)
 {
@@ -44,7 +45,7 @@ static inline int		makeargv(t_job *job, t_vec *av, t_deq *toks, char **ln)
 	while (tok)
 		if (TOK_ISWORD(tok->id))
 		{
-			av ? sh_wordexplode(av, *ln + tok->pos, tok->len) : 0;
+			av ? sh_expword(av, *ln + tok->pos, tok->len, 0) : 0;
 			tok = sh_toknext(toks);
 		}
 		else if (TOK_ISREDIR(tok->id))
@@ -72,7 +73,7 @@ static inline t_proc	*explodesome(t_vec *av, t_job *job, t_deq *t, char **ln)
 	{
 		if (!tok || !TOK_ISWORD(tok->id))
 			return (NULL);
-		sh_wordexplode(av, *ln + tok->pos, tok->len);
+		sh_expword(av, *ln + tok->pos, tok->len, 0);
 		tok = sh_toknext(t);
 	}
 	prc = ft_vecback((t_vec *)&job->procs);

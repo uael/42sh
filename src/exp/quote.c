@@ -23,7 +23,7 @@ int	sh_expdquote(t_sds *word, char **words, t_vec *av)
 		else if (**words == '`')
 		{
 			++*words;
-			sh_expbacktick(word, words, av);
+			sh_expbacktick(word, words, NULL);
 		}
 		else if (**words == '\\')
 			sh_expbackslash(word, words, 1);
@@ -34,5 +34,11 @@ int	sh_expdquote(t_sds *word, char **words, t_vec *av)
 
 int	sh_expsquote(t_sds *word, char **words)
 {
-	return (42);
+	--*words;
+	while (*++*words)
+		if (**words != '\'')
+			*ft_sdspush(word) = **words;
+		else
+			return (YEP);
+	return (NOP);
 }

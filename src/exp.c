@@ -53,19 +53,19 @@ int		exploop1(t_sds *word, char **words, t_vec *av)
 		sh_expdollars(word, words, av, 0);
 	else if (**words == '`')
 	{
-		++words;
+		++*words;
 		sh_expbacktick(word, words, av);
 	}
 	else if (**words == '"')
 	{
-		++words;
+		++*words;
 		sh_expdquote(word, words, av);
 		if (!word->len)
 			*(char **)ft_vecpush(av) = ft_strdup("");
 	}
 	else if (**words == '\'')
 	{
-		++words;
+		++*words;
 		sh_expsquote(word, words);
 		if (!word->len)
 			*(char **)ft_vecpush(av) = ft_strdup("");
@@ -97,13 +97,15 @@ int		exploop(t_sds *word, char *words, t_vec *av)
 	return (0);
 }
 
-int		sh_wordexp(t_vec *av, char const *src, size_t n, t_bool quote)
+int		sh_expword(t_vec *av, char const *src, size_t n, t_bool quote)
 {
 	t_sds	word;
 	char	*words;
+	char	*sv;
 	int		st;
 
-	words = alloca(n + (quote ? 3 : 1));
+	words = ft_malloc(n + (quote ? 3 : 1));
+	sv = words;
 	if (quote)
 	{
 		*words = '"';
@@ -117,6 +119,10 @@ int		sh_wordexp(t_vec *av, char const *src, size_t n, t_bool quote)
 	g_origin = words;
 	ft_sdsctor(&word);
 	st = exploop(&word, words, av);
-	ft_sdsdtor(&word);
+	if (word.len)
+		*(char **)ft_vecpush(av) = word.buf;
+	else
+		ft_sdsdtor(&word);
+	free(sv);
 	return (st);
 }

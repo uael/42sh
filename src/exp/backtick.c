@@ -29,5 +29,6 @@ int	sh_expbacktick(t_sds *word, char **words, t_vec *av)
 			quote ^= 1;
 		else
 			*ft_sdspush(&comm) = **words;
+	ft_sdsdtor(&comm);
 	return (NOP);
 }

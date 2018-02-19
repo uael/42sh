@@ -103,6 +103,9 @@ void	readproc(int fd, t_sds *word, t_vec *av)
 
 int	sh_expcomm(t_sds *word, char **words, t_vec *av)
 {
+	(void)word;
+	(void)words;
+	(void)av;
 	return (42);
 }
 

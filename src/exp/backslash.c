@@ -14,5 +14,17 @@
 
 int	sh_expbackslash(t_sds *word, char **words, t_bool quote)
 {
-	return (42);
+	char c;
+
+	c = *(*words + 1);
+	if (!c)
+		return (NOP);
+	if (c != '\n')
+	{
+		if (quote && !ft_strchr("$`\"\\", c))
+			*ft_sdspush(word) = '\\';
+		*ft_sdspush(word) = c;
+	}
+	++*words;
+	return (YEP);
 }

@@ -54,5 +54,8 @@ extern char		*ft_strstr(char const *haystack, char const *needle);
 extern size_t	ft_strword(char const *s, char c, char e);
 extern char		*ft_strscpy(char **dst, size_t *n, char *src);
 extern char		*ft_strrschr(char const *beg, char const *end, char c);
+extern char		*ft_stpcpy(char *dest, char const *src);
+extern size_t	ft_strspn(const char *s, const char *accept);
+extern size_t	ft_strcspn(const char *s, const char *reject);
 
 #endif

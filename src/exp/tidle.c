@@ -14,5 +14,8 @@
 
 int	sh_exptidle(t_sds *word, char **words, size_t wc)
 {
+	(void)word;
+	(void)words;
+	(void)wc;
 	return (42);
 }

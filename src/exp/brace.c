@@ -14,5 +14,8 @@
 
 int	sh_expbrace(t_sds *word, char **words, t_vec *av)
 {
+	(void)word;
+	(void)words;
+	(void)av;
 	return (42);
 }

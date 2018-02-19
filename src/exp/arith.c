@@ -14,5 +14,8 @@
 
 int	sh_exparith(t_sds *word, char **words, t_bool brackets)
 {
+	(void)word;
+	(void)words;
+	(void)brackets;
 	return (42);
 }
