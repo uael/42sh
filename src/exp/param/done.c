@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exp/param.c                                        :+:      :+:    :+:   */
+/*   exp/param/done.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,30 +12,11 @@
 
 #include "ush/exp.h"
 
-int	sh_expparam(t_sds *word, char **words, t_vec *av, t_bool quoted)
+int	sh_expparamdone(t_param *param, int st, char *value, t_bool freev)
 {
-	int		st;
-	t_param	param;
-
-	ft_bzero(&param, sizeof(t_param));
-	param.start = *words;
-	param.quoted = quoted;
-	if ((param.brace = (t_bool)(**words == '{')))
-		++*words;
-	if (**words == '#')
-	{
-		param.hash = 1;
-		if (!param.brace)
-			return (sh_expparamsubst(word, words, av, &param));
-		++*words;
-	}
-	if ((st = sh_expparamenv(word, words, av, &param)))
-		return (st == NOP ? NOP : YEP);
-	if (param.brace)
-	{
-		if ((st = sh_expparampattern(word, words, av, &param)))
-			return (st == NOP ? NOP : YEP);
-	}
-	--*words;
-	return (sh_expparamsubst(word, words, av, &param));
+	if (freev && value)
+		free(value);
+	ft_sdsdtor(&param->env);
+	ft_sdsdtor(&param->pattern);
+	return (st);
 }

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exp/param.c                                        :+:      :+:    :+:   */
+/*   exp/param/env.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,30 +12,29 @@
 
 #include "ush/exp.h"
 
-int	sh_expparam(t_sds *word, char **words, t_vec *av, t_bool quoted)
+int	sh_expparamenv(t_sds *word, char **words, t_vec *av, t_param *param)
 {
-	int		st;
-	t_param	param;
-
-	ft_bzero(&param, sizeof(t_param));
-	param.start = *words;
-	param.quoted = quoted;
-	if ((param.brace = (t_bool)(**words == '{')))
-		++*words;
-	if (**words == '#')
+	if (ft_isalpha(**words) || **words == '_')
 	{
-		param.hash = 1;
-		if (!param.brace)
-			return (sh_expparamsubst(word, words, av, &param));
-		++*words;
+		*ft_sdspush(&param->env) = **words;
+		while (ft_isalnum(*++*words) || **words == '_')
+			*ft_sdspush(&param->env) = **words;
 	}
-	if ((st = sh_expparamenv(word, words, av, &param)))
-		return (st == NOP ? NOP : YEP);
-	if (param.brace)
+	else if (ft_isdigit(**words))
 	{
-		if ((st = sh_expparampattern(word, words, av, &param)))
-			return (st == NOP ? NOP : YEP);
+		param->special = 1;
+		*ft_sdspush(&param->env) = **words;
+		if (!param->brace)
+			return (sh_expparamsubst(word, words, av, param));
+		while (ft_isdigit(*++*words) || **words == '_')
+			*ft_sdspush(&param->env) = **words;
 	}
-	--*words;
-	return (sh_expparamsubst(word, words, av, &param));
+	else if (ft_strchr("*@$", **words))
+	{
+		param->special = 1;
+		*ft_sdspush(&param->env) = *(*words)++;
+	}
+	else if (param->brace)
+		return (NOP);
+	return (YEP);
 }

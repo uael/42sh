@@ -15,9 +15,12 @@
 
 # include <libft.h>
 
-extern char	*g_ifs;
-extern char	g_ifsw[4];
-extern char	*g_origin;
+# define ACT_ISRP(A) ((A)=='#'||(A)=='L'||(A)=='%'||(A)=='R')
+# define ACT_ISNULL(A) ((A)=='?'||(A)=='-'||(A)=='=')
+
+extern char		*g_ifs;
+extern char		g_ifsw[4];
+extern char		*g_origin;
 
 enum e_act
 {
@@ -32,35 +35,36 @@ enum e_act
 	ACT_NULL_ASSIGN = '='
 };
 
-#define ACT_ISRP(A) ((A)=='#'||(A)=='L'||(A)=='%'||(A)=='R')
-#define ACT_ISNULL(A) ((A)=='?'||(A)=='-'||(A)=='=')
-
 typedef struct	s_param
 {
+	t_bool		brace : 1;
+	t_bool		special : 1;
+	t_bool		hash : 1;
+	t_bool		colon : 1;
+	t_bool		quoted : 1;
 	char		*start;
-	t_bool		brace;
-	t_bool		special;
-	t_bool		hash;
-	t_bool		colon;
-	t_bool		quoted;
 	t_sds		env;
 	t_sds		pattern;
 	enum e_act	act;
 }				t_param;
 
-extern int	sh_expwords(t_vec *av, char const *src, size_t n);
-extern int	sh_expword(t_sds *word, char const *src, size_t n);
-extern int	sh_exparith(t_sds *word, char **words, t_bool brackets);
-extern int	sh_expbackslash(t_sds *word, char **words, t_bool quote);
-extern int	sh_expbacktick(t_sds *word, char **words, t_vec *av);
-extern int	sh_expbrace(t_sds *word, char **words, t_vec *av);
-extern int	sh_expcomm(t_sds *word, char **words, t_vec *av);
-extern int	sh_expcommexec(t_sds *word, t_sds *comm, t_vec *av);
-extern int	sh_expdollars(t_sds *word, char **words, t_vec *av, char quote);
-extern int	sh_expglob(t_sds *word, char **words, t_vec *av);
-extern int	sh_expparam(t_sds *word, char **words, t_vec *av, t_bool quoted);
-extern int	sh_expdquote(t_sds *word, char **words, t_vec *av);
-extern int	sh_expsquote(t_sds *word, char **words);
-extern int	sh_exptidle(t_sds *word, char **words, size_t wc);
+extern int		sh_expwords(t_vec *av, char const *src, size_t n);
+extern int		sh_expword(t_sds *word, char const *src, size_t n);
+extern int		sh_exparith(t_sds *word, char **words, t_bool brackets);
+extern int		sh_expbackslash(t_sds *word, char **words, t_bool quote);
+extern int		sh_expbacktick(t_sds *word, char **words, t_vec *av);
+extern int		sh_expbrace(t_sds *word, char **words, t_vec *av);
+extern int		sh_expcomm(t_sds *word, char **words, t_vec *av);
+extern int		sh_expcommexec(t_sds *word, t_sds *comm, t_vec *av);
+extern int		sh_expdollars(t_sds *word, char **words, t_vec *av, char quote);
+extern int		sh_expglob(t_sds *word, char **words, t_vec *av);
+extern int		sh_expparam(t_sds *w, char **words, t_vec *av, t_bool quoted);
+extern int		sh_expparamsubst(t_sds *w, char **words, t_vec *av, t_param *p);
+extern int		sh_expparamdone(t_param *param, int st, char *value, t_bool f);
+extern int		sh_expparamenv(t_sds *w, char **words, t_vec *av, t_param *p);
+extern int		sh_expparampattern(t_sds *w, char **ws, t_vec *a, t_param *p);
+extern int		sh_expdquote(t_sds *word, char **words, t_vec *av);
+extern int		sh_expsquote(t_sds *word, char **words);
+extern int		sh_exptidle(t_sds *word, char **words, size_t wc);
 
 #endif
