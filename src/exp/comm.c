@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <wait.h>
+#include <sys/wait.h>
 
 #include "ush/shell.h"
 #include "ush/eval.h"
