@@ -132,14 +132,14 @@ int envsubst(t_param *p, char **words, t_vec *av, t_sds *word)
 		}
 		else if (value && (*value || !p->colon))
 			expp = 1;
-		if (expp)
+		if (expp && p->pattern.len)
 		{
 			char	*pat;
 			int		quoted;
 
 			quoted = 0;
 			pat = ft_strcpy(ft_malloc(p->pattern.len + 1), p->pattern.buf) - 1;
-			beg = pat;
+			beg = pat + 1;
 			p->pattern.len = 0;
 			while (*++pat)
 			{
@@ -347,23 +347,29 @@ int envsubst(t_param *p, char **words, t_vec *av, t_sds *word)
 			}
 		}
 	}
-	ft_sdsdtor(&p->env);
-	ft_sdsdtor(&p->pattern);
 	if (p->hash)
 	{
 		l = ft_intstr(buf, (int64_t)(value ? ft_strlen(value) : 0), 10);
 		ft_sdsmpush(word, buf, l);
 		if (freev)
 			free(value);
+		ft_sdsdtor(&p->env);
+		ft_sdsdtor(&p->pattern);
 		return (2);
 	}
 	if (!value)
+	{
+		ft_sdsdtor(&p->env);
+		ft_sdsdtor(&p->pattern);
 		return (2);
+	}
 	if (p->quoted || !av)
 	{
 		ft_sdsapd(word, value);
 		if (freev)
 			free(value);
+		ft_sdsdtor(&p->env);
+		ft_sdsdtor(&p->pattern);
 		return (2);
 	}
 	else
@@ -392,6 +398,8 @@ int envsubst(t_param *p, char **words, t_vec *av, t_sds *word)
 		}
 		free(value);
 	}
+	ft_sdsdtor(&p->env);
+	ft_sdsdtor(&p->pattern);
 	return (2);
 }
 
