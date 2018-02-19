@@ -43,7 +43,6 @@ int	sh_expdollars(t_sds *word, char **words, t_vec *av, char quote)
 {
 	char	c;
 
-
 	c = *(*words + 1);
 	if (!c || c == '\'' || c == '"')
 	{
