@@ -69,7 +69,11 @@ static inline int	varuser(int fd, t_tok *tok, char **it, char **ln)
 	return (YEP);
 }
 
-inline int			sh_lexvar(int fd, t_tok *tok, char **it, char **ln)
+/*
+** TODO: just check for matching } or )
+*/
+
+inline int			sh_lexdollar(int fd, t_tok *tok, char **it, char **ln)
 {
 	int		st;
 

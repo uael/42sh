@@ -45,13 +45,12 @@ SRC_NAME = \
 	eval/rout.c eval/sep.c eval/simple.c eval/subshell.c \
 	exp.c exp/arith.c exp/backslash.c exp/backtick.c exp/brace.c exp/comm.c \
 	exp/dollars.c exp/glob.c exp/param.c exp/quote.c exp/tidle.c \
-	lex.c lex/heredoc.c lex/op.c lex/utils.c lex/var.c lex/word.c \
+	lex.c lex/heredoc.c lex/op.c lex/utils.c lex/dollar.c lex/word.c \
 	main.c \
 	prompt.c \
 	shell.c \
 	tok.c \
-	var.c var/expand.c \
-	word/explode.c word/resolve.c
+	var.c
 
 3TH = $(addprefix $(3TH_PATH)/, $(3TH_NAME))
 OBJ = $(addprefix $(OBJ_PATH)/, $(SRC_NAME:.c=.o))

@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "ush/eval.h"
+#include "ush/exp.h"
 
 #define UEH "Expected `<word>' after redirection `%s' got `%s'"
 #define AMB ": Ambiguous redirect\n"
@@ -24,8 +25,9 @@ inline char		*sh_redirword(t_job *job, char *dst, t_deq *toks, char *ln)
 
 	proc = ft_vecback((t_vec *)&job->procs);
 	tok = sh_tokpeek(toks);
-	if (!sh_wordresolve(&word, ln + tok->pos, tok->len, NULL) ||
-		word.len >= PATH_MAX)
+	ft_sdsctor(&word);
+	if (sh_expword(&word, ln + tok->pos, tok->len) ||
+		word.len >= PATH_MAX || !word.len)
 	{
 		ft_sdsdtor(&word);
 		ps_procerr(proc, ft_strcat(ft_strncpy(buf, ln + tok->pos,

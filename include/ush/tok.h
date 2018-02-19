@@ -18,7 +18,6 @@
 
 # include "err.h"
 # include "var.h"
-# include "word.h"
 
 # define ISREOL(IT) (*(IT) == '\n')
 # define ISWEOL(IT) (*(IT) == '\r' && *((IT) + 1) == '\n')

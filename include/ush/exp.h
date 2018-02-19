@@ -48,7 +48,8 @@ typedef struct	s_param
 	enum e_act	act;
 }				t_param;
 
-extern int	sh_expword(t_vec *av, char const *src, size_t n, t_bool quote);
+extern int	sh_expwords(t_vec *av, char const *src, size_t n);
+extern int	sh_expword(t_sds *word, char const *src, size_t n);
 extern int	sh_exparith(t_sds *word, char **words, t_bool brackets);
 extern int	sh_expbackslash(t_sds *word, char **words, t_bool quote);
 extern int	sh_expbacktick(t_sds *word, char **words, t_vec *av);

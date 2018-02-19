@@ -97,24 +97,16 @@ int		exploop(t_sds *word, char *words, t_vec *av)
 	return (0);
 }
 
-int		sh_expword(t_vec *av, char const *src, size_t n, t_bool quote)
+int		sh_expwords(t_vec *av, char const *src, size_t n)
 {
 	t_sds	word;
 	char	*words;
 	char	*sv;
 	int		st;
 
-	words = ft_malloc(n + (quote ? 3 : 1));
+	words = ft_malloc(n + 1);
 	sv = words;
-	if (quote)
-	{
-		*words = '"';
-		ft_memcpy(words + 1, src, n);
-		*(words + n + 1) = '"';
-		*(words + n + 2) = '\0';
-	}
-	else
-		ft_strncpy(words, src, n);
+	ft_strncpy(words, src, n);
 	expifs();
 	g_origin = words;
 	ft_sdsctor(&word);
@@ -123,6 +115,25 @@ int		sh_expword(t_vec *av, char const *src, size_t n, t_bool quote)
 		*(char **)ft_vecpush(av) = word.buf;
 	else
 		ft_sdsdtor(&word);
+	free(sv);
+	return (st);
+}
+
+int		sh_expword(t_sds *word, char const *src, size_t n)
+{
+	char	*words;
+	char	*sv;
+	int		st;
+
+	words = ft_malloc(n + 3);
+	sv = words;
+	*words = '"';
+	ft_memcpy(words + 1, src, n);
+	*(words + n + 1) = '"';
+	*(words + n + 2) = '\0';
+	expifs();
+	g_origin = words;
+	st = exploop(word, words, NULL);
 	free(sv);
 	return (st);
 }

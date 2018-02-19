@@ -12,7 +12,6 @@
 
 #ifndef USH_WORD_H
 # define USH_WORD_H
-
 # include "var.h"
 # include "tok.h"
 

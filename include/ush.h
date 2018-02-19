@@ -22,6 +22,5 @@
 # include "ush/shell.h"
 # include "ush/tok.h"
 # include "ush/var.h"
-# include "ush/word.h"
 
 #endif
