@@ -43,22 +43,22 @@ inline char		*ft_stpcpy(char *dest, char const *src)
 
 inline size_t	ft_strspn(const char *s, const char *accept)
 {
-	const char *p;
-	const char *a;
-	size_t count;
+	const char	*p;
+	const char	*a;
+	size_t		c;
 
-	count = 0;
+	c = 0;
 	p = s - 1;
 	while (*++p)
 	{
 		a = accept - 1;
 		while (*++a)
 			if (*p == *a)
-				break;
+				break ;
 		if (*a == '\0')
-			return (count);
+			return (c);
 		else
-			++count;
+			++c;
 	}
-	return (count);
+	return (c);
 }

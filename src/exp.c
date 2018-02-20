@@ -12,11 +12,11 @@
 
 #include "ush/exp.h"
 
-char	*g_ifs;
-char	g_ifsw[4];
-char	*g_origin;
+char		*g_ifs;
+char		g_ifsw[4];
+char		*g_origin;
 
-void	expifs()
+static void	expifs(void)
 {
 	char *ifsch;
 	char *whch;
@@ -45,7 +45,7 @@ void	expifs()
 	}
 }
 
-int		exploop1(t_sds *word, char **words, t_vec *av)
+static int	exploop1(t_sds *word, char **words, t_vec *av)
 {
 	if (**words == '\\')
 		sh_expbackslash(word, words, 0);
@@ -56,9 +56,8 @@ int		exploop1(t_sds *word, char **words, t_vec *av)
 		++*words;
 		sh_expbacktick(word, words, av);
 	}
-	else if (**words == '"')
+	else if (**words == '"' && ++*words)
 	{
-		++*words;
 		sh_expdquote(word, words, av);
 		if (!word->len)
 			*(char **)ft_vecpush(av) = ft_strdup("");
@@ -71,11 +70,11 @@ int		exploop1(t_sds *word, char **words, t_vec *av)
 			*(char **)ft_vecpush(av) = ft_strdup("");
 	}
 	else
-		return (0);
-	return (1);
+		return (YEP);
+	return (NOP);
 }
 
-int		exploop(t_sds *word, char *words, t_vec *av)
+static int	exploop(t_sds *word, char *words, t_vec *av)
 {
 	--words;
 	while (*++words)
@@ -94,10 +93,10 @@ int		exploop(t_sds *word, char *words, t_vec *av)
 		}
 		else
 			*ft_sdspush(word) = *words;
-	return (0);
+	return (YEP);
 }
 
-int		sh_expwords(t_vec *av, char const *src, size_t n)
+int			sh_expwords(t_vec *av, char const *src, size_t n)
 {
 	t_sds	word;
 	char	*words;
@@ -119,7 +118,7 @@ int		sh_expwords(t_vec *av, char const *src, size_t n)
 	return (st);
 }
 
-int		sh_expword(t_sds *word, char const *src, size_t n)
+int			sh_expword(t_sds *word, char const *src, size_t n)
 {
 	char	*words;
 	char	*sv;

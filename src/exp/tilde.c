@@ -19,7 +19,7 @@ static void	exptilde(t_sds *word)
 {
 	struct passwd	pwd;
 	struct passwd	*tpwd;
-	char*			home;
+	char			*home;
 	char			buffer[PATH_MAX];
 
 	if ((home = sh_varget("HOME", g_env)))
@@ -39,7 +39,7 @@ static void	exptildeuser(t_sds *word, char **words, size_t i)
 {
 	struct passwd	pwd;
 	struct passwd	*tpwd;
-	char*			user;
+	char			*user;
 	char			buffer[PATH_MAX];
 
 	user = ft_strndup(*words + 1, i);
@@ -67,7 +67,7 @@ int			sh_exptilde(t_sds *word, char **words, size_t wordc)
 	while ((*words)[++i])
 	{
 		if ((*words)[i] == ':' || (*words)[i] == '/' || (*words)[i] == ' ' ||
-			(*words)[i] == '\t' || (*words)[i] == 0 )
+			(*words)[i] == '\t' || (*words)[i] == 0)
 			break ;
 		if ((*words)[i] == '\\')
 		{

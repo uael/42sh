@@ -58,7 +58,7 @@ SRC_NAME = \
 	math/v3.c math/v3_2.c math/eq.c math/eq_2.c \
 	mem/alloc.c \
 	str/mem.c str/mem_2.c str/str.c str/str_2.c str/str_3.c str/str_4.c \
-	str/str_5.c str/str_6.c str/str_7.c \
+	str/str_5.c str/str_6.c \
 	getopt.c
 
 3TH = $(addprefix $(3TH_PATH)/, $(3TH_NAME))

@@ -43,8 +43,10 @@ static int	brackets(int fd, t_tok *tok, char **it, char **ln)
 		if (!i && (!**it || br))
 			break ;
 		if (!**it && (fd < 0 || (st = rl_catline(fd, 0, ln, it)) || !**it))
+		{
 			return (LEX_SHOWE(st, fd) ?
 				sh_synerr(*ln, *it, UEE, stack[i - 1]) : OUF);
+		}
 		if (ft_strchr("[{(", **it))
 			stack[i++] = bracket(**it);
 		else if ((br = ft_strchr("]})", **it)) && !i)
