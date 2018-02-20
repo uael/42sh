@@ -16,7 +16,7 @@
 #include "ush/eval.h"
 #include "ush/exp.h"
 
-int	expcommchild(char *ln)
+static int	expcommchild(char *ln)
 {
 	t_scope	*sh;
 	int		st;
@@ -33,15 +33,54 @@ int	expcommchild(char *ln)
 	return (st);
 }
 
-int	sh_expcomm(t_sds *word, char **words, t_vec *av)
+static void	onquote(int *quoted, char quote)
 {
-	(void)word;
-	(void)words;
-	(void)av;
+	if (quote == '\'')
+	{
+		if (*quoted == 0)
+			*quoted = 1;
+		else if (*quoted == 1)
+			*quoted = 0;
+	}
+	else if (quote == '"')
+	{
+		if (*quoted == 0)
+			*quoted = 2;
+		else if (*quoted == 2)
+			*quoted = 0;
+	}
+}
+
+int			sh_expcomm(t_sds *word, char **words, t_vec *av)
+{
+	int		quoted;
+	int		depth;
+	t_sds	comm;
+
+	depth = 1;
+	quoted = 0;
+	ft_sdsctor(&comm);
+	while (**words)
+	{
+		if (**words == '\'' || **words == '"')
+			onquote(&quoted, **words);
+		else if (**words == ')')
+		{
+			if (!quoted && --depth == 0)
+			{
+				if (comm.len)
+					return (sh_expcommexec(word, &comm, av));
+			}
+		}
+		else if (**words == ')' && !quoted)
+			++depth;
+		*ft_sdspush(&comm) = **words;
+		++*words;
+	}
 	return (42);
 }
 
-int	sh_expcommexec(t_sds *word, t_sds *comm, t_vec *av)
+int			sh_expcommexec(t_sds *word, t_sds *comm, t_vec *av)
 {
 	t_proc	proc;
 	int		fds[2];
