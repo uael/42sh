@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 20:57:25 by mc                #+#    #+#             */
-/*   Updated: 2018/02/20 12:37:09 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/20 12:41:56 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ typedef struct s_match	t_match;
 struct					s_match
 {
 	t_match	*next;
-	t_byte	buf[1];
+	t_byte	buf[sizeof(void *)];
 };
 
 

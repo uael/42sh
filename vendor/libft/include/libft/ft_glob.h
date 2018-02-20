@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/08 23:55:49 by mc                #+#    #+#             */
-/*   Updated: 2018/02/20 11:11:48 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/20 12:42:56 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,7 @@ struct					s_glob
 	char	**gl_pathv;  /* List of matched pathnames.  */
 	size_t	gl_offs;     /* Slots to reserve in gl_pathv.  */
     int		gl_flags;    /* Set to FLAGS, maybe | GLOBUX_MAGCHAR.  */
+    int     gl_padding;  /* Just for struct padding */
 };
 
 /*
