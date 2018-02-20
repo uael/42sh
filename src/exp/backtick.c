@@ -19,8 +19,8 @@ int	sh_expbacktick(t_sds *word, char **words, t_vec *av)
 
 	quote = 0;
 	ft_sdsctor(&comm);
-	--*words;
-	while (*++*words)
+	while (**words)
+	{
 		if (**words == '`')
 			return (sh_expcommexec(word, &comm, av));
 		else if (**words == '\\')
@@ -29,6 +29,8 @@ int	sh_expbacktick(t_sds *word, char **words, t_vec *av)
 			quote ^= 1;
 		else
 			*ft_sdspush(&comm) = **words;
+		++*words;
+	}
 	ft_sdsdtor(&comm);
 	return (NOP);
 }

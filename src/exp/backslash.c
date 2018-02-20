@@ -16,8 +16,7 @@ int	sh_expbackslash(t_sds *word, char **words, t_bool quote)
 {
 	char c;
 
-	c = *(*words + 1);
-	if (!c)
+	if (!(c = *(*words + 1)))
 		return (NOP);
 	if (c != '\n')
 	{
