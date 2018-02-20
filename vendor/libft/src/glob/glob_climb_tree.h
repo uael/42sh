@@ -6,45 +6,26 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 20:57:25 by mc                #+#    #+#             */
-/*   Updated: 2018/02/18 21:42:45 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/20 13:37:55 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GLOB_CLIMB_TREE_H
 # define GLOB_CLIMB_TREE_H
 
-# ifndef PATH_MAX
-#  ifdef OSX
-#   include <sys/syslimits.h> /* for PATH_MAX */
-#  endif
-#  ifdef LINUX
-#   include <linux/limits.h> /* for PATH_MAX */
-#  endif
-# endif
-
-#include <sys/types.h> /* for {open,read,close}dir */
-#include <dirent.h> /* for {open,read,close}dir */
-
-# include "libft/str.h" /* for ft_strchr */
-# include "libft/sort.h" /* for ft_shellsort */
-# include "libft/ft_glob.h" /* for t_glob and GLOBUX flags */
 # include "glob_match.h" /* for glob_match */
-
-# define IS_DIR(dirent) ((dirent)->d_type == DT_DIR)
-
-# define GLOBUX_BOOM_BABY 5
-# define GLOBUX_NOBODY_GIVES_A_DAMN 6
-/* # define GLOBUX_INITIALIZED (1 << 15) */
+# include "glob_util/glob_util.h" /* for glob_* */
 
 
-typedef unsigned char	t_byte;
-
-/* Structure describing a glob match.  */
-typedef struct s_match	t_match;
-struct					s_match
+/* Structure describing a glob tree climbing environment.  */
+typedef struct s_glob_env	t_glob_env;
+struct                      s_glob_env
 {
-	t_match	*next;
-	t_byte	buf[1];
+    t_match     *match_list;
+    char const  *pattern; //TODO: copy to a(nother) buf instead
+    char        sub_pat_buf[NAME_MAX + 1];
+    char        magic_buf[NAME_MAX + 1];
+    int         *flags;
 };
 
 
@@ -53,31 +34,13 @@ struct					s_match
 **
 ** @pat: Shell-style pattern to match, e.g. "*.[ch]".
 */
-int			glob_climb_tree(char const *pattern, t_glob *pglob, t_match **match_list);
-
-int			glob_read_dir(char const *pattern, int flags, \
-						  t_match **match_list, int depth, char const *previous_dir);
+int			glob_climb_tree(t_glob_env *glob_env);
 
 
 /*
-** in glob_list.c:
+** TODO: doc
 */
-t_match		*matchctor(char const *path, size_t len);
-void		matchdtor(t_match *match);
-void		add_match_to_list(t_match *match, t_match **match_list);
-size_t		list_len(t_match *match_list);
-
-
-/*
-** in glob_dir.c:
-*/
-int			glob_count_depth(char const *pattern);
-int			glob_open_dir(DIR **dir, char const *dir_name, int flags);
-int			glob_close_dir(DIR *dir, int flags);
-char const	*glob_get_sub_pattern(char const *pattern, int depth);
-char const *glob_get_folder_name(char const *path);
-int			glob_append_file_name(char *path_buf, char const *new_file, int flags);
-int			glob_store_dir_name(char *path_buf, char const *prev_dir, \
-								char const *new_dir);
+int			glob_read_dir(t_glob_env *glob_env, \
+                          int depth, char const *dir_name);
 
 #endif /* GLOB_CLIMB_TREE_H */

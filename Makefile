@@ -6,14 +6,19 @@
 #    By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/07 09:52:36 by alucas-           #+#    #+#              #
-#    Updated: 2018/02/18 18:45:22 by mc               ###   ########.fr        #
+#    Updated: 2018/02/20 14:06:42 by mc               ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME ?= 42sh
-CFLAGS += -Werror -Wextra -Wall
-RCFLAGS = -O2 -fomit-frame-pointer
-DCFLAGS = -g3 -DDEBUG
+WFLAGS = -Werror -Wextra -Wall
+WWFLAGS = $(WFLAGS) -Wpedantic -Wshadow -Wconversion -Wcast-align \
+-Wstrict-prototypes -Wmissing-prototypes -Wunreachable-code -Winit-self \
+-Wmissing-declarations -Wfloat-equal -Wbad-function-cast -Wundef \
+-Waggregate-return -Wstrict-overflow=5 -Wold-style-definition -Wpadded \
+-Wredundant-decls -Wall -Werror -Wextra  #-Wcast-qual
+RCFLAGS = $(WFLAGS) -O2 -fomit-frame-pointer
+DCFLAGS = $(WFLAGS) -g3 -DDEBUG
 SCFLAGS = $(DCFLAGS) -fsanitize=address,undefined -ferror-limit=5
 CC ?= gcc
 MAKE += -j4
@@ -89,6 +94,12 @@ endif
 	+$(MAKE) $(NAME).san "NAME = $(NAME).san" "CFLAGS = $(SCFLAGS)" \
 	  "OBJ_PATH = $(OBJ_DIR)/san" "CC = clang"
 
+mecry:
+ifneq ($(3TH_NAME),)
+	+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) mecry &&) true
+endif
+	+$(MAKE) $(NAME) "CFLAGS = $(WWFLAGS)" "OBJ_PATH = $(OBJ_DIR)/rel"
+
 $(NAME): $(3DE) $(OBJ)
 	$(CC) $(CFLAGS) $(INC) $(LNK) $(OBJ) $(LIB) -o $(NAME)
 	@$(PRINTF) "%-20s\033[32m✔\033[0m\n" "$(NAME): exe"
@@ -140,5 +151,5 @@ ifndef VERBOSE
  endif
 endif
 
-.PHONY: all, dev, san, $(NAME), clean, fclean, re, test, testdev, testsan, \
+.PHONY: all, dev, san, mecry, $(NAME), clean, fclean, re, test, testdev, testsan, \
   valgrind
