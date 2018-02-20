@@ -6,29 +6,11 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/14 21:56:00 by mc                #+#    #+#             */
-/*   Updated: 2018/02/20 13:57:24 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/20 16:53:44 by mcanal           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "glob_util.h"
-
-int			glob_count_depth(char const *pattern)
-{
-	int			depth;
-
-	depth = 1;
-	if (*pattern == '/')
-		pattern++;
-
-	while (*pattern)
-	{
-		if (*pattern == '/')
-			depth++;
-		pattern++;
-	}
-
-	return (depth);
-}
 
 /*
 ** Append to PATH_BUF buffer the NEW_FILE file-name
