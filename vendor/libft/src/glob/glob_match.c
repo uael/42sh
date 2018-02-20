@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 21:09:16 by mc                #+#    #+#             */
-/*   Updated: 2018/02/20 12:46:17 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/20 17:22:47 by mcanal           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,71 +16,58 @@
 
 #include "glob_match.h"
 
-static int handle_rev_char_class(char const *pat, char const *str, int flags, \
+static int		handle_rev_char_class(char const *pat, char const *str, int flags, \
 								int matched)
 {
 	if (!*pat)
 		return (FALSE); //TODO: unmatched bracket :/
-
 	if (*pat == '[' && *(pat + 1) == ']')
 		return matched & (*str != *pat) ? \
 			glob_match(pat + 2, str + 1, flags) : FALSE;
-
 	if (*pat == ']' && *(pat - 2) != '[')
 		return (matched ? glob_match(pat + 1, str + 1, flags) : FALSE);
-
-	if (*(pat + 1) == '-' && *(pat + 2) != ']') //TODO: overflow on pat?
+	if (*(pat + 1) == '-' && *(pat + 2) != ']')
 		return handle_rev_char_class(pat + 3, str, flags, \
-						matched & (*str <= *pat || *str >= *(pat + 2)));
-
+									matched & (*str <= *pat || *str >= *(pat + 2)));
 	return handle_rev_char_class(pat + 1, str, flags, \
-						matched & (*str != *pat));
+								matched & (*str != *pat));
 }
 
-static int handle_char_class(char const *pat, char const *str, int flags, \
-								int matched)
+static int		handle_char_class(char const *pat, char const *str, int flags, \
+							int matched)
 {
 	if (!*pat)
 		return (FALSE); //TODO: unmatched bracket :/
-
 	if (*pat == '[' && *(pat + 1) == ']')
 		return matched | (*str == *pat) ? \
 			glob_match(pat + 2, str + 1, flags) : FALSE;
-
 	if (*pat == ']' && *(pat - 1) != '[')
 		return (matched ? glob_match(pat + 1, str + 1, flags) : FALSE);
-
 	if (*(pat + 1) == '-' && *(pat + 2) != ']')
 		return handle_char_class(pat + 3, str, flags, \
-						matched | (*str >= *pat && *str <= *(pat + 2)));
-
+								matched | (*str >= *pat && *str <= *(pat + 2)));
 	return handle_char_class(pat + 1, str, flags, \
-						matched | (*str == *pat));
+							matched | (*str == *pat));
 }
 
-static int handle_str_wildcard(char const *pat, char const *str, int flags, \
-								  int depth)
+static int		handle_str_wildcard(char const *pat, char const *str, int flags, \
+								int depth)
 {
 	if (depth > MAX_DEPTH)
 		return (FALSE);
-
 	if (!*pat)
 		return (TRUE);
-
-	if (glob_match(pat, str, flags)) //BOOOOM BABY!
+	if (glob_match(pat, str, flags))
 		return (TRUE);
-
 	if (!*str)
 		return (glob_match(pat, str, flags));
-
 	return (handle_str_wildcard(pat, str + 1, flags, depth + 1));
 }
 
-int glob_match(char const *pat, char const *str, int flags)
+int				glob_match(char const *pat, char const *str, int flags)
 {
 	if (*pat == '\\' && !(flags & GLOBUX_NOESCAPE))
 		return (*(pat + 1) == *str ? glob_match(pat + 2, str + 1, flags) : FALSE);
-
 	if (*pat == '[')
 	{
 		if (*(pat + 1) == '!' || *(pat + 1) == '^')
@@ -88,18 +75,13 @@ int glob_match(char const *pat, char const *str, int flags)
 		else
 			return (handle_char_class(pat + 1, str, flags, FALSE));
 	}
-
 	if (*pat == '*')
 		return (handle_str_wildcard(pat + 1, str, flags, 1));
-
 	if (*pat == '?')
 		return (*str ? glob_match(pat + 1, str + 1, flags) : FALSE);
-
 	if (*pat != *str)
 		return (FALSE);
-
 	if (!*pat)
 		return (!*str ? TRUE : FALSE);
-
 	return (glob_match(pat + 1, str + 1, flags));
 }

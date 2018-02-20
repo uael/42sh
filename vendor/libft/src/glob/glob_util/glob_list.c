@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/13 09:57:56 by mc                #+#    #+#             */
-/*   Updated: 2018/02/20 13:57:51 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/20 17:19:43 by mcanal           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,9 @@ t_match	*matchctor(char const *path, size_t len)
 
 	if (!(new = malloc(sizeof(t_match) + len)))
 		return ((NULL));
-
 	ft_bzero(new, sizeof(t_match) + len);
 	ft_memcpy(new->buf, path, len);
-
-	return ((new));
+	return (new);
 }
 
 void	matchdtor(t_match *match)
@@ -30,7 +28,7 @@ void	matchdtor(t_match *match)
 	t_match *prev;
 
 	if (!match)
-		return;
+		return ;
 	prev = match;
 	match = match->next;
 	free(prev);
@@ -50,7 +48,7 @@ void	add_match_to_list(t_match *match, t_match **match_list)
 
 size_t	list_len(t_match *match_list)
 {
-	size_t ret;
+	size_t	ret;
 
 	ret = 0;
 	while (match_list)
@@ -58,6 +56,5 @@ size_t	list_len(t_match *match_list)
 		ret++;
 		match_list = match_list->next;
 	}
-
 	return (ret);
 }
