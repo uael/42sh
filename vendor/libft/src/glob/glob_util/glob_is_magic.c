@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/15 13:36:27 by mc                #+#    #+#             */
-/*   Updated: 2018/02/18 13:42:05 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/20 11:05:45 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,7 @@
 ** it is!
 */
 
-#include "libft/ft_glob.h"
-#include "glob_climb_tree.h"
+#include "glob_util.h"
 
 static t_bool		is_escaped(char const *pattern, char const *pat, int flags)
 {

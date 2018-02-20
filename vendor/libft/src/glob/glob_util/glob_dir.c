@@ -6,11 +6,11 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/14 21:56:00 by mc                #+#    #+#             */
-/*   Updated: 2018/02/18 21:41:34 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/20 11:06:51 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "glob_climb_tree.h"
+#include "glob_util.h"
 
 int			glob_count_depth(char const *pattern)
 {

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   glob.c                                             :+:      :+:    :+:   */
+/*   globux.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/08 23:54:42 by mc                #+#    #+#             */
-/*   Updated: 2018/02/18 22:07:46 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/20 11:37:11 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,7 @@
 ** find pathnames matching a pattern, free memory from globctor()
 */
 
-#include "libft/ft_glob.h"
-#include "glob_climb_tree.h"
+#include "globux.h"
 
 static int super_cmp(const void *a, const void *b, size_t n)
 {

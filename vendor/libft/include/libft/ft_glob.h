@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/08 23:55:49 by mc                #+#    #+#             */
-/*   Updated: 2018/02/18 21:41:45 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/20 11:11:48 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 #ifndef FT_GLOB_H
 # define FT_GLOB_H
 
-# include <stdlib.h>
+# include <stdlib.h> /* for malloc */
 
 /* DEBUG */
 # define DUMMY_GLOB

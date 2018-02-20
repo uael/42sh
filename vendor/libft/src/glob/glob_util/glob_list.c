@@ -6,11 +6,11 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/13 09:57:56 by mc                #+#    #+#             */
-/*   Updated: 2018/02/17 13:00:40 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/20 11:06:41 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "glob_climb_tree.h"
+#include "glob_util.h"
 
 t_match	*matchctor(char const *path, size_t len)
 {
