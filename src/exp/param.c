@@ -12,6 +12,18 @@
 
 #include "ush/exp.h"
 
+int	sh_expparamdone(t_param *param, int st)
+{
+	if (param->freev && param->val)
+		free(param->val);
+	ft_sdsdtor(&param->env);
+	return (st);
+}
+
+/*
+** TODO: allow null word param to check substitution error on lexing
+*/
+
 int	sh_expparam(t_sds *word, char **words, t_vec *av, t_bool quoted)
 {
 	int		st;
@@ -31,11 +43,7 @@ int	sh_expparam(t_sds *word, char **words, t_vec *av, t_bool quoted)
 	}
 	if ((st = sh_expparamenv(word, words, av, &param)))
 		return (st == NOP ? NOP : YEP);
-	if (param.brace)
-	{
-		if ((st = sh_expparampattern(word, words, av, &param)))
-			return (st == NOP ? NOP : YEP);
-	}
-	--*words;
+	if (!param.brace)
+		--*words;
 	return (sh_expparamsubst(word, words, av, &param));
 }

@@ -33,75 +33,6 @@ int	expcommchild(char *ln)
 	return (sh_exit(st, NULL));
 }
 
-void	readproc(int fd, t_sds *word, t_vec *av)
-{
-	ssize_t	ret;
-	char	buf[128 + 1];
-	char	*out;
-	int		copying;
-	int		eol;
-
-	eol = 0;
-	copying = 0;
-	while ((ret = read(fd, buf, 128)) > 0)
-		if (!av)
-		{
-			eol += ret;
-			ft_sdsmpush(word, buf, (size_t)ret);
-		}
-		else
-		{
-			buf[ret] = '\0';
-			out = buf - 1;
-			while (*++out)
-				if (ft_strchr(g_ifs, *out))
-				{
-					if (!ft_strchr(g_ifsw, *out))
-					{
-						if (copying == 2)
-						{
-							copying = 0;
-							continue;
-						}
-						copying = 0;
-					}
-					else
-					{
-						if (*out == '\n')
-						{
-							if (copying == 1)
-								copying = 3;
-							continue ;
-						}
-						else
-						{
-							if (copying != 1 && copying != 3)
-								continue ;
-							copying = 2;
-						}
-					}
-					*(char **)ft_vecpush(av) = ft_strdup(word->len ? word->buf : "");
-					word->len = 0;
-				}
-				else
-				{
-					if (copying == 3)
-					{
-						*(char **)ft_vecpush(av) = ft_strdup(word->len ? word->buf : "");
-						word->len = 0;
-					}
-					copying = 1;
-					if (*out == '\n')
-						++eol;
-					else
-						eol = 0;
-					*ft_sdspush(word) = *out;
-				}
-		}
-	while (eol-- && word->len > 0 && *ft_sdsback(word) == '\n')
-		word->buf[--word->len] = '\0';
-}
-
 int	sh_expcomm(t_sds *word, char **words, t_vec *av)
 {
 	(void)word;
@@ -130,7 +61,7 @@ int	sh_expcommexec(t_sds *word, t_sds *comm, t_vec *av)
 		return (YEP);
 	waitpid(-proc.pid, &status, WUNTRACED);
 	close(fds[1]);
-	readproc(fds[0], word, av);
+	sh_expcommread(fds[0], word, av);
 	close(fds[0]);
 	ps_procdtor(&proc);
 	return (YEP);

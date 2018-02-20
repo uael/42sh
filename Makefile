@@ -43,10 +43,10 @@ SRC_NAME = \
 	eval/cmp.c eval/compound.c eval/heredoc.c eval/lamp.c eval/list.c \
 	eval/pipeline.c eval/ramp.c eval/raout.c eval/redir.c eval/rin.c \
 	eval/rout.c eval/sep.c eval/simple.c eval/subshell.c \
-	exp.c exp/arith.c exp/backslash.c exp/backtick.c exp/brace.c exp/comm.c \
-	exp/dollars.c exp/glob.c exp/quote.c exp/tidle.c \
-	exp/param.c exp/param/done.c exp/param/env.c exp/param/pattern.c \
-	exp/param/subst.c \
+	exp.c exp/arith.c exp/backslash.c exp/backtick.c exp/brace.c exp/dollars.c \
+	exp/glob.c exp/quote.c exp/tidle.c \
+	exp/comm.c exp/comm/read.c \
+	exp/param.c exp/param/env.c exp/param/subst.c exp/param/val.c \
 	lex.c lex/heredoc.c lex/op.c lex/utils.c lex/dollar.c lex/word.c \
 	main.c \
 	prompt.c \

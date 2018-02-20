@@ -29,7 +29,7 @@ int	sh_expparamenv(t_sds *word, char **words, t_vec *av, t_param *param)
 		while (ft_isdigit(*++*words) || **words == '_')
 			*ft_sdspush(&param->env) = **words;
 	}
-	else if (ft_strchr("*@$", **words))
+	else if (ft_strchr("*@$?!", **words))
 	{
 		param->special = 1;
 		*ft_sdspush(&param->env) = *(*words)++;
