@@ -49,7 +49,7 @@ SRC_NAME = \
 	eval/pipeline.c eval/ramp.c eval/raout.c eval/redir.c eval/rin.c \
 	eval/rout.c eval/sep.c eval/simple.c eval/subshell.c \
 	exp.c exp/backslash.c exp/backtick.c exp/brace.c exp/dollars.c \
-	exp/glob.c exp/quote.c exp/tidle.c \
+	exp/glob.c exp/quote.c exp/tilde.c \
 	exp/arith.c exp/arith/eval.c \
 	exp/comm.c exp/comm/read.c \
 	exp/param.c exp/param/env.c exp/param/subst.c exp/param/val.c \

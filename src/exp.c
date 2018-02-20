@@ -82,7 +82,7 @@ int		exploop(t_sds *word, char *words, t_vec *av)
 		if (exploop1(word, &words, av))
 			continue ;
 		else if (*words == '~')
-			sh_exptidle(word, &words, av->len);
+			sh_exptilde(word, &words, av->len);
 		else if (*words == '{')
 			sh_expbrace(word, &words, av);
 		else if (ft_strchr("*[?", *words))
