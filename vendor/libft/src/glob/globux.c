@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/08 23:54:42 by mc                #+#    #+#             */
-/*   Updated: 2018/02/20 12:50:32 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/20 13:36:22 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,11 +63,18 @@ static t_bool copy_match_to_glob_struct(t_match *match_list, t_glob *pglob)
 	return (TRUE);
 }
 
+static void glbnvctor(t_glob_env *glob_env, char const *pattern, int *flags)
+{
+    ft_bzero(glob_env, sizeof(t_glob_env));
+    glob_env->pattern = pattern;
+    glob_env->flags = flags;
+}
+
 //TODO: handle errors with libft tools?
 int		globctor(const char *pattern, int flags, t_glob *pglob)
 {
-	t_match *match_list;
-	int		ret;
+	t_glob_env  glob_env;
+	int         ret;
 	//TODO: set GLOB_NOCHECK | GLOB_ONLYDIR in pglob when ???
 
 	if ((flags & ~__GLOBUX_FLAGS))
@@ -78,15 +85,15 @@ int		globctor(const char *pattern, int flags, t_glob *pglob)
 
 	pglob->gl_flags = flags;
 
-	match_list = NULL;
-	ret = glob_climb_tree(pattern, pglob, &match_list);
+	glbnvctor(&glob_env, pattern, &(pglob->gl_flags));
+	ret = glob_climb_tree(&glob_env);
 	if (ret != GLOBUX_SUCCESS)
 	{
-		matchdtor(match_list);
+		matchdtor(glob_env.match_list);
 		return (ret);
 	}
 
-	if (!match_list)
+	if (!glob_env.match_list)
 	{
 		if (!(flags & GLOBUX_NOCHECK))
 		{
@@ -95,13 +102,13 @@ int		globctor(const char *pattern, int flags, t_glob *pglob)
 		}
 		else
 
-		if (!(match_list = matchctor(pattern, ft_strlen(pattern))))
+		if (!(glob_env.match_list = matchctor(pattern, ft_strlen(pattern))))
 			return (GLOBUX_NOSPACE);
 	}
 
-	if (!copy_match_to_glob_struct(match_list, pglob))
+	if (!copy_match_to_glob_struct(glob_env.match_list, pglob))
 	{
-		matchdtor(match_list);
+		matchdtor(glob_env.match_list);
 		return (GLOBUX_NOSPACE);
 	}
 

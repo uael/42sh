@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   glob_dir.c                                         :+:      :+:    :+:   */
+/*   glob_path.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/14 21:56:00 by mc                #+#    #+#             */
-/*   Updated: 2018/02/20 12:52:51 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/20 13:45:39 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ int			glob_count_depth(char const *pattern)
 
 	return (depth);
 }
-
 
 /*
 ** Append to PATH_BUF buffer the NEW_FILE file-name
@@ -95,8 +94,6 @@ int			glob_store_dir_name(char *path_buf, char const *prev_dir, \
 	return (GLOBUX_SUCCESS);
 }
 
-
-
 /*
 ** get the folder name from a full path
 ** eg: path='/a/b/' -> 'b/'
@@ -126,13 +123,12 @@ char const *glob_get_folder_name(char const *path)
 **
 ** the sub-pattern is stored in some buffer, don't worry about it
 */
-char const	*glob_get_sub_pattern(char const *pattern, int depth)
+t_bool  	glob_get_sub_pattern(char *sub_pat_buf, char const *pattern, int depth)
 {
 /* TODO:
    maybe create this buffer before and send the address,
    so it won't stay forever on the stack
 */
-	static char	sub_pat_buf[NAME_MAX]; //we'll only need one buffer for all stacks
 	char const	*dir_end;
 	char const	*pat;
 	size_t		len;
@@ -152,12 +148,12 @@ char const	*glob_get_sub_pattern(char const *pattern, int depth)
 
 	len = (size_t)(dir_end - pat);
 	if (len + 1 > NAME_MAX)
-		return (NULL); // this shouldn't happen. ever
+		return (FALSE); // this shouldn't happen. ever
 
 	ft_bzero(sub_pat_buf, NAME_MAX);
 	ft_memcpy(sub_pat_buf, pat, len);
 	if (*dir_end)
 		*(sub_pat_buf + len) = '\0';
 
-	return (sub_pat_buf);
+	return (TRUE);
 }

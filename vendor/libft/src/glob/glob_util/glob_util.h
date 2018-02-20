@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 20:57:25 by mc                #+#    #+#             */
-/*   Updated: 2018/02/20 12:53:27 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/20 13:48:57 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,9 +68,7 @@ struct					s_match
 ** @pat: Shell-style pattern to match, e.g. "*.[ch]".
 ** @flags: cf ft_glob.h (GLOBUX_NOESCAPE)
 */
-char const	*is_magic(char const *pattern, int *flags);
-
-
+char const	*is_magic(char *magic_buf, char const *pattern, int *flags);
 
 /*
 ** in glob_list.c:
@@ -79,7 +77,6 @@ t_match		*matchctor(char const *path, size_t len);
 void		matchdtor(t_match *match);
 void		add_match_to_list(t_match *match, t_match **match_list);
 size_t		list_len(t_match *match_list);
-
 
 /*
 ** in glob_dir.c:
@@ -91,7 +88,7 @@ int			glob_close_dir(DIR *dir, int flags);
 /*
 ** in glob_path.c:
 */
-char const	*glob_get_sub_pattern(char const *pattern, int depth);
+t_bool  	glob_get_sub_pattern(char *sub_pat_buf, char const *pattern, int depth);
 char const *glob_get_folder_name(char const *path);
 int			glob_append_file_name(char *path_buf, char const *new_file, int flags);
 int			glob_store_dir_name(char *path_buf, char const *prev_dir, \
