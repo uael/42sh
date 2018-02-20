@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2018/01/06 11:10:01 by alucas-          ###   ########.fr       */
+/*   Updated: 2018/02/20 12:33:44 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ inline size_t			sh_varexpand(t_sds *dst, char const *src)
 	size_t	len;
 	int		n;
 
+    n = 0;
 	len = getvar(src, var);
 	if ((val = sh_varget(var, environ)))
 		ft_sdsapd(dst, val);
