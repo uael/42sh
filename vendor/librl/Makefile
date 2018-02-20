@@ -6,14 +6,14 @@
 #    By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/07 09:52:36 by alucas-           #+#    #+#              #
-#    Updated: 2018/02/12 17:11:28 by mcanal           ###   ########.fr        #
+#    Updated: 2018/02/20 11:49:50 by mc               ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME ?= librl
-CFLAGS += -Werror -Wextra -Wall
-RCFLAGS = -O2 -fomit-frame-pointer
-DCFLAGS = -g3 -DDEBUG
+WFLAGS = -Werror -Wextra -Wall
+RCFLAGS = $(WFLAGS) -O2 -fomit-frame-pointer
+DCFLAGS = $(WFLAGS) -g3 -DDEBUG
 SCFLAGS = $(DCFLAGS) -fsanitize=address,undefined -ferror-limit=5
 CC ?= gcc
 
