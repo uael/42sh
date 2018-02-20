@@ -105,8 +105,8 @@ int		sh_expwords(t_vec *av, char const *src, size_t n)
 	int		st;
 
 	words = ft_malloc(n + 1);
-	sv = words;
-	ft_strncpy(words, src, n);
+	ft_bzero(words, n + 1);
+	sv = ft_strncpy(words, src, n);
 	expifs();
 	g_origin = words;
 	ft_sdsctor(&word);
@@ -126,6 +126,7 @@ int		sh_expword(t_sds *word, char const *src, size_t n)
 	int		st;
 
 	words = ft_malloc(n + 3);
+	ft_bzero(words, n + 3);
 	sv = words;
 	*words = '"';
 	ft_memcpy(words + 1, src, n);

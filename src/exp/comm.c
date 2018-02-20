@@ -30,7 +30,7 @@ int	expcommchild(char *ln)
 		;
 	st = g_sh->status;
 	sh_unscope();
-	return (sh_exit(st, NULL));
+	return (st);
 }
 
 int	sh_expcomm(t_sds *word, char **words, t_vec *av)

@@ -115,6 +115,6 @@ int			sh_expparamval(t_sds *word, char **words, t_vec *av, t_param *p)
 	else if (p->special)
 		return (special(word, av, p));
 	else
-		p->val = sh_varget(p->env.buf, environ);
+		p->val = sh_varget(p->env.buf, g_env);
 	return (YEP);
 }

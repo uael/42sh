@@ -82,11 +82,20 @@ static inline int	prepare(t_proc *prc, pid_t pgid, int *io, int fg)
 
 int					ps_proclaunch(t_proc *proc, pid_t pgid, int *io, int fg)
 {
+	int st;
+
 	if ((prepare(proc, pgid, io, fg)))
 		return (NOP);
 	if (proc->child && g_tty)
 		g_tty = 0;
-	return (proc->kind == 0 ? YEP : g_procs[proc->kind](proc));
+	st = (proc->kind == 0 ? YEP : g_procs[proc->kind](proc));
+	if (proc->child)
+	{
+		ps_procdtor(proc);
+		g_fatalcb(st, NULL);
+	}
+	ft_dup2std(proc->scope, STD_FILENOS);
+	return (st);
 }
 
 inline int			ps_procmark(t_proc *proc, int status)

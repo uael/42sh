@@ -12,6 +12,7 @@
 
 #include "ush/env.h"
 
+char			**g_env = NULL;
 static t_vec	g_venv_stack = { 0, sizeof(char *), 0, 0 };
 static t_vec	*g_venv = &g_venv_stack;
 
@@ -40,12 +41,12 @@ inline void		sh_envinit(char **envv)
 		*(char **)ft_vecpush(g_venv) = ft_strdup(PATH_DFL);
 	*(char **)ft_vecpush(g_venv) = NULL;
 	--g_venv->len;
-	environ = g_venv->buf;
+	g_env = g_venv->buf;
 }
 
 inline char		*sh_getenv(char *var)
 {
-	return (ft_getenv(environ, var));
+	return (ft_getenv(g_env, var));
 }
 
 t_bool			sh_unsetenv(char *var, t_bool m)
@@ -53,12 +54,12 @@ t_bool			sh_unsetenv(char *var, t_bool m)
 	t_bool ret;
 
 	if ((ret = ft_unsetenv(g_venv, var, m)))
-		environ = g_venv->buf;
+		g_env = g_venv->buf;
 	return (ret);
 }
 
 void			sh_setenv(char *var, char *val)
 {
 	ft_setenv(g_venv, var, val);
-	environ = g_venv->buf;
+	g_env = g_venv->buf;
 }

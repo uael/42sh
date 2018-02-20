@@ -20,9 +20,9 @@ static inline char		**makeenv(t_map *vars, t_bool *owned)
 	uint32_t	it;
 
 	if (!(*owned = (t_bool)(vars->occupieds > 0)))
-		return (environ);
+		return (g_env);
 	ft_vecctor(e = alloca(sizeof(t_vec)), sizeof(char *));
-	envv = environ;
+	envv = g_env;
 	while (*envv)
 		*(char **)ft_vecpush(e) = ft_strdup(*envv++);
 	it = 0;

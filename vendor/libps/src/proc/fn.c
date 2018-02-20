@@ -23,12 +23,5 @@ inline void		ps_procfn(t_proc *proc, t_proccb *cb, t_dtor dtor, void *data)
 
 inline int		ps_procfnlaunch(t_proc *proc)
 {
-	proc->status = proc->u.fn.cb(proc->u.fn.data);
-	if (proc->child)
-	{
-		ps_procdtor(proc);
-		g_fatalcb(proc->status, NULL);
-	}
-	ft_dup2std(proc->scope, STD_FILENOS);
-	return (YEP);
+	return (proc->status = proc->u.fn.cb(proc->u.fn.data));
 }
