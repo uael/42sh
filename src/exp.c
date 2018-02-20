@@ -58,14 +58,14 @@ static int	exploop1(t_sds *word, char **words, t_vec *av)
 	else if (**words == '"' && ++*words)
 	{
 		sh_expdquote(word, words, av);
-		if (!word->len)
+		if (av && !word->len)
 			*(char **)ft_vecpush(av) = ft_strdup("");
 	}
 	else if (**words == '\'')
 	{
 		++*words;
 		sh_expsquote(word, words);
-		if (!word->len)
+		if (av && !word->len)
 			*(char **)ft_vecpush(av) = ft_strdup("");
 	}
 	else
@@ -73,25 +73,25 @@ static int	exploop1(t_sds *word, char **words, t_vec *av)
 	return (NOP);
 }
 
-static int	exploop(t_sds *word, char *words, t_vec *av)
+int			sh_exp(char **words, t_sds *word, t_vec *av)
 {
-	--words;
-	while (*++words)
-		if (exploop1(word, &words, av))
+	--*words;
+	while (*++*words)
+		if (exploop1(word, words, av))
 			continue ;
-		else if (*words == '~')
-			sh_exptilde(word, &words, av->len);
-		else if (*words == '{')
-			sh_expbrace(word, &words, av);
-		else if (ft_strchr("*[?", *words))
-			sh_expglob(word, &words, av);
-		else if (ft_strchr(" \t", *words))
+		else if (**words == '~')
+			sh_exptilde(word, words, av->len);
+		else if (**words == '{')
+			sh_expbrace(word, words, av);
+		else if (ft_strchr("*[?", **words))
+			sh_expglob(word, words, av);
+		else if (ft_strchr(" \t", **words) && av)
 		{
 			*(char **)ft_vecpush(av) = ft_strdup(word->len ? word->buf : "");
 			word->len = 0;
 		}
 		else
-			*ft_sdspush(word) = *words;
+			*ft_sdspush(word) = **words;
 	return (YEP);
 }
 
@@ -107,7 +107,7 @@ int			sh_expwords(t_vec *av, char const *src, size_t n)
 	sv = ft_strncpy(words, src, n);
 	expifs();
 	ft_sdsctor(&word);
-	st = exploop(&word, words, av);
+	st = sh_exp(&words, &word, av);
 	if (word.len)
 		*(char **)ft_vecpush(av) = word.buf;
 	else
@@ -122,15 +122,11 @@ int			sh_expword(t_sds *word, char const *src, size_t n)
 	char	*sv;
 	int		st;
 
-	words = ft_malloc(n + 3);
-	ft_bzero(words, n + 3);
-	sv = words;
-	*words = '"';
-	ft_memcpy(words + 1, src, n);
-	*(words + n + 1) = '"';
-	*(words + n + 2) = '\0';
+	words = ft_malloc(n + 1);
+	ft_bzero(words, n + 1);
+	sv = ft_strncpy(words, src, n);
 	expifs();
-	st = exploop(word, words, NULL);
+	st = sh_exp(&words, word, NULL);
 	free(sv);
 	return (st);
 }

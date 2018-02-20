@@ -30,8 +30,9 @@ typedef struct	s_param
 	t_sds		env;
 }				t_param;
 
-extern int		sh_expwords(t_vec *av, char const *src, size_t n);
+extern int		sh_exp(char **words, t_sds *word, t_vec *av);
 extern int		sh_expword(t_sds *word, char const *src, size_t n);
+extern int		sh_expwords(t_vec *av, char const *src, size_t n);
 extern int		sh_exparith(t_sds *word, char **words, t_bool brackets);
 extern int		sh_exparitheval(char *expr, long int *result);
 extern int		sh_expbackslash(t_sds *word, char **words, t_bool quote);

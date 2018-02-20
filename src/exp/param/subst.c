@@ -25,8 +25,7 @@ static void	splitvalue(t_sds *word, t_vec *av, t_param *p)
 	char	*next;
 	int		i;
 
-	beg = p->freev ?
-		(p->val = ft_strdup(p->val)) : p->val;
+	beg = p->val;
 	i = 0;
 	while (i || *beg)
 	{
@@ -67,6 +66,10 @@ int			sh_expparamsubst(t_sds *word, char **words, t_vec *av, t_param *p)
 	if (p->quoted || !av)
 		ft_sdsapd(word, p->val);
 	else
+	{
+		p->freev ? 0 : (p->val = ft_strdup(p->val));
+		p->freev = 1;
 		splitvalue(word, av, p);
+	}
 	return (sh_expparamdone(p, 2));
 }

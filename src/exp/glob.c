@@ -45,7 +45,7 @@ static int	globit(t_sds *word, t_vec *av, char *it)
 
 	if (glob(it, GLOB_NOCHECK, NULL, &globbuf))
 		return (THROW(WUT));
-	if (g_ifs && !*g_ifs)
+	if ((g_ifs && !*g_ifs) || !av)
 	{
 		ft_sdsapd(word, globbuf.gl_pathv[0]);
 		match = 1;
