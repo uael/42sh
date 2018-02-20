@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/08 23:54:42 by mc                #+#    #+#             */
-/*   Updated: 2018/02/20 11:37:11 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/20 12:50:32 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ static t_bool copy_match_to_glob_struct(t_match *match_list, t_glob *pglob)
 	return (TRUE);
 }
 
-//TODO: handle errors libft tools?
+//TODO: handle errors with libft tools?
 int		globctor(const char *pattern, int flags, t_glob *pglob)
 {
 	t_match *match_list;

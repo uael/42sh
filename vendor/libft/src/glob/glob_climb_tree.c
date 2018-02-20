@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 22:23:43 by mc                #+#    #+#             */
-/*   Updated: 2018/02/18 21:42:54 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/20 12:54:46 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,16 +15,6 @@
 */
 
 #include "glob_climb_tree.h"
-
-/*
-static char **handle_brace_expansion(char const *pattern)
-{
-	//TODO
-	(void)pattern;
-
-	return ((char **)42);
-}
-*/
 
 static t_bool show_hidden_files(int flags, char pat_start)
 {
@@ -139,19 +129,10 @@ int			glob_read_dir(char const *pattern, int flags, \
 
 int			glob_climb_tree(char const *pattern, t_glob *pglob, t_match **match_list)
 {
-/*
-	handle_flags(GLOBUX_TILDE | GLOBUX_TILDE_CHECK)
-
-	if '{' in pattern and GLOBUX_BRACE:
-		patterns[] = handle_brace_expansion(pattern)
-			for pat in patterns:
-				if not glob_climb_tree(patn flags)
-					return (false);
-*/
 	int			depth;
 	char const	*magic;
+	/* handle_flags(GLOBUX_TILDE | GLOBUX_TILDE_CHECK | GLOBUX_BRACE) */
 	//TODO: I guess a trailing slashes in pattern fuck everything up
-
 
 	depth = glob_count_depth(pattern);
 	if ((magic = is_magic(pattern, &(pglob->gl_flags))))
