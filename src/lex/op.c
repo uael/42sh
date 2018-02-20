@@ -78,8 +78,6 @@ inline int			sh_lexop(int fd, t_tok *tok, char **it, char **ln)
 		return (opand(fd, tok, it, ln));
 	if (**it == '|')
 		return (opor(fd, tok, it, ln));
-	if (**it == '!' && ++*it)
-		return ((tok->id = TOK_NOT) & 0);
 	if (**it == ';' && ++*it)
 		return ((tok->id = TOK_SEMICOLON) & 0);
 	if (**it == '(' && ++*it)

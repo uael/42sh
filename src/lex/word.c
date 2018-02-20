@@ -24,6 +24,7 @@ static inline int	quote(int fd, t_tok *tok, char **it, char **ln)
 
 	bs = 0;
 	st = 0;
+	q = 0;
 	(void)(++tok->len && (q = *(*it)++));
 	while (!st)
 		if (!bs && q == '"' && (st = sh_lexbslash(fd, it, ln)))
@@ -52,7 +53,7 @@ inline int			sh_lexword(int fd, t_tok *tok, char **it, char **ln)
 	st = 0;
 	bs = 0;
 	while (**it && !st)
-		if (!bs && (ft_isspace(**it) || ft_strchr("><&|!;()", **it) ||
+		if (!bs && (ft_isspace(**it) || ft_strchr("><&|;()", **it) ||
 			(st = sh_lexbslash(fd, it, ln))))
 			break ;
 		else if (bs)

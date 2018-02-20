@@ -44,7 +44,7 @@ extern int		sh_expdollars(t_sds *word, char **words, t_vec *av, char quote);
 extern int		sh_expglob(t_sds *word, char **words, t_vec *av);
 extern int		sh_expparam(t_sds *w, char **words, t_vec *av, t_bool quoted);
 extern int		sh_expparamsubst(t_sds *w, char **words, t_vec *av, t_param *p);
-extern int		sh_expparamval(t_sds *word, char **words, t_vec *av, t_param *p);
+extern int		sh_expparamval(t_sds *w, char **words, t_vec *av, t_param *p);
 extern int		sh_expparamdone(t_param *param, int st);
 extern int		sh_expparamenv(t_sds *w, char **words, t_vec *av, t_param *p);
 extern int		sh_expdquote(t_sds *word, char **words, t_vec *av);

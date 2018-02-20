@@ -37,10 +37,10 @@ static int	brackets(int fd, t_tok *tok, char **it, char **ln)
 
 	i = 0;
 	stack[i++] = bracket(**it);
-	while (1)
+	br = NULL;
+	while (++tok->len && ++*it)
 	{
-		(void)(++tok->len && ++*it);
-		if (!**it && !i)
+		if (!i && (!**it || br))
 			break ;
 		if (!**it && (fd < 0 || (st = rl_catline(fd, 0, ln, it)) || !**it))
 			return (LEX_SHOWE(st, fd) ?
@@ -51,8 +51,6 @@ static int	brackets(int fd, t_tok *tok, char **it, char **ln)
 			return (sh_synerr(*ln, *it, UEB, **it));
 		else if (br && **it != stack[--i])
 			return (sh_synerr(*ln, *it, UEC, stack[i], **it));
-		else if (!i)
-			break ;
 	}
 	return (YEP);
 }

@@ -31,7 +31,8 @@ static inline int	pipelineerr(int st, t_tok *tok, int flags, char *ln)
 	return (st);
 }
 
-static int			separator(t_deq *toks, t_job *right, t_tok *tok)
+static int			separator(t_deq *toks, t_job *right, t_tok *tok,
+	char const *ln)
 {
 	while ((tok = sh_toknext(toks)))
 		if (tok->id != TOK_EOL)
@@ -39,7 +40,7 @@ static int			separator(t_deq *toks, t_job *right, t_tok *tok)
 	ps_jobctor(right);
 	if (!(tok = sh_tokpeek(toks)))
 		return (NOP);
-	if (tok->id == TOK_NOT)
+	if (tok->len == 1 && *(ln + tok->pos) == '!')
 	{
 		right->bang = 1;
 		sh_toknext(toks);
@@ -55,7 +56,8 @@ inline int			sh_evalandor(t_job *j, int fd, t_deq *toks, char **ln)
 
 	if (!(tok = sh_tokpeek(toks)))
 		return (NOP);
-	tok->id == TOK_NOT && (j->bang = 1) ? sh_toknext(toks) : 0;
+	tok->len == 1 && *(*ln + tok->pos) == '!' &&
+		(j->bang = 1) ? sh_toknext(toks) : 0;
 	if ((st = sh_evalpipeline(j, fd, toks, ln)))
 		return (pipelineerr(st, tok, j->bang ? EBANG : 0, *ln));
 	while (1)
@@ -63,7 +65,7 @@ inline int			sh_evalandor(t_job *j, int fd, t_deq *toks, char **ln)
 			return (NOP);
 		else if (tok->id == TOK_LAND || tok->id == TOK_LOR)
 		{
-			if (separator(toks, &r, tok))
+			if (separator(toks, &r, tok, *ln))
 				return (sh_evalerr(*ln, tok, UEP, sh_tokstr(tok)));
 			if ((st = sh_evalpipeline(&r, fd, toks, ln)))
 			{
