@@ -34,6 +34,7 @@ typedef struct	s_param
 extern int		sh_expwords(t_vec *av, char const *src, size_t n);
 extern int		sh_expword(t_sds *word, char const *src, size_t n);
 extern int		sh_exparith(t_sds *word, char **words, t_bool brackets);
+extern int		sh_exparitheval(char *expr, long int *result);
 extern int		sh_expbackslash(t_sds *word, char **words, t_bool quote);
 extern int		sh_expbacktick(t_sds *word, char **words, t_vec *av);
 extern int		sh_expbrace(t_sds *word, char **words, t_vec *av);
