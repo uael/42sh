@@ -98,7 +98,7 @@ mecry:
 ifneq ($(3TH_NAME),)
 	+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) mecry &&) true
 endif
-	+$(MAKE) $(NAME).a "CFLAGS = $(WWFLAGS)" "OBJ_PATH = $(OBJ_DIR)/rel"
+	+$(MAKE) $(NAME) "CFLAGS = $(WWFLAGS)" "OBJ_PATH = $(OBJ_DIR)/rel"
 
 $(NAME): $(3DE) $(OBJ)
 	$(CC) $(CFLAGS) $(INC) $(LNK) $(OBJ) $(LIB) -o $(NAME)
