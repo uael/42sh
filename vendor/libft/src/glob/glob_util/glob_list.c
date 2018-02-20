@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/13 09:57:56 by mc                #+#    #+#             */
-/*   Updated: 2018/02/20 11:06:41 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/20 12:48:34 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ void	add_match_to_list(t_match *match, t_match **match_list)
 
 size_t	list_len(t_match *match_list)
 {
-	int ret;
+	size_t ret;
 
 	ret = 0;
 	while (match_list)
