@@ -17,7 +17,6 @@
 
 extern char		*g_ifs;
 extern char		g_ifsw[4];
-extern char		*g_origin;
 
 typedef struct	s_param
 {

@@ -14,7 +14,6 @@
 
 char		*g_ifs;
 char		g_ifsw[4];
-char		*g_origin;
 
 static void	expifs(void)
 {
@@ -107,7 +106,6 @@ int			sh_expwords(t_vec *av, char const *src, size_t n)
 	ft_bzero(words, n + 1);
 	sv = ft_strncpy(words, src, n);
 	expifs();
-	g_origin = words;
 	ft_sdsctor(&word);
 	st = exploop(&word, words, av);
 	if (word.len)
@@ -132,7 +130,6 @@ int			sh_expword(t_sds *word, char const *src, size_t n)
 	*(words + n + 1) = '"';
 	*(words + n + 2) = '\0';
 	expifs();
-	g_origin = words;
 	st = exploop(word, words, NULL);
 	free(sv);
 	return (st);
