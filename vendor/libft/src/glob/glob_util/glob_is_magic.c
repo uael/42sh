@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/15 13:36:27 by mc                #+#    #+#             */
-/*   Updated: 2018/02/20 13:49:02 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/20 13:52:42 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,6 @@ static char const	*previous_dir(char *magic_buf, char const *pattern, char const
 
 	return (pattern);
 }
-
 
 char const			*is_magic(char *magic_buf, char const *pattern, int *flags)
 {
