@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 20:57:25 by mc                #+#    #+#             */
-/*   Updated: 2018/02/20 12:36:40 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/20 12:46:15 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 ** @str: String to match.  The pattern must match the entire string.
 ** @flags: cf ft_glob.h (GLOBUX_NOESCAPE | GLOBUX_PERIOD | GLOBUX_BRACE)
 */
-t_bool		glob_match(char const *pat, char const *str, int flags);
+int		glob_match(char const *pat, char const *str, int flags);
 
 
 #endif /* GLOB_MATCH_H */

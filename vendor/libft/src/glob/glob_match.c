@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 21:09:16 by mc                #+#    #+#             */
-/*   Updated: 2018/02/20 11:12:12 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/20 12:46:17 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@
 
 #include "glob_match.h"
 
-static t_bool handle_rev_char_class(char const *pat, char const *str, int flags, \
-								t_bool matched)
+static int handle_rev_char_class(char const *pat, char const *str, int flags, \
+								int matched)
 {
 	if (!*pat)
 		return (FALSE); //TODO: unmatched bracket :/
@@ -37,8 +37,8 @@ static t_bool handle_rev_char_class(char const *pat, char const *str, int flags,
 						matched & (*str != *pat));
 }
 
-static t_bool handle_char_class(char const *pat, char const *str, int flags, \
-								t_bool matched)
+static int handle_char_class(char const *pat, char const *str, int flags, \
+								int matched)
 {
 	if (!*pat)
 		return (FALSE); //TODO: unmatched bracket :/
@@ -58,7 +58,7 @@ static t_bool handle_char_class(char const *pat, char const *str, int flags, \
 						matched | (*str == *pat));
 }
 
-static t_bool handle_str_wildcard(char const *pat, char const *str, int flags, \
+static int handle_str_wildcard(char const *pat, char const *str, int flags, \
 								  int depth)
 {
 	if (depth > MAX_DEPTH)
@@ -76,7 +76,7 @@ static t_bool handle_str_wildcard(char const *pat, char const *str, int flags, \
 	return (handle_str_wildcard(pat, str + 1, flags, depth + 1));
 }
 
-t_bool glob_match(char const *pat, char const *str, int flags)
+int glob_match(char const *pat, char const *str, int flags)
 {
 	if (*pat == '\\' && !(flags & GLOBUX_NOESCAPE))
 		return (*(pat + 1) == *str ? glob_match(pat + 2, str + 1, flags) : FALSE);

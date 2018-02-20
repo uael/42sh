@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 20:57:25 by mc                #+#    #+#             */
-/*   Updated: 2018/02/20 12:41:56 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/20 12:45:17 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@
 # include "libft/ft_glob.h" /* for t_glob and GLOBUX flags */
 # include "libft/str.h" /* for ft_str* / ft_mem* */
 # include "libft/sort.h" /* for ft_shellsort */
-# include "libft/tys.h" /* for t_bool */
 
 # ifndef PATH_MAX
 #  ifdef OSX
