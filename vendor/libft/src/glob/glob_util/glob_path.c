@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/14 21:56:00 by mc                #+#    #+#             */
-/*   Updated: 2018/02/20 13:45:39 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/20 13:57:24 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,10 +125,6 @@ char const *glob_get_folder_name(char const *path)
 */
 t_bool  	glob_get_sub_pattern(char *sub_pat_buf, char const *pattern, int depth)
 {
-/* TODO:
-   maybe create this buffer before and send the address,
-   so it won't stay forever on the stack
-*/
 	char const	*dir_end;
 	char const	*pat;
 	size_t		len;

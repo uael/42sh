@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/13 09:57:56 by mc                #+#    #+#             */
-/*   Updated: 2018/02/20 12:48:34 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/20 13:57:51 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,6 @@
 t_match	*matchctor(char const *path, size_t len)
 {
 	t_match *new;
-
-/*
-		if ((flags & GLOBUX_MARK))
-			append_slash_to_each_name();
-*/
 
 	if (!(new = malloc(sizeof(t_match) + len)))
 		return ((NULL));
