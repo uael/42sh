@@ -13,10 +13,10 @@
 PROJECT ?= 42sh
 WFLAGS = -Werror -Wextra -Wall
 WWFLAGS = $(WFLAGS) -Wpedantic -Wshadow -Wconversion -Wcast-align \
--Wstrict-prototypes -Wmissing-prototypes -Wunreachable-code -Winit-self \
--Wmissing-declarations -Wfloat-equal -Wbad-function-cast -Wundef \
--Waggregate-return -Wstrict-overflow=5 -Wold-style-definition -Wpadded \
--Wredundant-decls -Wall -Werror -Wextra  #-Wcast-qual
+  -Wstrict-prototypes -Wmissing-prototypes -Wunreachable-code -Winit-self \
+  -Wmissing-declarations -Wfloat-equal -Wbad-function-cast -Wundef \
+  -Waggregate-return -Wstrict-overflow=5 -Wold-style-definition -Wpadded \
+  -Wredundant-decls -Wall -Werror -Wextra
 RCFLAGS = $(WFLAGS) -O2 -fomit-frame-pointer
 DCFLAGS = $(WFLAGS) -g3 -DDEBUG
 SCFLAGS = $(DCFLAGS) -fsanitize=address,undefined -ferror-limit=5

@@ -94,9 +94,9 @@ static int		expbrace(int *r, t_sds *word, t_vec *av)
 
 int				sh_expbrace(t_sds *word, char **words, t_vec *av)
 {
-	int		i;
-	int		r[3];
-	int		s[3];
+	int i;
+	int r[3];
+	int s[3];
 
 	i = 1;
 	if (!ft_isdigit(*(*words + i)) && *(*words + i) != '-' &&
@@ -113,5 +113,6 @@ int				sh_expbrace(t_sds *word, char **words, t_vec *av)
 	g_sstr = NULL;
 	if (*(*words += i + 1))
 		expsuffix(words, &g_sav, &g_sstr, &g_slen);
+	--*words;
 	return (expbrace(r, word, av));
 }

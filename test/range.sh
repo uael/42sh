@@ -1,0 +1,10 @@
+echo {00..42}
+echo asd{00..11}
+echo asd{00..11}asd
+echo asd{00..11}asdasd
+echo {00..11}asdasd
+echo {00..1123}
+echo asd{00..1123}
+echo asd{00..1123}asd
+echo asd{00..1123}asdasd
+echo {00..1123}asdasd
