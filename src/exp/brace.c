@@ -12,10 +12,6 @@
 
 #include "ush/exp.h"
 
-static char		*g_sstr;
-static size_t	g_slen;
-static t_vec	g_sav;
-
 static int		exprange(int *r, int *s, char *words)
 {
 	int *rr;
@@ -45,7 +41,7 @@ static int		exprange(int *r, int *s, char *words)
 	return ((!words[i] || rr - r < 1 || (rr - r == 2 && !r[2])) ? 0 : i);
 }
 
-static void		expsuffix(char **words, t_vec *sav, char **sstr, size_t *slen)
+static void		expsuffix(char **words, t_vec *sav)
 {
 	t_sds swrd;
 
@@ -56,63 +52,65 @@ static void		expsuffix(char **words, t_vec *sav, char **sstr, size_t *slen)
 		*(char **)ft_vecpush(sav) = swrd.buf;
 	else
 		ft_sdsdtor(&swrd);
-	if (sav->len)
-	{
-		*sstr = *(char **)ft_vecbeg(sav);
-		*slen = ft_strlen(*sstr);
-	}
 }
 
-static int		expbrace(int *r, t_sds *word, t_vec *av)
+static void		expvalue(t_range *r, t_sds *val, t_sds *word)
 {
 	char	buf[21];
-	char	*value;
 	uint8_t	l;
-	size_t	j;
 
-	while (r[0] <= r[1])
+	l = ft_intstr(buf, r->range[0], 10);
+	buf[l] = '\0';
+	if (word->len)
+		ft_sdsapd(val, word->buf);
+	ft_sdsapd(val, buf);
+}
+
+static int		expbrace(t_range *r, t_sds *word, t_vec *av)
+{
+
+	size_t	j;
+	t_sds	v;
+
+	ft_sdsctor(&v);
+	while (r->range[0] <= r->range[1])
 	{
-		l = ft_intstr(buf, r[0], 10);
-		buf[l] = '\0';
-		value = ft_malloc(word->len + l + g_slen + 1);
-		ft_bzero(value, word->len + l + g_slen + 1);
-		if (word->len)
-			ft_strcat(value, word->buf);
-		ft_strcat(value, buf);
-		if (g_slen)
-			ft_strcat(value, g_sstr);
-		*(char **)ft_vecpush(av) = value;
+		expvalue(r, &v, word);
 		j = 0;
-		while (++j < g_sav.len)
-			*(char **)ft_vecpush(av) = ft_strdup(*(char **)ft_vecat(&g_sav, j));
-		r[0] += r[2];
+		if (!r->av.len)
+			*(char **)ft_vecpush(av) = ft_strdup(v.buf);
+		else
+			while (j < r->av.len)
+				*(char **)ft_vecpush(av) =
+					ft_strjoin(v.buf, *(char **)ft_vecat(&r->av, j++));
+		r->range[0] += r->range[2];
+		v.len = 0;
 	}
 	word->len = 0;
-	ft_vecdtor(&g_sav, (t_dtor)ft_pfree);
+	ft_vecdtor(&r->av, (t_dtor)ft_pfree);
+	ft_sdsdtor(&v);
 	return (YEP);
 }
 
 int				sh_expbrace(t_sds *word, char **words, t_vec *av)
 {
-	int i;
-	int r[3];
-	int s[3];
+	int		i;
+	int		s[3];
+	t_range	range;
 
 	i = 1;
 	if (!ft_isdigit(*(*words + i)) && *(*words + i) != '-' &&
 		*(*words + i) != '+')
 		return (sh_expglob(word, words, av));
-	ft_bzero(r, 3 * sizeof(int));
+	ft_bzero(&range, sizeof(t_range));
 	ft_memset(s, 0, 3 * sizeof(int));
-	if ((i = exprange(r, s, *words)) == 0)
+	if ((i = exprange(range.range, s, *words)) == 0)
 		return (sh_expglob(word, words, av));
-	s[0] ? (r[0] *= s[0]) : 0;
-	s[1] ? (r[1] *= s[1]) : 0;
-	r[2] ? 0 : (r[2] = 1);
-	g_slen = 0;
-	g_sstr = NULL;
+	s[0] ? (range.range[0] *= s[0]) : 0;
+	s[1] ? (range.range[1] *= s[1]) : 0;
+	range.range[2] ? 0 : (range.range[2] = 1);
 	if (*(*words += i + 1))
-		expsuffix(words, &g_sav, &g_sstr, &g_slen);
+		expsuffix(words, &range.av);
 	--*words;
-	return (expbrace(r, word, av));
+	return (expbrace(&range, word, av));
 }

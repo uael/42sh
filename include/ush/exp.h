@@ -30,6 +30,13 @@ typedef struct	s_param
 	t_sds		env;
 }				t_param;
 
+typedef struct	s_range
+{
+	t_vec		av;
+	t_bool		isletter : 1;
+	int			range[3];
+}				t_range;
+
 extern int		sh_exp(char **words, t_sds *word, t_vec *av);
 extern int		sh_expword(t_sds *word, char const *src, size_t n);
 extern int		sh_expwords(t_vec *av, char const *src, size_t n);

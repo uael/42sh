@@ -18,8 +18,8 @@ WWFLAGS = $(WFLAGS) -Wpedantic -Wshadow -Wconversion -Wcast-align \
   -Waggregate-return -Wstrict-overflow=5 -Wold-style-definition -Wpadded \
   -Wredundant-decls -Wall -Werror -Wextra
 RCFLAGS = $(WFLAGS) -O2 -fomit-frame-pointer
-DCFLAGS = $(WFLAGS) -g3 -DDEBUG
-SCFLAGS = $(DCFLAGS) -fsanitize=address,undefined -ferror-limit=5
+DCFLAGS = $(WFLAGS) -g -DDEBUG
+SCFLAGS = -fsanitize=address,undefined -ferror-limit=5 $(DCFLAGS)
 CC ?= gcc
 MAKE += -j4
 

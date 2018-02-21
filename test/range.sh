@@ -1,4 +1,5 @@
 echo {00..42}
+echo {0..9}{0..9}
 echo asd{00..11}
 echo asd{00..11}asd
 echo asd{00..11}asdasd
