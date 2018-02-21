@@ -35,7 +35,7 @@ static int	aritheval(t_sds *word, char **words, t_sds *expr, t_bool bracket)
 		l = ft_intstr(g_result, result, 10);
 		g_result[l] = '\0';
 		ft_sdsmpush(word, g_result, l);
-		return (arithdone(expr, YEP));
+		return (arithdone(expr, 2));
 	}
 	++*words;
 	if (expr->len && sh_exparitheval(expr->buf, &result))
@@ -47,7 +47,7 @@ static int	aritheval(t_sds *word, char **words, t_sds *expr, t_bool bracket)
 	l = ft_intstr(g_result, tme, 10);
 	g_result[l] = '\0';
 	ft_sdsmpush(word, g_result, l);
-	return (arithdone(expr, YEP));
+	return (arithdone(expr, 2));
 }
 
 static int	arithloop1(t_sds *word, char **words, t_sds *expr, t_bool brackets)
@@ -106,6 +106,6 @@ int			sh_exparith(t_sds *word, char **words, t_bool brackets)
 	ft_sdsctor(&expr);
 	while (*++*words)
 		if ((st = arithloop(word, words, &expr, brackets)))
-			return (st);
+			return (st == 2 ? YEP : st);
 	return (arithdone(&expr, NOP));
 }
