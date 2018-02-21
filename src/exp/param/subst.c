@@ -18,6 +18,10 @@
 
 static char g_num[21];
 
+/*
+** TODO: perform a real split, this one is shitty
+*/
+
 static void	splitvalue(t_sds *word, t_vec *av, t_param *p)
 {
 	char	*beg;
