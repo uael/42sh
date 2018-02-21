@@ -10,7 +10,7 @@
 #                                                                              #
 # **************************************************************************** #
 
-NAME ?= 42sh
+PROJECT ?= 42sh
 WFLAGS = -Werror -Wextra -Wall
 WWFLAGS = $(WFLAGS) -Wpedantic -Wshadow -Wconversion -Wcast-align \
 -Wstrict-prototypes -Wmissing-prototypes -Wunreachable-code -Winit-self \
@@ -30,9 +30,9 @@ OBJ_PATH ?= $(OBJ_DIR)/rel
 3TH_PATH = vendor
 
 LIBS = ps rl ft
-ifneq (,$(findstring dev,$(NAME)))
+ifneq (,$(findstring dev,$(PROJECT)))
 LIB_NAME = $(addsuffix .dev, $(LIBS))
-else ifneq (,$(findstring san,$(NAME)))
+else ifneq (,$(findstring san,$(PROJECT)))
 LIB_NAME = $(addsuffix .san, $(LIBS))
 else
 LIB_NAME = $(LIBS)
@@ -67,9 +67,9 @@ INC = $(addprefix -I, $(INC_PATH) $(addsuffix /include, $(3TH)))
 LIB = $(addprefix -l, $(LIB_NAME))
 DEP = $(OBJ:%.o=%.d)
 
-ifneq (,$(findstring dev,$(NAME)))
+ifneq (,$(findstring dev,$(PROJECT)))
 3DE = $(shell echo "$(3TH_NAME)" | sed -E "s|([\.a-zA-Z]+)|$(3TH_PATH)/\1/\1.dev.a|g")
-else ifneq (,$(findstring san,$(NAME)))
+else ifneq (,$(findstring san,$(PROJECT)))
 3DE = $(shell echo "$(3TH_NAME)" | sed -E "s|([\.a-zA-Z]+)|$(3TH_PATH)/\1/\1.san.a|g")
 else
 3DE = $(shell echo "$(3TH_NAME)" | sed -E "s|([\.a-zA-Z]+)|$(3TH_PATH)/\1/\1.a|g")
@@ -79,35 +79,35 @@ all:
 ifneq ($(3TH_NAME),)
 	+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) &&) true
 endif
-	+$(MAKE) $(NAME) "CFLAGS = $(RCFLAGS)" "OBJ_PATH = $(OBJ_DIR)/rel"
+	+$(MAKE) $(PROJECT) "CFLAGS = $(RCFLAGS)" "OBJ_PATH = $(OBJ_DIR)/rel"
 
 dev:
 ifneq ($(3TH_NAME),)
 	+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) dev &&) true
 endif
-	+$(MAKE) $(NAME).dev "NAME = $(NAME).dev" "CFLAGS = $(DCFLAGS)" \
+	+$(MAKE) $(PROJECT).dev "PROJECT = $(PROJECT).dev" "CFLAGS = $(DCFLAGS)" \
 	  "OBJ_PATH = $(OBJ_DIR)/dev"
 
 san:
 ifneq ($(3TH_NAME),)
 	+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) san &&) true
 endif
-	+$(MAKE) $(NAME).san "NAME = $(NAME).san" "CFLAGS = $(SCFLAGS)" \
+	+$(MAKE) $(PROJECT).san "PROJECT = $(PROJECT).san" "CFLAGS = $(SCFLAGS)" \
 	  "OBJ_PATH = $(OBJ_DIR)/san" "CC = clang"
 
 mecry:
 ifneq ($(3TH_NAME),)
 	+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) mecry &&) true
 endif
-	+$(MAKE) $(NAME) "CFLAGS = $(WWFLAGS)" "OBJ_PATH = $(OBJ_DIR)/rel"
+	+$(MAKE) $(PROJECT) "CFLAGS = $(WWFLAGS)" "OBJ_PATH = $(OBJ_DIR)/rel"
 
-$(NAME): $(3DE) $(OBJ)
-	$(CC) $(CFLAGS) $(INC) $(LNK) $(OBJ) $(LIB) -o $(NAME)
-	@printf  "%-20s\033[32m✔\033[0m\n" "$(NAME): exe"
+$(PROJECT): $(3DE) $(OBJ)
+	$(CC) $(CFLAGS) $(INC) $(LNK) $(OBJ) $(LIB) -o $(PROJECT)
+	@printf  "%-20s\033[32m✔\033[0m\n" "$(PROJECT): exe"
 
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.c
 	mkdir -p $(shell dirname $@)
-	@printf "\r%-20s$<\n" "$(NAME):"
+	@printf "\r%-20s$<\n" "$(PROJECT):"
 	$(CC) $(CFLAGS) $(INC) -MMD -MP -c $< -o $@
 	@printf "\033[A\033[2K"
 
@@ -115,29 +115,29 @@ clean:
 	rm -f $(OBJ) $(DEP)
 	rm -f $(OBJ:$(OBJ_DIR)/rel%=$(OBJ_DIR)/dev%) $(DEP:$(OBJ_DIR)/rel%=$(OBJ_DIR)/dev%)
 	rm -f $(OBJ:$(OBJ_DIR)/rel%=$(OBJ_DIR)/san%) $(DEP:$(OBJ_DIR)/rel%=$(OBJ_DIR)/san%)
-	@printf  "%-20s\033[32m✔\033[0m\n" "$(NAME): $@"
+	@printf  "%-20s\033[32m✔\033[0m\n" "$(PROJECT): $@"
 
 fclean: clean
 ifneq ($(3TH_NAME),)
 	+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) fclean &&) true
 endif
 	test -d $(OBJ_DIR) && find $(OBJ_DIR) -type d | sort -r | xargs rmdir || true
-	rm -f $(NAME){,.san,.dev}
-	@printf  "%-20s\033[32m✔\033[0m\n" "$(NAME): $@"
+	rm -f $(PROJECT){,.san,.dev}
+	@printf  "%-20s\033[32m✔\033[0m\n" "$(PROJECT): $@"
 
 re: clean all
 
 test: all
-	./test.sh . $(NAME)
+	./test.sh . $(PROJECT)
 
 testdev: dev
-	./test.sh . $(NAME).dev
+	./test.sh . $(PROJECT).dev
 
 testsan: san
-	./test.sh . $(NAME).san
+	./test.sh . $(PROJECT).san
 
 valgrind: dev
-	./valgrind.sh . $(NAME).dev
+	./valgrind.sh . $(PROJECT).dev
 
 -include $(DEP)
 
@@ -145,5 +145,5 @@ ifndef VERBOSE
 .SILENT:
 endif
 
-.PHONY: all, dev, san, mecry, $(NAME), clean, fclean, re, test, testdev, testsan, \
+.PHONY: all, dev, san, mecry, $(PROJECT), clean, fclean, re, test, testdev, testsan, \
   valgrind
