@@ -1,5 +1,5 @@
-ls *
-echo *
+ls test/*.sh
+echo test/*.sh
 echo "*"
 echo '*'
 echo */*.h
