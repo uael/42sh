@@ -71,9 +71,11 @@ static int		expbrace(t_range *r, t_sds *word, t_vec *av)
 
 	size_t	j;
 	t_sds	v;
+	int		d;
 
+	d = r->range[0] > r->range[1];
 	ft_sdsctor(&v);
-	while (r->range[0] <= r->range[1])
+	while (d ? r->range[0] >= r->range[1] : r->range[0] <= r->range[1])
 	{
 		expvalue(r, &v, word);
 		j = 0;
@@ -109,6 +111,8 @@ int				sh_expbrace(t_sds *word, char **words, t_vec *av)
 	s[0] ? (range.range[0] *= s[0]) : 0;
 	s[1] ? (range.range[1] *= s[1]) : 0;
 	range.range[2] ? 0 : (range.range[2] = 1);
+	if (range.range[0] > range.range[1] && range.range[2])
+		range.range[2] *= -1;
 	if (*(*words += i + 1))
 		expsuffix(words, &range.av);
 	--*words;
