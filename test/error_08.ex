@@ -1,4 +1,4 @@
-ush: asd: Command not found
+ush: cmdnotound: Command not found
 ush: Expected `<filename>' got `<newline>'
-asd asd sd; cat <<EOF >
-                       ^
+cmdnotound asd sd; cat <<EOF >
+                              ^

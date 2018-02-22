@@ -1,11 +1,11 @@
-asdas d asd ;as;d sad ;as; d;asd ;asd ;saasd asd sd; cat <<EOF .
+asdas d asd ;as;d sad ;as; d;cmdnotfound ;cmdnotfound ;saasd asd sd; cat <<EOF .
 assdaf asdf
 sdaf asd
 f
 
 asdf
 
-asd
+cmdnotfound
  f
 as
 d
