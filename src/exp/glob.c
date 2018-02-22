@@ -43,7 +43,7 @@ static int	globit(t_sds *word, t_vec *av, char *it)
 	unsigned int	match;
 	glob_t			globbuf;
 
-	if (glob(it, GLOB_NOCHECK, NULL, &globbuf))
+	if (glob(it, GLOB_NOCHECK | GLOB_BRACE, NULL, &globbuf))
 		return (THROW(WUT));
 	if ((g_ifs && !*g_ifs) || !av)
 	{
