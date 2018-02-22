@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 22:23:43 by mc                #+#    #+#             */
-/*   Updated: 2018/02/20 17:22:04 by mcanal           ###   ########.fr       */
+/*   Updated: 2018/02/22 11:42:12 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,9 +83,9 @@ int			glob_read_dir(t_glob_env *glob_env, \
 	else
 		ft_strcpy(path_buf, dir_name);
 
-	if (glob_open_dir(&dir, glob_get_folder_name(dir_name), *(glob_env->flags)) == GLOBUX_ABORTED)
+	if (glob_open_dir(&dir, dir_name, *(glob_env->flags)) == GLOBUX_ABORTED)
 		return (GLOBUX_ABORTED);
-	if (!dir && glob_open_dir(&dir, dir_name, *(glob_env->flags)))
+	if (!dir && glob_open_dir(&dir, glob_get_folder_name(dir_name), *(glob_env->flags)))
 		return (GLOBUX_SUCCESS);
 
 	if (!glob_get_sub_pattern(glob_env->sub_pat_buf, glob_env->pattern, depth))
