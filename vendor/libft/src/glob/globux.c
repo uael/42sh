@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/08 23:54:42 by mc                #+#    #+#             */
-/*   Updated: 2018/02/20 13:36:22 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/20 17:23:39 by mcanal           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,26 +17,26 @@
 
 #include "globux.h"
 
-static int super_cmp(const void *a, const void *b, size_t n)
+static int		super_cmp(const void *a, const void *b, size_t n)
 {
-	(void)n; //this is the size of one element eheh
+	(void)n;
 	return (ft_strcmp(*(char **)a, *(char **)b));
 }
 
-static t_bool copy_match_to_glob_struct(t_match *match_list, t_glob *pglob)
+static t_bool	copy_match_to_glob_struct(t_match *match_list, t_glob *pglob)
 {
 	char	**av;
 
 /*
 	if ((pglob->gl_flags & GLOBUX_APPEND))
-		append_to_something(); //TODO: ???
+	append_to_something(); //TODO: ???
 */
 	pglob->gl_pathc = list_len(match_list); //TODO: find another way
 
 	if ((pglob->gl_flags & GLOBUX_DOOFFS))
 	{
 		if (!(pglob->gl_pathv = malloc(sizeof(char *) *
-								   (pglob->gl_pathc + pglob->gl_offs + 1))))
+										(pglob->gl_pathc + pglob->gl_offs + 1))))
 			return (FALSE);
 		av = pglob->gl_pathv + pglob->gl_offs;
 	}
@@ -57,24 +57,24 @@ static t_bool copy_match_to_glob_struct(t_match *match_list, t_glob *pglob)
 
 	if (!(pglob->gl_flags & GLOBUX_NOSORT))
 		ft_shellsort((pglob->gl_flags & GLOBUX_DOOFFS) ? \
-						pglob->gl_pathv : pglob->gl_pathv + pglob->gl_offs, \
-					 pglob->gl_pathc, sizeof(char *), super_cmp);
+					pglob->gl_pathv : pglob->gl_pathv + pglob->gl_offs, \
+					pglob->gl_pathc, sizeof(char *), super_cmp);
 
 	return (TRUE);
 }
 
-static void glbnvctor(t_glob_env *glob_env, char const *pattern, int *flags)
+static void		glbnvctor(t_glob_env *glob_env, char const *pattern, int *flags)
 {
-    ft_bzero(glob_env, sizeof(t_glob_env));
-    glob_env->pattern = pattern;
-    glob_env->flags = flags;
+	ft_bzero(glob_env, sizeof(t_glob_env));
+	glob_env->pattern = pattern;
+	glob_env->flags = flags;
 }
 
 //TODO: handle errors with libft tools?
-int		globctor(const char *pattern, int flags, t_glob *pglob)
+int				globctor(const char *pattern, int flags, t_glob *pglob)
 {
-	t_glob_env  glob_env;
-	int         ret;
+	t_glob_env		glob_env;
+	int				ret;
 	//TODO: set GLOB_NOCHECK | GLOB_ONLYDIR in pglob when ???
 
 	if ((flags & ~__GLOBUX_FLAGS))
@@ -100,7 +100,6 @@ int		globctor(const char *pattern, int flags, t_glob *pglob)
 			pglob->gl_flags = (pglob->gl_flags & ~GLOBUX_MAGCHAR);
 			return (GLOBUX_NOMATCH);
 		}
-		else
 
 		if (!(glob_env.match_list = matchctor(pattern, ft_strlen(pattern))))
 			return (GLOBUX_NOSPACE);
@@ -115,24 +114,21 @@ int		globctor(const char *pattern, int flags, t_glob *pglob)
 	return (GLOBUX_SUCCESS);
 }
 
-void	globdtor(t_glob *pglob)
+void			globdtor(t_glob *pglob)
 {
 	char	**av;
 
 	if (!pglob->gl_pathv)
-		return;
+		return ;
 	if ((pglob->gl_flags & GLOBUX_DOOFFS))
 		av = pglob->gl_pathv + pglob->gl_offs;
 	else
 		av = pglob->gl_pathv;
-
 	while (pglob->gl_pathc--)
 	{
-		//TODO: doc
-		free((t_byte *)(*av) - sizeof(t_match) + sizeof(t_byte *)); // magic list!
+		free((t_byte *)(*av) - sizeof(t_match) + sizeof(t_byte *)); //TODO: doc
 		av++;
 	}
-
 	free(pglob->gl_pathv);
-	pglob->gl_pathv = NULL; //kdo
+	pglob->gl_pathv = NULL;
 }

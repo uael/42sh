@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 20:57:25 by mc                #+#    #+#             */
-/*   Updated: 2018/02/20 13:48:57 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/22 16:09:52 by mcanal           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 
 # ifndef PATH_MAX
 #  ifdef OSX
-#   include <sys/syslimits.h> /* for PATH_MAX */
+#	include <sys/syslimits.h> /* for PATH_MAX */
 #  endif
 #  ifdef LINUX
 #   include <linux/limits.h> /* for PATH_MAX */
@@ -30,13 +30,13 @@
 # endif
 
 # ifndef TRUE
-#  define TRUE				1
+#	define TRUE				1
 # endif
 # ifndef FALSE
-#  define FALSE				0
+#	define FALSE				0
 # endif
 
-# define IS_DIR(dirent) ((dirent)->d_type == DT_DIR)
+# define IS_DIR(dirent) ((dirent)->d_type == DT_DIR || (dirent)->d_type == DT_LNK)
 
 # define GLOBUX_BOOM_BABY 5
 # define GLOBUX_NOBODY_GIVES_A_DAMN 6
@@ -44,17 +44,15 @@
 
 # define MAX_DEPTH			(1 << 8) //TODO
 
-
 typedef unsigned char	t_byte;
 
-/* Structure describing a glob match.  */
+/* Structure describing a glob match.	*/
 typedef struct s_match	t_match;
 struct					s_match
 {
 	t_match	*next;
 	t_byte	buf[sizeof(void *)];
 };
-
 
 /*
 ** in glob_is_magic.c:
@@ -68,7 +66,7 @@ struct					s_match
 ** @pat: Shell-style pattern to match, e.g. "*.[ch]".
 ** @flags: cf ft_glob.h (GLOBUX_NOESCAPE)
 */
-char const	*is_magic(char *magic_buf, char const *pattern, int *flags);
+char	const	*is_magic(char *magic_buf, char const *pattern, int *flags);
 
 /*
 ** in glob_list.c:
@@ -88,10 +86,11 @@ int			glob_close_dir(DIR *dir, int flags);
 /*
 ** in glob_path.c:
 */
-t_bool  	glob_get_sub_pattern(char *sub_pat_buf, char const *pattern, int depth);
-char const *glob_get_folder_name(char const *path);
-int			glob_append_file_name(char *path_buf, char const *new_file, int flags);
+t_bool		glob_get_sub_pattern(char *sub_pat_buf, char const *pattern, \
+                                 int depth, int flags);
+char const	*glob_get_folder_name(char const *path);
+int			glob_append_file_name(char *path_buf, char const *new_file);
 int			glob_store_dir_name(char *path_buf, char const *prev_dir, \
-								char const *new_dir);
+								char	const *new_dir);
 
 #endif /* GLOB_UTIL_H */

@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/15 13:36:27 by mc                #+#    #+#             */
-/*   Updated: 2018/02/20 13:52:42 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/20 17:20:37 by mcanal           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static t_bool		is_escaped(char const *pattern, char const *pat, int flags)
 
 static t_bool		is_there_a_closing_bracket(char const *pattern, int flags)
 {
-	char const *pat;
+	char const		*pat;
 
 	pat = pattern;
 	while (*pat)
@@ -35,14 +35,13 @@ static t_bool		is_there_a_closing_bracket(char const *pattern, int flags)
 			if (!is_escaped(pattern, pat, flags))
 				return (TRUE);
 		}
-
 		pat++;
 	}
-
 	return (FALSE);
 }
 
-static char const	*previous_dir(char *magic_buf, char const *pattern, char const *pat)
+static char	const	*previous_dir(char *magic_buf, char const *pattern, \
+								  char const *pat)
 {
 	size_t			len;
 
@@ -59,13 +58,12 @@ static char const	*previous_dir(char *magic_buf, char const *pattern, char const
 		}
 		pat--;
 	}
-
 	return (pattern);
 }
 
 char const			*is_magic(char *magic_buf, char const *pattern, int *flags)
 {
-	char const *pat;
+	char	const *pat;
 
 	pat = pattern;
 	while (*pat)
@@ -81,15 +79,13 @@ char const			*is_magic(char *magic_buf, char const *pattern, int *flags)
 		else if (*pat == '[')
 		{
 			if (!is_escaped(pattern, pat, *flags) \
-					&& is_there_a_closing_bracket(pat, *flags))
+				&& is_there_a_closing_bracket(pat, *flags))
 			{
 				*flags |= GLOBUX_MAGCHAR;
 				return (previous_dir(magic_buf, pattern, pat));
 			}
 		}
-
 		pat++;
 	}
-
 	return (NULL);
 }
