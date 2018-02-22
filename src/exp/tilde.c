@@ -53,6 +53,24 @@ static void	exptildeuser(t_sds *word, char **words, size_t i)
 	*words += i - 1;
 }
 
+static void	exptildenext(t_sds *word, char **words, size_t i)
+{
+	char *var;
+	char *val;
+
+	if (i == 2 && *(*words + 1) == '-')
+		var = "OLDPWD";
+	else if (i == 2 && *(*words + 1) == '+')
+		var = "PWD";
+	else
+		return (exptildeuser(word, words, i));
+	if ((val = sh_varget(var, g_env)))
+		ft_sdsapd(word, val);
+	else
+		ft_sdsmpush(word, *words, i + 1);
+	*words += i - 1;
+}
+
 int			sh_exptilde(t_sds *word, char **words, size_t wordc)
 {
 	size_t i;
@@ -78,6 +96,6 @@ int			sh_exptilde(t_sds *word, char **words, size_t wordc)
 	if (i == 1)
 		exptilde(word);
 	else
-		exptildeuser(word, words, i);
+		exptildenext(word, words, i);
 	return (YEP);
 }
