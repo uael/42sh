@@ -18,9 +18,11 @@ inline t_bool	rl_isdumb(void)
 	char			*term;
 
 	if (isdumb == -1)
+	{
 		if ((term = getenv("TERM")) && !ft_strcmp("dumb", term))
 			isdumb = 1;
 		else
 			isdumb = 0;
+	}
 	return ((t_bool)isdumb);
 }
