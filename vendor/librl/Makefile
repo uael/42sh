@@ -42,7 +42,7 @@ SRC_NAME = \
 	edit/return.c edit/ln.c edit/utf8.c \
 	hist.c hist/bi.c hist/load.c hist/save.c hist/op.c \
 	hook.c \
-	read.c read/notty.c read/tty.c \
+	read.c read/dumb.c read/notty.c read/tty.c \
 	screen.c \
 	visual.c \
 	signal.c

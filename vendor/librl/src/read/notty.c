@@ -80,19 +80,19 @@ inline int				rl_catnotty(int fd, char **ln, char c, char **it)
 {
 	char	*buf;
 	size_t	middle;
-	ssize_t	rd;
 
 	if (fd < 0 || fd > OPEN_MAX)
 		return (ENO_THROW(WUT, EINVAL));
 	g_in[fd].ifd = fd;
-	if ((rd = ft_ifschr(g_in + fd, (size_t)g_rd[fd], '\n', &buf)) > 0)
+	if (g_rd[fd] > 0 && ft_ifsrd(g_in + fd, NULL, (size_t)g_rd[fd]) < 0)
+		return (WUT);
+	if ((g_rd[fd] = ft_ifschr(g_in + fd, 0, '\n', &buf)) > 0)
 	{
 		if (g_rd[fd] >= UINT16_MAX)
 			return (NOP);
-		middle = catmiddle(c, rd, buf);
+		middle = catmiddle(c, g_rd[fd], buf);
 		*ln = g_ln.buf;
 		*it = g_ln.buf + middle;
-		g_rd[fd] += rd;
 		return (YEP);
 	}
 	if (g_rd[fd] < 0)
