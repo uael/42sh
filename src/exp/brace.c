@@ -22,14 +22,14 @@ static int		parsevalue(t_range *range, int *rr, int *ss, char c)
 	}
 	else if (ft_isalpha(c))
 	{
-		if (*rr || *ss)
+		if (*rr || *ss || rr == range->range + 2)
 			return (1);
 		*rr = c;
 		range->ascii = 1;
 	}
 	else if (ft_isdigit(c))
 	{
-		if (range->ascii)
+		if (range->ascii && rr != range->range + 2)
 			return (1);
 		*rr = *rr * 10 + c - '0';
 	}
@@ -56,7 +56,7 @@ static int		parserange(t_range *range, int *r, int *s, char *words)
 		}
 		else if (words[i] == '.')
 		{
-			if (words[i + 1] != '.' || rr - r >= 3)
+			if (words[i + 1] != '.' || rr - r >= 2)
 				return (0);
 			(void)(++i && ++rr && ++ss);
 		}
