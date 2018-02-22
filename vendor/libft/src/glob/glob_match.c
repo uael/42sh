@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 21:09:16 by mc                #+#    #+#             */
-/*   Updated: 2018/02/22 21:19:51 by mcanal           ###   ########.fr       */
+/*   Updated: 2018/02/23 00:16:31 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,11 @@ static int		handle_rev_char_class(char const *pat, char const *str, \
 {
 	if (!*pat)
 		return (FALSE);
+	if (*pat == '\\' && !(flags & GLOBUX_NOESCAPE))
+	{
+		return (handle_rev_char_class(pat + 2, str, flags, \
+                                      matched & (*(pat + 1) != *str)));
+	}
 	if (*pat == '[' && *(pat + 1) == ']')
 	{
 		return (matched & (*str != *pat) ? glob_match(pat + 2, \
@@ -31,7 +36,7 @@ static int		handle_rev_char_class(char const *pat, char const *str, \
 	if (*(pat + 1) == '-' && *(pat + 2) != ']')
 	{
 		return (handle_rev_char_class(pat + 3, str, flags, matched &
-										(*str <= *pat || *str >= *(pat + 2))));
+										(*str < *pat || *str > *(pat + 2))));
 	}
 	return (handle_rev_char_class(pat + 1, str, flags,
 										matched & (*str != *pat)));
@@ -42,6 +47,11 @@ static int		handle_char_class(char const *pat, char const *str, int flags, \
 {
 	if (!*pat)
 		return (FALSE);
+	if (*pat == '\\' && !(flags & GLOBUX_NOESCAPE))
+	{
+		return (handle_char_class(pat + 2, str, flags, \
+                                      matched | (*(pat + 1) == *str)));
+	}
 	if (*pat == '[' && *(pat + 1) == ']')
 	{
 		return (matched | (*str == *pat) ? \
@@ -67,6 +77,8 @@ static int		handle_str_wildcard(char const *pat, char const *str, \
 		return (FALSE);
 	if (!*pat)
 		return (TRUE);
+	if (*pat == '*')
+        return (handle_str_wildcard(pat + 1, str, flags, depth));
 	if (glob_match(pat, str, flags))
 		return (TRUE);
 	if (!*str)
