@@ -38,7 +38,7 @@ static int		parsevalue(t_range *range, int *rr, int *ss, char c)
 	return (2);
 }
 
-static int		parserange(t_range *range, int *r, int *s, char *words)
+static int		parserange(t_range *range, int *r, int *s, char *w)
 {
 	int *rr;
 	int *ss;
@@ -48,23 +48,22 @@ static int		parserange(t_range *range, int *r, int *s, char *words)
 	i = 0;
 	rr = r;
 	ss = s;
-	while (words[++i])
-		if ((st = parsevalue(range, rr, ss, words[i])))
-		{
-			if (st == 1)
-				return (0);
-		}
-		else if (words[i] == '.')
-		{
-			if (words[i + 1] != '.' || rr - r >= 2)
-				return (0);
+	while (w[++i])
+		if ((st = parsevalue(range, rr, ss, w[i])) == 1)
+			return (0);
+		else if (st)
+			continue ;
+		else if (w[i] == '.' && (w[i + 1] != '.' || rr - r >= 2))
+			return (0);
+		else if (w[i] == '.')
 			(void)(++i && ++rr && ++ss);
-		}
-		else if (words[i] == '}')
+		else if (w[i] == '}')
 			break ;
 		else
 			return (0);
-	return ((!words[i] || rr - r < 1 || (rr - r == 2 && !r[2])) ? 0 : i);
+	if (!w[i] || !ft_isalnum(w[i - 1]) || rr - r < 1 || (rr - r == 2 && !r[2]))
+		return (0);
+	return (i);
 }
 
 static void		expvalue(t_range *r, t_sds *val, t_sds *word)
