@@ -4,10 +4,7 @@ dist: trusty
 os: osx
 script:
   - unset TRAVIS_COMMIT_MESSAGE
-  - git clone https://github.com/we-sh/42ShellTester.git st
+  - git clone https://github.com/uael/42ShellTester.git st
   - make
   - RELOU=mc make test
-  - bash st/42ShellTester.sh --filter minishell $PWD/42sh
-  - bash st/42ShellTester.sh --filter 21sh $PWD/42sh
-  - bash st/42ShellTester.sh --filter subshell $PWD/42sh
-  - bash st/42ShellTester.sh --filter export $PWD/42sh
+  - bash st/42ShellTester.sh --reference bash $PWD/42sh

@@ -1,22 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ush/word.h                                         :+:      :+:    :+:   */
+/*   exp/backslash.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/06 12:00:10 by alucas-          ###   ########.fr       */
+/*   Updated: 2018/01/06 11:10:01 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef USH_WORD_H
-# define USH_WORD_H
+#include "ush/exp.h"
 
-# include "var.h"
-# include "tok.h"
+int	sh_expbackslash(t_sds *word, char **words, t_bool quote)
+{
+	char c;
 
-extern void		sh_wordexplode(t_vec *av, char const *src, size_t n);
-extern size_t	sh_wordresolve(t_sds *d, char const *s, size_t n, uint8_t *e);
-
-#endif
+	if (!(c = *(*words + 1)))
+		return (NOP);
+	if (c != '\n')
+	{
+		if (quote && !ft_strchr("$`\"\\", c))
+			*ft_sdspush(word) = '\\';
+		*ft_sdspush(word) = c;
+	}
+	++*words;
+	return (YEP);
+}

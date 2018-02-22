@@ -30,14 +30,6 @@ inline void		ps_biregister(char const *name, t_procbi *fn)
 		free(var);
 }
 
-inline void		ps_procbi(t_proc *proc, t_procbi *fn, char **envv)
-{
-	ps_procctor(proc);
-	proc->envv = envv;
-	proc->u.bi = fn;
-	proc->kind = PROC_BI;
-}
-
 inline int		ps_procbilaunch(t_proc *proc)
 {
 	t_ex_hdl	dfl;
@@ -49,12 +41,5 @@ inline int		ps_procbilaunch(t_proc *proc)
 	ft_exbind(EXALL, ft_exhdl(exhdl, NULL), &dfl);
 	proc->status = proc->u.bi((int)(av - proc->argv), proc->argv, proc->envv);
 	ft_exbind(EXALL, dfl, NULL);
-	if (proc->child)
-	{
-		ps_procdtor(proc);
-		g_fatalcb(proc->status, NULL);
-	}
-	proc->state = PROC_COMPLETED;
-	ft_dup2std(proc->scope, STD_FILENOS);
-	return (YEP);
+	return (proc->status);
 }

@@ -70,7 +70,7 @@ static inline char	*histat(char *not, ssize_t i, size_t rlen, t_bool *c)
 	return (not + 1);
 }
 
-static inline char	*histfind(char *not, t_bool *c)
+static inline char	*histfind(char *not, char *begin, t_bool *c)
 {
 	size_t	i;
 	size_t	j;
@@ -79,6 +79,8 @@ static inline char	*histfind(char *not, t_bool *c)
 
 	j = 1;
 	i = 0;
+	if (begin != not || !ft_isalnum(*(not + 1)))
+		return (not + 1);
 	while (i <= MAX_INPUT && not[j] && !ft_strchr(" \t\n!", not[j]))
 		word[i++] = not[j++];
 	word[i] = '\0';
@@ -114,7 +116,7 @@ inline int			rl_histbi(void)
 		else if (!*(not + 1))
 			return (YEP);
 		else
-			beg = histfind(not, &c);
+			beg = histfind(not, g_eln->str.buf, &c);
 	}
 	if (c && (g_eln->idx = g_eln->str.len) > 0)
 		rl_editprint();

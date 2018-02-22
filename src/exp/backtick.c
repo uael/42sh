@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   word/resolve.c                                     :+:      :+:    :+:   */
+/*   exp/backtick.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,33 +10,27 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ush/word.h"
+#include "ush/exp.h"
 
-inline void	sh_wordexplode(t_vec *av, char const *src, size_t n)
+int	sh_expbacktick(t_sds *word, char **words, t_vec *av)
 {
-	uint8_t	e;
-	t_sds	word;
-	char	*beg;
-	char	*eol;
-	char	sep[20];
+	t_sds	comm;
+	t_bool	quote;
 
-	if (!sh_wordresolve(&word, src, n, &e))
-		return ;
-	if (!e)
-		beg = word.buf;
-	else
+	quote = 0;
+	ft_sdsctor(&comm);
+	while (**words)
 	{
-		ft_strcat(ft_strcpy(sep, sh_varifs()), "\n");
-		beg = word.buf;
-		while ((eol = ft_strmchr(beg, sep)))
-		{
-			*eol = '\0';
-			*(char **)ft_vecpush(av) = beg == word.buf ? beg :
-				ft_strndup(beg, eol - beg);
-			while (*++eol && ft_strchr(sep, *eol))
-				;
-			beg = eol;
-		}
+		if (**words == '`')
+			return (sh_expcommexec(word, &comm, av));
+		else if (**words == '\\')
+			sh_expbackslash(&comm, words, quote);
+		else if (**words == '\'')
+			quote ^= 1;
+		else
+			*ft_sdspush(&comm) = **words;
+		++*words;
 	}
-	*(char **)ft_vecpush(av) = beg == word.buf ? beg : ft_strdup(beg);
+	ft_sdsdtor(&comm);
+	return (NOP);
 }
