@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 21:09:16 by mc                #+#    #+#             */
-/*   Updated: 2018/02/22 21:19:51 by mcanal           ###   ########.fr       */
+/*   Updated: 2018/02/22 23:05:00 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,8 @@ static int		handle_str_wildcard(char const *pat, char const *str, \
 		return (FALSE);
 	if (!*pat)
 		return (TRUE);
+	if (*pat == '*')
+        return (handle_str_wildcard(pat + 1, str, flags, depth));
 	if (glob_match(pat, str, flags))
 		return (TRUE);
 	if (!*str)
