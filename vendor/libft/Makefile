@@ -6,7 +6,7 @@
 #    By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/07 09:52:36 by alucas-           #+#    #+#              #
-#    Updated: 2018/02/20 12:52:10 by mc               ###   ########.fr        #
+#    Updated: 2018/02/22 21:22:01 by mcanal           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -50,6 +50,7 @@ SRC_NAME = \
 	glob/globux.c glob/glob_match.c glob/glob_climb_tree.c \
 	glob/glob_util/glob_list.c glob/glob_util/glob_dir.c \
 	glob/glob_util/glob_is_magic.c glob/glob_util/glob_path.c \
+	glob/glob_util/glob_cmp.c glob/glob_util/glob_show.c \
 	hash/hash.c hash/hash_2.c \
 	int/len.c int/str.c \
 	io/fcntl.c io/ifs.c io/ifs_2.c io/ofs.c io/ofs_2.c io/ofs_3.c io/padn.c \

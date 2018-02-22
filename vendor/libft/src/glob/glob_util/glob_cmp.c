@@ -1,19 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   globux.h                                           :+:      :+:    :+:   */
+/*   glob_cmp.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
+/*   By: mcanal <mc.maxcanal@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/02/09 20:57:25 by mc                #+#    #+#             */
-/*   Updated: 2018/02/22 16:35:15 by mcanal           ###   ########.fr       */
+/*   Created: 2018/02/22 20:18:24 by mcanal            #+#    #+#             */
+/*   Updated: 2018/02/22 20:18:53 by mcanal           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GLOBUX_H
-# define GLOBUX_H
+#include "glob_util.h"
 
-# include "glob_climb_tree.h"
-# include "glob_util/glob_util.h"
-
-#endif
+int		super_cmp(const void *a, const void *b, size_t n)
+{
+	(void)n;
+	return (ft_strcmp(*(char **)a, *(char **)b));
+}
