@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 20:57:25 by mc                #+#    #+#             */
-/*   Updated: 2018/02/22 12:58:42 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/22 16:09:52 by mcanal           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@
 #	define FALSE				0
 # endif
 
-# define IS_DIR(dirent) ((dirent)->d_type == DT_DIR)
+# define IS_DIR(dirent) ((dirent)->d_type == DT_DIR || (dirent)->d_type == DT_LNK)
 
 # define GLOBUX_BOOM_BABY 5
 # define GLOBUX_NOBODY_GIVES_A_DAMN 6

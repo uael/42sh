@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 22:23:43 by mc                #+#    #+#             */
-/*   Updated: 2018/02/22 16:20:46 by mcanal           ###   ########.fr       */
+/*   Updated: 2018/02/22 16:26:19 by mcanal           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ static int	glob_check_file(t_glob_env *glob_env, struct dirent *dirent, \
 	else if (IS_DIR(dirent)								\
              && (ft_strcmp(dirent->d_name, ".") || !ft_strcmp(glob_env->sub_pat_buf, ".")) \
              && (ft_strcmp(dirent->d_name, "..") || !ft_strcmp(glob_env->sub_pat_buf, "..")))
-		return (GLOBUX_BOOM_BABY); //TODO: handle links
+		return (GLOBUX_BOOM_BABY);
 
 	return (GLOBUX_SUCCESS);
 }
@@ -152,7 +152,6 @@ int			glob_climb_tree(t_glob_env *glob_env)
 	int			depth;
 	char const	*magic;
 	/* handle_flags(GLOBUX_TILDE | GLOBUX_TILDE_CHECK | GLOBUX_BRACE) */
-	//TODO: I guess a trailing slashes in pattern fuck everything up
 
 	depth = glob_count_depth(glob_env->pattern);
 	if (!show_files(glob_env->flags, glob_env->pattern))
