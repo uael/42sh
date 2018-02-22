@@ -24,6 +24,30 @@ typedef struct	s_subshell
 	char		*ln;
 }				t_subshell;
 
+typedef enum	e_elsekind
+{
+	ELSE_NONE = 0,
+	ELSE_ELSE,
+	ELSE_ELIF
+}				t_elsekind;
+
+struct s_if;
+
+typedef union	s_elsepart
+{
+	t_deq		body;
+	struct s_if	*elif;
+}				t_elsepart;
+
+typedef struct	s_if
+{
+	t_deq		body;
+	t_deq		cond;
+	char		*ln;
+	t_elsekind	elsekind;
+	t_elsepart	elsepart;
+}				t_if;
+
 extern int		sh_eval(int fd, t_deq *toks, char **ln);
 extern int		sh_evallist(int fd, t_deq *toks, char **ln);
 extern int		sh_evalandor(t_job *j, int fd, t_deq *ts, char **ln);

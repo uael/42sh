@@ -12,18 +12,35 @@
 
 #include "ush/eval.h"
 
-inline int		sh_evalcmd(t_proc *proc, int fd, t_deq *toks, char **ln)
+static inline void	promote(t_tok *tok, char const *ln)
+{
+	char const *val = ln + tok->pos;
+
+	if (!tok->id != TOK_WORD)
+		return ;
+	if (tok->len == 2 && !ft_strcmp("if", val))
+		tok->id = TOK_IF;
+	else if (tok->len == 4 && !ft_strcmp("then", val))
+		tok->id = TOK_THEN;
+	else if (tok->len == 4 && !ft_strcmp("elif", val))
+		tok->id = TOK_ELIF;
+	else if (tok->len == 4 && !ft_strcmp("else", val))
+		tok->id = TOK_ELSE;
+	else if (tok->len == 2 && !ft_strcmp("fi", val))
+		tok->id = TOK_FI;
+}
+
+inline int			sh_evalcmd(t_proc *proc, int fd, t_deq *toks, char **ln)
 {
 	t_tok	*tok;
 	int		st;
 
-	st = NOP;
 	if (!(tok = sh_tokpeek(toks)))
 		return (NOP);
-	if (TOK_ISCMDM(tok->id) &&
-		!(st = sh_evalsimple(proc, fd, toks, ln)))
-		return (YEP);
-	else if (tok->id == '(' && !(st = sh_evalcompound(proc, fd, toks, ln)))
+	promote(tok, *ln);
+	if (TOK_ISCMDM(tok->id))
+		return (sh_evalsimple(proc, fd, toks, ln));
+	else if (!(st = sh_evalcompound(proc, fd, toks, ln)))
 	{
 		while ((tok = sh_tokpeek(toks)))
 			if (TOK_ISREDIR(tok->id))

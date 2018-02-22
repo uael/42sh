@@ -12,9 +12,25 @@
 
 #include "ush/eval.h"
 
+inline int		sh_evalifclause(t_proc *prc, int fd, t_deq *toks, char **ln)
+{
+	t_if ifc;
+
+
+	sh_toknext(toks);
+
+	return (NOP);
+}
+
 inline int		sh_evalcompound(t_proc *proc, int fd, t_deq *toks, char **ln)
 {
-	if (sh_tokpeek(toks)->id == '(')
+	t_tok *tok;
+
+	if (!(tok = sh_tokpeek(toks)))
+		return (NOP);
+	if (tok->id == '(')
 		return (sh_evalsubshell(proc, fd, toks, ln));
+	else if (tok->id == TOK_IF)
+		return (sh_evalifclause(proc, fd, toks, ln));
 	return (NOP);
 }
