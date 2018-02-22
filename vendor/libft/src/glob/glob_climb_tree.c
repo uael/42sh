@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 22:23:43 by mc                #+#    #+#             */
-/*   Updated: 2018/02/22 11:42:12 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/22 12:16:30 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,8 @@ static int	glob_check_file(t_glob_env *glob_env, struct dirent *dirent, \
 		add_match_to_list(match, &glob_env->match_list);
 	}
 	else if (IS_DIR(dirent)								\
-			&& ft_strcmp(dirent->d_name, ".") && ft_strcmp(dirent->d_name, ".."))
+             && (ft_strcmp(dirent->d_name, ".") || !ft_strcmp(glob_env->sub_pat_buf, ".")) \
+             && (ft_strcmp(dirent->d_name, "..") || !ft_strcmp(glob_env->sub_pat_buf, "..")))
 		return (GLOBUX_BOOM_BABY); //TODO: handle links
 
 	return (GLOBUX_SUCCESS);
