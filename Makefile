@@ -69,7 +69,6 @@ DEP = $(OBJ:%.o=%.d)
 
 PRINTF=test $(VERBOSE)$(TRAVIS) || printf
 
-ifneq (,$(findstring dev,$(NAME)))
 ifneq (,$(findstring dev,$(PROJECT)))
 3DE = $(shell echo "$(3TH_NAME)" | sed -E "s|([\.a-zA-Z]+)|$(3TH_PATH)/\1/\1.dev.a|g")
 else ifneq (,$(findstring san,$(PROJECT)))
