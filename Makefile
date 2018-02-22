@@ -18,7 +18,7 @@ WWFLAGS = $(WFLAGS) -Wpedantic -Wshadow -Wconversion -Wcast-align \
   -Waggregate-return -Wstrict-overflow=5 -Wold-style-definition -Wpadded \
   -Wredundant-decls -Wall -Werror -Wextra
 RCFLAGS = $(WFLAGS) -O2 -fomit-frame-pointer
-DCFLAGS = $(WFLAGS) -g -DDEBUG
+DCFLAGS = $(WFLAGS) -g3 -DDEBUG
 SCFLAGS = -fsanitize=address,undefined -ferror-limit=5 $(DCFLAGS)
 CC ?= gcc
 MAKE += -j4
@@ -145,5 +145,5 @@ ifndef VERBOSE
 .SILENT:
 endif
 
-.PHONY: all, dev, san, mecry, $(PROJECT), clean, fclean, re, test, testdev, testsan, \
-  valgrind
+.PHONY: all, dev, san, mecry, $(PROJECT), clean, fclean, re, test, testdev, \
+  testsan, valgrind
