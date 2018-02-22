@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 22:23:43 by mc                #+#    #+#             */
-/*   Updated: 2018/02/22 13:02:53 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/22 16:18:28 by mcanal           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,9 @@ static int	show_hidden_files(int flags, char pat_start)
 	return (!(flags & GLOBUX_MAGCHAR) || (flags & GLOBUX_PERIOD) || pat_start == '.');
 }
 
-static int show_files(int *flags, char const *pattern)
+static int	show_files(int *flags, char const *pattern)
 {
-	if (*(pattern + 1)													\
+	if (*pattern && *(pattern + 1)													\
 		&& *(pattern + ft_strlen(pattern) - 1) == '/')
 	{
 		*flags |= GLOBUX_ONLYDIR;
