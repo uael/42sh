@@ -6,7 +6,7 @@
 /*   By: mcanal <zboub@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/11/29 15:38:59 by mcanal            #+#    #+#             */
-/*   Updated: 2018/02/22 22:29:48 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/22 23:15:10 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,10 +52,11 @@ static char *glob_flags_strings[] = {
 	"GLOB_CUSTOM",
 };
 
+#define FAT (1 << 24) //yolo
 #define BIG (1 << 20) //yolo
 #define SMALL (1 << 8) //yolo
 
-static char print_buffer[BIG] = {0};
+static char print_buffer[FAT] = {0};
 static char argv_input_buffer[BIG] = {0};
 static char argv_test_buffer[BIG] = {0};
 static char argv_ctrl_buffer[BIG] = {0};
