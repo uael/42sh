@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 22:23:43 by mc                #+#    #+#             */
-/*   Updated: 2018/02/22 16:18:28 by mcanal           ###   ########.fr       */
+/*   Updated: 2018/02/22 16:20:46 by mcanal           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -174,7 +174,8 @@ int			glob_climb_tree(t_glob_env *glob_env)
 	}
 
 	if ((*(glob_env->flags) & GLOBUX_NOMAGIC) \
-		|| !ft_strcmp("/", glob_env->pattern)) //shit happens
+		|| !ft_strcmp("/", glob_env->pattern)
+		|| !ft_strcmp("./", glob_env->pattern)) //shit happens
 	{
 		if (!(glob_env->match_list = matchctor(glob_env->pattern, \
 												ft_strlen(glob_env->pattern))))
