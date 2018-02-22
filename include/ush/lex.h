@@ -33,7 +33,7 @@ typedef struct	s_tokit
 typedef int		(t_tokcb)(int fd, t_deq *toks, char **ln);
 
 extern int		sh_lex(int fd, char **it, char **ln, t_tokcb *cb);
-extern int		sh_lexvar(int fd, t_tok *tok, char **it, char **ln);
+extern int		sh_lexdollar(int fd, t_tok *tok, char **it, char **ln);
 extern int		sh_lexop(int fd, t_tok *tok, char **it, char **ln);
 extern int		sh_lexbslash(int fd, char **it, char **ln);
 extern int		sh_lexword(int fd, t_tok *tok, char **it, char **ln);

@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "ush/eval.h"
+#include "ush/exp.h"
 
 static char		g_var[MAX_INPUT + 1];
 
@@ -46,7 +47,8 @@ inline int			sh_evalassign(t_tok *tok, t_deq *toks, t_map *map, char *ln)
 		ft_strncpy(g_var, ln + tok->pos, eq - (ln + tok->pos));
 		if (!sh_isname(g_var))
 			break ;
-		sh_wordresolve(&val, eq + 1, tok->len - (eq - ln - tok->pos) - 1, 0);
+		ft_sdsctor(&val);
+		sh_expword(&val, eq + 1, tok->len - (eq - ln - tok->pos) - 1);
 		assignset(map, val.len ? val.buf : ft_strdup(""));
 		g_sh->status = 0;
 		tok = sh_toknext(toks);

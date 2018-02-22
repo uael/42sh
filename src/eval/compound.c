@@ -12,9 +12,9 @@
 
 #include "ush/eval.h"
 
-inline int		sh_evalcompound(t_job *job, int fd, t_deq *toks, char **ln)
+inline int		sh_evalcompound(t_proc *proc, int fd, t_deq *toks, char **ln)
 {
 	if (sh_tokpeek(toks)->id == '(')
-		return (sh_evalsubshell(job, fd, toks, ln));
+		return (sh_evalsubshell(proc, fd, toks, ln));
 	return (NOP);
 }

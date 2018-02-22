@@ -21,12 +21,5 @@ inline void		ps_procbit(t_proc *proc, t_bool bit)
 
 inline int		ps_procbitlaunch(t_proc *proc)
 {
-	proc->status = proc->u.bit;
-	if (proc->child)
-	{
-		ps_procdtor(proc);
-		g_fatalcb(proc->status, NULL);
-	}
-	ft_dup2std(proc->scope, STD_FILENOS);
-	return (YEP);
+	return (proc->status = proc->u.bit);
 }

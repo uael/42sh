@@ -6,12 +6,11 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2018/02/18 17:39:05 by mc               ###   ########.fr       */
+/*   Updated: 2018/01/06 11:10:01 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <sys/stat.h>
-#include "libft/ft_glob.h"
 
 #include "../ps.h"
 
@@ -87,7 +86,6 @@ inline void		ps_procexe(t_proc *p, char const *path, char *exe, char **envv)
 {
 	uint32_t	it;
 
-	ps_procctor(p);
 	p->envv = envv;
 	if (ft_mapget(g_builtins, exe, &it))
 	{
@@ -106,17 +104,17 @@ inline int		ps_procexelaunch(struct s_proc *prc)
 	int		st;
 	char	buf[PATH_MAX + 1];
 
-	if ((st = exelookup(prc->envv, prc->argv.gl_pathv[0], prc->u.exe.pvar, buf)))
+	if ((st = exelookup(prc->envv, prc->argv[0], prc->u.exe.pvar, buf)))
 	{
 		if (st == PROC_ISDIR)
-			g_errcb("%s: Is a directory\n", prc->argv.gl_pathv[0]);
+			g_errcb("%s: Is a directory\n", prc->argv[0]);
 		else
-			g_errcb(st == PROC_NOTFOUND && !ft_strchr(prc->argv.gl_pathv[0], '/') ?
-			"%s: Command not found\n" : "%s: %e\n", prc->argv.gl_pathv[0], errno);
+			g_errcb(st == PROC_NOTFOUND && !ft_strchr(prc->argv[0], '/') ?
+			"%s: Command not found\n" : "%s: %e\n", prc->argv[0], errno);
 		g_fatalcb(st, NULL);
 	}
-	execve(buf, prc->argv.gl_pathv, prc->envv);
-	g_errcb("%s: %e\n", prc->argv.gl_pathv[0], errno);
+	execve(buf, prc->argv, prc->envv);
+	g_errcb("%s: %e\n", prc->argv[0], errno);
 	ps_procdtor(prc);
 	return (g_fatalcb(EXIT_FAILURE, NULL));
 }

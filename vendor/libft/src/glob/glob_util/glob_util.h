@@ -6,52 +6,66 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 20:57:25 by mc                #+#    #+#             */
-/*   Updated: 2018/02/22 16:09:52 by mcanal           ###   ########.fr       */
+/*   Updated: 2018/02/22 21:21:38 by mcanal           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GLOB_UTIL_H
 # define GLOB_UTIL_H
 
-# include <sys/types.h> /* for {open,read,close}dir */
-# include <dirent.h> /* for {open,read,close}dir */
+# include <sys/types.h>
+# include <dirent.h>
 
-# include "libft/ft_glob.h" /* for t_glob and GLOBUX flags */
-# include "libft/str.h" /* for ft_str* / ft_mem* */
-# include "libft/sort.h" /* for ft_shellsort */
+# include "libft/ft_glob.h"
+# include "libft/str.h"
+# include "libft/sort.h"
 
 # ifndef PATH_MAX
-#  ifdef OSX
-#	include <sys/syslimits.h> /* for PATH_MAX */
+#  ifdef __MACOSX__
+#   include <sys/syslimits.h>
 #  endif
-#  ifdef LINUX
-#   include <linux/limits.h> /* for PATH_MAX */
+#  ifdef __linux__
+#   include <linux/limits.h>
 #  endif
 # endif
 
 # ifndef TRUE
-#	define TRUE				1
+#  define TRUE			1
 # endif
 # ifndef FALSE
-#	define FALSE				0
+#  define FALSE			0
 # endif
 
-# define IS_DIR(dirent) ((dirent)->d_type == DT_DIR || (dirent)->d_type == DT_LNK)
+# define IS_DIR(d) ((d)->d_type == DT_DIR || (d)->d_type == DT_LNK)
 
 # define GLOBUX_BOOM_BABY 5
 # define GLOBUX_NOBODY_GIVES_A_DAMN 6
-/* # define GLOBUX_INITIALIZED (1 << 15) */
 
-# define MAX_DEPTH			(1 << 8) //TODO
+# define MAX_DEPTH			(1 << 8)
 
 typedef unsigned char	t_byte;
 
-/* Structure describing a glob match.	*/
-typedef struct s_match	t_match;
-struct					s_match
+/*
+** Structure describing a glob match.
+*/
+typedef struct s_match		t_match;
+struct						s_match
 {
-	t_match	*next;
-	t_byte	buf[sizeof(void *)];
+	t_match		*next;
+	t_byte		buf[sizeof(void *)];
+};
+
+/*
+** Structure describing a glob tree climbing environment.
+*/
+typedef struct s_glob_env	t_glob_env;
+struct						s_glob_env
+{
+	t_match		*match_list;
+	char const	*pattern;
+	char		sub_pat_buf[NAME_MAX + 1];
+	char		magic_buf[NAME_MAX + 1];
+	int			*flags;
 };
 
 /*
@@ -66,31 +80,53 @@ struct					s_match
 ** @pat: Shell-style pattern to match, e.g. "*.[ch]".
 ** @flags: cf ft_glob.h (GLOBUX_NOESCAPE)
 */
-char	const	*is_magic(char *magic_buf, char const *pattern, int *flags);
+char const					*is_magic(char *magic_buf, char const *pattern, \
+								int *flags);
 
 /*
 ** in glob_list.c:
 */
-t_match		*matchctor(char const *path, size_t len);
-void		matchdtor(t_match *match);
-void		add_match_to_list(t_match *match, t_match **match_list);
-size_t		list_len(t_match *match_list);
+t_match						*matchctor(char const *path, size_t len);
+void						matchdtor(t_match *match);
+void						add_match_to_list(t_match *match, \
+											t_match **match_list);
+size_t						list_len(t_match *match_list);
 
 /*
 ** in glob_dir.c:
 */
-int			glob_count_depth(char const *pattern);
-int			glob_open_dir(DIR **dir, char const *dir_name, int flags);
-int			glob_close_dir(DIR *dir, int flags);
+int							glob_count_depth(char const *pattern);
+int							glob_open_dir(DIR **dir, char const *dir_name, \
+										int flags);
+int							glob_close_dir(DIR *dir, int flags);
+void						glob_init_dir_name(char const **dirname, \
+									char *path_buf, char const *pattern);
+int							glob_actually_open_some_folder(t_glob_env *e, \
+													char const *dirname, \
+													int depth, DIR **dir);
 
 /*
 ** in glob_path.c:
 */
-t_bool		glob_get_sub_pattern(char *sub_pat_buf, char const *pattern, \
-                                 int depth, int flags);
-char const	*glob_get_folder_name(char const *path);
-int			glob_append_file_name(char *path_buf, char const *new_file);
-int			glob_store_dir_name(char *path_buf, char const *prev_dir, \
-								char	const *new_dir);
+t_bool						glob_get_sub_pattern(char *sub_pat_buf, \
+											char const *pattern, \
+											int depth, int flags);
+char const					*glob_get_folder_name(char const *path);
+int							glob_append_file_name(char *path_buf, \
+												char const *new_file);
+int							glob_store_dir_name(char *path_buf, \
+											char const *prev_dir, \
+											char const *new_dir);
 
-#endif /* GLOB_UTIL_H */
+/*
+** in glob_cmp.c
+*/
+int							super_cmp(const void *a, const void *b, size_t n);
+
+/*
+**  in glob_show.c
+*/
+int							show_hidden_files(int flags, char pat_start);
+int							show_files(int *flags, char const *pattern);
+
+#endif

@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/14 21:56:00 by mc                #+#    #+#             */
-/*   Updated: 2018/02/22 12:58:31 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/22 19:04:10 by mcanal           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 **
 ** assume we'll find a trailing slash in PATH_BUF (cf. glob_store_dir_name())
 */
+
 int			glob_append_file_name(char *path_buf, char const *new_file)
 {
 	char	*path;
@@ -37,6 +38,7 @@ int			glob_append_file_name(char *path_buf, char const *new_file)
 ** delete any previous content of path_buf
 ** append a trailing slash if there is none
 */
+
 int			glob_store_dir_name(char *path_buf, char const *prev_dir, \
 								char	const *new_dir)
 {
@@ -66,7 +68,8 @@ int			glob_store_dir_name(char *path_buf, char const *prev_dir, \
 ** get the folder name from a full path
 ** eg: path='/a/b/' -> 'b/'
 */
-char	const *glob_get_folder_name(char const *path)
+
+char const	*glob_get_folder_name(char const *path)
 {
 	size_t		len;
 	char const	*pathux;
@@ -88,8 +91,9 @@ char	const *glob_get_folder_name(char const *path)
 **
 ** the sub-pattern is stored in some buffer, don't worry about it
 */
+
 t_bool		glob_get_sub_pattern(char *sub_pat_buf, char const *pattern, \
-                                 int depth, int flags)
+								int depth, int flags)
 {
 	char	const	*dir_end;
 	char	const	*pat;

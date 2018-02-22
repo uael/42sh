@@ -31,13 +31,7 @@ inline int			ps_procerrlaunch(t_proc *proc)
 {
 	if (proc->u.err.msg)
 		ft_putf(STDERR_FILENO, proc->u.err.msg);
-	if (proc->child)
-	{
-		ps_procdtor(proc);
-		g_fatalcb(proc->u.err.st, NULL);
-	}
 	proc->status = proc->u.err.st;
 	proc->state = PROC_COMPLETED;
-	ft_dup2std(proc->scope, STD_FILENOS);
-	return (YEP);
+	return (proc->status);
 }

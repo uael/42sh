@@ -6,20 +6,20 @@
 #    By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/07 09:52:36 by alucas-           #+#    #+#              #
-#    Updated: 2018/02/20 14:06:42 by mc               ###   ########.fr        #
+#    Updated: 2018/02/22 21:30:38 by mcanal           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME ?= 42sh
+PROJECT ?= 42sh
 WFLAGS = -Werror -Wextra -Wall
 WWFLAGS = $(WFLAGS) -Wpedantic -Wshadow -Wconversion -Wcast-align \
--Wstrict-prototypes -Wmissing-prototypes -Wunreachable-code -Winit-self \
--Wmissing-declarations -Wfloat-equal -Wbad-function-cast -Wundef \
--Waggregate-return -Wstrict-overflow=5 -Wold-style-definition -Wpadded \
--Wredundant-decls -Wall -Werror -Wextra  #-Wcast-qual
+  -Wstrict-prototypes -Wmissing-prototypes -Wunreachable-code -Winit-self \
+  -Wmissing-declarations -Wfloat-equal -Wbad-function-cast -Wundef \
+  -Waggregate-return -Wstrict-overflow=5 -Wold-style-definition -Wpadded \
+  -Wredundant-decls -Wall -Werror -Wextra
 RCFLAGS = $(WFLAGS) -O2 -fomit-frame-pointer
 DCFLAGS = $(WFLAGS) -g3 -DDEBUG
-SCFLAGS = $(DCFLAGS) -fsanitize=address,undefined -ferror-limit=5
+SCFLAGS = -fsanitize=address,undefined -ferror-limit=5 $(DCFLAGS)
 CC ?= gcc
 MAKE += -j4
 
@@ -31,9 +31,9 @@ OBJ_PATH ?= $(OBJ_DIR)/rel
 UNIT_TEST_PATH = test/unit
 
 LIBS = ps rl ft
-ifneq (,$(findstring dev,$(NAME)))
+ifneq (,$(findstring dev,$(PROJECT)))
 LIB_NAME = $(addsuffix .dev, $(LIBS))
-else ifneq (,$(findstring san,$(NAME)))
+else ifneq (,$(findstring san,$(PROJECT)))
 LIB_NAME = $(addsuffix .san, $(LIBS))
 else
 LIB_NAME = $(LIBS)
@@ -49,13 +49,17 @@ SRC_NAME = \
 	eval/cmp.c eval/compound.c eval/heredoc.c eval/lamp.c eval/list.c \
 	eval/pipeline.c eval/ramp.c eval/raout.c eval/redir.c eval/rin.c \
 	eval/rout.c eval/sep.c eval/simple.c eval/subshell.c \
-	lex.c lex/heredoc.c lex/op.c lex/utils.c lex/var.c lex/word.c \
+	exp.c exp/backslash.c exp/backtick.c exp/brace.c exp/dollars.c \
+	exp/glob.c exp/quote.c exp/tilde.c \
+	exp/arith.c exp/arith/eval.c \
+	exp/comm.c exp/comm/read.c \
+	exp/param.c exp/param/env.c exp/param/subst.c exp/param/val.c \
+	lex.c lex/heredoc.c lex/op.c lex/utils.c lex/dollar.c lex/word.c \
 	main.c \
 	prompt.c \
 	shell.c \
 	tok.c \
-	var.c var/expand.c \
-	word/explode.c word/resolve.c
+	var.c
 
 3TH = $(addprefix $(3TH_PATH)/, $(3TH_NAME))
 OBJ = $(addprefix $(OBJ_PATH)/, $(SRC_NAME:.c=.o))
@@ -66,9 +70,9 @@ DEP = $(OBJ:%.o=%.d)
 
 PRINTF=test $(VERBOSE)$(TRAVIS) || printf
 
-ifneq (,$(findstring dev,$(NAME)))
+ifneq (,$(findstring dev,$(PROJECT)))
 3DE = $(shell echo "$(3TH_NAME)" | sed -E "s|([\.a-zA-Z]+)|$(3TH_PATH)/\1/\1.dev.a|g")
-else ifneq (,$(findstring san,$(NAME)))
+else ifneq (,$(findstring san,$(PROJECT)))
 3DE = $(shell echo "$(3TH_NAME)" | sed -E "s|([\.a-zA-Z]+)|$(3TH_PATH)/\1/\1.san.a|g")
 else
 3DE = $(shell echo "$(3TH_NAME)" | sed -E "s|([\.a-zA-Z]+)|$(3TH_PATH)/\1/\1.a|g")
@@ -78,35 +82,35 @@ all:
 ifneq ($(3TH_NAME),)
 	+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) &&) true
 endif
-	+$(MAKE) $(NAME) "CFLAGS = $(RCFLAGS)" "OBJ_PATH = $(OBJ_DIR)/rel"
+	+$(MAKE) $(PROJECT) "CFLAGS = $(RCFLAGS)" "OBJ_PATH = $(OBJ_DIR)/rel"
 
 dev:
 ifneq ($(3TH_NAME),)
 	+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) dev &&) true
 endif
-	+$(MAKE) $(NAME).dev "NAME = $(NAME).dev" "CFLAGS = $(DCFLAGS)" \
+	+$(MAKE) $(PROJECT).dev "PROJECT = $(PROJECT).dev" "CFLAGS = $(DCFLAGS)" \
 	  "OBJ_PATH = $(OBJ_DIR)/dev"
 
 san:
 ifneq ($(3TH_NAME),)
 	+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) san &&) true
 endif
-	+$(MAKE) $(NAME).san "NAME = $(NAME).san" "CFLAGS = $(SCFLAGS)" \
+	+$(MAKE) $(PROJECT).san "PROJECT = $(PROJECT).san" "CFLAGS = $(SCFLAGS)" \
 	  "OBJ_PATH = $(OBJ_DIR)/san" "CC = clang"
 
 mecry:
 ifneq ($(3TH_NAME),)
 	+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) mecry &&) true
 endif
-	+$(MAKE) $(NAME) "CFLAGS = $(WWFLAGS)" "OBJ_PATH = $(OBJ_DIR)/rel"
+	+$(MAKE) $(PROJECT) "CFLAGS = $(WWFLAGS)" "OBJ_PATH = $(OBJ_DIR)/rel"
 
-$(NAME): $(3DE) $(OBJ)
-	$(CC) $(CFLAGS) $(INC) $(LNK) $(OBJ) $(LIB) -o $(NAME)
-	@$(PRINTF) "%-20s\033[32m✔\033[0m\n" "$(NAME): exe"
+$(PROJECT): $(3DE) $(OBJ)
+	$(CC) $(CFLAGS) $(INC) $(LNK) $(OBJ) $(LIB) -o $(PROJECT)
+	@$(PRINTF) "%-20s\033[32m✔\033[0m\n" "$(PROJECT): exe"
 
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.c
 	mkdir -p $(shell dirname $@)
-	@$(PRINTF) "\r%-20s$<\n" "$(NAME):"
+	@$(PRINTF) "\r%-20s$<\n" "$(PROJECT):"
 	$(CC) $(CFLAGS) $(INC) -MMD -MP -c $< -o $@
 	@$(PRINTF) "\033[A\033[2K"
 
@@ -114,7 +118,7 @@ clean:
 	rm -f $(OBJ) $(DEP)
 	rm -f $(OBJ:$(OBJ_DIR)/rel%=$(OBJ_DIR)/dev%) $(DEP:$(OBJ_DIR)/rel%=$(OBJ_DIR)/dev%)
 	rm -f $(OBJ:$(OBJ_DIR)/rel%=$(OBJ_DIR)/san%) $(DEP:$(OBJ_DIR)/rel%=$(OBJ_DIR)/san%)
-	@$(PRINTF) "%-20s\033[32m✔\033[0m\n" "$(NAME): $@"
+	@$(PRINTF) "%-20s\033[32m✔\033[0m\n" "$(PROJECT): $@"
 
 fclean: clean
 ifneq ($(3TH_NAME),)
@@ -122,26 +126,26 @@ ifneq ($(3TH_NAME),)
 endif
 	test -d $(UNIT_TEST_PATH) && $(MAKE) -C $(UNIT_TEST_PATH) fclean || true
 	test -d $(OBJ_DIR) && find $(OBJ_DIR) -type d | sort -r | xargs rmdir || true
-	rm -f $(NAME){,.san,.dev}
-	@$(PRINTF) "%-20s\033[32m✔\033[0m\n" "$(NAME): $@"
+	rm -f $(PROJECT){,.san,.dev}
+	@$(PRINTF) "%-20s\033[32m✔\033[0m\n" "$(PROJECT): $@"
 
 re: clean all
 
 test: all
 	test -d $(UNIT_TEST_PATH) && $(MAKE) -C $(UNIT_TEST_PATH) || true
-	./test.sh . $(NAME)
+	./test.sh . $(PROJECT)
 
 testdev: dev
 	test -d $(UNIT_TEST_PATH) && $(MAKE) -C $(UNIT_TEST_PATH) debug || true
-	./test.sh . $(NAME).dev
+	./test.sh . $(PROJECT).dev
 
 testsan: san
 	test -d $(UNIT_TEST_PATH) && $(MAKE) -C $(UNIT_TEST_PATH) sanitize || true
-	./test.sh . $(NAME).san
+	./test.sh . $(PROJECT).san
 
 valgrind: dev
 	test -d $(UNIT_TEST_PATH) && $(MAKE) -C $(UNIT_TEST_PATH) debug || true
-	./valgrind.sh . $(NAME).dev
+	./valgrind.sh . $(PROJECT).dev
 
 -include $(DEP)
 
@@ -151,5 +155,5 @@ ifndef VERBOSE
  endif
 endif
 
-.PHONY: all, dev, san, mecry, $(NAME), clean, fclean, re, test, testdev, testsan, \
-  valgrind
+.PHONY: all, dev, san, mecry, $(PROJECT), clean, fclean, re, test, testdev, \
+  testsan, valgrind

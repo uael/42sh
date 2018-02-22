@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/15 13:36:27 by mc                #+#    #+#             */
-/*   Updated: 2018/02/20 17:20:37 by mcanal           ###   ########.fr       */
+/*   Updated: 2018/02/22 16:40:40 by mcanal           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ static t_bool		is_there_a_closing_bracket(char const *pattern, int flags)
 }
 
 static char	const	*previous_dir(char *magic_buf, char const *pattern, \
-								  char const *pat)
+								char const *pat)
 {
 	size_t			len;
 

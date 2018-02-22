@@ -6,11 +6,11 @@
 #    By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/07 09:52:36 by alucas-           #+#    #+#              #
-#    Updated: 2018/02/20 12:52:10 by mc               ###   ########.fr        #
+#    Updated: 2018/02/22 21:22:01 by mcanal           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME ?= libft
+PROJECT ?= libft
 WFLAGS = -Werror -Wextra -Wall
 WWFLAGS = $(WFLAGS) -Wpedantic -Wshadow -Wconversion -Wcast-align \
 -Wstrict-prototypes -Wmissing-prototypes -Wunreachable-code -Winit-self \
@@ -29,9 +29,9 @@ OBJ_PATH ?= $(OBJ_DIR)/rel
 3TH_PATH =
 
 LIBS =
-ifneq (,$(findstring dev,$(NAME)))
+ifneq (,$(findstring dev,$(PROJECT)))
 LIB_NAME = $(addsuffix .dev, $(LIBS))
-else ifneq (,$(findstring san,$(NAME)))
+else ifneq (,$(findstring san,$(PROJECT)))
 LIB_NAME = $(addsuffix .san, $(LIBS))
 else
 LIB_NAME = $(LIBS)
@@ -50,6 +50,7 @@ SRC_NAME = \
 	glob/globux.c glob/glob_match.c glob/glob_climb_tree.c \
 	glob/glob_util/glob_list.c glob/glob_util/glob_dir.c \
 	glob/glob_util/glob_is_magic.c glob/glob_util/glob_path.c \
+	glob/glob_util/glob_cmp.c glob/glob_util/glob_show.c \
 	hash/hash.c hash/hash_2.c \
 	int/len.c int/str.c \
 	io/fcntl.c io/ifs.c io/ifs_2.c io/ofs.c io/ofs_2.c io/ofs_3.c io/padn.c \
@@ -61,7 +62,7 @@ SRC_NAME = \
 	math/v3.c math/v3_2.c math/eq.c math/eq_2.c \
 	mem/alloc.c \
 	str/mem.c str/mem_2.c str/str.c str/str_2.c str/str_3.c str/str_4.c \
-	str/str_5.c \
+	str/str_5.c str/str_6.c \
 	getopt.c \
 	sort/ft_shellsort.c
 
@@ -101,41 +102,40 @@ else
   endif
 endif
 
-
 all:
 ifneq ($(3TH_NAME),)
 	+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) &&) true
 endif
-	+$(MAKE) $(NAME).a "CFLAGS = $(RCFLAGS)" "OBJ_PATH = $(OBJ_DIR)/rel"
+	+$(MAKE) $(PROJECT).a "CFLAGS = $(RCFLAGS)" "OBJ_PATH = $(OBJ_DIR)/rel"
 
 dev:
 ifneq ($(3TH_NAME),)
 	+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) dev &&) true
 endif
-	+$(MAKE) $(NAME).dev.a "NAME = $(NAME).dev" "CFLAGS = $(DCFLAGS)" \
+	+$(MAKE) $(PROJECT).dev.a "PROJECT = $(PROJECT).dev" "CFLAGS = $(DCFLAGS)" \
 	  "OBJ_PATH = $(OBJ_DIR)/dev"
 
 san:
 ifneq ($(3TH_NAME),)
 	+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) san &&) true
 endif
-	+$(MAKE) $(NAME).san.a "NAME = $(NAME).san" "CFLAGS = $(SCFLAGS)" \
+	+$(MAKE) $(PROJECT).san.a "PROJECT = $(PROJECT).san" "CFLAGS = $(SCFLAGS)" \
 	  "OBJ_PATH = $(OBJ_DIR)/san" "CC = clang"
 
 mecry:
 ifneq ($(3TH_NAME),)
 	+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) mecry &&) true
 endif
-	+$(MAKE) $(NAME).a "CFLAGS = $(WWFLAGS)" "OBJ_PATH = $(OBJ_DIR)/rel"
+	+$(MAKE) $(PROJECT).a "CFLAGS = $(WWFLAGS)" "OBJ_PATH = $(OBJ_DIR)/rel"
 
-$(NAME).a: $(OBJ)
-	ar -rc $(NAME).a $(OBJ)
-	ranlib $(NAME).a
-	@$(PRINTF) "%-20s\033[32m✔\033[0m\n" "$(NAME): lib"
+$(PROJECT).a: $(OBJ)
+	ar -rc $(PROJECT).a $(OBJ)
+	ranlib $(PROJECT).a
+	@$(PRINTF) "%-20s\033[32m✔\033[0m\n" "$(PROJECT): lib"
 
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.c
 	mkdir -p $(shell dirname $@)
-	@$(PRINTF) "\r%-20s$<\n" "$(NAME):"
+	@$(PRINTF) "\r%-20s$<\n" "$(PROJECT):"
 	$(CC) $(CFLAGS) $(CCFLAGS) $(INC) -MMD -MP -c $< -o $@
 	@$(PRINTF) "\033[A\033[2K"
 
@@ -143,15 +143,15 @@ clean:
 	rm -f $(OBJ) $(DEP)
 	rm -f $(OBJ:$(OBJ_DIR)/rel%=$(OBJ_DIR)/dev%) $(DEP:$(OBJ_DIR)/rel%=$(OBJ_DIR)/dev%)
 	rm -f $(OBJ:$(OBJ_DIR)/rel%=$(OBJ_DIR)/san%) $(DEP:$(OBJ_DIR)/rel%=$(OBJ_DIR)/san%)
-	@$(PRINTF) "%-20s\033[32m✔\033[0m\n" "$(NAME): $@"
+	@$(PRINTF) "%-20s\033[32m✔\033[0m\n" "$(PROJECT): $@"
 
 fclean: clean
 ifneq ($(3TH_NAME),)
 	+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) fclean &&) true
 endif
 	test -d $(OBJ_DIR) && find $(OBJ_DIR) -type d | sort -r | xargs rmdir || true
-	rm -f $(NAME){,.san,.dev}.a
-	@$(PRINTF) "%-20s\033[32m✔\033[0m\n" "$(NAME): $@"
+	rm -f $(PROJECT){,.san,.dev}.a
+	@$(PRINTF) "%-20s\033[32m✔\033[0m\n" "$(PROJECT): $@"
 
 re: clean all
 
@@ -163,4 +163,4 @@ ifndef VERBOSE
  endif
 endif
 
-.PHONY: all, dev, san, mecry, $(NAME).a, clean, fclean, re
+.PHONY: all, dev, san, mecry, $(PROJECT).a, clean, fclean, re

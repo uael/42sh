@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/14 21:56:00 by mc                #+#    #+#             */
-/*   Updated: 2018/02/20 17:20:14 by mcanal           ###   ########.fr       */
+/*   Updated: 2018/02/22 21:26:01 by mcanal           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,5 +48,28 @@ int			glob_close_dir(DIR *dir, int flags)
 			return (GLOBUX_ABORTED);
 		return (GLOBUX_NOBODY_GIVES_A_DAMN);
 	}
+	return (GLOBUX_SUCCESS);
+}
+
+void		glob_init_dir_name(char const **dirname, char *path_buf, \
+							char const *pattern)
+{
+	if (!*dirname)
+	{
+		ft_memcpy(path_buf, *pattern == '/' ? "/\0" : "./", 3);
+		*dirname = path_buf;
+	}
+	else
+		ft_strcpy(path_buf, *dirname);
+}
+
+int			glob_actually_open_some_folder(t_glob_env *e, char const *dirname, \
+										int depth, DIR **dir)
+{
+	if (glob_open_dir(dir, dirname, *(e->flags)) && !*dir \
+		&& glob_open_dir(dir, glob_get_folder_name(dirname), *(e->flags)))
+		return (GLOBUX_SUCCESS);
+	if (!glob_get_sub_pattern(e->sub_pat_buf, e->pattern, depth, *(e->flags)))
+		return (GLOBUX_NOSPACE);
 	return (GLOBUX_SUCCESS);
 }
