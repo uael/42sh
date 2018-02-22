@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 21:09:16 by mc                #+#    #+#             */
-/*   Updated: 2018/02/22 23:05:00 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/22 23:41:40 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static int		handle_rev_char_class(char const *pat, char const *str, \
 	if (*(pat + 1) == '-' && *(pat + 2) != ']')
 	{
 		return (handle_rev_char_class(pat + 3, str, flags, matched &
-										(*str <= *pat || *str >= *(pat + 2))));
+										(*str < *pat || *str > *(pat + 2))));
 	}
 	return (handle_rev_char_class(pat + 1, str, flags,
 										matched & (*str != *pat)));
