@@ -21,10 +21,10 @@
 # include "libft/sort.h" /* for ft_shellsort */
 
 # ifndef PATH_MAX
-#  ifdef OSX
+#  ifdef __MACOSX__
 #	include <sys/syslimits.h> /* for PATH_MAX */
 #  endif
-#  ifdef LINUX
+#  ifdef __linux__
 #   include <linux/limits.h> /* for PATH_MAX */
 #  endif
 # endif

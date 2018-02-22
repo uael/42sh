@@ -79,7 +79,7 @@
 
 # define __GLOBUX_FLAGS	(GLOBUX_ERR |  GLOBUX_MARK | GLOBUX_NOSORT |  GLOBUX_DOOFFS |  \
 						 GLOBUX_NOESCAPE | GLOBUX_NOCHECK | /* GLOBUX_APPEND | */	\
-						 GLOBUX_PERIOD | /* GLOBUX_ALTDIRFUNC | GLOBUX_BRACE | */	\
+						 GLOBUX_PERIOD | /* GLOBUX_ALTDIRFUNC | */ GLOBUX_BRACE |	\
 						 GLOBUX_NOMAGIC /* | GLOBUX_TILDE */ | GLOBUX_ONLYDIR /* | GLOBUX_TILDE_CHECK */)
 
 
@@ -109,12 +109,12 @@ struct					s_glob
 ** No tilde expansion or parameter substitution is done;
 ** if you want these, use wordexp(3).
 */
-int		globctor(const char *pattern, int flags, t_glob *pglob);
+int		ft_glob(const char *pattern, int flags, t_glob *pglob);
 
 /*
 ** The globdtor() function frees the dynamically allocated storage from an
 ** earlier call to globctor().
 */
-void	globdtor(t_glob *pglob);
+void	ft_globfree(t_glob *pglob);
 
 #endif /* FT_GLOB_H */

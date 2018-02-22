@@ -71,7 +71,7 @@ static void		glbnvctor(t_glob_env *glob_env, char const *pattern, int *flags)
 }
 
 //TODO: handle errors with libft tools?
-int				globctor(const char *pattern, int flags, t_glob *pglob)
+int				ft_glob(const char *pattern, int flags, t_glob *pglob)
 {
 	t_glob_env		glob_env;
 	int				ret;
@@ -114,7 +114,7 @@ int				globctor(const char *pattern, int flags, t_glob *pglob)
 	return (GLOBUX_SUCCESS);
 }
 
-void			globdtor(t_glob *pglob)
+void			ft_globfree(t_glob *pglob)
 {
 	char	**av;
 

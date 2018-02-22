@@ -20,17 +20,13 @@ static int	globdone(t_vec *glist, int st)
 	return (st);
 }
 
-/*
-** TODO: use the mc glob
-*/
-
 static int	globit(t_sds *word, t_vec *av, char *it)
 {
 	uint32_t	match;
-	glob_t		gbuf;
-	const int	flags = GLOB_NOCHECK | (ft_strchr(it, ',') ? GLOB_BRACE : 0);
+	t_glob		gbuf;
 
-	if (glob(it, flags, NULL, &gbuf))
+	ft_bzero(&gbuf, sizeof(t_glob));
+	if (ft_glob(it, GLOBUX_NOCHECK | GLOBUX_BRACE, &gbuf))
 		return (THROW(WUT));
 	if ((g_ifs && !*g_ifs) || !av)
 	{
@@ -41,14 +37,14 @@ static int	globit(t_sds *word, t_vec *av, char *it)
 			*ft_sdspush(word) = ' ';
 			ft_sdsapd(word, gbuf.gl_pathv[match++]);
 		}
-		globfree(&gbuf);
+		ft_globfree(&gbuf);
 		return (YEP);
 	}
 	word->len ? (word->len = 0) : 0;
 	match = 0;
 	while (match < gbuf.gl_pathc)
 		*(char **)ft_vecpush(av) = ft_strdup(gbuf.gl_pathv[match++]);
-	globfree(&gbuf);
+	ft_globfree(&gbuf);
 	return (YEP);
 }
 
