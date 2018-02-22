@@ -12,7 +12,25 @@
 
 #include "ush/exp.h"
 
-int	sh_expdquote(t_sds *word, char **words, t_vec *av)
+void	sh_exponquote(int *quoted, char quote)
+{
+	if (quote == '\'')
+	{
+		if (*quoted == 0)
+			*quoted = 1;
+		else if (*quoted == 1)
+			*quoted = 0;
+	}
+	else if (quote == '"')
+	{
+		if (*quoted == 0)
+			*quoted = 2;
+		else if (*quoted == 2)
+			*quoted = 0;
+	}
+}
+
+int		sh_expdquote(t_sds *word, char **words, t_vec *av)
 {
 	while (**words)
 	{
@@ -34,7 +52,7 @@ int	sh_expdquote(t_sds *word, char **words, t_vec *av)
 	return (NOP);
 }
 
-int	sh_expsquote(t_sds *word, char **words)
+int		sh_expsquote(t_sds *word, char **words)
 {
 	while (**words)
 	{

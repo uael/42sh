@@ -20,30 +20,13 @@ static int	globdone(t_vec *glist, int st)
 	return (st);
 }
 
-static void	onquote(int *quoted, char quote)
-{
-	if (quote == '\'')
-	{
-		if (*quoted == 0)
-			*quoted = 1;
-		else if (*quoted == 1)
-			*quoted = 0;
-	}
-	else if (quote == '"')
-	{
-		if (*quoted == 0)
-			*quoted = 2;
-		else if (*quoted == 2)
-			*quoted = 0;
-	}
-}
-
 static int	globit(t_sds *word, t_vec *av, char *it)
 {
 	unsigned int	match;
 	glob_t			globbuf;
 
-	if (glob(it, GLOB_NOCHECK | GLOB_BRACE, NULL, &globbuf))
+	if (glob(it, GLOB_NOCHECK | (ft_strchr(it, ',') ? GLOB_BRACE : 0), NULL,
+		&globbuf))
 		return (THROW(WUT));
 	if ((g_ifs && !*g_ifs) || !av)
 	{
@@ -57,8 +40,7 @@ static int	globit(t_sds *word, t_vec *av, char *it)
 		globfree(&globbuf);
 		return (YEP);
 	}
-	if (word->len)
-		word->len = 0;
+	word->len ? (word->len = 0) : 0;
 	match = 0;
 	while (match < globbuf.gl_pathc)
 		*(char **)ft_vecpush(av) = ft_strdup(globbuf.gl_pathv[match++]);
@@ -92,7 +74,7 @@ int			sh_expglob(t_sds *word, char **words, t_vec *av)
 	--*words;
 	while (*++*words)
 		if (**words == '\'' || **words == '"')
-			onquote(&q, **words);
+			sh_exponquote(&q, **words);
 		else if (ft_strchr(g_ifs, **words))
 			break ;
 		else if (**words == '$')

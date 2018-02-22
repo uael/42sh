@@ -57,6 +57,7 @@ extern int		sh_expparamdone(t_param *param, int st);
 extern int		sh_expparamenv(t_sds *w, char **words, t_vec *av, t_param *p);
 extern int		sh_expdquote(t_sds *word, char **words, t_vec *av);
 extern int		sh_expsquote(t_sds *word, char **words);
+extern void		sh_exponquote(int *quoted, char quote);
 extern int		sh_exptilde(t_sds *word, char **words, size_t wc);
 
 #endif

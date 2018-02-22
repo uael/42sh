@@ -33,24 +33,6 @@ static int	expcommchild(char *ln)
 	return (st);
 }
 
-static void	onquote(int *quoted, char quote)
-{
-	if (quote == '\'')
-	{
-		if (*quoted == 0)
-			*quoted = 1;
-		else if (*quoted == 1)
-			*quoted = 0;
-	}
-	else if (quote == '"')
-	{
-		if (*quoted == 0)
-			*quoted = 2;
-		else if (*quoted == 2)
-			*quoted = 0;
-	}
-}
-
 int			sh_expcomm(t_sds *word, char **words, t_vec *av)
 {
 	int		quoted;
@@ -63,7 +45,7 @@ int			sh_expcomm(t_sds *word, char **words, t_vec *av)
 	while (**words)
 	{
 		if (**words == '\'' || **words == '"')
-			onquote(&quoted, **words);
+			sh_exponquote(&quoted, **words);
 		else if (**words == ')')
 		{
 			if (!quoted && --depth == 0)
@@ -77,7 +59,7 @@ int			sh_expcomm(t_sds *word, char **words, t_vec *av)
 		*ft_sdspush(&comm) = **words;
 		++*words;
 	}
-	return (42);
+	return (NOP);
 }
 
 int			sh_expcommexec(t_sds *word, t_sds *comm, t_vec *av)
