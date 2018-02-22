@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 20:57:25 by mc                #+#    #+#             */
-/*   Updated: 2018/02/20 17:16:02 by mcanal           ###   ########.fr       */
+/*   Updated: 2018/02/22 12:58:42 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,9 +86,10 @@ int			glob_close_dir(DIR *dir, int flags);
 /*
 ** in glob_path.c:
 */
-t_bool		glob_get_sub_pattern(char *sub_pat_buf, char const *pattern, int depth);
+t_bool		glob_get_sub_pattern(char *sub_pat_buf, char const *pattern, \
+                                 int depth, int flags);
 char const	*glob_get_folder_name(char const *path);
-int			glob_append_file_name(char *path_buf, char const *new_file, int flags);
+int			glob_append_file_name(char *path_buf, char const *new_file);
 int			glob_store_dir_name(char *path_buf, char const *prev_dir, \
 								char	const *new_dir);
 

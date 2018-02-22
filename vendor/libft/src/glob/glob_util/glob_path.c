@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/14 21:56:00 by mc                #+#    #+#             */
-/*   Updated: 2018/02/20 17:21:27 by mcanal           ###   ########.fr       */
+/*   Updated: 2018/02/22 12:58:31 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,9 @@
 ** Append to PATH_BUF buffer the NEW_FILE file-name
 ** (and eventually delete any file-name previously added by this function)
 **
-** assume we'll find a slash in PATH_BUF (cf. glob_store_dir_name())
+** assume we'll find a trailing slash in PATH_BUF (cf. glob_store_dir_name())
 */
-int			glob_append_file_name(char *path_buf, char const *new_file, int flags)
+int			glob_append_file_name(char *path_buf, char const *new_file)
 {
 	char	*path;
 	size_t	new_size;
@@ -28,11 +28,6 @@ int			glob_append_file_name(char *path_buf, char const *new_file, int flags)
 	if ((size_t)(path - path_buf) + new_size + 2 > PATH_MAX)
 		return (GLOBUX_NOSPACE);
 	ft_memcpy(path, new_file, new_size + 1);
-	if ((flags & GLOBUX_MARK) && *(path + new_size - 1) != '/')
-	{
-		*(path + new_size) = '/';
-		*(path + new_size + 1) = '\0';
-	}
 	return (GLOBUX_SUCCESS);
 }
 
@@ -93,13 +88,16 @@ char	const *glob_get_folder_name(char const *path)
 **
 ** the sub-pattern is stored in some buffer, don't worry about it
 */
-t_bool		glob_get_sub_pattern(char *sub_pat_buf, char const *pattern, int depth)
+t_bool		glob_get_sub_pattern(char *sub_pat_buf, char const *pattern, \
+                                 int depth, int flags)
 {
 	char	const	*dir_end;
 	char	const	*pat;
 	size_t			len;
 
 	len = ft_strlen(pattern);
+	if ((flags & GLOBUX_ONLYDIR))
+		len--;
 	pat = pattern + len;
 	while (depth && pat != pattern && pat--)
 		if (*pat == '/')

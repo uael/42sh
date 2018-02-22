@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 22:23:43 by mc                #+#    #+#             */
-/*   Updated: 2018/02/22 12:16:30 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/22 13:02:53 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,17 @@
 static int	show_hidden_files(int flags, char pat_start)
 {
 	return (!(flags & GLOBUX_MAGCHAR) || (flags & GLOBUX_PERIOD) || pat_start == '.');
+}
+
+static int show_files(int *flags, char const *pattern)
+{
+	if (*(pattern + 1)													\
+		&& *(pattern + ft_strlen(pattern) - 1) == '/')
+	{
+		*flags |= GLOBUX_ONLYDIR;
+		return (FALSE);
+	}
+	return (TRUE);
 }
 
 static void	remove_last_dir_from_path(char *path_buf)
@@ -35,6 +46,7 @@ static int	glob_check_file(t_glob_env *glob_env, struct dirent *dirent, \
 							int depth, char *path_buf)
 {
 	t_match		*match;
+	size_t		len;
 
 	if ((*(glob_env->flags) & GLOBUX_ONLYDIR) && !IS_DIR(dirent))
 		return (GLOBUX_SUCCESS);
@@ -48,14 +60,22 @@ static int	glob_check_file(t_glob_env *glob_env, struct dirent *dirent, \
 
 	if (depth == 1)
 	{
-		if (glob_append_file_name(path_buf, dirent->d_name, \
-									*(glob_env->flags)) != GLOBUX_SUCCESS)
+		if (glob_append_file_name(path_buf, dirent->d_name) != GLOBUX_SUCCESS)
 			return (GLOBUX_NOSPACE);
 		if (!ft_memcmp(path_buf, "./", 2) && ft_memcmp(glob_env->pattern, "./", 2))
 			path_buf += 2;
+        len = ft_strlen(path_buf);
+        if ((*(glob_env->flags) & (GLOBUX_MARK | GLOBUX_ONLYDIR)) \
+            && *(path_buf + len - 1) != '/')
+        {
+            *(path_buf + len) = '/';
+            *(path_buf + len + 1) = '\0';
+        }
 		if (!(match = matchctor(path_buf, ft_strlen(path_buf))))
 			return (GLOBUX_NOSPACE);
 		add_match_to_list(match, &glob_env->match_list);
+        if (*(glob_env->flags) & (GLOBUX_MARK | GLOBUX_ONLYDIR))
+            *(path_buf + len) = '\0';
 	}
 	else if (IS_DIR(dirent)								\
              && (ft_strcmp(dirent->d_name, ".") || !ft_strcmp(glob_env->sub_pat_buf, ".")) \
@@ -89,7 +109,7 @@ int			glob_read_dir(t_glob_env *glob_env, \
 	if (!dir && glob_open_dir(&dir, glob_get_folder_name(dir_name), *(glob_env->flags)))
 		return (GLOBUX_SUCCESS);
 
-	if (!glob_get_sub_pattern(glob_env->sub_pat_buf, glob_env->pattern, depth))
+	if (!glob_get_sub_pattern(glob_env->sub_pat_buf, glob_env->pattern, depth, *(glob_env->flags)))
 		return (GLOBUX_NOSPACE);
 
 	while ((dirent = readdir(dir)))
@@ -107,7 +127,7 @@ int			glob_read_dir(t_glob_env *glob_env, \
 				glob_close_dir(dir, *(glob_env->flags));
 				return (ret);
 			}
-			if (!glob_get_sub_pattern(glob_env->sub_pat_buf, glob_env->pattern, depth))
+			if (!glob_get_sub_pattern(glob_env->sub_pat_buf, glob_env->pattern, depth, *(glob_env->flags)))
 				return (GLOBUX_NOSPACE);
 		}
 		if (ret != GLOBUX_SUCCESS)
@@ -135,12 +155,18 @@ int			glob_climb_tree(t_glob_env *glob_env)
 	//TODO: I guess a trailing slashes in pattern fuck everything up
 
 	depth = glob_count_depth(glob_env->pattern);
+	if (!show_files(glob_env->flags, glob_env->pattern))
+		depth--;
 	if ((magic = is_magic(glob_env->magic_buf, \
 							glob_env->pattern, glob_env->flags)))
 	{
 		if (magic != glob_env->pattern)
+		{
 			depth = 1 + \
 				glob_count_depth(glob_env->pattern) - glob_count_depth(magic); //maths!
+			if (!show_files(glob_env->flags, glob_env->pattern))
+				depth--;
+		}
 		if (depth > MAX_DEPTH || depth < 1)
 			return (GLOBUX_NOSPACE);
 		return glob_read_dir(glob_env, depth, \
