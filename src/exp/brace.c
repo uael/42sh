@@ -64,7 +64,7 @@ static int		parserange(t_range *range, int *r, int *s, char *words)
 			break ;
 		else
 			return (0);
-	return ((!words[i] || rr - r < 1 || (rr - r == 2 && !r[2])) ? 0 : i);
+	return ((!words[i] || rr - r < 2 || (rr - r == 2 && !r[2])) ? 0 : i);
 }
 
 static void		expvalue(t_range *r, t_sds *val, t_sds *word)
