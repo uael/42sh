@@ -1,4 +1,4 @@
-asd asd sd; cat <<EOF >
+cmdnotound asd sd; cat <<EOF >
 assdaf asdf
 sdaf asd
 f

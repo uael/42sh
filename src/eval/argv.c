@@ -6,23 +6,23 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2018/02/18 17:29:44 by mc               ###   ########.fr       */
+/*   Updated: 2018/01/06 11:10:01 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/ft_glob.h"
 #include "ush/eval.h"
+#include "ush/exp.h"
 
-static inline char		**makeenv(t_map *vars, t_bool *owned)
+static inline char	**makeenv(t_map *vars, t_bool *owned)
 {
 	t_vec		*e;
 	char		**envv;
 	uint32_t	it;
 
 	if (!(*owned = (t_bool)(vars->occupieds > 0)))
-		return (environ);
+		return (g_env);
 	ft_vecctor(e = alloca(sizeof(t_vec)), sizeof(char *));
-	envv = environ;
+	envv = g_env;
 	while (*envv)
 		*(char **)ft_vecpush(e) = ft_strdup(*envv++);
 	it = 0;
@@ -37,24 +37,22 @@ static inline char		**makeenv(t_map *vars, t_bool *owned)
 	return (e->buf);
 }
 
-static inline int		makeargv(t_job *job, T_GLOB *av, t_deq *toks, char **ln)
+static inline int	makeargv(t_proc *proc, t_vec *av, t_deq *toks, char **ln)
 {
-	t_tok *tok;
+	int		st;
+	t_tok	*tok;
 
 	tok = sh_tokpeek(toks);
 	while (tok)
 		if (TOK_ISWORD(tok->id))
 		{
-			av ? sh_wordexplode(av, *ln + tok->pos, tok->len) : 0;
+			av ? sh_expwords(av, *ln + tok->pos, tok->len) : 0;
 			tok = sh_toknext(toks);
 		}
 		else if (TOK_ISREDIR(tok->id))
 		{
-			if (sh_evalredir(job, toks, ln) == OUF)
-			{
-				av ? DUMMY_GLOBDTOR(av) : 0;
-				return (OUF);
-			}
+			if ((st = sh_evalredir(proc, toks, ln)))
+				return (st);
 			tok = sh_tokpeek(toks);
 		}
 		else
@@ -62,47 +60,45 @@ static inline int		makeargv(t_job *job, T_GLOB *av, t_deq *toks, char **ln)
 	return (YEP);
 }
 
-static inline t_proc	*explodesome(t_job *job, t_deq *t, char **ln)
+static inline char	*explodesome(t_vec *av, t_deq *t, char **ln)
 {
 	t_tok		*tok;
-	t_proc		*prc;
 
+	ft_vecctor(av, sizeof(char *));
 	tok = sh_tokpeek(t);
-	prc = ft_vecback((t_vec *)&job->procs);
-	while (!prc->argv.gl_pathc)
+	while (!av->len)
 	{
 		if (!tok || !TOK_ISWORD(tok->id))
 			return (NULL);
-		sh_wordexplode(&prc->argv, *ln + tok->pos, tok->len);
+		sh_expwords(av, *ln + tok->pos, tok->len);
 		tok = sh_toknext(t);
 	}
-	return (prc);
+	return (((char **)av->buf)[0]);
 }
 
-inline int				sh_evalargv(t_job *j, t_map *v, t_deq *toks, char **ln)
+inline int			sh_evalargv(t_proc *prc, t_map *v, t_deq *toks, char **ln)
 {
-	t_proc		*prc;
-	t_bool		own;
-	t_redirs	r;
-	T_GLOB		g;
+	t_bool	own;
+	t_vec	av;
+	int		st;
+	char	*bin;
 
-	if (!(prc = explodesome(j, toks, ln)))
+	if (!(bin = explodesome(&av, toks, ln)))
 		return (NOP);
-	ft_memcpy(&r, &prc->redirs, sizeof(t_redirs));
-	ft_memcpy(&g, &prc->argv, sizeof(T_GLOB));
-	ft_memset(&prc->redirs, 0, sizeof(t_redirs));
-	if (!(own = (t_bool)ft_strcmp("true", prc->argv.gl_pathv[0])) ||
-		!ft_strcmp("false", prc->argv.gl_pathv[0]))
+	if (!(own = (t_bool)ft_strcmp("true", bin)) || !ft_strcmp("false", bin))
 	{
+		ft_vecdtor(&av, (t_dtor)ft_pfree);
 		ps_procbit(prc, (t_bool)(own ? 1 : 0));
-		ft_memcpy(&prc->redirs, &r, sizeof(t_redirs));
-		return (makeargv(j, NULL, toks, ln));
+		return (makeargv(prc, NULL, toks, ln));
 	}
-	ps_procexe(prc, "PATH", prc->argv.gl_pathv[0], makeenv(v, &own));
-	ft_memcpy(&prc->redirs, &r, sizeof(t_redirs));
-	ft_memcpy(&prc->argv, &g, sizeof(T_GLOB));
+	ps_procexe(prc, "PATH", bin, makeenv(v, &own));
 	prc->ownenv = own;
-	if (makeargv(j, &prc->argv, toks, ln) == OUF)
-		return (OUF);
+	if ((st = makeargv(prc, &av, toks, ln)))
+	{
+		ft_vecdtor(&av, (t_dtor)ft_pfree);
+		return (st);
+	}
+	*(char **)ft_vecpush(&av) = NULL;
+	prc->argv = av.buf;
 	return (YEP);
 }

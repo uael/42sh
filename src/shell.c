@@ -69,9 +69,7 @@ static inline void	sh_init(int fd)
 	signal(SIGTTOU, SIG_IGN);
 	signal(SIGCHLD, SIG_DFL);
 	g_sh->pid = getpid();
-	if (setpgid(g_sh->pid, g_sh->pid) < 0)
-		sh_exit(EXIT_FAILURE, "Couldn't put the shell in its own process "
-			"group");
+	setpgid(g_sh->pid, g_sh->pid);
 	tcsetpgrp(fd, g_sh->pid);
 }
 

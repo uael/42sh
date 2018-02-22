@@ -15,14 +15,14 @@
 #define UNXPTD "syntax error: Unexpected bang `%s' for empty pipeline"
 #define UEH "syntax error: Expected <pipeline> got `%s'"
 #define UEP "syntax error: Missing right operand after `%s'"
-#define EBANG 1 << 1
-#define EINSQ 1 << 2
+#define EB 1 << 1
+#define EI 1 << 2
 
-static inline int	pipelineerr(int st, t_tok *tok, int flags, char *ln)
+static inline int	perr(int st, t_tok *tok, int flags, char *ln)
 {
-	if (st == NOP && (flags & EBANG))
+	if (st == NOP && (flags & EB))
 		return (sh_evalerr(ln, tok, UNXPTD, sh_tokstr(tok)));
-	if (st == NOP && (flags & EINSQ))
+	if (st == NOP && (flags & EI))
 	{
 		if (tok->id == TOK_LAND || tok->id == TOK_LOR)
 			return (sh_evalerr(ln, tok, UEP, sh_tokstr(tok)));
@@ -48,30 +48,28 @@ static int			separator(t_deq *toks, t_job *right, t_tok *tok,
 	return (YEP);
 }
 
-inline int			sh_evalandor(t_job *j, int fd, t_deq *toks, char **ln)
+inline int			sh_evalandor(t_job *j, int fd, t_deq *ts, char **ln)
 {
-	t_tok	*tok;
+	t_tok	*t;
 	t_job	r;
 	int		st;
 
-	if (!(tok = sh_tokpeek(toks)))
+	if (!(t = sh_tokpeek(ts)))
 		return (NOP);
-	tok->len == 1 && *(*ln + tok->pos) == '!' && (j->bang = 1) ? sh_toknext(toks) : 0;
-	if ((st = sh_evalpipeline(j, fd, toks, ln)))
-		return (pipelineerr(st, tok, j->bang ? EBANG : 0, *ln));
+	t->len == 1 && *(*ln + t->pos) == '!' && (j->bang = 1)
+		? sh_toknext(ts) : 0;
+	if ((st = sh_evalpipeline(j, fd, ts, ln)))
+		return (perr(st, t, j->bang ? EB : 0, *ln));
 	while (1)
-		if (!(tok = sh_tokpeek(toks)))
+		if (!(t = sh_tokpeek(ts)))
 			return (NOP);
-		else if (tok->id == TOK_LAND || tok->id == TOK_LOR)
+		else if (t->id == TOK_LAND || t->id == TOK_LOR)
 		{
-			if (separator(toks, &r, tok, *ln))
-				return (sh_evalerr(*ln, tok, UEP, sh_tokstr(tok)));
-			if ((st = sh_evalpipeline(&r, fd, toks, ln)))
-			{
-				return (pipelineerr(st, sh_tokpeek(toks),
-					(r.bang ? EBANG : 0) | EINSQ, *ln));
-			}
-			j = ps_jobnext(j, &r, tok->id == TOK_LAND ? ANDOR_AND : ANDOR_OR);
+			if (separator(ts, &r, t, *ln))
+				return (sh_evalerr(*ln, t, UEP, sh_tokstr(t)));
+			if ((st = sh_evalpipeline(&r, fd, ts, ln)))
+				return (perr(st, sh_tokpeek(ts), (r.bang ? EB : 0) | EI, *ln));
+			j = ps_jobnext(j, &r, t->id == TOK_LAND ? ANDOR_AND : ANDOR_OR);
 		}
 		else
 			return (YEP);

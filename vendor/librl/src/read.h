@@ -38,5 +38,6 @@ extern void		rl_nottyfinalize(int fd);
 extern void		rl_nottydtor(void);
 extern int		rl_rawmode(int fd);
 extern int		rl_offmode(int fd);
+extern t_bool	rl_isdumb(void);
 
 #endif

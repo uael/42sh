@@ -87,7 +87,6 @@ inline void		ps_procexe(t_proc *p, char const *path, char *exe, char **envv)
 {
 	uint32_t	it;
 
-	ps_procctor(p);
 	p->envv = envv;
 	if (ft_mapget(g_builtins, exe, &it))
 	{

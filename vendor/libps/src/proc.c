@@ -45,6 +45,7 @@ inline void			ps_procdtor(t_proc *p)
 	}
 	ps_redirectclose(&p->redirs);
 	ft_vecdtor((t_vec *)&p->redirs, NULL);
+	p->in ? ft_pfree((void **)&p->in) : 0;
 	p->kind == PROC_FN && p->u.fn.dtor ? p->u.fn.dtor(p->u.fn.data) : 0;
 	p->kind == PROC_ERR && p->u.err.msg ? ft_pfree((void **)&p->u.err.msg) : 0;
 	p->kind == PROC_ERR && p->u.err.ln ? ft_pfree((void **)&p->u.err.ln) : 0;
@@ -78,11 +79,20 @@ static inline int	prepare(t_proc *prc, pid_t pgid, int *io, int fg)
 
 int					ps_proclaunch(t_proc *proc, pid_t pgid, int *io, int fg)
 {
+	int st;
+
 	if ((prepare(proc, pgid, io, fg)))
 		return (NOP);
 	if (proc->child && g_tty)
 		g_tty = 0;
-	return (proc->kind == 0 ? YEP : g_procs[proc->kind](proc));
+	st = (proc->kind == 0 ? YEP : g_procs[proc->kind](proc));
+	if (proc->child)
+	{
+		ps_procdtor(proc);
+		g_fatalcb(st, NULL);
+	}
+	ft_dup2std(proc->scope, STD_FILENOS);
+	return (YEP);
 }
 
 inline int			ps_procmark(t_proc *proc, int status)

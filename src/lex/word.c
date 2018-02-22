@@ -25,6 +25,7 @@ static inline int	quote(int fd, t_tok *tok, char **it, char **ln)
     q = 0;
 	bs = 0;
 	st = 0;
+	q = 0;
 	(void)(++tok->len && (q = *(*it)++));
 	while (!st)
 		if (!bs && q == '"' && (st = sh_lexbslash(fd, it, ln)))
@@ -39,7 +40,7 @@ static inline int	quote(int fd, t_tok *tok, char **it, char **ln)
 			st = quote(fd, tok, it, ln);
 		else if (q == '"' && **it == '$' && *(*it + 1) &&
 			!ft_isspace(*(*it + 1)) && !ft_strchr(sh_varifs(), *(*it + 1)))
-			st = sh_lexvar(fd, tok, it, ln);
+			st = sh_lexdollar(fd, tok, it, ln);
 		else
 			(void)(++tok->len && ++*it);
 	return (st);
@@ -62,7 +63,7 @@ inline int			sh_lexword(int fd, t_tok *tok, char **it, char **ln)
 			st = quote(fd, tok, it, ln);
 		else if (**it == '$' && *(*it + 1) && !ft_isspace(*(*it + 1)) &&
 			!ft_strchr(sh_varifs(), *(*it + 1)))
-			st = sh_lexvar(fd, tok, it, ln);
+			st = sh_lexdollar(fd, tok, it, ln);
 		else
 			(void)(++tok->len && ++*it);
 	if (st || !tok->len)

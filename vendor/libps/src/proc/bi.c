@@ -39,12 +39,5 @@ inline int		ps_procbilaunch(t_proc *proc)
 	proc->status = proc->u.bi((int)proc->argv.gl_pathc, proc->argv.gl_pathv,
 		proc->envv);
 	ft_exbind(EXALL, dfl, NULL);
-	if (proc->child)
-	{
-		ps_procdtor(proc);
-		g_fatalcb(proc->status, NULL);
-	}
-	proc->state = PROC_COMPLETED;
-	ft_dup2std(proc->scope, STD_FILENOS);
-	return (YEP);
+	return (proc->status);
 }

@@ -82,6 +82,7 @@ static int		env_finalize(char *path, char **argv, char **envv)
 	/*t_proc	proc;
 	t_job	*job;
 
+	ps_procctor(&proc);
 	ps_procexe(&proc, path, argv[0], envv);
 	while (*argv)
 		*(char **)ft_vecpush(&av) = ft_strdup(*argv++);
