@@ -12,16 +12,14 @@
 
 #include "ush/eval.h"
 
-inline int			sh_evalheredoc(t_job *job, t_deq *toks, char **ln)
+inline int			sh_evalheredoc(t_proc *proc, t_deq *toks, char **ln)
 {
 	t_tok	*tok;
-	t_proc	*p;
 
 	tok = sh_toknext(toks);
-	p = ft_vecback((t_vec *)&job->procs);
-	if (p->in)
-		free(p->in);
-	p->in = ft_strndup(*ln + tok->pos, tok->len);
+	if (proc->in)
+		free(proc->in);
+	proc->in = ft_strndup(*ln + tok->pos, tok->len);
 	sh_toknext(toks);
 	return (YEP);
 }

@@ -12,7 +12,7 @@
 
 #include "ush/eval.h"
 
-static int		evalexport(t_map *vars)
+static inline int	evalexport(t_map *vars)
 {
 	uint32_t it;
 
@@ -29,29 +29,13 @@ static int		evalexport(t_map *vars)
 	return (YEP);
 }
 
-static int		argverror(t_job *job)
+static inline int	simpledone(int st, t_map *vars)
 {
-	t_proc *proc;
-	t_proc *prev;
-
-	proc = ft_vecback((t_vec *)&job->procs);
-	ft_vecpop((t_vec *)&job->procs, NULL);
-	if (proc->piped)
-	{
-		prev = ft_vecback((t_vec *)&job->procs);
-		ft_vecpop((t_vec *)&job->procs, NULL);
-		ps_procdtor(prev);
-	}
-	ps_procdtor(proc);
-	if (job->procs.len == 0)
-	{
-		ft_vecdtor((t_vec *)&job->procs, NULL);
-		job->procs.isz = sizeof(t_proc);
-	}
-	return (OUF);
+	ft_mapdtor(vars, (t_dtor)ft_pfree, (t_dtor)ft_pfree);
+	return (st);
 }
 
-inline int		sh_evalsimple(t_job *job, int fd, t_deq *toks, char **ln)
+inline int			sh_evalsimple(t_proc *proc, int fd, t_deq *toks, char **ln)
 {
 	t_tok	*tok;
 	t_map	vars;
@@ -62,16 +46,15 @@ inline int		sh_evalsimple(t_job *job, int fd, t_deq *toks, char **ln)
 	if (tok && tok->id == TOK_WORD)
 		sh_evalassign(tok, toks, &vars, *ln);
 	tok = sh_tokpeek(toks);
-	ps_procctor(ft_vecpush((t_vec *)&job->procs));
 	while (tok && TOK_ISREDIR(tok->id))
-		if (sh_evalredir(job, toks, ln) == OUF)
-			return (argverror(job));
+		if (sh_evalredir(proc, toks, ln) == OUF)
+			return (simpledone(OUF, &vars));
 		else
 			tok = sh_tokpeek(toks);
-	if (((t_proc *)ft_vecback((t_vec *)&job->procs))->kind == PROC_ERR)
+	if (proc->kind == PROC_ERR)
 		while (tok && TOK_ISCMDM(tok->id))
 			tok = sh_toknext(toks);
 	else if (tok && TOK_ISCMDM(tok->id))
-		return (sh_evalargv(job, &vars, toks, ln) ? argverror(job) : YEP);
+		return (simpledone(sh_evalargv(proc, &vars, toks, ln), &vars));
 	return (evalexport(&vars));
 }
