@@ -6,7 +6,7 @@
 /*   By: mcanal <zboub@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/11/29 15:38:59 by mcanal            #+#    #+#             */
-/*   Updated: 2018/02/20 14:09:07 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/22 22:29:48 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -333,7 +333,7 @@ static void glob_testux(char const *pat, int flags, t_glob *pglob)
 	memcpy(&input, pglob, sizeof(t_glob));
 
 	expected = glob(pat, flags, NULL, &ctrl_glob_struct);
-	ret = globctor(pat, flags, pglob);
+	ret = ft_glob(pat, flags, pglob);
 
 	get_debug_string(pat, flags, expected, ret, &input, pglob, &ctrl_glob_struct);
 
@@ -391,7 +391,7 @@ void test_glob()
 				&(test_glob_arr[i].pglob)
 			);
 			globfree(&ctrl_glob_struct);
-			globdtor(&test_glob_arr[i].pglob);
+			ft_globfree(&test_glob_arr[i].pglob);
 		}
 	}
 
