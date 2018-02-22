@@ -67,7 +67,7 @@ static int		parserange(t_range *range, int *r, int *s, char *words)
 	return ((!words[i] || rr - r < 1 || (rr - r == 2 && !r[2])) ? 0 : i);
 }
 
-static t_bool	expvalue(t_range *r, t_sds *val, t_sds *word)
+static void		expvalue(t_range *r, t_sds *val, t_sds *word)
 {
 	char	buf[21];
 	uint8_t	l;
@@ -75,18 +75,13 @@ static t_bool	expvalue(t_range *r, t_sds *val, t_sds *word)
 	if (word->len)
 		ft_sdsapd(val, word->buf);
 	if (r->ascii)
-	{
-		if (r->range[0] == '\\')
-			return (0);
-		*ft_sdspush(val) = (char)r->range[0];
-	}
+		*ft_sdspush(val) = (char)(r->range[0] == '\\' ? ' ' : r->range[0]);
 	else
 	{
 		l = ft_intstr(buf, r->range[0], 10);
 		buf[l] = '\0';
 		ft_sdsapd(val, buf);
 	}
-	return (1);
 }
 
 static int		expbrace(t_range *r, t_sds *word, t_vec *av)
@@ -99,17 +94,15 @@ static int		expbrace(t_range *r, t_sds *word, t_vec *av)
 	ft_sdsctor(&v);
 	while (d ? r->range[0] >= r->range[1] : r->range[0] <= r->range[1])
 	{
-		if (expvalue(r, &v, word))
-		{
-			j = 0;
-			if (!r->av.len)
-				*(char **)ft_vecpush(av) = ft_strdup(v.buf);
-			else
-				while (j < r->av.len)
-					*(char **)ft_vecpush(av) =
-						ft_strjoin(v.buf, *(char **)ft_vecat(&r->av, j++));
-			v.len = 0;
-		}
+		expvalue(r, &v, word);
+		j = 0;
+		if (!r->av.len)
+			*(char **)ft_vecpush(av) = ft_strdup(v.buf);
+		else
+			while (j < r->av.len)
+				*(char **)ft_vecpush(av) =
+					ft_strjoin(v.buf, *(char **)ft_vecat(&r->av, j++));
+		v.len = 0;
 		r->range[0] += r->range[2];
 	}
 	word->len = 0;
