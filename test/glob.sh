@@ -1,15 +1,1 @@
-echo src/*.sh
-echo src/*.c
-echo "*"
-echo '*'
-echo */*.h
-echo */*.c
-echo "*/*.h"
-echo "*/*.c"
-echo '*/*.h'
-echo '*/*.c'
-echo [24][21]sh
-echo [24][21]"sh"
-echo [24][21]'sh'
-echo "[24][21]sh"
-echo '[24][21]sh'
+echo \[abc] [abc\] \[abc\]

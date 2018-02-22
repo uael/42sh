@@ -20,31 +20,35 @@ static int	globdone(t_vec *glist, int st)
 	return (st);
 }
 
+/*
+** TODO: use the mc glob
+*/
+
 static int	globit(t_sds *word, t_vec *av, char *it)
 {
-	unsigned int	match;
-	glob_t			globbuf;
+	uint32_t	match;
+	glob_t		gbuf;
+	const int	flags = GLOB_NOCHECK | (ft_strchr(it, ',') ? GLOB_BRACE : 0);
 
-	if (glob(it, GLOB_NOCHECK | (ft_strchr(it, ',') ? GLOB_BRACE : 0), NULL,
-		&globbuf))
+	if (glob(it, flags, NULL, &gbuf))
 		return (THROW(WUT));
 	if ((g_ifs && !*g_ifs) || !av)
 	{
-		ft_sdsapd(word, globbuf.gl_pathv[0]);
+		ft_sdsapd(word, gbuf.gl_pathv[0]);
 		match = 1;
-		while (match < globbuf.gl_pathc)
+		while (match < gbuf.gl_pathc)
 		{
 			*ft_sdspush(word) = ' ';
-			ft_sdsapd(word, globbuf.gl_pathv[match++]);
+			ft_sdsapd(word, gbuf.gl_pathv[match++]);
 		}
-		globfree(&globbuf);
+		globfree(&gbuf);
 		return (YEP);
 	}
 	word->len ? (word->len = 0) : 0;
 	match = 0;
-	while (match < globbuf.gl_pathc)
-		*(char **)ft_vecpush(av) = ft_strdup(globbuf.gl_pathv[match++]);
-	globfree(&globbuf);
+	while (match < gbuf.gl_pathc)
+		*(char **)ft_vecpush(av) = ft_strdup(gbuf.gl_pathv[match++]);
+	globfree(&gbuf);
 	return (YEP);
 }
 
@@ -80,11 +84,6 @@ int			sh_expglob(t_sds *word, char **words, t_vec *av)
 		else if (**words == '$')
 		{
 			if (q != 1 && (st = sh_expdollars(word, words, &glist, q == 2)))
-				return (globdone(&glist, st));
-		}
-		else if (**words == '\\')
-		{
-			if ((st = sh_expbackslash(word, words, (t_bool)(q != 0))))
 				return (globdone(&glist, st));
 		}
 		else
