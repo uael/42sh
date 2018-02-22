@@ -34,16 +34,15 @@ static inline void	subshelldtor(t_subshell *s)
 	free(s);
 }
 
-inline int			sh_evalsubshell(t_job *job, int fd, t_deq *toks, char **ln)
+inline int			sh_evalsubshell(t_proc *prc, int fd, t_deq *toks, char **ln)
 {
 	int			stack;
-	t_proc		proc;
 	t_subshell	*sh;
 	t_tok		*tok;
 
 	(void)fd;
-	ft_deqctor(&(sh = malloc(sizeof(t_subshell)))->toks, sizeof(t_tok));
-	ps_procfn(&proc, (t_proccb *)subshell, (t_dtor)subshelldtor, sh);
+	ft_deqctor(&(sh = ft_malloc(sizeof(t_subshell)))->toks, sizeof(t_tok));
+	ps_procfn(prc, (t_proccb *)subshell, (t_dtor)subshelldtor, sh);
 	stack = 0;
 	while ((tok = sh_toknext(toks))->id != ')' || stack)
 	{
@@ -57,7 +56,6 @@ inline int			sh_evalsubshell(t_job *job, int fd, t_deq *toks, char **ln)
 		return (sh_evalerr(*ln, sh_tokpeek(toks), "Empty subshell"));
 	sh_toknext(toks);
 	(*(t_tok *)ft_deqpush(&sh->toks)).id = TOK_END;
-	*(t_proc *)ft_vecpush((t_vec *)&job->procs) = proc;
 	sh->ln = ft_strdup(*ln);
 	return (YEP);
 }

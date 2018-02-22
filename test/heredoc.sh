@@ -3,6 +3,12 @@ EOL
 cat <<1
 1
 
+cat <<! <<!
+a
+!
+b
+!
+
 cat <<EOL | grep -o "Hi,"; \
   cat <<EOF | grep -o "I'm the 42sh shell"; \
   cat <<EOF | grep -o "I'm trying to known"; \

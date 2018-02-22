@@ -62,6 +62,7 @@ typedef struct	s_proc
 	int			src[3];
 	int			close;
 	t_redirs	redirs;
+	char		*in;
 	t_procu		u;
 }				t_proc;
 

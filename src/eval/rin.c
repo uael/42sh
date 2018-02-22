@@ -14,10 +14,9 @@
 
 #define UEH "Expected `<filename>' got `%s'"
 
-inline int		sh_evalrin(t_job *job, t_deq *toks, char **ln)
+inline int		sh_evalrin(t_proc *proc, t_deq *toks, char **ln)
 {
 	t_tok	*tok;
-	t_proc	*proc;
 	t_redir	r;
 	t_tok	*op;
 	char	buf[PATH_MAX];
@@ -25,9 +24,8 @@ inline int		sh_evalrin(t_job *job, t_deq *toks, char **ln)
 	op = sh_tokpeek(toks);
 	if (!(tok = sh_toknext(toks)) || !TOK_ISWORD(tok->id))
 		return (sh_evalerr(*ln, tok, UEH, sh_tokstr(tok)));
-	if (!sh_redirword(job, buf, toks, *ln))
+	if (!sh_redirword(proc, buf, toks, *ln))
 		return (YEP);
-	proc = ft_vecback((t_vec *)&job->procs);
 	if ((r.to = open(buf, O_RDONLY, 0644)) < 0)
 	{
 		ps_procerr(proc, ft_strcat(ft_strcat(buf, ": "), ft_strerr(errno)),

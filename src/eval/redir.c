@@ -14,26 +14,26 @@
 
 #define UNEXPTD "Unexpected redirection `%s' for empty command line"
 
-inline int		sh_evalredir(t_job *job, t_deq *toks, char **ln)
+inline int		sh_evalredir(t_proc *proc, t_deq *toks, char **ln)
 {
 	t_tok	*tok;
 
 	tok = sh_tokpeek(toks);
 	if (tok->id == '<')
-		return (sh_evalrin(job, toks, ln));
+		return (sh_evalrin(proc, toks, ln));
 	if (tok->id == '>' || tok->id == TOK_RPOUT)
-		return (sh_evalrout(job, toks, ln));
+		return (sh_evalrout(proc, toks, ln));
 	if (tok->id == TOK_CMP)
-		return (sh_evalcmp(job, toks, ln));
+		return (sh_evalcmp(proc, toks, ln));
 	if (tok->id == TOK_RAOUT)
-		return (sh_evalraout(job, toks, ln));
+		return (sh_evalraout(proc, toks, ln));
 	if (tok->id == TOK_AMPR)
-		return (sh_evalampr(job, toks, ln));
+		return (sh_evalampr(proc, toks, ln));
 	if (tok->id == TOK_HEREDOC)
-		return (sh_evalheredoc(job, toks, ln));
+		return (sh_evalheredoc(proc, toks, ln));
 	if (tok->id == TOK_LAMP)
-		return (sh_evallamp(job, toks, ln));
+		return (sh_evallamp(proc, toks, ln));
 	if (tok->id == TOK_RAMP)
-		return (sh_evalramp(job, toks, ln));
+		return (sh_evalramp(proc, toks, ln));
 	return (sh_evalerr(*ln, tok, UNEXPTD, sh_tokstr(tok)));
 }

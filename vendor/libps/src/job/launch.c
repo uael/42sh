@@ -12,7 +12,7 @@
 
 #include "../ps.h"
 
-static inline int	jobbg(t_job *job)
+static inline int		jobbg(t_job *job)
 {
 	size_t	i;
 	t_proc	*proc;
@@ -32,7 +32,7 @@ static inline int	jobbg(t_job *job)
 	return (st);
 }
 
-static inline int	jobnext(t_job *job, int st)
+static inline int		jobnext(t_job *job, int st)
 {
 	t_job	*next;
 	t_andor	andor;
@@ -59,7 +59,29 @@ static inline int	jobnext(t_job *job, int st)
 	return (ps_joblaunch(job, 1));
 }
 
-int					ps_joblaunch(t_job *job, int fg)
+static inline int		output(char *data)
+{
+	ft_puts(STDOUT_FILENO, data);
+	return (EXIT_SUCCESS);
+}
+
+static inline t_proc	*jobpeek(t_job *job, size_t *i)
+{
+	t_proc *proc;
+	t_proc in;
+
+	proc = job->procs.buf + (*i)++;
+	if (proc->in)
+	{
+		ps_procfn(&in, (t_proccb *)output, (t_dtor)free, proc->in);
+		proc->in = NULL;
+		proc = (t_proc *)ft_vecput((t_vec *)&job->procs, *i - 1);
+		*proc = in;
+	}
+	return (proc);
+}
+
+int						ps_joblaunch(t_job *job, int fg)
 {
 	size_t	i;
 	t_proc	*proc;
@@ -70,7 +92,7 @@ int					ps_joblaunch(t_job *job, int fg)
 	ft_memcpy(io, STD_FILENOS, 3 * sizeof(int));
 	while (i < job->procs.len)
 	{
-		proc = job->procs.buf + i++;
+		proc = jobpeek(job, &i);
 		ps_jobpipe(job, i, fds, io);
 		proc->close = fds[0];
 		proc->child = (t_bool)(job->procs.len > 1 || proc->kind == PROC_EXE ||
