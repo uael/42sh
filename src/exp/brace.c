@@ -12,22 +12,48 @@
 
 #include "ush/exp.h"
 
-static int		exprange(int *r, int *s, char *words)
+static int		parsevalue(t_range *range, int *rr, int *ss, char c)
+{
+	if (c == '-' || c == '+')
+	{
+		if (*rr || *ss)
+			return (1);
+		*ss = c == '-' ? -1 : 1;
+	}
+	else if (ft_isalpha(c))
+	{
+		if (*rr || *ss)
+			return (1);
+		*rr = c;
+		range->ascii = 1;
+	}
+	else if (ft_isdigit(c))
+	{
+		if (range->ascii)
+			return (1);
+		*rr = *rr * 10 + c - '0';
+	}
+	else
+		return (0);
+	return (2);
+}
+
+static int		parserange(t_range *range, int *r, int *s, char *words)
 {
 	int *rr;
 	int *ss;
 	int i;
+	int st;
 
 	i = 0;
 	rr = r;
 	ss = s;
 	while (words[++i])
-		if ((words[i] == '-' || words[i] == '+') && (*rr || *ss))
-			return (0);
-		else if (words[i] == '-' || words[i] == '+')
-			*ss = words[i] == '-' ? -1 : 1;
-		else if (ft_isdigit(words[i]))
-			*rr = *rr * 10 + words[i] - '0';
+		if ((st = parsevalue(range, rr, ss, words[i])))
+		{
+			if (st == 1)
+				return (0);
+		}
 		else if (words[i] == '.')
 		{
 			if (words[i + 1] != '.' || rr - r >= 3)
@@ -41,34 +67,30 @@ static int		exprange(int *r, int *s, char *words)
 	return ((!words[i] || rr - r < 1 || (rr - r == 2 && !r[2])) ? 0 : i);
 }
 
-static void		expsuffix(char **words, t_vec *sav)
-{
-	t_sds swrd;
-
-	ft_vecctor(sav, sizeof(char *));
-	ft_sdsctor(&swrd);
-	sh_exp(words, &swrd, sav);
-	if (swrd.len)
-		*(char **)ft_vecpush(sav) = swrd.buf;
-	else
-		ft_sdsdtor(&swrd);
-}
-
-static void		expvalue(t_range *r, t_sds *val, t_sds *word)
+static t_bool	expvalue(t_range *r, t_sds *val, t_sds *word)
 {
 	char	buf[21];
 	uint8_t	l;
 
-	l = ft_intstr(buf, r->range[0], 10);
-	buf[l] = '\0';
 	if (word->len)
 		ft_sdsapd(val, word->buf);
-	ft_sdsapd(val, buf);
+	if (r->ascii)
+	{
+		if (r->range[0] == '\\')
+			return (0);
+		*ft_sdspush(val) = (char)r->range[0];
+	}
+	else
+	{
+		l = ft_intstr(buf, r->range[0], 10);
+		buf[l] = '\0';
+		ft_sdsapd(val, buf);
+	}
+	return (1);
 }
 
 static int		expbrace(t_range *r, t_sds *word, t_vec *av)
 {
-
 	size_t	j;
 	t_sds	v;
 	int		d;
@@ -77,16 +99,18 @@ static int		expbrace(t_range *r, t_sds *word, t_vec *av)
 	ft_sdsctor(&v);
 	while (d ? r->range[0] >= r->range[1] : r->range[0] <= r->range[1])
 	{
-		expvalue(r, &v, word);
-		j = 0;
-		if (!r->av.len)
-			*(char **)ft_vecpush(av) = ft_strdup(v.buf);
-		else
-			while (j < r->av.len)
-				*(char **)ft_vecpush(av) =
-					ft_strjoin(v.buf, *(char **)ft_vecat(&r->av, j++));
+		if (expvalue(r, &v, word))
+		{
+			j = 0;
+			if (!r->av.len)
+				*(char **)ft_vecpush(av) = ft_strdup(v.buf);
+			else
+				while (j < r->av.len)
+					*(char **)ft_vecpush(av) =
+						ft_strjoin(v.buf, *(char **)ft_vecat(&r->av, j++));
+			v.len = 0;
+		}
 		r->range[0] += r->range[2];
-		v.len = 0;
 	}
 	word->len = 0;
 	ft_vecdtor(&r->av, (t_dtor)ft_pfree);
@@ -94,27 +118,31 @@ static int		expbrace(t_range *r, t_sds *word, t_vec *av)
 	return (YEP);
 }
 
-int				sh_expbrace(t_sds *word, char **words, t_vec *av)
+int				sh_expbrace(t_sds *word, char **w, t_vec *av)
 {
 	int		i;
 	int		s[3];
-	t_range	range;
+	t_range	r;
+	t_sds	swrd;
 
 	i = 1;
-	if (!ft_isdigit(*(*words + i)) && *(*words + i) != '-' &&
-		*(*words + i) != '+')
-		return (sh_expglob(word, words, av));
-	ft_bzero(&range, sizeof(t_range));
+	if (!ft_isalnum(*(*w + i)) && *(*w + i) != '-' && *(*w + i) != '+')
+		return (sh_expglob(word, w, av));
+	ft_bzero(&r, sizeof(t_range));
 	ft_memset(s, 0, 3 * sizeof(int));
-	if ((i = exprange(range.range, s, *words)) == 0)
-		return (sh_expglob(word, words, av));
-	s[0] ? (range.range[0] *= s[0]) : 0;
-	s[1] ? (range.range[1] *= s[1]) : 0;
-	range.range[2] ? 0 : (range.range[2] = 1);
-	if (range.range[0] > range.range[1] && range.range[2])
-		range.range[2] *= -1;
-	if (*(*words += i + 1))
-		expsuffix(words, &range.av);
-	--*words;
-	return (expbrace(&range, word, av));
+	if ((i = parserange(&r, r.range, s, *w)) == 0)
+		return (sh_expglob(word, w, av));
+	s[0] ? (r.range[0] *= s[0]) : 0;
+	s[1] ? (r.range[1] *= s[1]) : 0;
+	r.range[2] ? 0 : (r.range[2] = 1);
+	r.range[0] > r.range[1] && r.range[2] ? (r.range[2] *= -1) : 0;
+	if (*(*w += i + 1))
+	{
+		ft_vecctor(&r.av, sizeof(char *));
+		ft_sdsctor(&swrd);
+		sh_exp(w, &swrd, &r.av);
+		swrd.len ? (*(char **)ft_vecpush(&r.av) = swrd.buf) : ft_sdsdtor(&swrd);
+	}
+	--*w;
+	return (expbrace(&r, word, av));
 }

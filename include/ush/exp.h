@@ -33,7 +33,7 @@ typedef struct	s_param
 typedef struct	s_range
 {
 	t_vec		av;
-	t_bool		isletter : 1;
+	t_bool		ascii : 1;
 	int			range[3];
 }				t_range;
 
@@ -44,7 +44,7 @@ extern int		sh_exparith(t_sds *word, char **words, t_bool brackets);
 extern int		sh_exparitheval(char *expr, long int *result);
 extern int		sh_expbackslash(t_sds *word, char **words, t_bool quote);
 extern int		sh_expbacktick(t_sds *word, char **words, t_vec *av);
-extern int		sh_expbrace(t_sds *word, char **words, t_vec *av);
+extern int		sh_expbrace(t_sds *word, char **w, t_vec *av);
 extern int		sh_expcomm(t_sds *word, char **words, t_vec *av);
 extern int		sh_expcommexec(t_sds *word, t_sds *comm, t_vec *av);
 extern void		sh_expcommread(int fd, t_sds *word, t_vec *av);
