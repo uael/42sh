@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/15 13:36:27 by mc                #+#    #+#             */
-/*   Updated: 2018/02/22 16:40:40 by mcanal           ###   ########.fr       */
+/*   Updated: 2018/02/23 20:36:35 by mcanal           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,21 +23,22 @@ static t_bool		is_escaped(char const *pattern, char const *pat, int flags)
 	return (pat != pattern && *(pat - 1) == '\\');
 }
 
-static t_bool		is_there_a_closing_bracket(char const *pattern, int flags)
+char const			*is_there_a_closing_bracket(char const *pattern, \
+												int flags, char c)
 {
 	char const		*pat;
 
 	pat = pattern;
 	while (*pat)
 	{
-		if (*pat == ']' && pat != pattern + 1)
+		if (*pat == c && pat != pattern + 1)
 		{
 			if (!is_escaped(pattern, pat, flags))
-				return (TRUE);
+				return (pat);
 		}
 		pat++;
 	}
-	return (FALSE);
+	return (NULL);
 }
 
 static char	const	*previous_dir(char *magic_buf, char const *pattern, \
@@ -79,7 +80,7 @@ char const			*is_magic(char *magic_buf, char const *pattern, int *flags)
 		else if (*pat == '[')
 		{
 			if (!is_escaped(pattern, pat, *flags) \
-				&& is_there_a_closing_bracket(pat, *flags))
+				&& is_there_a_closing_bracket(pat, *flags, ']'))
 			{
 				*flags |= GLOBUX_MAGCHAR;
 				return (previous_dir(magic_buf, pattern, pat));

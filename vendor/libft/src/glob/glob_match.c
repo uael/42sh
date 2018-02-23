@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 21:09:16 by mc                #+#    #+#             */
-/*   Updated: 2018/02/23 00:16:31 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/23 16:41:17 by mcanal           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static int		handle_rev_char_class(char const *pat, char const *str, \
 	if (*pat == '\\' && !(flags & GLOBUX_NOESCAPE))
 	{
 		return (handle_rev_char_class(pat + 2, str, flags, \
-                                      matched & (*(pat + 1) != *str)));
+									matched & (*(pat + 1) != *str)));
 	}
 	if (*pat == '[' && *(pat + 1) == ']')
 	{
@@ -50,7 +50,7 @@ static int		handle_char_class(char const *pat, char const *str, int flags, \
 	if (*pat == '\\' && !(flags & GLOBUX_NOESCAPE))
 	{
 		return (handle_char_class(pat + 2, str, flags, \
-                                      matched | (*(pat + 1) == *str)));
+									matched | (*(pat + 1) == *str)));
 	}
 	if (*pat == '[' && *(pat + 1) == ']')
 	{
@@ -78,7 +78,7 @@ static int		handle_str_wildcard(char const *pat, char const *str, \
 	if (!*pat)
 		return (TRUE);
 	if (*pat == '*')
-        return (handle_str_wildcard(pat + 1, str, flags, depth));
+		return (handle_str_wildcard(pat + 1, str, flags, depth));
 	if (glob_match(pat, str, flags))
 		return (TRUE);
 	if (!*str)

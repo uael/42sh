@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 20:57:25 by mc                #+#    #+#             */
-/*   Updated: 2018/02/22 21:21:38 by mcanal           ###   ########.fr       */
+/*   Updated: 2018/02/23 20:38:21 by mcanal           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,13 @@ struct						s_glob_env
 */
 char const					*is_magic(char *magic_buf, char const *pattern, \
 								int *flags);
+char const					*is_there_a_closing_bracket(char const *pattern, \
+													int flags, char c);
+
+/*
+** in glob_brace.c
+*/
+int							glob_brace(t_glob_env *e);
 
 /*
 ** in glob_list.c:
