@@ -43,15 +43,21 @@ static inline int		pairchk(t_src *s, t_tok **a, t_tok *b)
 		ft_strchr(TOKS_CLOSE, (*a)->id))))
 		return (sh_synerr(*s->ln, *s->ln + b->pos, ERR0, sh_tokstr(b)));
 	if ((*a) && TOK_ISREDIR((*a)->id) && !TOK_ISWORD(b->id))
+	{
 		return (sh_synerr(*s->ln, *s->ln + b->pos, ERR1,
 			sh_tokstr((*a)), sh_tokstr(b)));
+	}
 	if ((*a) && ft_strchr(TOKS_RVAL, (*a)->id) && !TOK_ISCMDM(b->id))
+	{
 		return (sh_synerr(*s->ln, *s->ln + b->pos, ERR2,
 			sh_tokstr((*a)), sh_tokstr(b)));
+	}
 	if (b->id && (*a) && ft_strchr(TOKS_OPEN, b->id) &&
 		!ft_strchr(TOKS_OPENPRV, (*a)->id))
+	{
 		return (sh_synerr(*s->ln, *s->ln + b->pos, ERR8,
 			sh_tokstr(b), sh_tokstr((*a))));
+	}
 	*a = b;
 	return (YEP);
 }
