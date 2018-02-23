@@ -25,7 +25,9 @@ static char			*g_syn[UINT8_MAX] = {
 	['('] = PAT(')'),
 	[TOK_DLBRA] = PAT(TOK_DRBRA),
 	[TOK_IF] = PAT(TOK_THEN),
+	[TOK_WHILE] = PAT(TOK_DO),
 	[TOK_THEN] = PAT(TOK_ELIF, TOK_ELSE, TOK_FI),
+	[TOK_DO] = PAT(TOK_DONE),
 	[TOK_ELIF] = PAT(TOK_THEN),
 	[TOK_ELSE] = PAT(TOK_FI)
 };

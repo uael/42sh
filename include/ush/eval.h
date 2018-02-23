@@ -48,6 +48,13 @@ typedef struct	s_if
 	t_elsepart	elsepart;
 }				t_ifclause;
 
+typedef struct	s_while
+{
+	t_deq		body;
+	t_deq		cond;
+	char		*ln;
+}				t_whileclause;
+
 extern int		sh_eval(int fd, t_deq *toks, char **ln);
 extern int		sh_evallist(int fd, t_deq *toks, char **ln);
 extern int		sh_evalandor(t_job *j, int fd, t_deq *ts, char **ln);
@@ -58,6 +65,7 @@ extern int		sh_evalsimple(t_proc *proc, int fd, t_deq *toks, char **ln);
 extern int		sh_evalcompound(t_proc *proc, int fd, t_deq *toks, char **ln);
 extern int		sh_evalsubshell(t_proc *proc, int fd, t_deq *toks, char **ln);
 extern int		sh_evalifclause(t_proc *prc, int fd, t_deq *toks, char **ln);
+extern int		sh_evalwhileclause(t_proc *prc, t_deq *toks, char **ln);
 extern int		sh_evalargv(t_proc *proc, t_map *v, t_deq *toks, char **ln);
 extern int		sh_evalredir(t_proc *proc, t_deq *toks, char **ln);
 extern char		*sh_redirword(t_proc *proc, char *dst, t_deq *toks, char *ln);

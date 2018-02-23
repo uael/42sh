@@ -22,5 +22,7 @@ inline int		sh_evalcompound(t_proc *proc, int fd, t_deq *toks, char **ln)
 		return (sh_evalsubshell(proc, fd, toks, ln));
 	else if (tok->id == TOK_IF)
 		return (sh_evalifclause(proc, fd, toks, ln));
+	else if (tok->id == TOK_WHILE)
+		return (sh_evalwhileclause(proc, toks, ln));
 	return (NOP);
 }

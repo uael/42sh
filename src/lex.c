@@ -13,44 +13,6 @@
 #include "ush/lex.h"
 #include "ush/shell.h"
 
-static inline int	srcctor(t_src *src, int fd, char **it, char **ln)
-{
-	if (!*it || !**it)
-		return (NOP);
-	src->fd = fd;
-	src->it = it;
-	src->ln = ln ? ln : it;
-	return (YEP);
-}
-
-static inline void	promote(t_tok *prv, t_tok *tok, char const *ln)
-{
-	char const	*val = ln + tok->pos;
-
-	if (!TOK_ISWORD(tok->id))
-		return ;
-	else if (tok->len == 2 && !ft_strncmp("]]", val, 2))
-		tok->id = TOK_DRBRA;
-	else if (prv && TOK_ISCMDM(prv->id))
-		return ;
-	else if (tok->len == 1 && !ft_strncmp("!", val, 1))
-		tok->id = TOK_BANG;
-	else if (tok->len == 2 && !ft_strncmp("if", val, 2))
-		tok->id = TOK_IF;
-	else if (tok->len == 4 && !ft_strncmp("then", val, 4))
-		tok->id = TOK_THEN;
-	else if (tok->len == 4 && !ft_strncmp("elif", val, 4))
-		tok->id = TOK_ELIF;
-	else if (tok->len == 4 && !ft_strncmp("else", val, 4))
-		tok->id = TOK_ELSE;
-	else if (tok->len == 2 && !ft_strncmp("fi", val, 2))
-		tok->id = TOK_FI;
-	else if (tok->len == 2 && !ft_strncmp("[[", val, 2))
-		tok->id = TOK_DLBRA;
-	else if (tok->len == 2 && !ft_strncmp("]]", val, 2))
-		tok->id = TOK_DRBRA;
-}
-
 inline int			sh_tokenize(t_src *s, t_tok *tok)
 {
 	int		st;
@@ -76,41 +38,17 @@ inline int			sh_tokenize(t_src *s, t_tok *tok)
 		sh_synerr(*s->ln, *s->it, "Unexpected token `%c'", **s->it));
 }
 
-inline int			sh_lexline(t_src *src, t_deq *toks, t_bool new)
-{
-	int		st;
-	t_tok	*tok;
-	t_tok	*prv;
-	size_t	cur;
-
-	if (!**src->it)
-	{
-		st = NOP;
-		if (!new || (src->fd < 0 ||
-			(st = rl_catline(src->fd, 0, src->ln, src->it)) || !**src->it))
-			return (st ? st : NOP);
-	}
-	cur = toks->cur;
-	while (1)
-	{
-		ft_bzero(tok = (t_tok *)ft_deqpush(toks), sizeof(t_tok));
-		if ((st = sh_tokenize(src, tok)))
-			return (st);
-		prv = toks->len > 1 ? ft_deqat(toks, toks->len - 2) : NULL;
-		promote(prv, tok, *src->ln);
-		if (TOK_ISEND(tok->id))
-			return (sh_lexreduce(src, toks, cur));
-	}
-}
-
 int					sh_lex(int fd, char **it, char **ln, t_lexcb *cb)
 {
 	t_src	src;
 	t_deq	toks;
 	int		st;
 
-	if (srcctor(&src, fd, it, ln))
+	if (!*it || !**it)
 		return (NOP);
+	src.fd = fd;
+	src.it = it;
+	src.ln = ln ? ln : it;
 	ft_deqctor(&toks, sizeof(t_tok));
 	while (!(st = sh_lexline(&src, &toks, 0)))
 	{

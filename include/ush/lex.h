@@ -21,6 +21,7 @@
 # define TOK_ISWORD(I) ((I)==TOK_WORD)
 # define TOK_ISEND(ID) ((ID)==TOK_EOL||(ID)==TOK_END)
 # define TOK_ISCMDM(ID) (TOK_ISWORD(ID)||TOK_ISREDIR(ID)||(ID)==TOK_DLBRA)
+# define TOK_ISBRA(ID) ((ID)=='('||(ID)==')'||((ID)>=TOK_FI&&(ID)<=TOK_DLBRA))
 # define TOK_ISLFT(ID) ((ID)=='('||((ID)>=TOK_THEN&&(ID)<=TOK_DLBRA))
 # define TOK_ISRGT(ID) ((ID)==')'||((ID)>=TOK_FI&&(ID)<=TOK_ELSE))
 
@@ -29,8 +30,9 @@
 
 # define TOKC_SEP ';','&'
 # define TOKC_LOG TOK_LAND,TOK_LOR
-# define TOKC_LFT '(',TOK_DLBRA,TOK_IF,TOK_ELSE,TOK_ELIF,TOK_THEN
-# define TOKC_RGT ')',TOK_DRBRA,TOK_FI
+# define TOKC_LFT1 '(',TOK_DLBRA,TOK_IF,TOK_ELSE,TOK_ELIF,TOK_THEN
+# define TOKC_LFT TOKC_LFT1,TOK_WHILE,TOK_DO
+# define TOKC_RGT ')',TOK_DRBRA,TOK_FI,TOK_DONE
 
 # define TOKS_NOSOLO ((const char *)PAT(TOKC_SEP,'|',TOKC_LOG))
 # define TOKS_RVAL ((const char *)PAT('|',TOKC_LOG,TOK_BANG))
