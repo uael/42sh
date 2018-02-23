@@ -6,7 +6,7 @@
 /*   By: mcanal <zboub@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/11/29 15:38:59 by mcanal            #+#    #+#             */
-/*   Updated: 2018/02/23 00:25:21 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/23 20:49:13 by mcanal           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ static char flags_ctrl_buffer[SMALL] = {0};
 
 static glob_t ctrl_glob_struct;
 
-#define TEST_FLAGS (GLOB_NOCHECK)
+#define TEST_FLAGS (GLOB_BRACE | GLOB_NOCHECK)
 
 static struct s_test_glob test_glob_arr[] = {
 
@@ -208,16 +208,16 @@ static struct s_test_glob test_glob_arr[] = {
 	/* {"/~/..", TEST_FLAGS | GLOBUX_TILDE, {0, NULL, 0, 0, 0}}, */
 	/* {"~/.emacs.d/\*\/\*~", TEST_FLAGS | GLOBUX_TILDE, {0, NULL, 0, 0, 0}}, */
 
-	/* {"{src}", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0, 0}}, */
-	/* {"{src,obj}", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0, 0}}, */
-	/* {"{src,obj,include}", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0, 0}}, */
-	/* {"./{,obj,include}", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0, 0}}, */
-	/* {"./{src}/\*", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0, 0}}, */
-	/* {"./{src,obj}/\*", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0, 0}}, */
-	/* {"./{src,obj,include}/\*", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0, 0}}, */
-	/* {"./{,obj,include}/\*", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0, 0}}, */
-	/* {"/usr/{bin,share}", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0, 0}}, */
-	/* {"/usr/{bin,share}/\*", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0, 0}}, */
+	{"{src}", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0, 0}},
+	{"{src,obj}", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0, 0}},
+	{"{src,obj,include}", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0, 0}},
+	{"./{,obj,include}", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0, 0}},
+	{"./{src}/*", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0, 0}},
+	{"./{src,obj}/*", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0, 0}},
+	{"./{src,obj,include}/*", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0, 0}},
+	{"./{,obj,include}/*", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0, 0}},
+	{"/usr/{bin,share}", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0, 0}},
+	{"/usr/{bin,share}/*", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0, 0}},
 };
 
 
@@ -392,21 +392,18 @@ static void glob_testux(char const *pat, int flags, t_glob *pglob)
 
 void test_glob()
 {
-	for (int flag = 0; flag <= GLOB_NOCHECK; flag += GLOB_NOCHECK) {
-		for (unsigned int i = 0; i < sizeof(test_glob_arr) / sizeof(struct s_test_glob); i++) {
-			ctrl_glob_struct.gl_pathc = test_glob_arr[i].pglob.gl_pathc;
-			ctrl_glob_struct.gl_pathv = test_glob_arr[i].pglob.gl_pathv; //TODO
-			ctrl_glob_struct.gl_offs = test_glob_arr[i].pglob.gl_offs;
-			ctrl_glob_struct.gl_flags = test_glob_arr[i].pglob.gl_flags;
+	for (unsigned int i = 0; i < sizeof(test_glob_arr) / sizeof(struct s_test_glob); i++) {
+		ctrl_glob_struct.gl_pathc = test_glob_arr[i].pglob.gl_pathc;
+		ctrl_glob_struct.gl_pathv = test_glob_arr[i].pglob.gl_pathv; //TODO
+		ctrl_glob_struct.gl_offs = test_glob_arr[i].pglob.gl_offs;
+		ctrl_glob_struct.gl_flags = test_glob_arr[i].pglob.gl_flags;
 
-			glob_testux(
-				test_glob_arr[i].pattern,
-				test_glob_arr[i].flags | flag,
-				&(test_glob_arr[i].pglob)
-			);
-			globfree(&ctrl_glob_struct);
-			ft_globfree(&test_glob_arr[i].pglob);
-		}
+		glob_testux(
+			test_glob_arr[i].pattern,
+			test_glob_arr[i].flags,
+			&(test_glob_arr[i].pglob)
+		);
+		globfree(&ctrl_glob_struct);
+		ft_globfree(&test_glob_arr[i].pglob);
 	}
-
 }
