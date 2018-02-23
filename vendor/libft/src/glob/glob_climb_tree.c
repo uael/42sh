@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 22:23:43 by mc                #+#    #+#             */
-/*   Updated: 2018/02/23 17:16:56 by mcanal           ###   ########.fr       */
+/*   Updated: 2018/02/23 20:41:54 by mcanal           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,16 +101,16 @@ int			glob_climb_tree(t_glob_env *e)
 	int			depth;
 	char const	*magic;
 
+	if ((depth = glob_brace(e)))
+		return (depth > 0 ? depth : GLOBUX_SUCCESS);
 	depth = glob_count_depth(e->pattern);
-	if (!show_files(e->flags, e->pattern))
-		depth--;
+	depth -= show_files(e->flags, e->pattern) ? 0 : 1;
 	if ((magic = is_magic(e->magic_buf, e->pattern, e->flags)))
 	{
 		if (magic != e->pattern)
 		{
 			depth = 1 + glob_count_depth(e->pattern) - glob_count_depth(magic);
-			if (!show_files(e->flags, e->pattern))
-				depth--;
+			depth -= show_files(e->flags, e->pattern) ? 0 : 1;
 		}
 		if (depth > MAX_DEPTH || depth < 1)
 			return (GLOBUX_NOSPACE);
