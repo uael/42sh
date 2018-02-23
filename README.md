@@ -12,7 +12,7 @@
 ## Optional feature (five of theses are mandatory to validate the project):
 - [x] Inhibitors `"`, `'`and `\`.
 - [x] Advanced redirections: aggregation of file output and heredoc `<<`.
-- [ ] Globbing: `*`, `?`, `[]`, `{}`, etc.
+- [x] Globbing: `*`, `?`, `[]`, `{}`, etc.
 - [x] Backquotes \`.
 - [x] Subshell with operand `()`.
 - [x] Local variable and builtin `unset` and `export`.
