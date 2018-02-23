@@ -18,6 +18,8 @@
 # include "shell.h"
 # include "tok.h"
 
+struct s_if;
+
 typedef struct	s_subshell
 {
 	t_deq		toks;
@@ -31,9 +33,7 @@ typedef enum	e_elsekind
 	ELSE_ELIF
 }				t_elsekind;
 
-struct s_if;
-
-typedef union	s_elsepart
+typedef union	u_elsepart
 {
 	t_deq		body;
 	struct s_if	*elif;

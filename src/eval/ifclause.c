@@ -54,7 +54,7 @@ static inline t_tok			*ifclauseinit(t_ifclause *ifc, t_deq *toks)
 		*(t_tok *)ft_deqpush(&ifc->cond) = *tok;
 	(*(t_tok *)ft_deqpush(&ifc->cond)).id = TOK_END;
 	while ((tok = sh_toknext(toks))->id != TOK_ELSE && tok->id != TOK_ELIF &&
-		   tok->id != TOK_FI)
+		tok->id != TOK_FI)
 		*(t_tok *)ft_deqpush(&ifc->body) = *tok;
 	(*(t_tok *)ft_deqpush(&ifc->body)).id = TOK_END;
 	return (tok);
