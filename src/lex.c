@@ -107,16 +107,22 @@ int					sh_lex(int fd, char **it, char **ln, t_lexcb *cb)
 {
 	t_src	src;
 	t_deq	toks;
+	int		st;
 
 	if (srcctor(&src, fd, it, ln))
 		return (NOP);
 	ft_deqctor(&toks, sizeof(t_tok));
-	while (!sh_lexline(&src, &toks, 0))
+	while (!(st = sh_lexline(&src, &toks, 0)))
 	{
 		if (sh_lexcheck(&src, &toks))
-			return (ft_dtor(NOP, (t_dtor)ft_deqdtor, &toks, NULL));
+		{
+			g_sh->status = 1;
+			return (ft_dtor(OUF, (t_dtor)ft_deqdtor, &toks, NULL));
+		}
 		if (cb(fd, &toks, src.ln))
 			g_sh->status = 1;
 	}
-	return (NOP);
+	if (st == OUF)
+		g_sh->status = 1;
+	return (st);
 }
