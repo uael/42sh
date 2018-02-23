@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/08 23:54:42 by mc                #+#    #+#             */
-/*   Updated: 2018/02/22 20:18:45 by mcanal           ###   ########.fr       */
+/*   Updated: 2018/02/23 17:33:24 by mcanal           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,11 +58,13 @@ static int		copy_match_to_glob_struct(t_match *match_list, t_glob *pglob)
 	return (GLOBUX_SUCCESS);
 }
 
-static void		glbnvctor(t_glob_env *glob_env, char const *pattern, int *flags)
+static void		glbnvctor(t_glob_env *glob_env, char const *pattern, int *flags, \
+						t_glob *pglob)
 {
 	ft_bzero(glob_env, sizeof(t_glob_env));
 	glob_env->pattern = pattern;
 	glob_env->flags = flags;
+	pglob->gl_flags = *flags;
 }
 
 int				ft_glob(const char *pattern, int flags, t_glob *pglob)
@@ -74,8 +76,8 @@ int				ft_glob(const char *pattern, int flags, t_glob *pglob)
 		return (GLOBUX_NOSYS);
 	if (!(flags & GLOBUX_NOCHECK) && !*pattern)
 		return (GLOBUX_NOMATCH);
-	pglob->gl_flags = flags;
-	glbnvctor(&glob_env, pattern, &(pglob->gl_flags));
+	glbnvctor(&glob_env, pattern, &(pglob->gl_flags), pglob);
+		pglob->gl_flags |= GLOBUX_RMBSLH;
 	if ((ret = glob_climb_tree(&glob_env)))
 	{
 		matchdtor(glob_env.match_list);

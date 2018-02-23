@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 20:57:25 by mc                #+#    #+#             */
-/*   Updated: 2018/02/22 21:21:38 by mcanal           ###   ########.fr       */
+/*   Updated: 2018/02/23 17:34:09 by mcanal           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@
 
 # define GLOBUX_BOOM_BABY 5
 # define GLOBUX_NOBODY_GIVES_A_DAMN 6
+# define GLOBUX_RMBSLH GLOBUX_ALTDIRFUNC
 
 # define MAX_DEPTH			(1 << 8)
 
