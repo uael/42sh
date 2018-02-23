@@ -63,7 +63,7 @@ inline int			sh_lexline(t_src *src, t_deq *toks, t_bool new)
 	{
 		st = NOP;
 		if (!new || (src->fd < 0 ||
-					 (st = rl_catline(src->fd, 0, src->ln, src->it)) || !**src->it))
+			(st = rl_catline(src->fd, 0, src->ln, src->it)) || !**src->it))
 			return (st ? st : NOP);
 	}
 	cur = toks->cur;
