@@ -35,7 +35,7 @@ inline int			sh_evalpipeline(t_job *job, int fd, t_deq *toks, char **ln)
 	*(t_proc *)ft_vecpush((t_vec *)&job->procs) = proc;
 	while (1)
 		if (!(tok = sh_tokpeek(toks)))
-			return (ft_dtor(NOP, (t_dtor)ps_procdtor, &proc, NULL));
+			return (YEP);
 		else if (tok->id == TOK_PIPE)
 		{
 			while ((eol = sh_toknext(toks)))

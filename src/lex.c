@@ -27,11 +27,15 @@ static inline void	promote(t_tok *prv, t_tok *tok, char const *ln)
 {
 	char const	*val = ln + tok->pos;
 
-	if (!TOK_ISWORD(tok->id) || !(!prv || !TOK_ISCMDM(prv->id)))
+	if (!TOK_ISWORD(tok->id))
 		return ;
-	if (tok->len == 1 && !ft_strncmp("!", val, 1))
+	else if (tok->len == 2 && !ft_strncmp("]]", val, 2))
+		tok->id = TOK_DRBRA;
+	else if (prv && TOK_ISCMDM(prv->id))
+		return ;
+	else if (tok->len == 1 && !ft_strncmp("!", val, 1))
 		tok->id = TOK_BANG;
-	if (tok->len == 2 && !ft_strncmp("if", val, 2))
+	else if (tok->len == 2 && !ft_strncmp("if", val, 2))
 		tok->id = TOK_IF;
 	else if (tok->len == 4 && !ft_strncmp("then", val, 4))
 		tok->id = TOK_THEN;

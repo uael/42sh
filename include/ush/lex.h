@@ -20,7 +20,7 @@
 # define TOK_ISREDIR(ID) (TOK_ISREDIR_1(ID)||TOK_ISREDIR_2(ID))
 # define TOK_ISWORD(I) ((I)==TOK_WORD)
 # define TOK_ISEND(ID) ((ID)==TOK_EOL||(ID)==TOK_END)
-# define TOK_ISCMDM(ID) (TOK_ISWORD(ID)||TOK_ISREDIR(ID))
+# define TOK_ISCMDM(ID) (TOK_ISWORD(ID)||TOK_ISREDIR(ID)||(ID)==TOK_DLBRA)
 # define TOK_ISLFT(ID) ((ID)=='('||((ID)>=TOK_THEN&&(ID)<=TOK_DLBRA))
 # define TOK_ISRGT(ID) ((ID)==')'||((ID)>=TOK_FI&&(ID)<=TOK_ELSE))
 

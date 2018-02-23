@@ -26,7 +26,7 @@ static char			*g_syn[UINT8_MAX] = {
 	[TOK_DLBRA] = PAT(TOK_DRBRA),
 	[TOK_IF] = PAT(TOK_THEN),
 	[TOK_THEN] = PAT(TOK_ELIF, TOK_ELSE, TOK_FI),
-	[TOK_ELIF] = PAT(TOK_ELIF, TOK_ELSE, TOK_FI),
+	[TOK_ELIF] = PAT(TOK_THEN),
 	[TOK_ELSE] = PAT(TOK_FI)
 };
 
@@ -47,7 +47,8 @@ static inline int		pairchk(t_src *s, t_tok **a, t_tok *b)
 		return (sh_synerr(*s->ln, *s->ln + b->pos, ERR1,
 			sh_tokstr((*a)), sh_tokstr(b)));
 	}
-	if ((*a) && ft_strchr(TOKS_RVAL, (*a)->id) && !TOK_ISCMDM(b->id))
+	if ((*a) && ft_strchr(TOKS_RVAL, (*a)->id) && !TOK_ISCMDM(b->id) &&
+		!ft_strchr(TOKS_OPEN, b->id))
 	{
 		return (sh_synerr(*s->ln, *s->ln + b->pos, ERR2,
 			sh_tokstr((*a)), sh_tokstr(b)));

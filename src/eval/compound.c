@@ -12,15 +12,6 @@
 
 #include "ush/eval.h"
 
-static int		sh_evalifclause(t_proc *prc, int fd, t_deq *toks, char **ln)
-{
-	(void)prc;
-	(void)fd;
-	(void)toks;
-	(void)ln;
-	return (NOP);
-}
-
 inline int		sh_evalcompound(t_proc *proc, int fd, t_deq *toks, char **ln)
 {
 	t_tok *tok;

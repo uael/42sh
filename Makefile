@@ -45,9 +45,9 @@ SRC_NAME = \
 	env.c \
 	err.c \
 	eval.c eval/ampr.c eval/andor.c eval/argv.c eval/assign.c eval/cmd.c \
-	eval/cmp.c eval/compound.c eval/heredoc.c eval/lamp.c eval/list.c \
-	eval/pipeline.c eval/ramp.c eval/raout.c eval/redir.c eval/rin.c \
-	eval/rout.c eval/sep.c eval/simple.c eval/subshell.c \
+	eval/cmp.c eval/compound.c eval/heredoc.c eval/ifclause.c eval/lamp.c \
+	eval/list.c eval/pipeline.c eval/ramp.c eval/raout.c eval/redir.c \
+	eval/rin.c eval/rout.c eval/sep.c eval/simple.c eval/subshell.c \
 	exp.c exp/backslash.c exp/backtick.c exp/brace.c exp/dollars.c \
 	exp/glob.c exp/quote.c exp/tilde.c \
 	exp/arith.c exp/arith/eval.c \
