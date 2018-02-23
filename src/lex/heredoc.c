@@ -13,44 +13,46 @@
 #include "ush/lex.h"
 #include "ush/shell.h"
 
-#define UEE "parse error: Unexpected EOF while looking for heredoc delimiter "
+#define UEE "parse error: Unexpected EOF while looking for heredoc delimiter"
 
-static inline int	heredoc(t_tok *tok, char *eof, char **it, char **ln)
+static inline int	heredoc(t_src *s, t_tok *tok, char const *eof, size_t eofl)
 {
-	size_t eofl;
-
-	eofl = ft_strlen(eof);
 	++tok->len;
-	if ((!**it || ISEOL(*it)) && (tok->len == eofl + 1 ||
-		(tok->len > eofl && ISREOL(*ln + tok->pos + tok->len - (eofl + 2)))) &&
-		!ft_strncmp(*ln + tok->pos + tok->len - (eofl + 1), eof, eofl))
+	if ((!**s->it || ISEOL(*s->it)) && (tok->len == eofl + 1 ||
+		(tok->len > eofl && ISREOL(*s->ln + tok->pos + tok->len - (eofl + 2))))
+		&& !ft_strncmp(*s->ln + tok->pos + tok->len - (eofl + 1), eof, eofl))
 	{
-		tok->len -= eofl + ISREOL(*it);
-		++*it;
+		tok->len -= eofl + ISREOL(*s->it);
+		++*s->it;
 		return (YEP);
 	}
-	++*it;
+	++*s->it;
 	return (NOP);
 }
 
-inline int			sh_lexheredoc(int fd, t_tok *tok, char **it, char **ln)
+inline int			sh_lexheredoc(t_src *s, t_tok *tok)
 {
 	char	*eof;
+	size_t	eofl;
 	int		st;
 
-	eof = ft_strndup(*ln + tok->pos, tok->len);
+	eof = ft_strndup(*s->ln + tok->pos, tok->len);
+	eofl = tok->len;
 	tok->len = 0;
-	tok->pos = (uint16_t)(*it - *ln);
+	tok->pos = (uint16_t)(*s->it - *s->ln);
 	st = 0;
 	while (!st)
-		if (!**it && (fd < 0 || (st = rl_catline(fd, 0, ln, it)) || !**it))
-			st = LEX_SHOWE(st, fd) ?
-				sh_synerr(*ln, *it, UEE"`%s'", eof) : OUF;
+		if (!**s->it && (s->fd < 0 ||
+			(st = rl_catline(s->fd, 0, s->ln, s->it))))
+			st = LEXE(st, s->fd) ?
+				sh_synerr(*s->ln, *s->it, UEE"`%s'", eof) : OUF;
+		else if (!**s->it)
+			break ;
 		else
 		{
-			if (ISWEOL(*it))
-				++*it;
-			if (!heredoc(tok, eof, it, ln))
+			if (ISWEOL(*s->it))
+				++*s->it;
+			if (!heredoc(s, tok, eof, eofl))
 				break ;
 		}
 	free(eof);

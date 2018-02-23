@@ -12,13 +12,12 @@
 
 #include "ush/eval.h"
 
-inline int		sh_evalifclause(t_proc *prc, int fd, t_deq *toks, char **ln)
+static int		sh_evalifclause(t_proc *prc, int fd, t_deq *toks, char **ln)
 {
-	t_if ifc;
-
-
-	sh_toknext(toks);
-
+	(void)prc;
+	(void)fd;
+	(void)toks;
+	(void)ln;
 	return (NOP);
 }
 

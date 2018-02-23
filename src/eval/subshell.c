@@ -52,8 +52,6 @@ inline int			sh_evalsubshell(t_proc *prc, int fd, t_deq *toks, char **ln)
 			--stack;
 		*(t_tok *)ft_deqpush(&sh->toks) = *tok;
 	}
-	if (!sh->toks.len && !ft_pfree((void **)&sh))
-		return (sh_evalerr(*ln, sh_tokpeek(toks), "Empty subshell"));
 	sh_toknext(toks);
 	(*(t_tok *)ft_deqpush(&sh->toks)).id = TOK_END;
 	sh->ln = ft_strdup(*ln);

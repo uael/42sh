@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lex/reduce.c                                       :+:      :+:    :+:   */
+/*   lex/utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -26,15 +26,15 @@ inline t_bool	sh_isname(char *word)
 	return (1);
 }
 
-inline int		sh_lexbslash(int fd, char **it, char **ln)
+inline int		sh_lexbslash(t_src *s)
 {
 	int st;
 
-	if (**it == '\\' && ((ISREOL(*it + 1) && !*(*it + 2)) ||
-		((ISWEOL(*it + 1) && !*(*it + 3)))))
+	if (**s->it == '\\' && ((ISREOL(*s->it + 1) && !*(*s->it + 2)) ||
+		((ISWEOL(*s->it + 1) && !*(*s->it + 3)))))
 	{
-		*it += ISREOL(*it + 1) ? 2 : 3;
-		if (fd >= 0 && (st = rl_catline(fd, -2, ln, it)))
+		*s->it += ISREOL(*s->it + 1) ? 2 : 3;
+		if (s->fd >= 0 && (st = rl_catline(s->fd, -2, s->ln, s->it)))
 			return (st);
 	}
 	return (YEP);
