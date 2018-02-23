@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/14 21:56:00 by mc                #+#    #+#             */
-/*   Updated: 2018/02/22 21:26:01 by mcanal           ###   ########.fr       */
+/*   Updated: 2018/02/23 17:17:42 by mcanal           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,8 +68,8 @@ int			glob_actually_open_some_folder(t_glob_env *e, char const *dirname, \
 {
 	if (glob_open_dir(dir, dirname, *(e->flags)) && !*dir \
 		&& glob_open_dir(dir, glob_get_folder_name(dirname), *(e->flags)))
-		return (GLOBUX_SUCCESS);
+		return (GLOBUX_SUCCESS + 1);
 	if (!glob_get_sub_pattern(e->sub_pat_buf, e->pattern, depth, *(e->flags)))
-		return (GLOBUX_NOSPACE);
+		return (GLOBUX_NOSPACE + 1);
 	return (GLOBUX_SUCCESS);
 }

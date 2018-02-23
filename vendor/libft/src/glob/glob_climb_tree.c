@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 22:23:43 by mc                #+#    #+#             */
-/*   Updated: 2018/02/22 21:23:26 by mcanal           ###   ########.fr       */
+/*   Updated: 2018/02/23 17:16:56 by mcanal           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ int			glob_read_dir(t_glob_env *e, int depth, char const *dirname)
 
 	glob_init_dir_name(&dirname, path_buf, e->pattern);
 	if ((ret = glob_actually_open_some_folder(e, dirname, depth, &dir)))
-		return (ret);
+		return (ret - 1);
 	while ((d = readdir(dir)))
 		if ((ret = glob_check_file(e, d, depth, path_buf)) \
 			== GLOBUX_BOOM_BABY && depth > 1)
