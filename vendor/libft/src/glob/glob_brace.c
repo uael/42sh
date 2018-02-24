@@ -6,7 +6,7 @@
 /*   By: mcanal <mc.maxcanal@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/23 17:55:44 by mcanal            #+#    #+#             */
-/*   Updated: 2018/02/24 12:49:12 by mcanal           ###   ########.fr       */
+/*   Updated: 2018/02/24 13:17:46 by mcanal           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,19 @@ static int			glob_copy_pattern_and_boom(char const *pat, size_t size, \
 	return (glob_climb_tree(e));
 }
 
+static int			glob_find_sub_brace(t_glob_env *e, char const *comma, \
+										char const *pat, char const *pat_end)
+{
+	if (!comma)
+	{
+		glob_copy_pattern_and_boom(pat + 1, (size_t)(pat_end - pat) - 1, e);
+		return (-1);
+	}
+	glob_copy_pattern_and_boom(pat + 1, (size_t)(comma - pat) - 1, e);
+	return (glob_find_sub_brace(e, glob_find_comma(comma + 1, pat_end), \
+								comma, pat_end));
+}
+
 static int			glob_check_brace(t_glob_env *e)
 {
 	char const	*pat;
@@ -54,13 +67,9 @@ static int			glob_check_brace(t_glob_env *e)
 	}
 	if (!*pat)
 		return (GLOBUX_SUCCESS);
-	while ((comma = glob_find_comma(pat + 1, pat_end)))
-	{
-		glob_copy_pattern_and_boom(pat + 1, (size_t)(comma - pat) - 1, e);
-		pat = comma;
-	}
-	glob_copy_pattern_and_boom(pat + 1, (size_t)(pat_end - pat) - 1, e);
-	return (-1);
+
+	comma = glob_find_comma(pat + 1, pat_end);
+	return (comma ? glob_find_sub_brace(e, comma, pat + 1, pat_end) : GLOBUX_SUCCESS);
 }
 
 int					glob_brace(t_glob_env *e)
