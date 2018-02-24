@@ -20,6 +20,8 @@ inline int		sh_evalcompound(t_proc *proc, int fd, t_deq *toks, char **ln)
 		return (NOP);
 	if (tok->id == '(')
 		return (sh_evalsubshell(proc, fd, toks, ln));
+	if (tok->id == '{')
+		return (sh_evalbracegrp(proc, fd, toks, ln));
 	else if (tok->id == TOK_IF)
 		return (sh_evalifclause(proc, fd, toks, ln));
 	else if (tok->id == TOK_WHILE)

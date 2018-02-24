@@ -105,6 +105,7 @@ int					sh_exit(int exitno, char const *fmt, ...)
 	ps_dtor();
 	sh_envdtor();
 	sh_vardtor();
+	sh_funcdtor();
 	if (fmt)
 	{
 		va_start(ap, fmt);

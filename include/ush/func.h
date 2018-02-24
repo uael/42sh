@@ -1,40 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lex/check.c                                        :+:      :+:    :+:   */
+/*   ush/func.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2018/01/22 12:51:28 by cmalfroy         ###   ########.fr       */
+/*   Updated: 2017/12/06 12:00:10 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ush/lex.h"
+#ifndef USH_FUNC_H
+# define USH_FUNC_H
 
-#define ERR0 "syntax error: Unexpected closing token `%s'"
+# include <libft.h>
 
-inline int	sh_lexcheck(t_src *s, t_deq *toks)
+typedef struct	s_func
 {
-	size_t	i;
-	t_tok	*t;
-	t_tok	*p;
+	char const	*ln;
+	t_deq		body;
+}				t_func;
 
-	i = 0;
-	p = NULL;
-	while (i < toks->len)
-	{
-		if (sh_synchk(s, &p, t = ft_deqat(toks, i)))
-			return (OUF);
-		if (TOK_ISRGT(t->id))
-			return (sh_synerr(*s->ln, *s->ln + t->pos, ERR0, sh_tokstr(t)));
-		if (TOK_ISLFT(t->id))
-		{
-			if (!(i = sh_synbracket(s, toks, t, i)))
-				return (OUF);
-			p = ft_deqat(toks, i);
-		}
-		++i;
-	}
-	return (YEP);
-}
+extern void		sh_funcdtor(void);
+extern void		sh_funcset(char const *name, t_deq *body, char const *ln);
+extern t_func	*sh_funcget(char const *name);
+
+#endif

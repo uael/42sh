@@ -12,6 +12,7 @@
 
 #include "ush/eval.h"
 #include "ush/exp.h"
+#include "ush/func.h"
 
 static inline char	**makeenv(t_map *vars, t_bool *owned)
 {
@@ -84,6 +85,17 @@ static inline char	*explodesome(t_vec *av, t_deq *t, char **ln)
 	return (((char **)av->buf)[0]);
 }
 
+static inline void	fncheck(t_proc *prc, char const *bin)
+{
+	if (sh_funcget(bin))
+	{
+		prc->kind = PROC_FN;
+		prc->u.fn.cb = (t_proccb *)sh_evalfn;
+		prc->u.fn.dtor = NULL;
+		prc->u.fn.data = NULL;
+	}
+}
+
 inline int			sh_evalargv(t_proc *prc, t_map *v, t_deq *toks, char **ln)
 {
 	t_bool	own;
@@ -100,6 +112,7 @@ inline int			sh_evalargv(t_proc *prc, t_map *v, t_deq *toks, char **ln)
 		return (makeargv(prc, NULL, toks, ln));
 	}
 	ps_procexe(prc, "PATH", bin, makeenv(v, &own));
+	fncheck(prc, bin);
 	prc->ownenv = own;
 	if ((st = makeargv(prc, &av, toks, ln)))
 	{

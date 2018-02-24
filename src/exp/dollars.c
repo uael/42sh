@@ -57,5 +57,5 @@ int	sh_expdollars(t_sds *word, char **words, t_vec *av, char quote)
 		return (sh_exparith(word, words, 1));
 	}
 	++*words;
-	return (sh_expparam(word, words, av, (t_bool)quote));
+	return (sh_expparam(word, words, av, (t_bool)quote) == 2 ? YEP : NOP);
 }

@@ -38,20 +38,27 @@ static inline int	hdocinsubshell(t_src *s, t_deq *toks)
 inline int			sh_lexreduce(t_src *s, t_deq *toks, size_t from)
 {
 	t_tok	*tok;
-	t_tok	*prev;
-	t_tok	*end;
+	t_tok	*prv;
 
 	if (hdocinsubshell(s, toks))
 		return (OUF);
-	prev = NULL;
-	tok = (t_tok *)ft_deqat(toks, from) - 1;
-	end = ft_deqend(toks);
-	while (++tok < end)
+	prv = NULL;
+	while (from < toks->len)
 	{
-		if (TOK_ISWORD(tok->id) && prev && prev->id == TOK_HEREDOC)
+		tok = (t_tok *)ft_deqat(toks, from++);
+		if (prv && TOK_ISWORD(prv->id) && tok->id == '(' && from < toks->len &&
+			((t_tok *)ft_deqat(toks, from))->id == ')')
+		{
+			ft_deqrem(toks, from, NULL);
+			prv->id = TOK_FUNCTION;
+			tok->id = TOK_WORD;
+			tok->pos = prv->pos;
+			tok->len = prv->len;
+		}
+		else if (TOK_ISWORD(tok->id) && prv && prv->id == TOK_HEREDOC)
 			if (sh_lexheredoc(s, tok))
 				return (OUF);
-		if ((prev = tok)->id == TOK_END || tok->id == TOK_EOL)
+		if ((prv = tok)->id == TOK_END || tok->id == TOK_EOL)
 			break ;
 	}
 	return (YEP);
