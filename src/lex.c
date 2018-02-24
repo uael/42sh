@@ -13,13 +13,30 @@
 #include "ush/lex.h"
 #include "ush/shell.h"
 
+static inline int	tokenize(t_src *s, t_tok *tok)
+{
+	int st;
+
+	sh_tokpos(tok, *s->it, *s->ln);
+	ft_isdigit(**s->it) ? (void)(++tok->len && ++*s->it) : 0;
+	if (((st = sh_lexop(s, tok)) != NOP ||
+		(st = sh_lexword(s, tok)) != NOP))
+		return (st);
+	return (sh_synerr(*s->ln, *s->it, "Unexpected token `%c'", **s->it));
+}
+
 inline int			sh_tokenize(t_src *s, t_tok *tok)
 {
-	int		st;
+	int st;
 
 	while (1)
-		if ((st = sh_lexbslash(s)))
-			return (st);
+		if (**s->it == '\\' && ((ISREOL(*s->it + 1) && !*(*s->it + 2)) ||
+			((ISWEOL(*s->it + 1) && !*(*s->it + 3)))))
+		{
+			*s->it += ISREOL(*s->it + 1) ? 2 : 3;
+			if (s->fd >= 0 && (st = rl_catline(s->fd, -2, s->ln, s->it)))
+				return (st);
+		}
 		else if (**s->it && ft_strchr(sh_ifs(), **s->it))
 			++*s->it;
 		else if (ISEOL(*s->it))
@@ -30,12 +47,7 @@ inline int			sh_tokenize(t_src *s, t_tok *tok)
 		else if (!**s->it)
 			return ((sh_tokpos(tok, *s->it, *s->ln)->id = TOK_END) & 0);
 		else
-			break ;
-	sh_tokpos(tok, *s->it, *s->ln);
-	ft_isdigit(**s->it) ? (void)(++tok->len && ++*s->it) : 0;
-	return (((st = sh_lexop(s, tok)) != NOP ||
-		(st = sh_lexword(s, tok)) != NOP) ? st :
-		sh_synerr(*s->ln, *s->it, "Unexpected token `%c'", **s->it));
+			return (tokenize(s, tok));
 }
 
 int					sh_lex(int fd, char **it, char **ln, t_lexcb *cb)
