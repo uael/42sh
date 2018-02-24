@@ -1,27 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ush.h                                              :+:      :+:    :+:   */
+/*   ush/func.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/23 17:28:28 by null             ###   ########.fr       */
+/*   Updated: 2017/12/06 12:00:10 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef USH_H
-# define USH_H
+#ifndef USH_FUNC_H
+# define USH_FUNC_H
 
-# include "ush/bi.h"
-# include "ush/env.h"
-# include "ush/err.h"
-# include "ush/lex.h"
-# include "ush/eval.h"
-# include "ush/exp.h"
-# include "ush/func.h"
-# include "ush/shell.h"
-# include "ush/tok.h"
-# include "ush/var.h"
+# include <libft.h>
+
+typedef struct	s_func
+{
+	char const	*name;
+	char const	*ln;
+	t_deq		body;
+}				t_func;
+
+extern void		sh_funcdtor(void);
+extern void		sh_funcset(char const *name, t_deq *body, char const *ln);
+extern t_func	*sh_funcget(char const *name);
 
 #endif

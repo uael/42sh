@@ -54,6 +54,7 @@ SRC_NAME = \
 	exp/arith.c exp/arith/eval.c \
 	exp/comm.c exp/comm/read.c \
 	exp/param.c exp/param/env.c exp/param/subst.c exp/param/val.c \
+	func.c \
 	lex.c lex/check.c lex/heredoc.c lex/line.c lex/op.c lex/reduce.c \
 	lex/utils.c lex/dollar.c lex/word.c \
 	main.c \

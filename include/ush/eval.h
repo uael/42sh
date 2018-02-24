@@ -26,34 +26,34 @@ typedef struct	s_subshell
 	char		*ln;
 }				t_subshell;
 
-typedef enum	e_elsekind
+typedef enum	e_elsek
 {
 	ELSE_NONE = 0,
 	ELSE_ELSE,
 	ELSE_ELIF
-}				t_elsekind;
+}				t_elsek;
 
-typedef union	u_elsepart
+typedef union	u_else
 {
 	t_deq		body;
 	struct s_if	*elif;
-}				t_elsepart;
+}				t_else;
 
 typedef struct	s_if
 {
 	t_deq		body;
 	t_deq		cond;
 	char		*ln;
-	t_elsekind	elsekind;
-	t_elsepart	elsepart;
-}				t_ifclause;
+	t_elsek		elsekind;
+	t_else		elsepart;
+}				t_if;
 
 typedef struct	s_while
 {
 	t_deq		body;
 	t_deq		cond;
 	char		*ln;
-}				t_whileclause;
+}				t_while;
 
 extern int		sh_eval(int fd, t_deq *toks, char **ln);
 extern int		sh_evallist(int fd, t_deq *toks, char **ln);

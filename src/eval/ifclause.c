@@ -12,7 +12,7 @@
 
 #include "ush/eval.h"
 
-static inline int			ifclause(t_ifclause *s)
+static inline int			ifclause(t_if *s)
 {
 	t_scope	*sh;
 	int		st;
@@ -31,7 +31,7 @@ static inline int			ifclause(t_ifclause *s)
 	return (st);
 }
 
-static inline void			ifclausedtor(t_ifclause *s)
+static inline void			ifclausedtor(t_if *s)
 {
 	if (s->elsekind == ELSE_ELIF)
 		ifclausedtor(s->elsepart.elif);
@@ -43,11 +43,11 @@ static inline void			ifclausedtor(t_ifclause *s)
 	free(s);
 }
 
-static inline t_tok			*ifclauseinit(t_ifclause *ifc, t_deq *toks)
+static inline t_tok			*ifclauseinit(t_if *ifc, t_deq *toks)
 {
 	t_tok *tok;
 
-	ft_bzero(ifc, sizeof(t_ifclause));
+	ft_bzero(ifc, sizeof(t_if));
 	ft_deqctor(&ifc->cond, sizeof(t_tok));
 	ft_deqctor(&ifc->body, sizeof(t_tok));
 	while ((tok = sh_toknext(toks))->id != TOK_THEN)
@@ -60,12 +60,12 @@ static inline t_tok			*ifclauseinit(t_ifclause *ifc, t_deq *toks)
 	return (tok);
 }
 
-static inline t_ifclause	*ifclausector(int fd, t_deq *toks, char **ln)
+static inline t_if	*ifclausector(int fd, t_deq *toks, char **ln)
 {
-	t_ifclause	*ifc;
+	t_if	*ifc;
 	t_tok		*tok;
 
-	ifc = ft_malloc(sizeof(t_ifclause));
+	ifc = ft_malloc(sizeof(t_if));
 	tok = ifclauseinit(ifc, toks);
 	if (tok->id == TOK_ELSE)
 	{

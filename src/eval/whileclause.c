@@ -12,7 +12,7 @@
 
 #include "ush/eval.h"
 
-static inline int			whileclause(t_whileclause *s)
+static inline int			whileclause(t_while *s)
 {
 	t_scope	*sh;
 	int		st;
@@ -32,7 +32,7 @@ static inline int			whileclause(t_whileclause *s)
 	return (st);
 }
 
-static inline void			whileclausedtor(t_whileclause *s)
+static inline void			whileclausedtor(t_while *s)
 {
 	ft_deqdtor(&s->cond, NULL);
 	ft_deqdtor(&s->body, NULL);
@@ -40,13 +40,13 @@ static inline void			whileclausedtor(t_whileclause *s)
 	free(s);
 }
 
-static inline t_whileclause	*whileclausector(t_deq *toks, char **ln)
+static inline t_while	*whileclausector(t_deq *toks, char **ln)
 {
-	t_whileclause	*whilec;
+	t_while	*whilec;
 	t_tok			*tok;
 
-	whilec = ft_malloc(sizeof(t_whileclause));
-	ft_bzero(whilec, sizeof(t_whileclause));
+	whilec = ft_malloc(sizeof(t_while));
+	ft_bzero(whilec, sizeof(t_while));
 	ft_deqctor(&whilec->cond, sizeof(t_tok));
 	ft_deqctor(&whilec->body, sizeof(t_tok));
 	while ((tok = sh_toknext(toks))->id != TOK_DO)
