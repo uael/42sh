@@ -12,7 +12,7 @@
 
 #include "ush/eval.h"
 
-static inline int			ifclause(t_if *s)
+static inline int	ifclause(t_if *s)
 {
 	g_sh->tty = 0;
 	sh_eval(-1, &s->cond, &s->ln) ? (g_sh->status = 1) : 0;
@@ -25,7 +25,7 @@ static inline int			ifclause(t_if *s)
 	return (g_sh->status);
 }
 
-static inline void			ifclausedtor(t_if *s)
+static inline void	ifclausedtor(t_if *s)
 {
 	if (s->elsekind == ELSE_ELIF)
 		ifclausedtor(s->elsepart.elif);
@@ -37,7 +37,7 @@ static inline void			ifclausedtor(t_if *s)
 	free(s);
 }
 
-static inline t_tok			*ifclauseinit(t_if *ifc, t_deq *toks)
+static inline t_tok	*ifclauseinit(t_if *ifc, t_deq *toks)
 {
 	t_tok *tok;
 
@@ -81,7 +81,7 @@ static inline t_if	*ifclausector(int fd, t_deq *toks, char **ln)
 	return (ifc);
 }
 
-inline int					sh_evalifclause(t_proc *prc, int fd, t_deq *toks,
+inline int			sh_evalifclause(t_proc *prc, int fd, t_deq *toks,
 	char **ln)
 {
 	ps_procfn(prc, (t_proccb *)ifclause, (t_dtor)ifclausedtor,

@@ -12,7 +12,7 @@
 
 #include "ush/eval.h"
 
-static inline int			whileclause(t_while *s)
+static inline int		whileclause(t_while *s)
 {
 	g_sh->tty = 0;
 	sh_eval(-1, &s->cond, &s->ln) ? (g_sh->status = 1) : 0;
@@ -26,7 +26,7 @@ static inline int			whileclause(t_while *s)
 	return (g_sh->status);
 }
 
-static inline void			whileclausedtor(t_while *s)
+static inline void		whileclausedtor(t_while *s)
 {
 	ft_deqdtor(&s->cond, NULL);
 	ft_deqdtor(&s->body, NULL);
@@ -54,7 +54,7 @@ static inline t_while	*whileclausector(t_deq *toks, char **ln)
 	return (whilec);
 }
 
-inline int					sh_evalwhileclause(t_proc *prc, t_deq *toks,
+inline int				sh_evalwhileclause(t_proc *prc, t_deq *toks,
 	char **ln)
 {
 	ps_procfn(prc, (t_proccb *)whileclause, (t_dtor)whileclausedtor,

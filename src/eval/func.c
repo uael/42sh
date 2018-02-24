@@ -32,7 +32,7 @@ static inline int	avcount(char *av[])
 
 inline int			sh_evalfn(t_proc *proc)
 {
-	t_func *fn;
+	t_func	*fn;
 	char	*av0;
 	char	*fname;
 
@@ -40,7 +40,8 @@ inline int			sh_evalfn(t_proc *proc)
 	g_sh->av = proc->argv;
 	g_sh->ac = avcount(proc->argv);
 	g_sh->tty = 0;
-	if (!(fn = sh_funcget(fname = g_sh->av[0])))
+	fname = g_sh->av[0];
+	if (!(fn = sh_funcget(fname)))
 		return (EXIT_FAILURE);
 	g_sh->av[0] = av0;
 	sh_eval(-1, &fn->body, (char **)&fn->ln) ? (g_sh->status = 1) : 0;
