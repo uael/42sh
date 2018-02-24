@@ -107,14 +107,12 @@ inline int			rl_histbi(void)
 	c = 0;
 	while (beg && *beg && (not = ft_strchr(beg, '!')))
 	{
-		if (!ft_strlen(not))
+		if (!*(not + 1))
 			break ;
 		if (*(not + 1) == '!')
 			beg = histback(not, &c);
 		else if (*(not + 1) == '-' || ft_isdigit(*(not + 1)))
 			beg = histatc(not, &c);
-		else if (!*(not + 1))
-			return (YEP);
 		else
 			beg = histfind(not, g_eln->str.buf, &c);
 	}
