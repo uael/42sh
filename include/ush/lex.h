@@ -21,9 +21,9 @@
 # define TOK_ISWORD(I) ((I)==TOK_WORD)
 # define TOK_ISEND(ID) ((ID)==TOK_EOL||(ID)==TOK_END)
 # define TOK_ISCMDM(ID) (TOK_ISWORD(ID)||TOK_ISREDIR(ID)||(ID)==TOK_DLBRA)
-# define TOK_ISBRA(ID) ((ID)=='('||(ID)==')'||((ID)>=TOK_FI&&(ID)<=TOK_DLBRA))
-# define TOK_ISLFT(ID) ((ID)=='('||((ID)>=TOK_THEN&&(ID)<=TOK_DLBRA))
-# define TOK_ISRGT(ID) ((ID)==')'||((ID)>=TOK_FI&&(ID)<=TOK_ELSE))
+# define TOK_ISLFT(ID) ((ID)=='('||(ID)=='{'||((ID)>=TOK_THEN&&(ID)<=TOK_DLBRA))
+# define TOK_ISRGT(ID) ((ID)==')'||(ID)=='}'||((ID)>=TOK_FI&&(ID)<=TOK_ELSE))
+# define TOK_ISCMPD(ID) ((ID)=='('||(ID)=='{'||((ID)>=TOK_IF&&(ID)<=TOK_WHILE))
 
 # define LEXE(ST, FD) ((ST) < 0 || (FD) < 0 || !g_sh->tty)
 # define PAT(...) ((char []){__VA_ARGS__,'\0'})
@@ -49,6 +49,9 @@ typedef struct	s_src
 
 typedef int		(t_lexcb)(int fd, t_deq *toks, char **ln);
 
+extern size_t	sh_synbracket(t_src *s, t_deq *toks, t_tok *o, size_t i);
+extern int		sh_synchk(t_src *s, t_tok **a, t_tok *b);
+
 extern int		sh_lex(int fd, char **it, char **ln, t_lexcb *cb);
 extern int		sh_lexline(t_src *src, t_deq *toks, t_bool new);
 extern int		sh_tokenize(t_src *s, t_tok *tok);
@@ -60,5 +63,6 @@ extern int		sh_lexbslash(t_src *src);
 extern int		sh_lexword(t_src *s, t_tok *tok);
 extern int		sh_lexheredoc(t_src *s, t_tok *tok);
 extern t_bool	sh_isname(char *word);
+extern t_bool	sh_isident(char const *word, size_t n);
 
 #endif

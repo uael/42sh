@@ -19,6 +19,8 @@ inline int			sh_evalcmd(t_proc *proc, int fd, t_deq *toks, char **ln)
 
 	if (!(tok = sh_tokpeek(toks)))
 		return (NOP);
+	if (tok->id == TOK_FUNCTION)
+		return (sh_evalfuncdef(proc, fd, toks, ln));
 	if (TOK_ISCMDM(tok->id))
 		return (sh_evalsimple(proc, fd, toks, ln));
 	else if (!(st = sh_evalcompound(proc, fd, toks, ln)))

@@ -34,6 +34,7 @@ static char		*g_tokidsstr[] = {
 	[TOK_WHILE] = "while",
 	[TOK_DO] = "do",
 	[TOK_DONE] = "done",
+	[TOK_FUNCTION] = "function",
 	[TOK_DLBRA] = "[[",
 	[TOK_DRBRA] = "]]",
 	[TOK_AMP] = "&",
@@ -42,7 +43,9 @@ static char		*g_tokidsstr[] = {
 	[TOK_SEMICOLON] = ";",
 	[TOK_RIN] = "<",
 	[TOK_ROUT] = ">",
-	[TOK_PIPE] = "|"
+	[TOK_PIPE] = "|",
+	[TOK_LCUR] = "{",
+	[TOK_RCUR] = "}",
 };
 
 inline char		*sh_tokstr(t_tok *tok)
@@ -51,7 +54,7 @@ inline char		*sh_tokstr(t_tok *tok)
 
 	if (!tok)
 		return (g_tokidsstr[TOK_END]);
-	if (tok->id > TOK_PIPE)
+	if (tok->id > TOK_RCUR)
 		return ("<unknown>");
 	return ((ret = g_tokidsstr[tok->id]) ? ret : "<unknown>");
 }

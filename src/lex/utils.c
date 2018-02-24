@@ -12,6 +12,20 @@
 
 #include "ush/lex.h"
 
+inline t_bool	sh_isident(char const *word, size_t n)
+{
+	if (!n || (!ft_isalpha(*word) && *word != '_'))
+		return (0);
+	++word;
+	while (--n)
+	{
+		if (!ft_isalnum(*word) && *word != '_')
+			return (0);
+		++word;
+	}
+	return (1);
+}
+
 inline t_bool	sh_isname(char *word)
 {
 	if (!ft_isalpha(*word) && *word != '_')

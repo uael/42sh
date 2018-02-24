@@ -48,15 +48,15 @@ SRC_NAME = \
 	eval/cmp.c eval/compound.c eval/heredoc.c eval/ifclause.c eval/lamp.c \
 	eval/list.c eval/pipeline.c eval/ramp.c eval/raout.c eval/redir.c \
 	eval/rin.c eval/rout.c eval/sep.c eval/simple.c eval/subshell.c \
-	eval/whileclause.c \
+	eval/whileclause.c eval/bracegrp.c eval/func.c \
 	exp.c exp/backslash.c exp/backtick.c exp/brace.c exp/dollars.c \
 	exp/glob.c exp/quote.c exp/tilde.c \
 	exp/arith.c exp/arith/eval.c \
 	exp/comm.c exp/comm/read.c \
 	exp/param.c exp/param/env.c exp/param/subst.c exp/param/val.c \
 	func.c \
-	lex.c lex/check.c lex/heredoc.c lex/line.c lex/op.c lex/reduce.c \
-	lex/utils.c lex/dollar.c lex/word.c \
+	lex.c lex/check.c lex/dollar.c lex/heredoc.c lex/line.c lex/op.c \
+	lex/reduce.c lex/syn.c lex/utils.c lex/word.c \
 	main.c \
 	prompt.c \
 	shell.c \
