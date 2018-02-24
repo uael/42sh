@@ -77,17 +77,17 @@ static int	arithloop(t_sds *word, char **words, t_sds *expr, t_bool brackets)
 
 	if (**words == '$')
 	{
-		if ((st = sh_expdollars(word, words, NULL, 1)))
+		if ((st = sh_expdollars(expr, words, NULL, 1)))
 			return (arithdone(expr, st));
 	}
 	else if (**words == '`' && (++*words))
 	{
-		if ((st = sh_expbacktick(word, words, NULL)))
+		if ((st = sh_expbacktick(expr, words, NULL)))
 			return (arithdone(expr, st));
 	}
 	else if (**words == '\\')
 	{
-		if ((st = sh_expbackslash(word, words, 1)))
+		if ((st = sh_expbackslash(expr, words, 1)))
 			return (arithdone(expr, st));
 	}
 	else if (ft_strchr(";{}", **words))

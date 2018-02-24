@@ -115,10 +115,10 @@ inline void		sh_complete(t_sds *cmd)
 
 	end = cmd->len ? cmd->buf + cmd->len - 1 : cmd->buf;
 	word = end;
-	if (*word && ft_strchr(sh_varifs(), *word))
+	if (*word && ft_strchr(sh_ifs(), *word))
 		word = cmd->buf + cmd->len;
 	else
-		while (word > cmd->buf && !ft_strchr(sh_varifs(), *(word - 1)))
+		while (word > cmd->buf && !ft_strchr(sh_ifs(), *(word - 1)))
 			--word;
 	if ((end = ft_strrchr(word, '/')))
 		word = completepath(end, word, match);

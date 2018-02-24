@@ -26,8 +26,7 @@ static int	expcommchild(char *ln)
 	sh_scope();
 	ft_memcpy(g_sh, sh, sizeof(t_scope));
 	it = ln;
-	while (!sh_lex(-1, &it, &ln, sh_eval))
-		;
+	sh_lex(-1, &it, &ln, sh_eval);
 	st = g_sh->status;
 	sh_unscope();
 	return (st);

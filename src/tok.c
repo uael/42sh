@@ -25,7 +25,17 @@ static char		*g_tokidsstr[] = {
 	[TOK_LAND] = "&&",
 	[TOK_LOR] = "||",
 	[TOK_WORD] = "<word>",
-	[TOK_NOT] = "!",
+	[TOK_BANG] = "!",
+	[TOK_IF] = "if",
+	[TOK_THEN] = "then",
+	[TOK_ELIF] = "elif",
+	[TOK_ELSE] = "else",
+	[TOK_FI] = "fi",
+	[TOK_WHILE] = "while",
+	[TOK_DO] = "do",
+	[TOK_DONE] = "done",
+	[TOK_DLBRA] = "[[",
+	[TOK_DRBRA] = "]]",
 	[TOK_AMP] = "&",
 	[TOK_LPAR] = "(",
 	[TOK_RPAR] = ")",
@@ -57,11 +67,6 @@ inline t_tok	*sh_toknext(t_deq *toks)
 {
 	ft_deqsht(toks, NULL);
 	return (sh_tokpeek(toks));
-}
-
-inline void		sh_tokdtor(t_tok *tok)
-{
-	ft_memset(tok, 0, sizeof(t_tok));
 }
 
 inline t_tok	*sh_tokpos(t_tok *tok, char const *it, char const *ln)

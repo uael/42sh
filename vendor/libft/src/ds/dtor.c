@@ -88,7 +88,7 @@ inline void	ft_sdsdtor(t_sds *self)
 
 inline void	ft_vecdtor(t_vec *self, t_dtor idtor)
 {
-	char	*item;
+	char *item;
 
 	if (self->buf)
 	{

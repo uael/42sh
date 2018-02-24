@@ -10,11 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <fnmatch.h>
 #include <libps.h>
 
 #include "ush/exp.h"
-#include "ush/shell.h"
 
 static char g_num[21];
 
@@ -75,5 +73,5 @@ int			sh_expparamsubst(t_sds *word, char **words, t_vec *av, t_param *p)
 		p->freev = 1;
 		splitvalue(word, av, p);
 	}
-	return (sh_expparamdone(p, 2));
+	return (sh_expparamdone(p, 0));
 }

@@ -37,7 +37,17 @@ enum			e_tok
 	TOK_LAND,
 	TOK_LOR,
 	TOK_WORD,
-	TOK_NOT = '!',
+	TOK_BANG,
+	TOK_FI,
+	TOK_DONE,
+	TOK_DRBRA,
+	TOK_THEN,
+	TOK_DO,
+	TOK_ELIF,
+	TOK_ELSE,
+	TOK_IF,
+	TOK_WHILE,
+	TOK_DLBRA,
 	TOK_AMP = '&',
 	TOK_LPAR = '(',
 	TOK_RPAR = ')',
@@ -59,6 +69,5 @@ extern char		*sh_tokstr(t_tok *tok);
 extern t_tok	*sh_tokpeek(t_deq *toks);
 extern t_tok	*sh_toknext(t_deq *toks);
 extern t_tok	*sh_tokpos(t_tok *tok, char const *it, char const *ln);
-extern void		sh_tokdtor(t_tok *tok);
 
 #endif

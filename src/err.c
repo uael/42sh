@@ -75,7 +75,7 @@ int				sh_synerr(char const *ln, char const *it, char const *fmt, ...)
 	va_end(ap);
 	ft_ofswrc(g_cerr, '\n');
 	if (ln)
-		printline(ln, it);
+		printline(ln, it ? it : ft_strchr(ln, 0));
 	ft_ofsflush(g_cerr);
 	return (OUF);
 }

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lex/var.c                                          :+:      :+:    :+:   */
+/*   lex/dollar.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -28,7 +28,7 @@ static char	bracket(char c)
 	return (0);
 }
 
-static int	brackets(int fd, t_tok *tok, char **it, char **ln)
+static int	brackets(t_src *s, t_tok *tok)
 {
 	char	stack[1000];
 	int		st;
@@ -36,33 +36,32 @@ static int	brackets(int fd, t_tok *tok, char **it, char **ln)
 	char	*br;
 
 	i = 0;
-	stack[i++] = bracket(**it);
+	stack[i++] = bracket(**s->it);
 	br = NULL;
-	while (++tok->len && ++*it)
-	{
-		if (!i && (!**it || br))
+	while (++tok->len && ++*s->it)
+		if (!i && (!**s->it || br))
 			break ;
-		if (!**it && (fd < 0 || (st = rl_catline(fd, 0, ln, it)) || !**it))
+		else if (!**s->it && (s->fd < 0 ||
+			(st = rl_catline(s->fd, 0, s->ln, s->it)) || !**s->it))
 		{
-			return (LEX_SHOWE(st, fd) ?
-				sh_synerr(*ln, *it, UEE, stack[i - 1]) : OUF);
+			return (LEXE(st, s->fd) ?
+				sh_synerr(*s->ln, *s->it, UEE, stack[i - 1]) : OUF);
 		}
-		if (ft_strchr("[{(", **it))
-			stack[i++] = bracket(**it);
-		else if ((br = ft_strchr("]})", **it)) && !i)
-			return (sh_synerr(*ln, *it, UEB, **it));
-		else if (br && **it != stack[--i])
-			return (sh_synerr(*ln, *it, UEC, stack[i], **it));
-	}
+		else if (ft_strchr("[{(", **s->it))
+			stack[i++] = bracket(**s->it);
+		else if ((br = ft_strchr("]})", **s->it)) && !i)
+			return (sh_synerr(*s->ln, *s->it, UEB, **s->it));
+		else if (br && **s->it != stack[--i])
+			return (sh_synerr(*s->ln, *s->it, UEC, stack[i], **s->it));
 	return (YEP);
 }
 
-inline int	sh_lexdollar(int fd, t_tok *tok, char **it, char **ln)
+inline int	sh_lexdollar(t_src *s, t_tok *tok)
 {
-	if (**it != '$')
+	if (**s->it != '$')
 		return (NOP);
-	(void)(++tok->len && ++*it);
-	if (ft_strchr("[{(", **it))
-		return (brackets(fd, tok, it, ln));
+	(void)(++tok->len && ++*s->it);
+	if (ft_strchr("[{(", **s->it))
+		return (brackets(s, tok));
 	return (YEP);
 }

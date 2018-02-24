@@ -82,7 +82,7 @@ inline char		*sh_varget(char *var, char **envv)
 	return (envv ? ft_getenv(envv, var) : NULL);
 }
 
-inline char		*sh_varifs(void)
+inline char		*sh_ifs(void)
 {
 	static char	*ifs = NULL;
 	char		*eol;

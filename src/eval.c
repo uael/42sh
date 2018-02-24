@@ -31,7 +31,6 @@ static inline int	evalfini(int ret, t_deq *toks)
 			}
 	}
 	toks->cur = toks->len;
-	ft_deqclean(toks, (t_dtor)sh_tokdtor);
 	return (ret ? NOP : YEP);
 }
 

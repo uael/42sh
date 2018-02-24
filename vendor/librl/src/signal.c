@@ -31,10 +31,11 @@ inline int	rl_signald(void)
 			return (rl_visualdelete());
 		return (YEP);
 	}
-	if (g_edit_cat)
-		return (YEP);
-	ft_sdsmpush(&g_eln->str, "exit", 4);
-	rl_editprint();
+	if (!g_edit_cat)
+	{
+		ft_sdsmpush(&g_eln->str, "exit", 4);
+		rl_editprint();
+	}
 	ft_write(STDIN_FILENO, "\n", 1);
 	return (RL_EXIT);
 }
