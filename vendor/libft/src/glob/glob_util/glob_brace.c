@@ -6,7 +6,7 @@
 /*   By: mcanal <mc.maxcanal@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/23 17:55:44 by mcanal            #+#    #+#             */
-/*   Updated: 2018/02/24 09:47:56 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/24 10:11:54 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,12 +55,12 @@ static int			glob_check_brace(t_glob_env *e)
 	}
 	if (!*pat)
 		return (GLOBUX_SUCCESS);
-	while ((comma = glob_find_comma(++pat, pat_end)))
+	while ((comma = glob_find_comma(pat + 1, pat_end)))
 	{
-		glob_copy_pattern_and_boom(pat, (size_t)(comma - pat), e);
-		pat = comma + 1;
+		glob_copy_pattern_and_boom(pat + 1, (size_t)(comma - pat) - 1, e);
+		pat = comma;
 	}
-	glob_copy_pattern_and_boom(pat, (size_t)(pat_end - pat), e);
+	glob_copy_pattern_and_boom(pat + 1, (size_t)(pat_end - pat) - 1, e);
 	return (-1);
 }
 
