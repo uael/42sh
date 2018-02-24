@@ -69,6 +69,5 @@ extern char		*sh_tokstr(t_tok *tok);
 extern t_tok	*sh_tokpeek(t_deq *toks);
 extern t_tok	*sh_toknext(t_deq *toks);
 extern t_tok	*sh_tokpos(t_tok *tok, char const *it, char const *ln);
-extern void		sh_tokdtor(t_tok *tok);
 
 #endif

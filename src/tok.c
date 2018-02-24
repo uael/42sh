@@ -69,11 +69,6 @@ inline t_tok	*sh_toknext(t_deq *toks)
 	return (sh_tokpeek(toks));
 }
 
-inline void		sh_tokdtor(t_tok *tok)
-{
-	ft_memset(tok, 0, sizeof(t_tok));
-}
-
 inline t_tok	*sh_tokpos(t_tok *tok, char const *it, char const *ln)
 {
 	tok->pos = (uint16_t)(it - ln);
