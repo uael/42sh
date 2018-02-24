@@ -29,7 +29,7 @@ static inline int			whileclause(t_whileclause *s)
 		sh_eval(-1, &s->cond, &s->ln) ? (g_sh->status = 1) : 0;
 	}
 	st = g_sh->status;
-	return (sh_exit(st, NULL));
+	return (st);
 }
 
 static inline void			whileclausedtor(t_whileclause *s)

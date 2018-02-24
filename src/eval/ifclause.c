@@ -28,7 +28,7 @@ static inline int			ifclause(t_ifclause *s)
 	else if (s->elsekind == ELSE_ELSE)
 		sh_eval(-1, &s->elsepart.body, &s->ln) ? (g_sh->status = 1) : 0;
 	st = g_sh->status;
-	return (sh_exit(st, NULL));
+	return (st);
 }
 
 static inline void			ifclausedtor(t_ifclause *s)

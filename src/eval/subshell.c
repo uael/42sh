@@ -24,7 +24,7 @@ static inline int	subshell(t_subshell *s)
 	sh_eval(-1, &s->toks, &s->ln) ? (g_sh->status = 1) : 0;
 	st = g_sh->status;
 	sh_unscope();
-	return (sh_exit(st, NULL));
+	return (st);
 }
 
 static inline void	subshelldtor(t_subshell *s)
