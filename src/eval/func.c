@@ -62,12 +62,12 @@ inline int			sh_evalfuncdef(t_proc *proc, int fd, t_deq *toks, char **ln)
 	name = sh_toknext(toks);
 	beg = sh_toknext(toks);
 	ft_deqctor(&body, sizeof(t_tok));
-	while ((tok = sh_toknext(toks))->id != g_end[beg->id] && fd)
+	while ((tok = sh_toknext(toks)))
 	{
 		if (tok->id == beg->id)
 			++fd;
-		else if (tok->id == g_end[beg->id])
-			--fd;
+		else if (tok->id == g_end[beg->id] && !--fd)
+			break ;
 		*(t_tok *)ft_deqpush(&body) = *tok;
 	}
 	sh_toknext(toks);

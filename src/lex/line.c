@@ -76,7 +76,7 @@ inline int			sh_lexline(t_src *src, t_deq *toks, t_bool new)
 			(st = rl_catline(src->fd, 0, src->ln, src->it)) || !**src->it))
 			return (st ? st : NOP);
 	}
-	cur = toks->cur;
+	cur = toks->len;
 	while (1)
 	{
 		ft_bzero(tok = (t_tok *)ft_deqpush(toks), sizeof(t_tok));
