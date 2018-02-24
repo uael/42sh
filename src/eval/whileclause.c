@@ -37,7 +37,7 @@ static inline void		whileclausedtor(t_while *s)
 static inline t_while	*whileclausector(t_deq *toks, char **ln)
 {
 	t_while	*whilec;
-	t_tok			*tok;
+	t_tok	*tok;
 
 	whilec = ft_malloc(sizeof(t_while));
 	ft_bzero(whilec, sizeof(t_while));

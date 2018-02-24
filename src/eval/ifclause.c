@@ -57,7 +57,7 @@ static inline t_tok	*ifclauseinit(t_if *ifc, t_deq *toks)
 static inline t_if	*ifclausector(int fd, t_deq *toks, char **ln)
 {
 	t_if	*ifc;
-	t_tok		*tok;
+	t_tok	*tok;
 
 	ifc = ft_malloc(sizeof(t_if));
 	tok = ifclauseinit(ifc, toks);
