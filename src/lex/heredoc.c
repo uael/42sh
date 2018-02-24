@@ -43,7 +43,7 @@ inline int			sh_lexheredoc(t_src *s, t_tok *tok)
 	st = 0;
 	while (!st)
 		if (!**s->it && (s->fd < 0 ||
-			(st = rl_catline(s->fd, 0, s->ln, s->it))))
+			((st = rl_catline(s->fd, 0, s->ln, s->it)) && st != OUF)))
 			st = LEXE(st, s->fd) ?
 				sh_synerr(*s->ln, *s->it, UEE"`%s'", eof) : OUF;
 		else if (!**s->it)
@@ -56,5 +56,5 @@ inline int			sh_lexheredoc(t_src *s, t_tok *tok)
 				break ;
 		}
 	free(eof);
-	return (st);
+	return (st == OUF ? YEP : st);
 }
