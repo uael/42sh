@@ -39,11 +39,7 @@ inline void			sh_funcset(char const *name, t_deq *body, char const *ln)
 	if (!body)
 	{
 		if (ft_mapget(g_funcs, (void *)name, &it))
-		{
-			ft_pfree((void **)&((char **)g_funcs->keys)[it]);
-			funcdtor(&((t_func *)g_funcs->vals)[it]);
 			ft_mapdel(g_funcs, it);
-		}
 		return ;
 	}
 	if (ft_mapget(g_funcs, (void *)name, &it))

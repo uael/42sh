@@ -56,11 +56,7 @@ inline void		sh_varset(char *var, char *val)
 	else if (!val)
 	{
 		if (ft_mapget(g_locals, var, &it))
-		{
-			free(((char **)g_locals->keys)[it]);
-			free(((char **)g_locals->vals)[it]);
 			ft_mapdel(g_locals, it);
-		}
 	}
 	else if (ft_mapget(g_locals, var, &it))
 	{

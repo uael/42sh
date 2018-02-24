@@ -72,7 +72,7 @@ inline int			sh_evalfuncdef(t_proc *proc, int fd, t_deq *toks, char **ln)
 	}
 	sh_toknext(toks);
 	id = ft_strndup(*ln + name->pos, name->len);
-	!sh_funcget(id) ? sh_funcset(id, &body, *ln) : ft_deqdtor(&body, NULL);
+	sh_funcset(id, &body, *ln);
 	free((void *)id);
 	return (YEP);
 }
