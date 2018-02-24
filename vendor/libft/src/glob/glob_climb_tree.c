@@ -54,7 +54,7 @@ static int	glob_check_file(t_glob_env *e, struct dirent *d, \
 		if ((*(e->flags) & (GLOBUX_MARK | GLOBUX_ONLYDIR)) \
 			&& (len = ft_strlen(path_buf)) && *(path_buf + len - 1) != '/')
 			ft_memcpy(path_buf + len, "/", 2);
-		if (!(match = matchctor(path_buf, ft_strlen(path_buf))))
+		if (!(match = matchctor(path_buf, ft_strlen(path_buf), 0)))
 			return (GLOBUX_NOSPACE);
 		add_match_to_list(match, &e->match_list);
 		if (*(e->flags) & (GLOBUX_MARK | GLOBUX_ONLYDIR))
@@ -120,7 +120,7 @@ int			glob_climb_tree(t_glob_env *e)
 		|| !ft_strcmp("/", e->pattern) || !ft_strcmp("./", e->pattern))
 	{
 		return ((e->match_list = matchctor(e->pattern, \
-			ft_strlen(e->pattern))) ? GLOBUX_SUCCESS : GLOBUX_NOSPACE);
+			ft_strlen(e->pattern), 0)) ? GLOBUX_SUCCESS : GLOBUX_NOSPACE);
 	}
 	return (depth > MAX_DEPTH ? GLOBUX_NOSPACE : glob_read_dir(e, depth, NULL));
 }

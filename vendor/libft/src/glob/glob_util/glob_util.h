@@ -40,7 +40,6 @@
 
 # define GLOBUX_BOOM_BABY 5
 # define GLOBUX_NOBODY_GIVES_A_DAMN 6
-# define GLOBUX_RMBSLH GLOBUX_ALTDIRFUNC
 
 # define MAX_DEPTH			(1 << 8)
 
@@ -87,7 +86,7 @@ char const					*is_magic(char *magic_buf, char const *pattern, \
 /*
 ** in glob_list.c:
 */
-t_match						*matchctor(char const *path, size_t len);
+t_match						*matchctor(char const *path, size_t len, int);
 void						matchdtor(t_match *match);
 void						add_match_to_list(t_match *match, \
 											t_match **match_list);

@@ -14,41 +14,35 @@
 
 static void	sprglbcp(char *dst, char const *path)
 {
-	char		quote;
-	char		bckslsh;
+	char		bs;
 	char const	*p;
 
-	p = path;
-	quote = 0;
-	bckslsh = 0;
-	while (*p)
+	p = path - 1;
+	bs = 0;
+	while (*++p)
 	{
-		if (*p == '\'' && quote == '\'')
-			quote = 0;
-		else if (*p == '"' && quote == '"')
-			quote = 0;
-		else if (*p == '\'' && !quote)
-			quote = '\'';
-		else if (*p == '"' && !quote)
-			quote = '"';
-		else if (bckslsh)
-			;
+		if (bs || *p != '\\')
+		{
+			*dst = *p;
+			dst++;
+			bs = 0;
+		}
 		else if (*p == '\\')
-			bckslsh = 1;
-		*dst = *p;
-		dst++;
-		p++;
+			bs = 1;
 	}
 }
 
-t_match		*matchctor(char const *path, size_t len)
+t_match		*matchctor(char const *path, size_t len, int escape)
 {
 	t_match *new;
 
 	if (!(new = malloc(sizeof(t_match) + len)))
 		return ((NULL));
 	ft_bzero(new, sizeof(t_match) + len);
-	sprglbcp((char *)new->buf, path);
+	if (escape)
+		sprglbcp((char *)new->buf, path);
+	else
+		ft_memcpy(new->buf, path, len);
 	return (new);
 }
 

@@ -77,7 +77,6 @@ int				ft_glob(const char *pattern, int flags, t_glob *pglob)
 	if (!(flags & GLOBUX_NOCHECK) && !*pattern)
 		return (GLOBUX_NOMATCH);
 	glbnvctor(&glob_env, pattern, &(pglob->gl_flags), pglob);
-		pglob->gl_flags |= GLOBUX_RMBSLH;
 	if ((ret = glob_climb_tree(&glob_env)))
 	{
 		matchdtor(glob_env.match_list);
@@ -90,7 +89,8 @@ int				ft_glob(const char *pattern, int flags, t_glob *pglob)
 			pglob->gl_flags = (pglob->gl_flags & ~GLOBUX_MAGCHAR);
 			return (GLOBUX_NOMATCH);
 		}
-		if (!(glob_env.match_list = matchctor(pattern, ft_strlen(pattern))))
+		if (!(glob_env.match_list = matchctor(pattern, ft_strlen(pattern), \
+				!(flags & GLOBUX_NOESCAPE))))
 			return (GLOBUX_NOSPACE);
 	}
 	return (copy_match_to_glob_struct(glob_env.match_list, pglob));
