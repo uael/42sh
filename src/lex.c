@@ -62,5 +62,5 @@ int					sh_lex(int fd, char **it, char **ln, t_lexcb *cb)
 	}
 	if (st == OUF)
 		g_sh->status = 1;
-	return (st);
+	return (ft_dtor(st, (t_dtor)ft_deqdtor, &toks, NULL));
 }
