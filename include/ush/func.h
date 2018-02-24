@@ -17,7 +17,6 @@
 
 typedef struct	s_func
 {
-	char const	*name;
 	char const	*ln;
 	t_deq		body;
 }				t_func;

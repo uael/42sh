@@ -51,7 +51,6 @@ inline void			sh_funcset(char const *name, t_deq *body, char const *ln)
 		return (free(dname));
 	((char **)g_funcs->vals)[it] = dname;
 	((t_func *)g_funcs->vals)[it].body = *body;
-	((t_func *)g_funcs->vals)[it].name = dname;
 	((t_func *)g_funcs->vals)[it].ln = ft_strdup(ln);
 	ft_bzero(body, sizeof(t_deq));
 }
