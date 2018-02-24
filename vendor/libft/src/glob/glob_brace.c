@@ -6,12 +6,11 @@
 /*   By: mcanal <mc.maxcanal@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/23 17:55:44 by mcanal            #+#    #+#             */
-/*   Updated: 2018/02/24 10:11:54 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/24 12:49:12 by mcanal           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "glob_util.h"
-#include "../glob_climb_tree.h"
+#include "glob_climb_tree.h"
 
 static char const	*glob_find_comma(char const *pat, char const *pat_end)
 {
