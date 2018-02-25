@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 20:57:25 by mc                #+#    #+#             */
-/*   Updated: 2018/02/25 12:00:07 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/25 13:22:35 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,5 +130,11 @@ int							super_cmp(const void *a, const void *b, size_t n);
 */
 int							show_hidden_files(int flags, char pat_start);
 int							show_files(int *flags, char const *pattern);
+
+/*
+** in glob_finder.c
+*/
+char const					*glob_find_comma(char const *pat, char const *pat_end);
+char const					*glob_find_opening_brace(char const *pat, char const *pat_start);
 
 #endif

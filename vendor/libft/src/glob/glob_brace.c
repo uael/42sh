@@ -6,20 +6,11 @@
 /*   By: mcanal <mc.maxcanal@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/23 17:55:44 by mcanal            #+#    #+#             */
-/*   Updated: 2018/02/25 13:19:45 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/25 13:22:39 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "glob_climb_tree.h"
-
-static char const	*glob_find_comma(char const *pat, char const *pat_end)
-{
-	if (pat >= pat_end)
-		return (NULL);
-	if (*pat == ',')
-		return (pat);
-	return (glob_find_comma(pat + 1, pat_end));
-}
 
 static int			glob_copy_pattern_and_boom(char const *pat, size_t size, \
 												t_glob_env *e)
@@ -45,16 +36,6 @@ static int			glob_find_sub_brace(t_glob_env *e, char const *comma, \
 	glob_copy_pattern_and_boom(pat + 1, (size_t)(comma - pat) - 1, e);
 	return (glob_find_sub_brace(e, glob_find_comma(comma + 1, pat_end), \
 								comma, pat_end));
-}
-
-static char const	*glob_find_opening_brace(char const *pat, \
-											char const *pat_start)
-{
-	if (!*pat)
-		return (NULL);
-	if (*pat == '{' && (pat == pat_start || *(pat - 1) != '\\'))
-		return (pat);
-	return (glob_find_opening_brace(pat + 1, pat_start));
 }
 
 static int			glob_check_brace(t_glob_env *e)
