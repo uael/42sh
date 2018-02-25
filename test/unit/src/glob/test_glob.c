@@ -6,7 +6,7 @@
 /*   By: mcanal <zboub@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/11/29 15:38:59 by mcanal            #+#    #+#             */
-/*   Updated: 2018/02/23 20:49:13 by mcanal           ###   ########.fr       */
+/*   Updated: 2018/02/25 23:01:11 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ static char flags_ctrl_buffer[SMALL] = {0};
 
 static glob_t ctrl_glob_struct;
 
-#define TEST_FLAGS (GLOB_BRACE | GLOB_NOCHECK)
+#define TEST_FLAGS (GLOBUX_BRACE | GLOBUX_NOCHECK)
 
 static struct s_test_glob test_glob_arr[] = {
 
@@ -100,6 +100,7 @@ static struct s_test_glob test_glob_arr[] = {
 	{".*", TEST_FLAGS, {0, NULL, 0, 0, 0}},
 	{"*.*", TEST_FLAGS, {0, NULL, 0, 0, 0}},
 	{"*", TEST_FLAGS, {0, NULL, 0, 0, 0}},
+	{"./src", TEST_FLAGS, {0, NULL, 0, 0, 0}},
 
 	{"/*ab*cd*", TEST_FLAGS, {0, NULL, 0, 0, 0}},
 	{"/*abcd*", TEST_FLAGS, {0, NULL, 0, 0, 0}},
@@ -161,6 +162,7 @@ static struct s_test_glob test_glob_arr[] = {
 	{"/usr/lib/*.*", TEST_FLAGS, {0, NULL, 0, 0, 0}},
 	{"/usr/lib/*", TEST_FLAGS, {0, NULL, 0, 0, 0}},
 
+    {".*/src", TEST_FLAGS, {0, NULL, 0, 0, 0}},
 	{"./", TEST_FLAGS, {0, NULL, 0, 0, 0}},
 	{"*/", TEST_FLAGS, {0, NULL, 0, 0, 0}},
 	{"././././*", TEST_FLAGS, {0, NULL, 0, 0, 0}},
@@ -183,15 +185,48 @@ static struct s_test_glob test_glob_arr[] = {
 	{"[!a-z]", TEST_FLAGS, {0, NULL, 0, 0, 0}},
 	{"[^a-z]", TEST_FLAGS, {0, NULL, 0, 0, 0}},
 
-	{"*/*", TEST_FLAGS, {0, NULL, 0, 0, 0}},
-	{"*/*/*", TEST_FLAGS, {0, NULL, 0, 0, 0}},
-	{"/*/*", TEST_FLAGS, {0, NULL, 0, 0, 0}},
-	/* {"/\*\/\*\/\*", TEST_FLAGS, {0, NULL, 0, 0, 0}}, */
-	/* {"/usr/lib/\*\/\*\/\*", TEST_FLAGS, {0, NULL, 0, 0, 0}}, */
+	{"{src,obj,include}", TEST_FLAGS, {0, NULL, 0, 0, 0}},
+	{"{src,obj}", TEST_FLAGS, {0, NULL, 0, 0, 0}},
+	{"{src,obj,}", TEST_FLAGS, {0, NULL, 0, 0, 0}},
+	{"{,src,obj}", TEST_FLAGS, {0, NULL, 0, 0, 0}},
+	{"{,src,,obj,}", TEST_FLAGS, {0, NULL, 0, 0, 0}},
+	{"{src}", TEST_FLAGS, {0, NULL, 0, 0, 0}},
+	{"{,}", TEST_FLAGS, {0, NULL, 0, 0, 0}},
 
-	{"????*/??*", TEST_FLAGS, {0, NULL, 0, 0, 0}},
-	{"/did/you/think/about/it", TEST_FLAGS, {0, NULL, 0, 0, 0}},
-	{"good", TEST_FLAGS, {0, NULL, 0, 0, 0}},
+
+	{"./{src,include,obj}", TEST_FLAGS, {0, NULL, 0, 0, 0}},
+	{"./{src,obj}", TEST_FLAGS, {0, NULL, 0, 0, 0}},
+	{".*/{src,include,obj}", TEST_FLAGS, {0, NULL, 0, 0, 0}},
+	{"./{src,obj,}", TEST_FLAGS, {0, NULL, 0, 0, 0}},
+	{"./{,src,obj}", TEST_FLAGS, {0, NULL, 0, 0, 0}},
+	{"./{,src,,obj,}", TEST_FLAGS, {0, NULL, 0, 0, 0}},
+	{"./{src}", TEST_FLAGS, {0, NULL, 0, 0, 0}},
+	{"./{,}", TEST_FLAGS, {0, NULL, 0, 0, 0}},
+
+	{"./{src,obj,include}/*", TEST_FLAGS, {0, NULL, 0, 0, 0}},
+	{"./{src,obj}/*", TEST_FLAGS, {0, NULL, 0, 0, 0}},
+	{"./{src,obj,}/*", TEST_FLAGS, {0, NULL, 0, 0, 0}},
+	{"./{,src,obj}/*", TEST_FLAGS, {0, NULL, 0, 0, 0}},
+	{"./{,src,,obj,}/*", TEST_FLAGS, {0, NULL, 0, 0, 0}},
+	{"./{src}/*", TEST_FLAGS, {0, NULL, 0, 0, 0}},
+	{"./{,}/*", TEST_FLAGS, {0, NULL, 0, 0, 0}},
+
+	/* {"./{src,obj,include}/\*.{h,c}", TEST_FLAGS, {0, NULL, 0, 0, 0}}, */
+	/* {"./{src,obj,include}/\*{.,o,{h,c}}", TEST_FLAGS, {0, NULL, 0, 0, 0}}, */
+	/* {"./{{src,obj,{deso}},include}/\*{.,o,{h,c}}", TEST_FLAGS, {0, NULL, 0, 0, 0}}, */
+
+	/* {"/usr/{bin,share}", TEST_FLAGS, {0, NULL, 0, 0, 0}}, */
+	/* {"/usr/{bin,share}/\*", TEST_FLAGS, {0, NULL, 0, 0, 0}}, */
+
+	/* {"*\/\*", TEST_FLAGS, {0, NULL, 0, 0, 0}}, */
+	/* {"*\/\*\/\*", TEST_FLAGS, {0, NULL, 0, 0, 0}}, */
+	/* {"/\*\/\*", TEST_FLAGS, {0, NULL, 0, 0, 0}}, */
+	/* /\* {"/\\*\\/\\*\\/\\*", TEST_FLAGS, {0, NULL, 0, 0, 0}}, *\/ */
+	/* /\* {"/usr/lib/\\*\\/\\*\\/\\*", TEST_FLAGS, {0, NULL, 0, 0, 0}}, *\/ */
+
+	/* {"????*\/??*", TEST_FLAGS, {0, NULL, 0, 0, 0}}, */
+	/* {"/did/you/think/about/it", TEST_FLAGS, {0, NULL, 0, 0, 0}}, */
+	/* {"good", TEST_FLAGS, {0, NULL, 0, 0, 0}}, */
 
 	/* {"/and/this/", TEST_FLAGS, {0, NULL, 0, 0, 0}}, */
 	/* {"///", TEST_FLAGS, {0, NULL, 0, 0, 0}}, */
@@ -200,24 +235,6 @@ static struct s_test_glob test_glob_arr[] = {
 	/* {"//usr///lib/////", TEST_FLAGS, {0, NULL, 0, 0, 0}}, */
 	/* {"//usr///lib/////\*\/", TEST_FLAGS, {0, NULL, 0, 0, 0}}, */
 	/* {"//usr///lib/////\*\////", TEST_FLAGS, {0, NULL, 0, 0, 0}}, */
-
-	/* {"~", TEST_FLAGS | GLOBUX_TILDE, {0, NULL, 0, 0, 0}}, */
-	/* {"~/..", TEST_FLAGS | GLOBUX_TILDE, {0, NULL, 0, 0, 0}}, */
-	/* {"~/\*", TEST_FLAGS | GLOBUX_TILDE, {0, NULL, 0, 0, 0}}, */
-	/* {"~/\*\/???", TEST_FLAGS | GLOBUX_TILDE, {0, NULL, 0, 0, 0}}, */
-	/* {"/~/..", TEST_FLAGS | GLOBUX_TILDE, {0, NULL, 0, 0, 0}}, */
-	/* {"~/.emacs.d/\*\/\*~", TEST_FLAGS | GLOBUX_TILDE, {0, NULL, 0, 0, 0}}, */
-
-	{"{src}", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0, 0}},
-	{"{src,obj}", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0, 0}},
-	{"{src,obj,include}", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0, 0}},
-	{"./{,obj,include}", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0, 0}},
-	{"./{src}/*", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0, 0}},
-	{"./{src,obj}/*", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0, 0}},
-	{"./{src,obj,include}/*", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0, 0}},
-	{"./{,obj,include}/*", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0, 0}},
-	{"/usr/{bin,share}", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0, 0}},
-	{"/usr/{bin,share}/*", TEST_FLAGS | GLOBUX_BRACE, {0, NULL, 0, 0, 0}},
 };
 
 
