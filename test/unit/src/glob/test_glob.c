@@ -6,7 +6,7 @@
 /*   By: mcanal <zboub@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/11/29 15:38:59 by mcanal            #+#    #+#             */
-/*   Updated: 2018/02/25 23:01:11 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/25 23:16:10 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,7 +192,7 @@ static struct s_test_glob test_glob_arr[] = {
 	{"{,src,,obj,}", TEST_FLAGS, {0, NULL, 0, 0, 0}},
 	{"{src}", TEST_FLAGS, {0, NULL, 0, 0, 0}},
 	{"{,}", TEST_FLAGS, {0, NULL, 0, 0, 0}},
-
+	{"{bien,relou}", TEST_FLAGS, {0, NULL, 0, 0, 0}},
 
 	{"./{src,include,obj}", TEST_FLAGS, {0, NULL, 0, 0, 0}},
 	{"./{src,obj}", TEST_FLAGS, {0, NULL, 0, 0, 0}},
