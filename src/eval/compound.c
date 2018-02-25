@@ -14,7 +14,17 @@
 
 inline int		sh_evalcompound(t_proc *proc, int fd, t_deq *toks, char **ln)
 {
-	if (sh_tokpeek(toks)->id == '(')
+	t_tok *tok;
+
+	if (!(tok = sh_tokpeek(toks)))
+		return (NOP);
+	if (tok->id == '(')
 		return (sh_evalsubshell(proc, fd, toks, ln));
+	if (tok->id == '{')
+		return (sh_evalbracegrp(proc, fd, toks, ln));
+	else if (tok->id == TOK_IF)
+		return (sh_evalifclause(proc, fd, toks, ln));
+	else if (tok->id == TOK_WHILE)
+		return (sh_evalwhileclause(proc, toks, ln));
 	return (NOP);
 }

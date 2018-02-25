@@ -39,8 +39,8 @@ function job {
 }
 
 function dovalgrind {
-  valgrind --leak-check=full \
-    --track-origins=yes --suppressions=./valgrind.supp $1 $2 \
+  valgrind --leak-check=full --track-origins=yes \
+    --suppressions=./valgrind.supp $1 $2 \
     &> ${OUT}
   ! cat ${OUT} | grep "definitely lost: [1-9]"
   return $?

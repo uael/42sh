@@ -81,15 +81,15 @@ inline int			sh_evallist(int fd, t_deq *toks, char **ln)
 		else if (tok->id == TOK_AMP)
 		{
 			if ((st = onamp(&job, fd, toks, ln)))
-				return (st);
+				return (ft_dtor(st, (t_dtor)ps_jobdtor, &job, NULL));
 		}
 		else if (tok->id == TOK_SEMICOLON)
 		{
 			if ((st = onsemicolon(&job, fd, toks, ln)))
-				return (st);
+				return (ft_dtor(st, (t_dtor)ps_jobdtor, &job, NULL));
 		}
 		else if (tok->id == TOK_END || tok->id == TOK_EOL)
-			return (oneof(&job));
+			return (ft_dtor(oneof(&job), (t_dtor)ps_jobdtor, &job, NULL));
 		else
 			return (ft_dtor(NOP, (t_dtor)ps_jobdtor, &job, NULL));
 }

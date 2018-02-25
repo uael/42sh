@@ -21,6 +21,6 @@ extern void		sh_vardtor(void);
 extern int		sh_vardump(char **envv);
 extern void		sh_varset(char *var, char *val);
 extern char		*sh_varget(char *var, char **envv);
-extern char		*sh_varifs(void);
+extern char		*sh_ifs(void);
 
 #endif

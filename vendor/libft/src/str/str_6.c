@@ -77,3 +77,26 @@ inline char		*ft_strjoin(char const *s1, char const *s2)
 	s[i] = '\0';
 	return (s);
 }
+
+inline size_t	ft_memacpy(void *dst, void const *src, size_t n)
+{
+	size_t			c;
+	uint8_t			*d;
+	uint8_t const	*s;
+
+	c = 0;
+	d = (uint8_t *)dst;
+	s = (uint8_t const *)src;
+	while (n)
+	{
+		if (ft_isascii(*s))
+		{
+			*d++ = *s++;
+			++c;
+		}
+		else
+			++s;
+		--n;
+	}
+	return (c);
+}

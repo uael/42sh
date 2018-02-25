@@ -25,7 +25,7 @@ static void	onifs(char const *out, int *copying, t_sds *word, t_vec *av)
 	}
 	else
 	{
-		if (*out == '\n')
+		if (*out == '\n' && *(out + 1))
 		{
 			*copying == 1 ? (*copying = 3) : 0;
 			return ;

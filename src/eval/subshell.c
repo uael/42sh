@@ -14,17 +14,12 @@
 
 static inline int	subshell(t_subshell *s)
 {
-	t_scope	*sh;
 	int		st;
 
-	sh = g_sh;
-	sh_scope();
-	ft_memcpy(g_sh, sh, sizeof(t_scope));
 	g_sh->tty = 0;
 	sh_eval(-1, &s->toks, &s->ln) ? (g_sh->status = 1) : 0;
 	st = g_sh->status;
-	sh_unscope();
-	return (sh_exit(st, NULL));
+	return (st);
 }
 
 static inline void	subshelldtor(t_subshell *s)
@@ -52,8 +47,6 @@ inline int			sh_evalsubshell(t_proc *prc, int fd, t_deq *toks, char **ln)
 			--stack;
 		*(t_tok *)ft_deqpush(&sh->toks) = *tok;
 	}
-	if (!sh->toks.len && !ft_pfree((void **)&sh))
-		return (sh_evalerr(*ln, sh_tokpeek(toks), "Empty subshell"));
 	sh_toknext(toks);
 	(*(t_tok *)ft_deqpush(&sh->toks)).id = TOK_END;
 	sh->ln = ft_strdup(*ln);

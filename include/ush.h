@@ -19,6 +19,7 @@
 # include "ush/lex.h"
 # include "ush/eval.h"
 # include "ush/exp.h"
+# include "ush/func.h"
 # include "ush/shell.h"
 # include "ush/tok.h"
 # include "ush/var.h"

@@ -12,77 +12,77 @@
 
 #include "ush/lex.h"
 
-static inline int	opright(int fd, t_tok *tok, char **it, char **ln)
+static inline int	opright(t_src *s, t_tok *tok)
 {
 	int st;
 
-	if (++*it && (st = sh_lexbslash(fd, it, ln)))
+	if (++*s->it && (st = sh_lexbslash(s)))
 		return (st);
-	if (**it == '>' && ++*it)
+	if (**s->it == '>' && ++*s->it)
 		return ((tok->id = TOK_RAOUT) & 0);
-	if (**it == '&' && ++*it)
+	if (**s->it == '&' && ++*s->it)
 		return ((tok->id = TOK_RAMP) & 0);
-	if (**it == '|' && ++*it)
+	if (**s->it == '|' && ++*s->it)
 		return ((tok->id = TOK_RPOUT) & 0);
 	return ((tok->id = '>') & 0);
 }
 
-static inline int	opleft(int fd, t_tok *tok, char **it, char **ln)
+static inline int	opleft(t_src *s, t_tok *tok)
 {
 	int st;
 
-	if (++*it && (st = sh_lexbslash(fd, it, ln)))
+	if (++*s->it && (st = sh_lexbslash(s)))
 		return (st);
-	if (**it == '<' && ++*it)
+	if (**s->it == '<' && ++*s->it)
 		return ((tok->id = TOK_HEREDOC) & 0);
-	if (**it == '>' && ++*it)
+	if (**s->it == '>' && ++*s->it)
 		return ((tok->id = TOK_CMP) & 0);
-	if (**it == '&' && ++*it)
+	if (**s->it == '&' && ++*s->it)
 		return ((tok->id = TOK_LAMP) & 0);
 	return ((tok->id = '<') & 0);
 }
 
-static inline int	opand(int fd, t_tok *tok, char **it, char **ln)
+static inline int	opand(t_src *s, t_tok *tok)
 {
 	int st;
 
-	if (++*it && (st = sh_lexbslash(fd, it, ln)))
+	if (++*s->it && (st = sh_lexbslash(s)))
 		return (st);
-	if (**it == '&' && ++*it)
+	if (**s->it == '&' && ++*s->it)
 		return ((tok->id = TOK_LAND) & 0);
-	if (**it == '>' && ++*it)
+	if (**s->it == '>' && ++*s->it)
 		return ((tok->id = TOK_AMPR) & 0);
 	return ((tok->id = '&') & 0);
 }
 
-static inline int	opor(int fd, t_tok *tok, char **it, char **ln)
+static inline int	opor(t_src *s, t_tok *tok)
 {
 	int st;
 
-	if (++*it && (st = sh_lexbslash(fd, it, ln)))
+	if (++*s->it && (st = sh_lexbslash(s)))
 		return (st);
-	if (**it == '|' && ++*it)
+	if (**s->it == '|' && ++*s->it)
 		return ((tok->id = TOK_LOR) & 0);
 	return ((tok->id = '|') & 0);
 }
 
-inline int			sh_lexop(int fd, t_tok *tok, char **it, char **ln)
+inline int			sh_lexop(t_src *s, t_tok *tok)
 {
-	if (**it == '>')
-		return (opright(fd, tok, it, ln));
-	if (**it == '<')
-		return (opleft(fd, tok, it, ln));
+	if (**s->it == '>')
+		return (opright(s, tok));
+	if (**s->it == '<')
+		return (opleft(s, tok));
 	if (tok->len)
 		return (NOP);
-	if (**it == '&')
-		return (opand(fd, tok, it, ln));
-	if (**it == '|')
-		return (opor(fd, tok, it, ln));
-	if (**it == ';' && ++*it)
+	if (**s->it == '&')
+		return (opand(s, tok));
+	if (**s->it == '|')
+		return (opor(s, tok));
+	if (**s->it == ';' && ++*s->it)
 		return ((tok->id = TOK_SEMICOLON) & 0);
-	if (**it == '(' && ++*it)
+	if (**s->it == '(' && ++*s->it)
 		return ((tok->id = TOK_LPAR) & 0);
-	if (**it == ')' && ++*it)
+	if (**s->it == ')' && ++*s->it)
 		return ((tok->id = TOK_RPAR) & 0);
 	return (NOP);
 }

@@ -16,55 +16,55 @@
 #define ISQUOTE(IT) (*(IT) == '\'' || *(IT) == '"' || *(IT) == '`')
 #define UEC "parse error: Unexpected EOF while looking for matching `%c'"
 
-static inline int	quote(int fd, t_tok *tok, char **it, char **ln)
+static inline int	quote(t_src *s, t_tok *tok, char q)
 {
-	char	q;
 	int		st;
 	int		bs;
 
 	bs = 0;
 	st = 0;
-	q = 0;
-	(void)(++tok->len && (q = *(*it)++));
+	(void)(++tok->len && (q = *(*s->it)++));
 	while (!st)
-		if (!bs && q == '"' && (st = sh_lexbslash(fd, it, ln)))
+		if (!bs && q == '"' && (st = sh_lexbslash(s)))
 			return (st);
-		else if (!**it && (fd < 0 || (st = rl_catline(fd, 0, ln, it)) || !**it))
-			return (LEX_SHOWE(st, fd) ? sh_synerr(*ln, *it, UEC, q) : OUF);
+		else if (!**s->it && (s->fd < 0 ||
+			(st = rl_catline(s->fd, 0, s->ln, s->it)) || !**s->it))
+			return (LEXE(st, s->fd) ? sh_synerr(*s->ln, *s->it, UEC, q) : OUF);
 		else if (bs && q != '\'')
-			(void)((++tok->len && ++*it) && (bs = 0));
-		else if (**it == q && (++tok->len && ++*it))
+			(void)((++tok->len && ++*s->it) && (bs = 0));
+		else if (**s->it == q && (++tok->len && ++*s->it))
 			break ;
-		else if (!(bs = **it == '\\') && q == '"' && **it == '`')
-			st = quote(fd, tok, it, ln);
-		else if (q == '"' && **it == '$' && *(*it + 1) &&
-			!ft_isspace(*(*it + 1)) && !ft_strchr(sh_varifs(), *(*it + 1)))
-			st = sh_lexdollar(fd, tok, it, ln);
+		else if (!(bs = **s->it == '\\') && q == '"' && **s->it == '`')
+			st = quote(s, tok, 0);
+		else if (q == '"' && **s->it == '$' && *(*s->it + 1) &&
+			!ft_isspace(*(*s->it + 1)) && !ft_strchr(sh_ifs(), *(*s->it + 1)))
+			st = sh_lexdollar(s, tok);
 		else
-			(void)(++tok->len && ++*it);
+			(void)(++tok->len && ++*s->it);
 	return (st);
 }
 
-inline int			sh_lexword(int fd, t_tok *tok, char **it, char **ln)
+inline int			sh_lexword(t_src *s, t_tok *tok)
 {
 	int		st;
 	int		bs;
 
 	st = 0;
 	bs = 0;
-	while (**it && !st)
-		if (!bs && (ft_isspace(**it) || ft_strchr("><&|;()", **it) ||
-			(st = sh_lexbslash(fd, it, ln))))
+	while (**s->it && !st)
+		if (!bs && (ft_isspace(**s->it) || ft_strchr("><&|;()", **s->it) ||
+			(st = sh_lexbslash(s))))
 			break ;
 		else if (bs)
-			(void)((++tok->len && ++*it) && (bs = 0));
-		else if (!(bs = **it == '\\') && ISQUOTE(*it))
-			st = quote(fd, tok, it, ln);
-		else if (**it == '$' && *(*it + 1) && !ft_isspace(*(*it + 1)) &&
-			!ft_strchr(sh_varifs(), *(*it + 1)))
-			st = sh_lexdollar(fd, tok, it, ln);
+			(void)((++tok->len && ++*s->it) && (bs = 0));
+		else if (!(bs = **s->it == '\\') && ISQUOTE(*s->it))
+			st = quote(s, tok, 0);
+		else if (**s->it == '$' && *(*s->it + 1) &&
+			!ft_isspace(*(*s->it + 1)) &&
+			!ft_strchr(sh_ifs(), *(*s->it + 1)))
+			st = sh_lexdollar(s, tok);
 		else
-			(void)(++tok->len && ++*it);
+			(void)(++tok->len && ++*s->it);
 	if (st || !tok->len)
 		return (st ? st : NOP);
 	tok->id = TOK_WORD;

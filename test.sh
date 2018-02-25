@@ -27,7 +27,6 @@ function job {
   echo -en "$(padme "$1: $2") "
   ($3 &> ${OUT}) &
   pid=$!
-  test $TERM != "dumb" && spinner ${pid}
   wait ${pid}
   local RET=$?
   if [[ $RET != 0 ]]; then
@@ -64,7 +63,7 @@ function dotest {
   fi
   rm -f ${test_out}
   $1 ${test} &> ${test_out}
-  diff -y ${test_out} ${test_expected}
+  diff ${test_out} ${test_expected}
 }
 
 UNAME_S=$(uname -s)

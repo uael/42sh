@@ -1,3 +1,3 @@
-ush: Expected `<filename>' got `>'
+ush: syntax error: Expected `<word>' after redirection `<' got `>'
 cat < >
       ^

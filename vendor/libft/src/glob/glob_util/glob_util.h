@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 20:57:25 by mc                #+#    #+#             */
-/*   Updated: 2018/02/23 20:38:21 by mcanal           ###   ########.fr       */
+/*   Updated: 2018/02/25 22:49:25 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,16 +86,13 @@ char const					*is_there_a_closing_bracket(char const *pattern, \
 													int flags, char c);
 
 /*
-** in glob_brace.c
-*/
-int							glob_brace(t_glob_env *e);
-
-/*
 ** in glob_list.c:
 */
-t_match						*matchctor(char const *path, size_t len);
+t_match						*matchctor(char const *path, size_t len, int);
 void						matchdtor(t_match *match);
 void						add_match_to_list(t_match *match, \
+											t_match **match_list);
+int							matchctoradd(char const *path, int escape, \
 											t_match **match_list);
 size_t						list_len(t_match *match_list);
 
@@ -136,4 +133,10 @@ int							super_cmp(const void *a, const void *b, size_t n);
 int							show_hidden_files(int flags, char pat_start);
 int							show_files(int *flags, char const *pattern);
 
+/*
+** in glob_finder.c
+*/
+char const					*glob_find_comma(char const *pat, char const *pat_end);
+char const					*glob_find_opening_brace(char const *pat, char const *pat_start);
+void						sprglbcp(char *dst, char const *path);
 #endif
