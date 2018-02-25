@@ -6,7 +6,7 @@
 /*   By: mcanal <mc.maxcanal@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/23 17:55:44 by mcanal            #+#    #+#             */
-/*   Updated: 2018/02/24 13:17:46 by mcanal           ###   ########.fr       */
+/*   Updated: 2018/02/25 12:39:11 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ static int			glob_check_brace(t_glob_env *e)
 		return (GLOBUX_SUCCESS);
 
 	comma = glob_find_comma(pat + 1, pat_end);
-	return (comma ? glob_find_sub_brace(e, comma, pat + 1, pat_end) : GLOBUX_SUCCESS);
+	return (comma ? glob_find_sub_brace(e, comma, pat, pat_end) : GLOBUX_SUCCESS);
 }
 
 int					glob_brace(t_glob_env *e)
