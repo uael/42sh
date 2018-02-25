@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 22:23:43 by mc                #+#    #+#             */
-/*   Updated: 2018/02/25 22:30:27 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/25 22:50:31 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,6 @@ static int	glob_pre_check_file(t_glob_env *e, struct dirent *d)
 static int	glob_check_file(t_glob_env *e, struct dirent *d, \
 							int depth, char *path_buf)
 {
-	t_match		*match;
 	size_t		len;
 
 	if (!glob_pre_check_file(e, d))
@@ -54,9 +53,8 @@ static int	glob_check_file(t_glob_env *e, struct dirent *d, \
 		if ((*(e->flags) & (GLOBUX_MARK | GLOBUX_ONLYDIR)) \
 			&& (len = ft_strlen(path_buf)) && *(path_buf + len - 1) != '/')
 			ft_memcpy(path_buf + len, "/", 2);
-		if (!(match = matchctor(path_buf, ft_strlen(path_buf), 0)))
+		if (matchctoradd(path_buf, 0, &e->match_list))
 			return (GLOBUX_NOSPACE);
-		add_match_to_list(match, &e->match_list);
 		if (*(e->flags) & (GLOBUX_MARK | GLOBUX_ONLYDIR))
 			*(path_buf + len) = '\0';
 	}
@@ -116,10 +114,7 @@ int			glob_climb_tree(t_glob_env *e)
 		return (glob_read_dir(e, depth, magic == e->pattern ? NULL : magic));
 	}
 	if ((*(e->flags) & GLOBUX_NOMAGIC) \
-		|| !ft_strcmp("/", e->pattern) || !ft_strcmp("./", e->pattern))
-	{
-		return ((e->match_list = matchctor(e->pattern, \
-			ft_strlen(e->pattern), 0)) ? GLOBUX_SUCCESS : GLOBUX_NOSPACE);
-	}
+			|| !ft_strcmp("/", e->pattern) || !ft_strcmp("./", e->pattern))
+		return (matchctoradd(e->pattern, 0, &e->match_list));
 	return (depth > MAX_DEPTH ? GLOBUX_NOSPACE : glob_read_dir(e, depth, NULL));
 }

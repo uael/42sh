@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 20:57:25 by mc                #+#    #+#             */
-/*   Updated: 2018/02/25 13:22:35 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/25 22:49:25 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,8 @@ t_match						*matchctor(char const *path, size_t len, int);
 void						matchdtor(t_match *match);
 void						add_match_to_list(t_match *match, \
 											t_match **match_list);
+int							matchctoradd(char const *path, int escape, \
+											t_match **match_list);
 size_t						list_len(t_match *match_list);
 
 /*
@@ -136,5 +138,5 @@ int							show_files(int *flags, char const *pattern);
 */
 char const					*glob_find_comma(char const *pat, char const *pat_end);
 char const					*glob_find_opening_brace(char const *pat, char const *pat_start);
-
+void						sprglbcp(char *dst, char const *path);
 #endif

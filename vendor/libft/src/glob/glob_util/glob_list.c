@@ -6,31 +6,11 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/13 09:57:56 by mc                #+#    #+#             */
-/*   Updated: 2018/02/23 20:37:10 by mcanal           ###   ########.fr       */
+/*   Updated: 2018/02/25 22:49:30 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "glob_util.h"
-
-static void	sprglbcp(char *dst, char const *path)
-{
-	char		bs;
-	char const	*p;
-
-	p = path - 1;
-	bs = 0;
-	while (*++p)
-	{
-		if (bs || *p != '\\')
-		{
-			*dst = *p;
-			dst++;
-			bs = 0;
-		}
-		else if (*p == '\\')
-			bs = 1;
-	}
-}
 
 t_match		*matchctor(char const *path, size_t len, int escape)
 {
@@ -67,6 +47,17 @@ void		add_match_to_list(t_match *match, t_match **match_list)
 {
 	match->next = *match_list;
 	*match_list = match;
+}
+
+int			matchctoradd(char const *path, int escape, t_match **match_list)
+{
+	t_match		*match;
+
+	match = matchctor(path, ft_strlen(path), escape);
+	if (!match)
+		return (GLOBUX_NOSPACE);
+	add_match_to_list(match, match_list);
+	return (GLOBUX_SUCCESS);
 }
 
 size_t		list_len(t_match *match_list)
