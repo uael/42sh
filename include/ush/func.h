@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ush/var.h                                          :+:      :+:    :+:   */
+/*   ush/func.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,17 +10,19 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef USH_VAR_H
-# define USH_VAR_H
+#ifndef USH_FUNC_H
+# define USH_FUNC_H
 
-# include "env.h"
+# include <libft.h>
 
-# define SH_IFS " \t"
+typedef struct	s_func
+{
+	char const	*ln;
+	t_deq		body;
+}				t_func;
 
-extern void		sh_vardtor(void);
-extern int		sh_vardump(char **envv);
-extern void		sh_varset(char *var, char *val);
-extern char		*sh_varget(char *var, char **envv);
-extern char		*sh_ifs(void);
+extern void		sh_funcdtor(void);
+extern void		sh_funcset(char const *name, t_deq *body, char const *ln);
+extern t_func	*sh_funcget(char const *name);
 
 #endif

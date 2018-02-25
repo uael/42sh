@@ -12,6 +12,7 @@
 
 #include "ush/eval.h"
 #include "ush/exp.h"
+#include "ush/func.h"
 
 static inline char	**makeenv(t_map *vars, t_bool *owned)
 {
@@ -55,6 +56,8 @@ static inline int	makeargv(t_proc *proc, t_vec *av, t_deq *toks, char **ln)
 				return (st);
 			tok = sh_tokpeek(toks);
 		}
+		else if (tok->id == TOK_DRBRA)
+			tok = sh_toknext(toks);
 		else
 			break ;
 	return (YEP);
@@ -66,14 +69,31 @@ static inline char	*explodesome(t_vec *av, t_deq *t, char **ln)
 
 	ft_vecctor(av, sizeof(char *));
 	tok = sh_tokpeek(t);
-	while (!av->len)
+	if (tok->id == TOK_DLBRA)
 	{
-		if (!tok || !TOK_ISWORD(tok->id))
-			return (NULL);
-		sh_expwords(av, *ln + tok->pos, tok->len);
-		tok = sh_toknext(t);
+		*(char **)ft_vecpush(av) = ft_strdup("test");
+		sh_toknext(t);
 	}
+	else
+		while (!av->len)
+		{
+			if (!tok || !TOK_ISWORD(tok->id))
+				return (NULL);
+			sh_expwords(av, *ln + tok->pos, tok->len);
+			tok = sh_toknext(t);
+		}
 	return (((char **)av->buf)[0]);
+}
+
+static inline void	fncheck(t_proc *prc, char const *bin)
+{
+	if (sh_funcget(bin))
+	{
+		prc->kind = PROC_FN;
+		prc->u.fn.cb = (t_proccb *)sh_evalfn;
+		prc->u.fn.dtor = NULL;
+		prc->u.fn.data = NULL;
+	}
 }
 
 inline int			sh_evalargv(t_proc *prc, t_map *v, t_deq *toks, char **ln)
@@ -92,6 +112,7 @@ inline int			sh_evalargv(t_proc *prc, t_map *v, t_deq *toks, char **ln)
 		return (makeargv(prc, NULL, toks, ln));
 	}
 	ps_procexe(prc, "PATH", bin, makeenv(v, &own));
+	fncheck(prc, bin);
 	prc->ownenv = own;
 	if ((st = makeargv(prc, &av, toks, ln)))
 	{

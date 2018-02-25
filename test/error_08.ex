@@ -1,4 +1,3 @@
-ush: cmdnotound: Command not found
-ush: Expected `<filename>' got `<newline>'
+ush: syntax error: Expected `<word>' after redirection `>' got `<newline>'
 cmdnotound asd sd; cat <<EOF >
                               ^

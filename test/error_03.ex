@@ -1,3 +1,3 @@
-ush: parse error: Unexpected EOF while looking for matching `)'
+ush: syntax error: Unexpected token `(' after `<word>'
 echo ((echo b)
-              ^
+     ^

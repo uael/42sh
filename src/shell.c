@@ -83,9 +83,8 @@ inline int			sh_run(int fd, char *ln)
 	while (!(st = rl_getline(fd, sh_prompt(SH_PROMPT(), buf), &ln)))
 	{
 		it = ln;
-		while (!(st = sh_lex(fd, &it, &ln, sh_eval)))
-			;
-		if (st < 0 || ((st == OUF ? (g_sh->status = 1) : 0) && !g_sh->status))
+		st = sh_lex(fd, &it, &ln, sh_eval);
+		if (st < 0 || (!g_sh->tty && st == OUF))
 			break ;
 	}
 	rl_finalize(fd);
@@ -106,6 +105,7 @@ int					sh_exit(int exitno, char const *fmt, ...)
 	ps_dtor();
 	sh_envdtor();
 	sh_vardtor();
+	sh_funcdtor();
 	if (fmt)
 	{
 		va_start(ap, fmt);

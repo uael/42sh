@@ -10,11 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <fnmatch.h>
 #include <libps.h>
 
 #include "ush/exp.h"
-#include "ush/shell.h"
 
 static char g_num[21];
 

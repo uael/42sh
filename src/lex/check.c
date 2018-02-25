@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lex/utils.c                                        :+:      :+:    :+:   */
+/*   lex/check.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,44 +12,29 @@
 
 #include "ush/lex.h"
 
-inline t_bool	sh_isident(char const *word, size_t n)
-{
-	if (!n || (!ft_isalpha(*word) && *word != '_'))
-		return (0);
-	++word;
-	while (--n)
-	{
-		if (!ft_isalnum(*word) && *word != '_')
-			return (0);
-		++word;
-	}
-	return (1);
-}
+#define ERR0 "syntax error: Unexpected closing token `%s'"
 
-inline t_bool	sh_isname(char *word)
+inline int	sh_lexcheck(t_src *s, t_deq *toks)
 {
-	if (!ft_isalpha(*word) && *word != '_')
-		return (0);
-	++word;
-	while (*word && *word != '=')
-	{
-		if (!ft_isalnum(*word) && *word != '_')
-			return (0);
-		++word;
-	}
-	return (1);
-}
+	size_t	i;
+	t_tok	*t;
+	t_tok	*p;
 
-inline int		sh_lexbslash(t_src *s)
-{
-	int st;
-
-	if (**s->it == '\\' && ((ISREOL(*s->it + 1) && !*(*s->it + 2)) ||
-		((ISWEOL(*s->it + 1) && !*(*s->it + 3)))))
+	i = 0;
+	p = NULL;
+	while (i < toks->len)
 	{
-		*s->it += ISREOL(*s->it + 1) ? 2 : 3;
-		if (s->fd >= 0 && (st = rl_catline(s->fd, -2, s->ln, s->it)))
-			return (st);
+		if (sh_synchk(s, &p, t = ft_deqat(toks, i)))
+			return (OUF);
+		if (TOK_ISRGT(t->id))
+			return (sh_synerr(*s->ln, *s->ln + t->pos, ERR0, sh_tokstr(t)));
+		if (TOK_ISLFT(t->id))
+		{
+			if (!(i = sh_synbracket(s, toks, t, i)))
+				return (OUF);
+			p = ft_deqat(toks, i);
+		}
+		++i;
 	}
 	return (YEP);
 }

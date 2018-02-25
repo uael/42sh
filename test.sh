@@ -63,7 +63,7 @@ function dotest {
   fi
   rm -f ${test_out}
   $1 ${test} &> ${test_out}
-  diff -y ${test_out} ${test_expected}
+  diff ${test_out} ${test_expected}
 }
 
 UNAME_S=$(uname -s)

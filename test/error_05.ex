@@ -1,3 +1,3 @@
-ush: syntax error: Missing right operand after `&&'
+ush: syntax error: Expected `<command>' after `&&' got `<newline>'
 ls &&
-   ^
+     ^

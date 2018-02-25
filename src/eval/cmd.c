@@ -12,18 +12,18 @@
 
 #include "ush/eval.h"
 
-inline int		sh_evalcmd(t_proc *proc, int fd, t_deq *toks, char **ln)
+inline int			sh_evalcmd(t_proc *proc, int fd, t_deq *toks, char **ln)
 {
 	t_tok	*tok;
 	int		st;
 
-	st = NOP;
 	if (!(tok = sh_tokpeek(toks)))
 		return (NOP);
-	if (TOK_ISCMDM(tok->id) &&
-		!(st = sh_evalsimple(proc, fd, toks, ln)))
-		return (YEP);
-	else if (tok->id == '(' && !(st = sh_evalcompound(proc, fd, toks, ln)))
+	if (tok->id == TOK_FUNCTION)
+		return (sh_evalfuncdef(proc, fd, toks, ln));
+	if (TOK_ISCMDM(tok->id))
+		return (sh_evalsimple(proc, fd, toks, ln));
+	else if (!(st = sh_evalcompound(proc, fd, toks, ln)))
 	{
 		while ((tok = sh_tokpeek(toks)))
 			if (TOK_ISREDIR(tok->id))

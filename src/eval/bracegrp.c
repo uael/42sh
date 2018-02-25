@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   eval/subshell.c                                    :+:      :+:    :+:   */
+/*   eval/bracegrp.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,24 +12,29 @@
 
 #include "ush/eval.h"
 
-static inline int	subshell(t_subshell *s)
+static inline int	bracegrp(t_subshell *s)
 {
+	t_scope	*sh;
 	int		st;
 
+	sh = g_sh;
+	sh_scope();
+	ft_memcpy(g_sh, sh, sizeof(t_scope));
 	g_sh->tty = 0;
 	sh_eval(-1, &s->toks, &s->ln) ? (g_sh->status = 1) : 0;
 	st = g_sh->status;
+	sh_unscope();
 	return (st);
 }
 
-static inline void	subshelldtor(t_subshell *s)
+static inline void	bracegrpdtor(t_subshell *s)
 {
 	ft_deqdtor(&s->toks, NULL);
 	free(s->ln);
 	free(s);
 }
 
-inline int			sh_evalsubshell(t_proc *prc, int fd, t_deq *toks, char **ln)
+inline int			sh_evalbracegrp(t_proc *prc, int fd, t_deq *toks, char **ln)
 {
 	int			stack;
 	t_subshell	*sh;
@@ -37,13 +42,13 @@ inline int			sh_evalsubshell(t_proc *prc, int fd, t_deq *toks, char **ln)
 
 	(void)fd;
 	ft_deqctor(&(sh = ft_malloc(sizeof(t_subshell)))->toks, sizeof(t_tok));
-	ps_procfn(prc, (t_proccb *)subshell, (t_dtor)subshelldtor, sh);
+	ps_procfn(prc, (t_proccb *)bracegrp, (t_dtor)bracegrpdtor, sh);
 	stack = 0;
-	while ((tok = sh_toknext(toks))->id != ')' || stack)
+	while ((tok = sh_toknext(toks))->id != '}' || stack)
 	{
-		if (tok->id == '(')
+		if (tok->id == '{')
 			++stack;
-		else if (tok->id == ')')
+		else if (tok->id == '}')
 			--stack;
 		*(t_tok *)ft_deqpush(&sh->toks) = *tok;
 	}

@@ -98,7 +98,7 @@ int						ps_joblaunch(t_job *job, int fg)
 		proc->child = (t_bool)(job->procs.len > 1 || proc->kind == PROC_EXE ||
 			proc->kind == PROC_FN);
 		if (ps_procfork(proc, &job->pgid, io, fg))
-			return (!job->bang);
+			return (ft_dtor(!job->bang, (t_dtor)ps_jobdtor, job, NULL));
 		io[STDIN_FILENO] != STDIN_FILENO ? close(io[STDIN_FILENO]) : 0;
 		io[STDOUT_FILENO] != STDOUT_FILENO ? close(io[STDOUT_FILENO]) : 0;
 		io[STDIN_FILENO] = fds[0];

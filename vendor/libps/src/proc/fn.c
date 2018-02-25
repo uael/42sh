@@ -23,5 +23,6 @@ inline void		ps_procfn(t_proc *proc, t_proccb *cb, t_dtor dtor, void *data)
 
 inline int		ps_procfnlaunch(t_proc *proc)
 {
-	return (proc->status = proc->u.fn.cb(proc->u.fn.data));
+	return (proc->status = proc->u.fn.cb(proc->u.fn.data ?
+		proc->u.fn.data : proc));
 }
