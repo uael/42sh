@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 20:57:25 by mc                #+#    #+#             */
-/*   Updated: 2018/02/24 12:48:43 by mcanal           ###   ########.fr       */
+/*   Updated: 2018/02/25 12:00:07 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ char const					*is_there_a_closing_bracket(char const *pattern, \
 /*
 ** in glob_list.c:
 */
-t_match						*matchctor(char const *path, size_t len);
+t_match						*matchctor(char const *path, size_t len, int);
 void						matchdtor(t_match *match);
 void						add_match_to_list(t_match *match, \
 											t_match **match_list);
