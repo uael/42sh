@@ -6,7 +6,7 @@
 /*   By: mcanal <mc.maxcanal@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/23 17:55:44 by mcanal            #+#    #+#             */
-/*   Updated: 2018/02/25 12:39:11 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/25 13:19:45 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static char const	*glob_find_comma(char const *pat, char const *pat_end)
 }
 
 static int			glob_copy_pattern_and_boom(char const *pat, size_t size, \
-									t_glob_env *e)
+												t_glob_env *e)
 {
 	char		brace_buf[PATH_MAX];
 
@@ -47,29 +47,29 @@ static int			glob_find_sub_brace(t_glob_env *e, char const *comma, \
 								comma, pat_end));
 }
 
+static char const	*glob_find_opening_brace(char const *pat, \
+											char const *pat_start)
+{
+	if (!*pat)
+		return (NULL);
+	if (*pat == '{' && (pat == pat_start || *(pat - 1) != '\\'))
+		return (pat);
+	return (glob_find_opening_brace(pat + 1, pat_start));
+}
+
 static int			glob_check_brace(t_glob_env *e)
 {
-	char const	*pat;
+	char const	*pat_start;
 	char const	*pat_end;
 	char const	*comma;
 
-	pat_end = NULL;
-	pat = e->pattern;
-	while (*pat)
-	{
-		if (*pat == '{' && (pat == e->pattern || *(pat - 1) != '\\'))
-		{
-			if (!(pat_end = is_there_a_closing_bracket(pat, *(e->flags), '}')))
-				return (GLOBUX_SUCCESS);
-            break ;
-		}
-		pat++;
-	}
-	if (!*pat)
+	if (!(pat_start = glob_find_opening_brace(e->pattern, e->pattern)))
 		return (GLOBUX_SUCCESS);
-
-	comma = glob_find_comma(pat + 1, pat_end);
-	return (comma ? glob_find_sub_brace(e, comma, pat, pat_end) : GLOBUX_SUCCESS);
+	if (!(pat_end = is_there_a_closing_bracket(pat_start, *(e->flags), '}')))
+		return (GLOBUX_SUCCESS);
+	if (!(comma = glob_find_comma(pat_start + 1, pat_end)))
+		return (GLOBUX_SUCCESS);
+	return (glob_find_sub_brace(e, comma, pat_start, pat_end));
 }
 
 int					glob_brace(t_glob_env *e)
