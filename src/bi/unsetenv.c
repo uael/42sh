@@ -28,7 +28,7 @@ inline int	sh_biunsetenv(int ac, char **av, char **env)
 		if (ft_strchr(av[i], '='))
 			return (ft_retf(NOP, N_UNSETENV"%s\n", "Syntax error"));
 		else if (!sh_unsetenv(av[i], 1))
-			ft_retf((fst = NOP), N_UNSETENV"%s: Environ not fount\n",
+			ft_retf((fst = NOP), N_UNSETENV"%s: Environ not found\n",
 				av[i]);
 	return (fst);
 }

@@ -28,8 +28,8 @@ inline int		sh_evalrin(t_proc *proc, t_deq *toks, char **ln)
 		return (YEP);
 	if ((r.to = open(buf, O_RDONLY, 0644)) < 0)
 	{
-		ps_procerr(proc, ft_strcat(ft_strcat(buf, ": "), ft_strerr(errno)),
-			*ln, tok->pos);
+		ps_procerr(proc, ft_strcat(ft_strcat(ft_strcat(buf, ": "),
+			ft_strerr(errno)), "\n"), *ln, tok->pos);
 		return (YEP);
 	}
 	r.from = ft_isdigit(*(*ln + op->pos)) ? *(*ln + op->pos) - '0' : 0;
