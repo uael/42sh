@@ -107,7 +107,7 @@ endif
 	@+$(MAKE) $(PROJECT) "CFLAGS = $(WWFLAGS)" "OBJ_PATH = $(OBJ_DIR)/rel"
 
 $(PROJECT): $(3DE) $(OBJ)
-	@$(CC) $(LNK) $(OBJ) $(LIB) -o $(PROJECT)
+	@$(CC) $(CFLAGS) $(INC) $(LNK) $(OBJ) $(LIB) -o $(PROJECT)
 	@$(PRINTF) "%-20s\033[32m✔\033[0m\n" "$(PROJECT): exe"
 
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.c

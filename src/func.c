@@ -22,7 +22,10 @@ static t_map	*g_funcs = &g_funcs_stack;
 static inline void	funcdtor(t_func *func)
 {
 	if (func->next)
+	{
 		funcdtor(func->next);
+		free(func->next);
+	}
 	free((void *)func->ln);
 	ft_deqdtor(&func->body, NULL);
 	ft_bzero(func, sizeof(t_func));
