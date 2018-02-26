@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 22:23:43 by mc                #+#    #+#             */
-/*   Updated: 2018/02/26 01:13:37 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/26 02:01:27 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 
 #include "glob_climb_tree.h"
 
-static int jstcppttrn(t_glob_env *e)
+static int glob_just_copy_pattern(t_glob_env *e)
 {
 	if (e->match_list && !(*(e->flags) & GLOBUX_APPEND))
 		return (GLOBUX_SUCCESS);
@@ -95,27 +95,25 @@ int			glob_read_dir(t_glob_env *e, int depth, char const *dirname)
 int			glob_climb_tree(t_glob_env *e)
 {
 	int			depth;
+	int			ret;
 	char const	*magic;
 
-	if ((depth = glob_brace(e)))
-		return (depth > 0 ? depth : GLOBUX_SUCCESS);
+	if ((ret = glob_brace(e)))
+		return (ret > 0 ? ret : GLOBUX_SUCCESS);
 	depth = glob_count_depth(e->pattern);
 	depth -= show_files(e->flags, e->pattern) ? 0 : 1;
-	if ((magic = is_magic(e->magic_buf, e->pattern, e->flags)))
+	if ((magic = is_magic(e->magic_buf, e->pattern, e->flags)) \
+			&& magic != e->pattern)
 	{
-		if (magic != e->pattern)
-		{
-			depth = 1 + glob_count_depth(e->pattern) - glob_count_depth(magic);
-			depth -= show_files(e->flags, e->pattern) ? 0 : 1;
-		}
-		if (depth > MAX_DEPTH || depth < 1)
-			return (GLOBUX_NOSPACE);
-		return (glob_read_dir(e, depth, magic == e->pattern ? NULL : magic));
+		depth = 1 + glob_count_depth(e->pattern) - glob_count_depth(magic);
+		depth -= show_files(e->flags, e->pattern) ? 0 : 1;
 	}
 	if ((*(e->flags) & GLOBUX_NOMAGIC) \
 			|| !ft_strcmp("/", e->pattern) || !ft_strcmp("./", e->pattern))
 		return (matchctoradd(e->pattern, 0, &e->match_list));
-	if (depth > MAX_DEPTH)
+	if (depth > MAX_DEPTH || depth < 1)
 		return (GLOBUX_NOSPACE);
-	return ((depth = glob_read_dir(e, depth, NULL)) ? depth : jstcppttrn(e));
+	if ((ret = glob_read_dir(e, depth, magic == e->pattern ? NULL : magic)))
+		return (ret);
+	return (glob_just_copy_pattern(e));
 }
