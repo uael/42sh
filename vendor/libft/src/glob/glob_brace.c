@@ -6,7 +6,7 @@
 /*   By: mcanal <mc.maxcanal@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/23 17:55:44 by mcanal            #+#    #+#             */
-/*   Updated: 2018/02/26 02:01:07 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/26 03:45:54 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,9 @@ static int			glob_copy_pattern_and_boom(t_glob_env *e, \
 
 	before_size = glob_find_opening_brace(e->pattern, e->pattern) - e->pattern;
 	after_size = ft_strlen(pat_end);
-	if (before_size + pat_size + after_size + 1 > PATH_MAX)
-		return (GLOBUX_NOSPACE);
+	if (!(before_size + pat_size + after_size) \
+			|| before_size + pat_size + after_size + 1 > PATH_MAX)
+		return (-1);
 	ft_memcpy(brace_buf, e->pattern, before_size);
 	ft_memcpy(brace_buf + before_size, pat, pat_size);
 	ft_memcpy(brace_buf + before_size + pat_size, pat_end, after_size + 1);
