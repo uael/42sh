@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ex/ft_ex_throw.c                                   :+:      :+:    :+:   */
+/*   ex/ft_throw.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -15,13 +15,13 @@
 #include "libft/io.h"
 #include "libft/fs.h"
 
-int		ft_ex_throw(int rcode, char const *fn, int line)
+int		ft_throw(int rcode, char const *fn, int line)
 {
 	t_ex_hdl *hdl;
 
 	if (fn && errno != EBADF && errno != EIO)
 		ft_putf(2, "In function: "COLOR_BOLD"'%s:%d':\n"COLOR_RESET, fn, line);
-	if ((hdl = ft_ex_get(errno)))
+	if ((hdl = ft_exget(errno)))
 		return (hdl->cb(rcode, hdl->arg));
 	if (errno == ENOMEM)
 		exit(rcode);
@@ -33,8 +33,8 @@ int		ft_ex_throw(int rcode, char const *fn, int line)
 	return (rcode);
 }
 
-int		ft_eno_throw(int rcode, int eno, char const *msg, int line)
+int		ft_ethrow(int rcode, int eno, char const *msg, int line)
 {
 	errno = eno;
-	return (ft_ex_throw(rcode, msg, line));
+	return (ft_throw(rcode, msg, line));
 }

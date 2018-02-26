@@ -38,7 +38,7 @@ inline int				rl_readnotty(int fd, char **ln)
 	char *buf;
 
 	if (fd < 0 || fd > OPEN_MAX)
-		return (ENO_THROW(WUT, EINVAL));
+		return (ft_ethrow(WUT, EINVAL, FT_DBG));
 	g_in[fd].ifd = fd;
 	g_in[fd].print = 1;
 	g_in[fd].lim = -1;
@@ -51,7 +51,7 @@ inline int				rl_readnotty(int fd, char **ln)
 		g_ln.len = 0;
 		ft_sdsmpush(&g_ln, buf, (size_t)g_rd[fd]);
 		if (!ft_stris(g_ln.buf, ft_iscoolc))
-			return (ENO_THROW(WUT, EBADF));
+			return (ft_ethrow(WUT, EBADF, FT_DBG));
 		*ln = g_ln.buf;
 		return (YEP);
 	}
@@ -86,7 +86,7 @@ inline int				rl_catnotty(int fd, char **ln, char c, char **it)
 	size_t	middle;
 
 	if (fd < 0 || fd > OPEN_MAX)
-		return (ENO_THROW(WUT, EINVAL));
+		return (ft_ethrow(WUT, EINVAL, FT_DBG));
 	g_in[fd].ifd = fd;
 	if (g_rd[fd] > 0 && ft_ifsrd(g_in + fd, NULL, (size_t)g_rd[fd]) < 0)
 		return (WUT);

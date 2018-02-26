@@ -22,7 +22,7 @@ inline t_m4		ft_m4_mul(t_m4 a, t_m4 b)
 	int		k;
 	float	sum;
 
-	FT_INIT(&m, t_m4);
+	ft_bzero(&m, sizeof(t_m4));
 	i = -1;
 	while (++i < 4 && (j = -1))
 		while (++j < 4 && (k = -1))

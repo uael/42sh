@@ -21,7 +21,7 @@ inline int		rl_histsave(char const *filename)
 	uint8_t	i;
 
 	if (ft_ofstrunc(out = alloca(sizeof(t_ifs)), filename))
-		return (THROW(WUT));
+		return (ft_throw(WUT, FT_DBG));
 	i = 0;
 	ft_sdsctor(line = alloca(sizeof(t_sds)));
 	while (rl_histcpy(i++, line))

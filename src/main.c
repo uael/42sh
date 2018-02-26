@@ -61,7 +61,7 @@ int			main(int ac, char **av, char **envv)
 		++g_sh->av;
 		ft_exbind(0, ft_exhdl(exhdl, *g_sh->av), NULL);
 		if ((g_shfd = open(*g_sh->av, O_RDONLY, S_IRGRP | S_IRUSR)) < 0)
-			THROW(WUT);
+			ft_throw(WUT, FT_DBG);
 		else if (!access(*av, X_OK) && !ft_strendw(*g_sh->av, ".sh"))
 			return (sh_exit(EXIT_FAILURE, "Cannot execute binary file\n"));
 		else

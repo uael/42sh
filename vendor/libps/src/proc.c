@@ -94,7 +94,7 @@ int					ps_proclaunch(t_proc *proc, pid_t pgid, int *io, int fg)
 	if (proc->child)
 	{
 		ps_procdtor(proc);
-		exit(st);
+		g_fatalcb(st, NULL);
 	}
 	ft_dup2std(proc->scope, STD_FILENOS);
 	return (YEP);

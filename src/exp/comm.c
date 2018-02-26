@@ -73,7 +73,7 @@ int			sh_expcommexec(t_sds *word, t_sds *comm, t_vec *av)
 	ps_procfn(&proc, (t_proccb *)expcommchild, (t_dtor)free, comm->buf);
 	ft_memcpy(io, STD_FILENOS, 3 * sizeof(int));
 	if (pipe(fds) < 0)
-		sh_exit(THROW(WUT), NULL);
+		sh_exit(ft_throw(WUT, FT_DBG), NULL);
 	io[STDOUT_FILENO] = fds[1];
 	proc.close = fds[0];
 	proc.child = 1;

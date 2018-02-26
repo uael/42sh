@@ -14,13 +14,13 @@
 
 inline void		ft_deqctor(t_deq *self, size_t isz)
 {
-	FT_INIT(self, t_deq);
+	ft_bzero(self, sizeof(t_deq));
 	self->isz = isz;
 }
 
 inline void		ft_mapctor(t_map *map, t_hasher hasher, size_t ksz, size_t vsz)
 {
-	FT_INIT(map, t_map);
+	ft_bzero(map, sizeof(t_map));
 	map->hasher = hasher;
 	map->ksz = ksz;
 	map->vsz = vsz;
@@ -28,18 +28,18 @@ inline void		ft_mapctor(t_map *map, t_hasher hasher, size_t ksz, size_t vsz)
 
 inline void		ft_sdsctor(t_sds *self)
 {
-	FT_INIT(self, t_sds);
+	ft_bzero(self, sizeof(t_sds));
 }
 
 inline void		ft_setctor(t_set *set, t_hasher hasher, size_t ksz)
 {
-	FT_INIT(set, t_set);
+	ft_bzero(set, sizeof(t_set));
 	set->hasher = hasher;
 	set->ksz = ksz;
 }
 
 inline void		ft_vecctor(t_vec *self, size_t isz)
 {
-	FT_INIT(self, t_vec);
+	ft_bzero(self, sizeof(t_vec));
 	self->isz = isz;
 }

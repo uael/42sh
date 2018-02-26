@@ -74,7 +74,7 @@ static inline void	readproc(t_proc *p, t_sds *out)
 
 	ft_memcpy(io, STD_FILENOS, 3 * sizeof(int));
 	if (pipe(fds) < 0)
-		g_fatalcb(THROW(WUT), NULL);
+		g_fatalcb(ft_throw(WUT, FT_DBG), NULL);
 	io[STDOUT_FILENO] = fds[1];
 	p->close = fds[0];
 	p->child = 1;

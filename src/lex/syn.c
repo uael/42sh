@@ -117,12 +117,13 @@ inline size_t			sh_synbracket(t_src *s, t_deq *toks, t_tok *o, size_t i)
 			return (bracketerr(s, ERR5, o, t));
 		else if (ft_strchr(syn, t->id))
 			return (TOK_ISLFT(t->id) ? sh_synbracket(s, toks, t, i) : i);
-		else if (sh_synchk(s, &p, t))
+		else if ((p = ft_deqat(toks, i - 1)) &&
+			sh_synchk(s, &p, t = ft_deqat(toks, i)))
 			return (0);
 		else if (TOK_ISRGT(t->id))
 			return (bracketerr(s, ERR7, o, t));
 		else if (TOK_ISLFT(t->id) && !(i = sh_synbracket(s, toks, t, i)))
 			return (0);
-		else if (TOK_ISLFT(t->id))
+		else if ((t = ft_deqat(toks, i)) && TOK_ISLFT(t->id))
 			p = ft_deqat(toks, i);
 }
