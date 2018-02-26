@@ -58,8 +58,8 @@ static int		copy_match_to_glob_struct(t_match *match_list, t_glob *pglob)
 	return (GLOBUX_SUCCESS);
 }
 
-static void		glbnvctor(t_glob_env *glob_env, char const *pattern, int flags, \
-						t_glob *pglob)
+static void		glbnvctor(t_glob_env *glob_env, char const *pattern, \
+						int flags, t_glob *pglob)
 {
 	ft_bzero(glob_env, sizeof(t_glob_env));
 	glob_env->pattern = pattern;

@@ -46,8 +46,10 @@ static int			glob_find_sub_brace(t_glob_env *e, char const *comma, \
 										char const *pat, char const *pat_end)
 {
 	if (!comma)
+	{
 		return (glob_copy_pattern_and_boom(e, \
 							pat_end + 1, pat + 1, (size_t)(pat_end - pat) - 1));
+	}
 	glob_copy_pattern_and_boom(e, \
 						pat_end + 1, pat + 1, (size_t)(comma - pat) - 1);
 	return (glob_find_sub_brace(e, glob_find_comma(comma + 1, pat_end), \

@@ -16,7 +16,7 @@
 
 #include "glob_climb_tree.h"
 
-static int glob_just_copy_pattern(t_glob_env *e)
+static int	glob_just_copy_pattern(t_glob_env *e)
 {
 	if (e->match_list && !(*(e->flags) & GLOBUX_APPEND))
 		return (GLOBUX_SUCCESS);
