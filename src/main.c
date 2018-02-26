@@ -20,8 +20,24 @@ static int	usage(char const *exe_name, int error)
 	ft_putf(fd,
 		"Usage: %s [option] [script-file] [script arguments...]\n"
 		"ush options:\n"
-		"\t--help: this *useful* help message!\n",
-		exe_name);
+		"\t--help: this *useful* help message!\n"
+		"ush keymap:\n"
+		"\t<ctrl+A|home>: Go to begin of line.\n"
+		"\t<ctrl+E|end>: Go to end of line.\n"
+		"\t<ctrl+V>: Enter visual mode.\n"
+		"\t<ctrl+Y>: Yank in visual mode.\n"
+		"\t<ctrl+P>: Paste.\n"
+		"\t<ctrl+D>: Exit or delete in visual mode.\n"
+		"\t<ctrl+C>: Cancel line edition.\n"
+		"\t<ctrl+L>: Clear the screen.\n"
+		"\t<shift+[left|right]>: Move per word.\n"
+		"\t<shift+[up|down]>: Move per line.\n"
+		"\t<up>: Go up in the history.\n"
+		"\t<down>: Go down in the history.\n"
+		"\t!!: Retype the last command.\n"
+		"\t!n: Retype the n command from the begin of history.\n"
+		"\t!-n: Retype the -n command from the last command.\n"
+		"\t!name: Search for a command beginning with name.\n", exe_name);
 	return (error ? EXIT_FAILURE : EXIT_SUCCESS);
 }
 
@@ -54,7 +70,7 @@ int			main(int ac, char **av, char **envv)
 	if (ac == 1)
 		return (sh_exit(sh_run(g_shfd = STDIN_FILENO, NULL), NULL));
 	else if (!ft_strcmp(*(av + 1), "--help"))
-		return (usage(*av, NOP));
+		return (usage(*av, YEP));
 	else
 	{
 		--g_sh->ac;
