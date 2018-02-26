@@ -6,11 +6,24 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/11 13:31:59 by alucas-          ###   ########.fr       */
+/*   Updated: 2018/02/26 03:08:45 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ush.h"
+
+static int sh_help(char const *exe_name, int error)
+{
+	int fd;
+
+	fd = error ? 2 : 1;
+	write(fd, "Usage: ", 7);
+	write(fd, exe_name, ft_strlen(exe_name));
+	write(fd, " [option] [script-file...]\n" \
+		"ush options:\n" \
+		"\t--help: this *useful* help message!\n", 77);
+	return (error ? EXIT_FAILURE : EXIT_SUCCESS);
+}
 
 static int	exhdl(int rcode, void *arg)
 {
@@ -40,6 +53,8 @@ int			main(int ac, char **av, char **envv)
 	g_sh->av = av;
 	if (ac == 1)
 		return (sh_exit(sh_run(g_shfd = STDIN_FILENO, NULL), NULL));
+	else if (!ft_strcmp(*(av + 1), "--help"))
+		return (sh_help(*av, NOP));
 	else
 	{
 		--g_sh->ac;
