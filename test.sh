@@ -10,18 +10,6 @@ function padme {
   printf "%s %s" "$S" "${line:${#S}}"
 }
 
-function spinner {
-  local FRAMES='|/-\'
-  while [ ! -z "$(ps a | awk '{print $1}' | grep $1)" ];
-  do
-    printf " %c " "$FRAMES"
-    local TMP=${FRAMES#?}
-    FRAMES=${TMP}${FRAMES%"$TMP"}
-    sleep 0.2
-    printf "\b\b\b"
-  done
-}
-
 OUT=$(mktemp)
 function job {
   echo -en "$(padme "$1: $2") "

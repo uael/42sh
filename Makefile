@@ -12,14 +12,7 @@
 
 PROJECT ?= 42sh
 WFLAGS = -Werror -Wextra -Wall
-WWFLAGS = $(WFLAGS) -Wpedantic -Wshadow -Wconversion -Wcast-align \
-  -Wstrict-prototypes -Wmissing-prototypes -Wunreachable-code -Winit-self \
-  -Wmissing-declarations -Wfloat-equal -Wbad-function-cast -Wundef \
-  -Waggregate-return -Wstrict-overflow=5 -Wold-style-definition -Wpadded \
-  -Wredundant-decls -Wall -Werror -Wextra
 RCFLAGS = $(WFLAGS) -O2 -fomit-frame-pointer
-DCFLAGS = $(WFLAGS) -g3 -DDEBUG
-SCFLAGS = -fsanitize=address,undefined -ferror-limit=5 $(DCFLAGS)
 CC ?= gcc
 MAKE += -j4
 
@@ -30,13 +23,7 @@ OBJ_PATH ?= $(OBJ_DIR)/rel
 3TH_PATH = vendor
 
 LIBS = ps rl ft
-ifneq (,$(findstring dev,$(PROJECT)))
-LIB_NAME = $(addsuffix .dev, $(LIBS))
-else ifneq (,$(findstring san,$(PROJECT)))
-LIB_NAME = $(addsuffix .san, $(LIBS))
-else
 LIB_NAME = $(LIBS)
-endif
 3TH_NAME = libft librl libps
 SRC_NAME = \
 	bi.c bi/cd.c bi/echo.c bi/env.c bi/exit.c bi/export.c bi/setenv.c \
@@ -71,40 +58,13 @@ LIB = $(addprefix -l, $(LIB_NAME))
 DEP = $(OBJ:%.o=%.d)
 
 PRINTF=test $(VERBOSE)$(TRAVIS) || printf
-
-ifneq (,$(findstring dev,$(PROJECT)))
-3DE = $(shell echo "$(3TH_NAME)" | sed -E "s|([\.a-zA-Z]+)|$(3TH_PATH)/\1/\1.dev.a|g")
-else ifneq (,$(findstring san,$(PROJECT)))
-3DE = $(shell echo "$(3TH_NAME)" | sed -E "s|([\.a-zA-Z]+)|$(3TH_PATH)/\1/\1.san.a|g")
-else
 3DE = $(shell echo "$(3TH_NAME)" | sed -E "s|([\.a-zA-Z]+)|$(3TH_PATH)/\1/\1.a|g")
-endif
 
 all:
 ifneq ($(3TH_NAME),)
 	@+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) &&) true
 endif
 	@+$(MAKE) $(PROJECT) "CFLAGS = $(RCFLAGS)" "OBJ_PATH = $(OBJ_DIR)/rel"
-
-dev:
-ifneq ($(3TH_NAME),)
-	@+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) dev &&) true
-endif
-	@+$(MAKE) $(PROJECT).dev "PROJECT = $(PROJECT).dev" "CFLAGS = $(DCFLAGS)" \
-	  "OBJ_PATH = $(OBJ_DIR)/dev"
-
-san:
-ifneq ($(3TH_NAME),)
-	@+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) san &&) true
-endif
-	@+$(MAKE) $(PROJECT).san "PROJECT = $(PROJECT).san" "CFLAGS = $(SCFLAGS)" \
-	  "OBJ_PATH = $(OBJ_DIR)/san" "CC = clang"
-
-mecry:
-ifneq ($(3TH_NAME),)
-	@+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) mecry &&) true
-endif
-	@+$(MAKE) $(PROJECT) "CFLAGS = $(WWFLAGS)" "OBJ_PATH = $(OBJ_DIR)/rel"
 
 $(PROJECT): $(3DE) $(OBJ)
 	@$(CC) $(CFLAGS) $(INC) $(LNK) $(OBJ) $(LIB) -o $(PROJECT)
@@ -117,9 +77,7 @@ $(OBJ_PATH)/%.o: $(SRC_PATH)/%.c
 	@$(PRINTF) "\033[A\033[2K"
 
 clean:
-	@rm -f $(OBJ) $(DEP)
-	@rm -f $(OBJ:$(OBJ_DIR)/rel%=$(OBJ_DIR)/dev%) $(DEP:$(OBJ_DIR)/rel%=$(OBJ_DIR)/dev%)
-	@rm -f $(OBJ:$(OBJ_DIR)/rel%=$(OBJ_DIR)/san%) $(DEP:$(OBJ_DIR)/rel%=$(OBJ_DIR)/san%)
+	@rm -rf $(OBJ_DIR)
 	@$(PRINTF) "%-20s\033[32m✔\033[0m\n" "$(PROJECT): $@"
 
 fclean: clean
@@ -127,24 +85,14 @@ ifneq ($(3TH_NAME),)
 	@+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) fclean &&) true
 endif
 	@test -d $(OBJ_DIR) && find $(OBJ_DIR) -type d | sort -r | xargs rmdir || true
-	@rm -f $(PROJECT){,.san,.dev}
+	@rm -f $(PROJECT)
 	@$(PRINTF) "%-20s\033[32m✔\033[0m\n" "$(PROJECT): $@"
 
 re: clean all
 
 test: all
-	./test.sh . $(PROJECT)
-
-testdev: dev
-	./test.sh . $(PROJECT).dev
-
-testsan: san
-	./test.sh . $(PROJECT).san
-
-valgrind: dev
-	./valgrind.sh . $(PROJECT).dev
+	@./test.sh . $(PROJECT)
 
 -include $(DEP)
 
-.PHONY: all, dev, san, mecry, $(PROJECT), clean, fclean, re, test, testdev, \
-  testsan, valgrind
+.PHONY: all, dev, san, mecry, $(PROJECT), clean, fclean, re, test
