@@ -12,7 +12,7 @@
 
 PROJECT ?= 42sh
 WFLAGS = -Werror -Wextra -Wall
-RCFLAGS = $(WFLAGS) -O2 -fomit-frame-pointer
+RCFLAGS = $(WFLAGS) -O2
 CC ?= gcc
 MAKE += -j4
 

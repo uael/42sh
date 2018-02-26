@@ -128,7 +128,8 @@ inline int			sh_biread(int ac, char **av, char **env)
 	if (tcsetattr(STDIN_FILENO, TCSANOW, &term))
 		return (ft_retf(EXIT_FAILURE, "read: %e\n", errno));
 	if ((st = readloop(&ln)) || !ln.buf)
-		return (st ? st : EXIT_FAILURE);
+		return (ft_dtor(st ? st : EXIT_FAILURE, (t_dtor)ft_sdsdtor, &ln, NULL));
 	ac == i ? sh_varset("REPLY", ln.buf) : readarg(ac, av, ln.buf, i);
+	ft_sdsdtor(&ln);
 	return (YEP);
 }

@@ -116,11 +116,11 @@ inline size_t			sh_synbracket(t_src *s, t_deq *a, t_tok *o, size_t i)
 			return (bracketerr(s, ERR4, o, NULL));
 		else if (ft_strchr(syn, t->id) && previsleft(p, a))
 			return (bracketerr(s, ERR5, o, t));
-		else if (ft_strchr(syn, t->id))
+		else if (ft_strchr(syn, j = t->id))
 			return (TOK_ISLFT(t->id) ? sh_synbracket(s, a, t, i) : i);
-		else if ((p = ft_deqat(a, i - 1)) && sh_syn(s, &p, t = ft_deqat(a, i)))
+		else if ((p = ft_deqat(a, i - 1)) && sh_syn(s, &p, t))
 			return (0);
-		else if (TOK_ISRGT(j = t->id))
+		else if ((t = ft_deqat(a, i)) && TOK_ISRGT(t->id))
 			return (bracketerr(s, ERR7, o, t));
 		else if (TOK_ISLFT(j) && !(i = sh_synbracket(s, a, t, i)))
 			return (0);
