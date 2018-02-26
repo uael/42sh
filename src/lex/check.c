@@ -24,7 +24,7 @@ inline int	sh_lexcheck(t_src *s, t_deq *toks)
 	p = NULL;
 	while (i < toks->len)
 	{
-		if (sh_synchk(s, &p, t = ft_deqat(toks, i)))
+		if (sh_syn(s, &p, t = ft_deqat(toks, i)))
 			return (OUF);
 		if (TOK_ISRGT(t->id))
 			return (sh_synerr(*s->ln, *s->ln + t->pos, ERR0, sh_tokstr(t)));

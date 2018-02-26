@@ -63,7 +63,7 @@ static inline int		synchk2(t_src *s, t_tok **a, t_tok *b)
 	return (YEP);
 }
 
-inline int				sh_synchk(t_src *s, t_tok **a, t_tok *b)
+inline int				sh_syn(t_src *s, t_tok **a, t_tok *b)
 {
 	if (ft_strchr(TOKS_NOSOLO, b->id) && (!(*a) || !(TOK_ISWORD((*a)->id) ||
 		ft_strchr(TOKS_CLOSE, (*a)->id))))
@@ -99,31 +99,31 @@ static inline int		previsleft(t_tok *from, t_deq *toks)
 	return (TOK_ISLFT(from->id));
 }
 
-inline size_t			sh_synbracket(t_src *s, t_deq *toks, t_tok *o, size_t i)
+inline size_t			sh_synbracket(t_src *s, t_deq *a, t_tok *o, size_t i)
 {
 	t_tok	*t;
 	t_tok	*p;
 	char	*syn;
 	int		st;
+	uint8_t	j;
 
 	syn = g_syn[o->id];
-	p = ft_deqat(toks, i);
+	p = ft_deqat(a, i);
 	while (1)
-		if (++i == toks->len && (st = sh_lexline(s, toks, 1)))
+		if (++i == a->len && (st = sh_lexline(s, a, 1)))
 			return (st == OUF ? 0 : bracketerr(s, ERR4, o, NULL));
-		else if (!(t = ft_deqat(toks, i)))
+		else if (!(t = ft_deqat(a, i)))
 			return (bracketerr(s, ERR4, o, NULL));
-		else if (ft_strchr(syn, t->id) && previsleft(p, toks))
+		else if (ft_strchr(syn, t->id) && previsleft(p, a))
 			return (bracketerr(s, ERR5, o, t));
 		else if (ft_strchr(syn, t->id))
-			return (TOK_ISLFT(t->id) ? sh_synbracket(s, toks, t, i) : i);
-		else if ((p = ft_deqat(toks, i - 1)) &&
-			sh_synchk(s, &p, t = ft_deqat(toks, i)))
+			return (TOK_ISLFT(t->id) ? sh_synbracket(s, a, t, i) : i);
+		else if ((p = ft_deqat(a, i - 1)) && sh_syn(s, &p, t = ft_deqat(a, i)))
 			return (0);
-		else if (TOK_ISRGT(t->id))
+		else if (TOK_ISRGT(j = t->id))
 			return (bracketerr(s, ERR7, o, t));
-		else if (TOK_ISLFT(t->id) && !(i = sh_synbracket(s, toks, t, i)))
+		else if (TOK_ISLFT(j) && !(i = sh_synbracket(s, a, t, i)))
 			return (0);
-		else if ((t = ft_deqat(toks, i)) && TOK_ISLFT(t->id))
-			p = ft_deqat(toks, i);
+		else if (TOK_ISLFT(j))
+			p = ft_deqat(a, i);
 }
