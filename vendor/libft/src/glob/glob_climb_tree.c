@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 22:23:43 by mc                #+#    #+#             */
-/*   Updated: 2018/02/26 02:40:44 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/26 11:46:47 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,9 @@ static int	glob_check_file(t_glob_env *e, struct dirent *d, \
 			return (GLOBUX_NOSPACE);
 		if (!ft_memcmp(path_buf, "./", 2) && ft_memcmp(e->pattern, "./", 2))
 			path_buf += 2;
+		len = ft_strlen(path_buf);
 		if ((*(e->flags) & (GLOBUX_MARK | GLOBUX_ONLYDIR)) \
-			&& (len = ft_strlen(path_buf)) && *(path_buf + len - 1) != '/')
+				&& len && *(path_buf + len - 1) != '/')
 			ft_memcpy(path_buf + len, "/", 2);
 		if (matchctoradd(path_buf, FALSE, &e->match_list))
 			return (GLOBUX_NOSPACE);
