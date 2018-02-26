@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/14 21:56:00 by mc                #+#    #+#             */
-/*   Updated: 2018/02/22 19:04:10 by mcanal           ###   ########.fr       */
+/*   Updated: 2018/02/26 00:58:08 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,4 +119,14 @@ t_bool		glob_get_sub_pattern(char *sub_pat_buf, char const *pattern, \
 	if (*dir_end)
 		*(sub_pat_buf + len) = '\0';
 	return (TRUE);
+}
+
+void		remove_last_dir_from_path(char *path_buf)
+{
+	char	*path;
+
+	path = path_buf + ft_strlen(path_buf) - 2;
+	while (path != path_buf && *path != '/')
+		path--;
+	*(path + 1) = '\0';
 }

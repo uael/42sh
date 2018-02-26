@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/08 23:55:49 by mc                #+#    #+#             */
-/*   Updated: 2018/02/22 20:04:53 by mcanal           ###   ########.fr       */
+/*   Updated: 2018/02/26 01:11:21 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,11 +64,11 @@
 
 /*
 ** Not implemented:
-** GLOBUX_APPEND | GLOBUX_ALTDIRFUNC | GLOBUX_TILDE | GLOBUX_TILDE_CHECK
+** GLOBUX_ALTDIRFUNC | GLOBUX_TILDE | GLOBUX_TILDE_CHECK
 */
 # define FLAGS_A (GLOBUX_ERR | GLOBUX_MARK | GLOBUX_NOSORT | GLOBUX_ONLYDIR)
 # define FLAGS_B (GLOBUX_DOOFFS | GLOBUX_NOESCAPE | GLOBUX_NOCHECK)
-# define FLAGS_C (GLOBUX_PERIOD | GLOBUX_BRACE | GLOBUX_NOMAGIC)
+# define FLAGS_C (GLOBUX_PERIOD | GLOBUX_BRACE | GLOBUX_NOMAGIC | GLOBUX_APPEND)
 # define __GLOBUX_FLAGS	(FLAGS_A | FLAGS_B | FLAGS_C)
 
 /*
