@@ -6,7 +6,7 @@
 /*   By: mcanal <mc.maxcanal@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/23 17:55:44 by mcanal            #+#    #+#             */
-/*   Updated: 2018/02/26 01:13:51 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/26 02:01:07 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,14 @@ static int			glob_copy_pattern_and_boom(t_glob_env *e, \
 	ft_memcpy(brace_buf + before_size + pat_size, pat_end, after_size + 1);
 	pat_save = e->pattern;
 	e->pattern = brace_buf;
-	*(e->flags) |= GLOBUX_APPEND;
+	before_size = list_len(e->match_list);
 	glob_climb_tree(e);
+	if (before_size == list_len(e->match_list))
+	{
+		*(e->flags) |= GLOBUX_APPEND;
+		glob_climb_tree(e);
+		*(e->flags) &= ~GLOBUX_APPEND;
+	}
 	e->pattern = pat_save;
 	return (-1);
 }
