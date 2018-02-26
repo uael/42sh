@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/08 23:54:42 by mc                #+#    #+#             */
-/*   Updated: 2018/02/25 12:26:38 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/26 01:04:43 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,17 +81,6 @@ int				ft_glob(const char *pattern, int flags, t_glob *pglob)
 	{
 		matchdtor(glob_env.match_list);
 		return (ret);
-	}
-	if (!glob_env.match_list)
-	{
-		if (!(flags & GLOBUX_NOCHECK))
-		{
-			pglob->gl_flags = (pglob->gl_flags & ~GLOBUX_MAGCHAR);
-			return (GLOBUX_NOMATCH);
-		}
-		if (!(glob_env.match_list = matchctor(pattern, ft_strlen(pattern), \
-				!(flags & GLOBUX_NOESCAPE))))
-			return (GLOBUX_NOSPACE);
 	}
 	return (copy_match_to_glob_struct(glob_env.match_list, pglob));
 }

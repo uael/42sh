@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 22:23:43 by mc                #+#    #+#             */
-/*   Updated: 2018/02/25 22:50:31 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/26 01:13:37 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,13 @@
 
 #include "glob_climb_tree.h"
 
-static void	remove_last_dir_from_path(char *path_buf)
+static int jstcppttrn(t_glob_env *e)
 {
-	char	*path;
-
-	path = path_buf + ft_strlen(path_buf) - 2;
-	while (path != path_buf && *path != '/')
-		path--;
-	*(path + 1) = '\0';
+	if (e->match_list && !(*(e->flags) & GLOBUX_APPEND))
+		return (GLOBUX_SUCCESS);
+	if (!(*(e->flags) & GLOBUX_NOCHECK))
+		return (GLOBUX_NOMATCH);
+	return (matchctoradd(e->pattern, 0, &e->match_list));
 }
 
 static int	glob_pre_check_file(t_glob_env *e, struct dirent *d)
@@ -48,7 +47,7 @@ static int	glob_check_file(t_glob_env *e, struct dirent *d, \
 	{
 		if (glob_append_file_name(path_buf, d->d_name) != GLOBUX_SUCCESS)
 			return (GLOBUX_NOSPACE);
-		if (!ft_memcmp(path_buf, "./", 2) && ft_memcmp(e->pattern, "./", 3))
+		if (!ft_memcmp(path_buf, "./", 2) && ft_memcmp(e->pattern, "./", 2))
 			path_buf += 2;
 		if ((*(e->flags) & (GLOBUX_MARK | GLOBUX_ONLYDIR)) \
 			&& (len = ft_strlen(path_buf)) && *(path_buf + len - 1) != '/')
@@ -116,5 +115,7 @@ int			glob_climb_tree(t_glob_env *e)
 	if ((*(e->flags) & GLOBUX_NOMAGIC) \
 			|| !ft_strcmp("/", e->pattern) || !ft_strcmp("./", e->pattern))
 		return (matchctoradd(e->pattern, 0, &e->match_list));
-	return (depth > MAX_DEPTH ? GLOBUX_NOSPACE : glob_read_dir(e, depth, NULL));
+	if (depth > MAX_DEPTH)
+		return (GLOBUX_NOSPACE);
+	return ((depth = glob_read_dir(e, depth, NULL)) ? depth : jstcppttrn(e));
 }

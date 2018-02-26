@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 20:57:25 by mc                #+#    #+#             */
-/*   Updated: 2018/02/25 22:49:25 by mc               ###   ########.fr       */
+/*   Updated: 2018/02/26 01:11:43 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,6 +121,8 @@ int							glob_append_file_name(char *path_buf, \
 int							glob_store_dir_name(char *path_buf, \
 											char const *prev_dir, \
 											char const *new_dir);
+void						remove_last_dir_from_path(char *path_buf);
+
 
 /*
 ** in glob_cmp.c
@@ -136,7 +138,9 @@ int							show_files(int *flags, char const *pattern);
 /*
 ** in glob_finder.c
 */
-char const					*glob_find_comma(char const *pat, char const *pat_end);
-char const					*glob_find_opening_brace(char const *pat, char const *pat_start);
+char const					*glob_find_comma(char const *pat, \
+											char const *pat_end);
+char const					*glob_find_opening_brace(char const *pat, \
+													char const *pat_start);
 void						sprglbcp(char *dst, char const *path);
 #endif
