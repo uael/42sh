@@ -40,6 +40,8 @@ inline int				rl_readnotty(int fd, char **ln)
 	if (fd < 0 || fd > OPEN_MAX)
 		return (ENO_THROW(WUT, EINVAL));
 	g_in[fd].ifd = fd;
+	g_in[fd].print = 1;
+	g_in[fd].lim = -1;
 	if (g_rd[fd] > 0 && ft_ifsrd(g_in + fd, NULL, (size_t)g_rd[fd]) < 0)
 		return (WUT);
 	if ((g_rd[fd] = ft_ifschr(g_in + fd, 0, '\n', &buf)) > 0)
@@ -48,6 +50,8 @@ inline int				rl_readnotty(int fd, char **ln)
 			return (NOP);
 		g_ln.len = 0;
 		ft_sdsmpush(&g_ln, buf, (size_t)g_rd[fd]);
+		if (!ft_stris(g_ln.buf, ft_iscoolc))
+			return (ENO_THROW(WUT, EBADF));
 		*ln = g_ln.buf;
 		return (YEP);
 	}

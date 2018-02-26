@@ -21,7 +21,7 @@ typedef struct	s_ifs
 	size_t		i;
 	size_t		rd;
 	ssize_t		lim;
-	t_bool		ascii : 1;
+	t_bool		print : 1;
 	char		*buf;
 	char		stack[FT_PAGE_SIZE + 1];
 }				t_ifs;

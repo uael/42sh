@@ -89,7 +89,7 @@ inline size_t	ft_memacpy(void *dst, void const *src, size_t n)
 	s = (uint8_t const *)src;
 	while (n)
 	{
-		if (ft_isascii(*s))
+		if (ft_isprint(*s))
 		{
 			*d++ = *s++;
 			++c;

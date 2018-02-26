@@ -22,6 +22,7 @@ extern int	ft_isprint(int c);
 extern int	ft_isupper(int c);
 extern int	ft_isspace(int c);
 extern int	ft_iscntrl(int c);
+extern int	ft_iscoolc(int c);
 
 extern int	ft_tolower(int c);
 extern int	ft_toupper(int c);

@@ -58,8 +58,9 @@ static inline void	sh_init(int fd)
 	if (!(g_sh->tty = (t_bool)isatty(fd)))
 		return ;
 	rl_complete(sh_complete);
-	if ((home = sh_getenv("HOME")))
-		rl_histload(ft_pathcat(ft_strcpy(buf, home), ".ushst"));
+	if ((home = sh_getenv("HOME")) &&
+		rl_histload(ft_pathcat(ft_strcpy(buf, home), ".ushst")) < 0)
+		sh_exit(EXIT_FAILURE, "The history file `~/.ushst' seems corrupted\n");
 	while (tcgetpgrp(fd) != g_sh->pid)
 		kill(-g_sh->pid, SIGTTIN);
 	signal(SIGINT, SIG_IGN);

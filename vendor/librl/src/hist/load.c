@@ -22,7 +22,6 @@ inline int		rl_histload(char const *filename)
 	if (ft_ifsopen(&in, filename))
 		return (NOP);
 	in.lim = UINT16_MAX;
-	in.ascii = 1;
 	new = 1;
 	ln = NULL;
 	while ((sz = ft_ifschr(&in, 0, '\n', &ln)) > 0)
@@ -31,7 +30,9 @@ inline int		rl_histload(char const *filename)
 			new = 1;
 		else if (sz < UINT16_MAX)
 		{
-			new ? rl_histadd(ln, (size_t)sz) : rl_histcat(ln, (size_t)sz, 0, 0);
+			if (!ft_stris((new ? rl_histadd(ln, (size_t)sz) : rl_histcat(ln,
+				(size_t)sz, 0, 0)), ft_iscoolc))
+				return (WUT);
 			new = 0;
 		}
 		ft_ifsrd(&in, NULL, (size_t)sz);

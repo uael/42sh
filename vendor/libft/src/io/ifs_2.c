@@ -36,7 +36,7 @@ static inline ssize_t	ifsbuf(t_ifs *self, char **out)
 		self->buf = *out;
 		*out = self->buf;
 	}
-	(void)(self->ascii ? (void *)(rd = ft_memacpy(*out + left, buf, (size_t)rd))
+	(void)(self->print ? (void *)(rd = ft_memacpy(*out + left, buf, (size_t)rd))
 		: ft_memcpy(*out + left, buf, (size_t)rd));
 	self->rd = left + rd;
 	(*out)[self->rd] = '\0';
