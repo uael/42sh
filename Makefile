@@ -70,6 +70,8 @@ INC = $(addprefix -I, $(INC_PATH) $(addsuffix /include, $(3TH)))
 LIB = $(addprefix -l, $(LIB_NAME))
 DEP = $(OBJ:%.o=%.d)
 
+PRINTF=test $(VERBOSE)$(TRAVIS) || printf
+
 ifneq (,$(findstring dev,$(PROJECT)))
 3DE = $(shell echo "$(3TH_NAME)" | sed -E "s|([\.a-zA-Z]+)|$(3TH_PATH)/\1/\1.dev.a|g")
 else ifneq (,$(findstring san,$(PROJECT)))
@@ -106,19 +108,19 @@ endif
 
 $(PROJECT): $(3DE) $(OBJ)
 	$(CC) $(CFLAGS) $(INC) $(LNK) $(OBJ) $(LIB) -o $(PROJECT)
-	@printf  "%-20s\033[32m✔\033[0m\n" "$(PROJECT): exe"
+	@$(PRINTF) "%-20s\033[32m✔\033[0m\n" "$(PROJECT): exe"
 
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.c
 	mkdir -p $(shell dirname $@)
-	@printf "\r%-20s$<\n" "$(PROJECT):"
+	@$(PRINTF) "\r%-20s$<\n" "$(PROJECT):"
 	$(CC) $(CFLAGS) $(INC) -MMD -MP -c $< -o $@
-	@printf "\033[A\033[2K"
+	@$(PRINTF) "\033[A\033[2K"
 
 clean:
 	rm -f $(OBJ) $(DEP)
 	rm -f $(OBJ:$(OBJ_DIR)/rel%=$(OBJ_DIR)/dev%) $(DEP:$(OBJ_DIR)/rel%=$(OBJ_DIR)/dev%)
 	rm -f $(OBJ:$(OBJ_DIR)/rel%=$(OBJ_DIR)/san%) $(DEP:$(OBJ_DIR)/rel%=$(OBJ_DIR)/san%)
-	@printf  "%-20s\033[32m✔\033[0m\n" "$(PROJECT): $@"
+	@$(PRINTF) "%-20s\033[32m✔\033[0m\n" "$(PROJECT): $@"
 
 fclean: clean
 ifneq ($(3TH_NAME),)
@@ -126,7 +128,7 @@ ifneq ($(3TH_NAME),)
 endif
 	test -d $(OBJ_DIR) && find $(OBJ_DIR) -type d | sort -r | xargs rmdir || true
 	rm -f $(PROJECT){,.san,.dev}
-	@printf  "%-20s\033[32m✔\033[0m\n" "$(PROJECT): $@"
+	@$(PRINTF) "%-20s\033[32m✔\033[0m\n" "$(PROJECT): $@"
 
 re: clean all
 
@@ -145,7 +147,9 @@ valgrind: dev
 -include $(DEP)
 
 ifndef VERBOSE
+ ifndef TRAVIS
 .SILENT:
+ endif
 endif
 
 .PHONY: all, dev, san, mecry, $(PROJECT), clean, fclean, re, test, testdev, \

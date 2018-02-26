@@ -27,7 +27,6 @@ function job {
   echo -en "$(padme "$1: $2") "
   ($3 &> ${OUT}) &
   pid=$!
-  spinner ${pid}
   wait ${pid}
   local RET=$?
   if [[ $RET != 0 ]]; then

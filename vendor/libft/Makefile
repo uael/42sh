@@ -6,7 +6,7 @@
 #    By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/07 09:52:36 by alucas-           #+#    #+#              #
-#    Updated: 2018/02/20 12:05:01 by mc               ###   ########.fr        #
+#    Updated: 2018/02/25 13:21:54 by mc               ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -47,6 +47,12 @@ SRC_NAME = \
 	ds/map_2.c ds/set.c ds/set_2.c \
 	ex/ex.c ex/ex_2.c \
 	fs/fs.c fs/fs_2.c fs/fs_3.c fs/fs_4.c \
+	glob/globux.c glob/glob_match.c glob/glob_climb_tree.c \
+	glob/glob_util/glob_list.c glob/glob_util/glob_dir.c \
+	glob/glob_util/glob_is_magic.c glob/glob_util/glob_path.c \
+	glob/glob_util/glob_cmp.c glob/glob_util/glob_show.c \
+	glob/glob_util/glob_finder.c \
+	glob/glob_brace.c \
 	hash/hash.c hash/hash_2.c \
 	int/len.c int/str.c \
 	io/fcntl.c io/ifs.c io/ifs_2.c io/ofs.c io/ofs_2.c io/ofs_3.c io/padn.c \
@@ -59,7 +65,8 @@ SRC_NAME = \
 	mem/alloc.c \
 	str/mem.c str/mem_2.c str/str.c str/str_2.c str/str_3.c str/str_4.c \
 	str/str_5.c str/str_6.c \
-	getopt.c
+	getopt.c \
+	sort/ft_shellsort.c
 
 3TH = $(addprefix $(3TH_PATH)/, $(3TH_NAME))
 OBJ = $(addprefix $(OBJ_PATH)/, $(SRC_NAME:.c=.o))
@@ -67,6 +74,35 @@ LNK = $(addprefix -L, $(3TH))
 INC = $(addprefix -I, $(INC_PATH) $(addsuffix /include, $(3TH)))
 LIB = $(addprefix -l, $(LIB_NAME))
 DEP = $(OBJ:%.o=%.d)
+
+PRINTF=test $(VERBOSE)$(TRAVIS) || printf
+
+ifeq ($(OS), Windows_NT)
+  CCFLAGS += -D WIN32
+  ifeq ($(PROCESSOR_ARCHITECTURE), AMD64)
+    CCFLAGS += -D AMD64
+  else ifeq ($(PROCESSOR_ARCHITECTURE), x86)
+    CCFLAGS += -D IA32
+  endif
+else
+  UNAME_S = $(shell uname -s)
+  ifeq ($(UNAME_S), Linux)
+    CCFLAGS += -D LINUX
+  else ifeq ($(UNAME_S), Darwin)
+    CCFLAGS += -D OSX
+  endif
+  UNAME_P = $(shell uname -p)
+  ifeq ($(UNAME_P), unknown)
+    UNAME_P = $(shell uname -m)
+  endif
+  ifeq ($(UNAME_P), x86_64)
+    CCFLAGS += -D AMD64
+  else ifneq ($(filter %86, $(UNAME_P)), )
+    CCFLAGS += -D IA32
+  else ifneq ($(filter arm%, $(UNAME_P)), )
+    CCFLAGS += -D ARM
+  endif
+endif
 
 all:
 ifneq ($(3TH_NAME),)
@@ -97,19 +133,19 @@ endif
 $(PROJECT).a: $(OBJ)
 	ar -rc $(PROJECT).a $(OBJ)
 	ranlib $(PROJECT).a
-	@printf  "%-20s\033[32m✔\033[0m\n" "$(PROJECT): lib"
+	@$(PRINTF) "%-20s\033[32m✔\033[0m\n" "$(PROJECT): lib"
 
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.c
 	mkdir -p $(shell dirname $@)
-	@printf "\r%-20s$<\n" "$(PROJECT):"
-	$(CC) $(CFLAGS) $(INC) -MMD -MP -c $< -o $@
-	@printf "\033[A\033[2K"
+	@$(PRINTF) "\r%-20s$<\n" "$(PROJECT):"
+	$(CC) $(CFLAGS) $(CCFLAGS) $(INC) -MMD -MP -c $< -o $@
+	@$(PRINTF) "\033[A\033[2K"
 
 clean:
 	rm -f $(OBJ) $(DEP)
 	rm -f $(OBJ:$(OBJ_DIR)/rel%=$(OBJ_DIR)/dev%) $(DEP:$(OBJ_DIR)/rel%=$(OBJ_DIR)/dev%)
 	rm -f $(OBJ:$(OBJ_DIR)/rel%=$(OBJ_DIR)/san%) $(DEP:$(OBJ_DIR)/rel%=$(OBJ_DIR)/san%)
-	@printf  "%-20s\033[32m✔\033[0m\n" "$(PROJECT): $@"
+	@$(PRINTF) "%-20s\033[32m✔\033[0m\n" "$(PROJECT): $@"
 
 fclean: clean
 ifneq ($(3TH_NAME),)
@@ -117,14 +153,16 @@ ifneq ($(3TH_NAME),)
 endif
 	test -d $(OBJ_DIR) && find $(OBJ_DIR) -type d | sort -r | xargs rmdir || true
 	rm -f $(PROJECT){,.san,.dev}.a
-	@printf  "%-20s\033[32m✔\033[0m\n" "$(PROJECT): $@"
+	@$(PRINTF) "%-20s\033[32m✔\033[0m\n" "$(PROJECT): $@"
 
 re: clean all
 
 -include $(DEP)
 
 ifndef VERBOSE
+ ifndef TRAVIS
 .SILENT:
+ endif
 endif
 
 .PHONY: all, dev, san, mecry, $(PROJECT).a, clean, fclean, re
