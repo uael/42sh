@@ -13,10 +13,10 @@
 PROJECT ?= librl
 WFLAGS = -Werror -Wextra -Wall
 WWFLAGS = $(WFLAGS) -Wpedantic -Wshadow -Wconversion -Wcast-align \
--Wstrict-prototypes -Wmissing-prototypes -Wunreachable-code -Winit-self \
--Wmissing-declarations -Wfloat-equal -Wbad-function-cast -Wundef \
--Waggregate-return -Wstrict-overflow=5 -Wold-style-definition -Wpadded \
--Wredundant-decls -Wall -Werror -Wextra  #-Wcast-qual
+  -Wstrict-prototypes -Wmissing-prototypes -Wunreachable-code -Winit-self \
+  -Wmissing-declarations -Wfloat-equal -Wbad-function-cast -Wundef \
+  -Waggregate-return -Wstrict-overflow=5 -Wold-style-definition -Wpadded \
+  -Wredundant-decls -Wall -Werror -Wextra
 RCFLAGS = $(WFLAGS) -O2
 DCFLAGS = $(WFLAGS) -g3 -DDEBUG
 SCFLAGS = $(DCFLAGS) -fsanitize=address,undefined -ferror-limit=5
@@ -60,39 +60,47 @@ all:
 ifneq ($(3TH_NAME),)
 	+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) &&) true
 endif
-	+$(MAKE) $(PROJECT).a "CFLAGS = $(RCFLAGS)" "OBJ_PATH = $(OBJ_DIR)/rel"
-	@$(PRINTF) "'$(PROJECT).a' is up to date.\n"
+	@$(PRINTF) "%-20s" "$(PROJECT).a: lib"
+	+$(MAKE) -j4 $(PROJECT).a "CFLAGS = $(RCFLAGS)" "OBJ_PATH = $(OBJ_DIR)/rel"
+	@$(PRINTF) "\r\x1b[20C\x1b[0K\x1b[32m✔\x1b[0m\n"
 
 dev:
 ifneq ($(3TH_NAME),)
 	+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) dev &&) true
 endif
-	+$(MAKE) $(PROJECT).dev.a "PROJECT = $(PROJECT).dev" "CFLAGS = $(DCFLAGS)" \
+	@$(PRINTF) "%-20s" "$(PROJECT).dev: exe"
+	+$(MAKE) -j4 $(PROJECT).dev.a "PROJECT = $(PROJECT).dev" "CFLAGS = $(DCFLAGS)" \
 	  "OBJ_PATH = $(OBJ_DIR)/dev"
+	@$(PRINTF) "\r\x1b[20C\x1b[0K\x1b[32m✔\x1b[0m\n"
 
 san:
 ifneq ($(3TH_NAME),)
 	+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) san &&) true
 endif
-	+$(MAKE) $(PROJECT).san.a "PROJECT = $(PROJECT).san" "CFLAGS = $(SCFLAGS)" \
+	@$(PRINTF) "%-20s" "$(PROJECT).san: exe"
+	+$(MAKE) -j4 $(PROJECT).san.a "PROJECT = $(PROJECT).san" "CFLAGS = $(SCFLAGS)" \
 	  "OBJ_PATH = $(OBJ_DIR)/san" "CC = clang"
+	@$(PRINTF) "\r\x1b[20C\x1b[0K\x1b[32m✔\x1b[0m\n"
 
 mecry:
 ifneq ($(3TH_NAME),)
 	+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) mecry &&) true
 endif
-	+$(MAKE) $(PROJECT).a "CFLAGS = $(WWFLAGS)" "OBJ_PATH = $(OBJ_DIR)/rel"
+	@$(PRINTF) "%-20s" "$(PROJECT).a: make me cry.."
+	+$(MAKE) -j4 $(PROJECT).a "CFLAGS = $(WWFLAGS)" "OBJ_PATH = $(OBJ_DIR)/rel"
+	@$(PRINTF) "\r\x1b[20C\x1b[0K\x1b[32m✔\x1b[0m\n"
 
 $(PROJECT).a: $(OBJ)
+	@$(PRINTF) "\r\x1b[20C\x1b[0K$@"
 	ar -rc $(PROJECT).a $(OBJ)
 	ranlib $(PROJECT).a
-	@$(PRINTF) "%-20s\033[32m✔\033[0m\n" "$(PROJECT): lib"
 
-$(OBJ_PATH)/%.o: $(SRC_PATH)/%.c
-	mkdir -p $(shell dirname $@)
-	@$(PRINTF) "\r%-20s$<\n" "$(PROJECT):"
+$(OBJ_PATH)/%.o: $(SRC_PATH)/%.c | $(OBJ_PATH)
+	@$(PRINTF) "\r\x1b[20C\x1b[0K$<"
 	$(CC) $(CFLAGS) $(INC) -MMD -MP -c $< -o $@
-	@$(PRINTF) "\033[A\033[2K"
+
+$(OBJ_PATH):
+	mkdir -p $(dir $(OBJ))
 
 clean:
 	rm -f $(OBJ) $(DEP)
