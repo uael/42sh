@@ -6,7 +6,7 @@
 #    By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/07 09:52:36 by alucas-           #+#    #+#              #
-#    Updated: 2018/02/20 12:04:56 by mc               ###   ########.fr        #
+#    Updated: 2018/02/22 21:30:38 by mcanal           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,6 +21,7 @@ SRC_PATH = src
 OBJ_DIR ?= obj
 OBJ_PATH ?= $(OBJ_DIR)/rel
 3TH_PATH = vendor
+UNIT_TEST_PATH = test/unit
 
 LIBS = ps rl ft
 LIB_NAME = $(LIBS)
@@ -84,14 +85,28 @@ fclean: clean
 ifneq ($(3TH_NAME),)
 	@+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) fclean &&) true
 endif
-	@test -d $(OBJ_DIR) && find $(OBJ_DIR) -type d | sort -r | xargs rmdir || true
-	@rm -f $(PROJECT)
+	test -d $(UNIT_TEST_PATH) && $(MAKE) -C $(UNIT_TEST_PATH) fclean || true
+	test -d $(OBJ_DIR) && find $(OBJ_DIR) -type d | sort -r | xargs rmdir || true
+	rm -f $(PROJECT){,.san,.dev}
 	@$(PRINTF) "%-20s\033[32m✔\033[0m\n" "$(PROJECT): $@"
 
 re: clean all
 
 test: all
-	@./test.sh . $(PROJECT)
+	test -d $(UNIT_TEST_PATH) && $(MAKE) -C $(UNIT_TEST_PATH) || true
+	./test.sh . $(PROJECT)
+
+testdev: dev
+	test -d $(UNIT_TEST_PATH) && $(MAKE) -C $(UNIT_TEST_PATH) debug || true
+	./test.sh . $(PROJECT).dev
+
+testsan: san
+	test -d $(UNIT_TEST_PATH) && $(MAKE) -C $(UNIT_TEST_PATH) sanitize || true
+	./test.sh . $(PROJECT).san
+
+valgrind: dev
+	test -d $(UNIT_TEST_PATH) && $(MAKE) -C $(UNIT_TEST_PATH) debug || true
+	./valgrind.sh . $(PROJECT).dev
 
 -include $(DEP)
 
