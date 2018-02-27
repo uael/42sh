@@ -51,7 +51,7 @@ static int		copy_match_to_glob_struct(t_match *match_list, t_glob *pglob)
 		match_list = match_list->next;
 	}
 	*av = NULL;
-	if (!(pglob->gl_flags & GLOBUX_NOSORT))
+	if (!(pglob->gl_flags & (GLOBUX_NOSORT | GLOBUX_NOMATCH)))
 		ft_shellsort((pglob->gl_flags & GLOBUX_DOOFFS) ? \
 					pglob->gl_pathv : pglob->gl_pathv + pglob->gl_offs, \
 					pglob->gl_pathc, sizeof(char *), super_cmp);

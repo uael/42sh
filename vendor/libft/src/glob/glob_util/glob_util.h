@@ -83,7 +83,7 @@ struct						s_glob_env
 char const					*is_magic(char *magic_buf, char const *pattern, \
 								int *flags);
 char const					*is_there_a_closing_bracket(char const *pattern, \
-													int flags, char c);
+													int flags, char c, char o);
 
 /*
 ** in glob_list.c:

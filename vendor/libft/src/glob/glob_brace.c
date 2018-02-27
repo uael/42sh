@@ -64,7 +64,8 @@ static int			glob_check_brace(t_glob_env *e)
 
 	if (!(pat_start = glob_find_opening_brace(e->pattern, e->pattern)))
 		return (GLOBUX_SUCCESS);
-	if (!(pat_end = is_there_a_closing_bracket(pat_start, *(e->flags), '}')))
+	if (!(pat_end = is_there_a_closing_bracket(pat_start, *(e->flags), '}', \
+		'{')))
 		return (GLOBUX_SUCCESS);
 	if (!(comma = glob_find_comma(pat_start + 1, pat_end)))
 		return (GLOBUX_SUCCESS);

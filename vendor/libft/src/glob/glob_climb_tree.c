@@ -22,6 +22,7 @@ static int	glob_just_copy_pattern(t_glob_env *e)
 		return (GLOBUX_SUCCESS);
 	if (!(*(e->flags) & GLOBUX_NOCHECK))
 		return (GLOBUX_NOMATCH);
+	*e->flags |= GLOBUX_NOMATCH;
 	return (matchctoradd(e->pattern, TRUE, &e->match_list));
 }
 
