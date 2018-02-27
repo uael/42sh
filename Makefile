@@ -6,7 +6,7 @@
 #    By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/07 09:52:36 by alucas-           #+#    #+#              #
-#    Updated: 2018/02/22 21:30:38 by mcanal           ###   ########.fr        #
+#    Updated: 2018/02/26 15:03:03 by mc               ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -63,37 +63,36 @@ PRINTF=test $(VERBOSE)$(TRAVIS) || printf
 
 all:
 ifneq ($(3TH_NAME),)
-	@+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) &&) true
+	+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) &&) true
 endif
-	@+$(MAKE) $(PROJECT) "CFLAGS = $(RCFLAGS)" "OBJ_PATH = $(OBJ_DIR)/rel"
+	+$(MAKE) $(PROJECT) "CFLAGS = $(RCFLAGS)" "OBJ_PATH = $(OBJ_DIR)/rel"
+	@$(PRINTF) "'$(PROJECT).a' is up to date.\n"
 
 $(PROJECT): $(3DE) $(OBJ)
-	@$(CC) $(CFLAGS) $(INC) $(LNK) $(OBJ) $(LIB) -o $(PROJECT)
+	$(CC) $(CFLAGS) $(INC) $(LNK) $(OBJ) $(LIB) -o $(PROJECT)
 	@$(PRINTF) "%-20s\033[32m✔\033[0m\n" "$(PROJECT): exe"
 
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.c
-	@mkdir -p $(shell dirname $@)
+	mkdir -p $(shell dirname $@)
 	@$(PRINTF) "\r%-20s$<\n" "$(PROJECT):"
-	@$(CC) $(CFLAGS) $(INC) -MMD -MP -c $< -o $@
+	$(CC) $(CFLAGS) $(INC) -MMD -MP -c $< -o $@
 	@$(PRINTF) "\033[A\033[2K"
 
 clean:
-	@rm -rf $(OBJ_DIR)
+	rm -rf $(OBJ_DIR)
 	@$(PRINTF) "%-20s\033[32m✔\033[0m\n" "$(PROJECT): $@"
 
 fclean: clean
 ifneq ($(3TH_NAME),)
-	@+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) fclean &&) true
+	+$(foreach 3th,$(3TH_NAME),$(MAKE) -C $(3TH_PATH)/$(3th) fclean &&) true
 endif
-	test -d $(UNIT_TEST_PATH) && $(MAKE) -C $(UNIT_TEST_PATH) fclean || true
 	test -d $(OBJ_DIR) && find $(OBJ_DIR) -type d | sort -r | xargs rmdir || true
-	rm -f $(PROJECT){,.san,.dev}
+	rm -f $(PROJECT)
 	@$(PRINTF) "%-20s\033[32m✔\033[0m\n" "$(PROJECT): $@"
 
 re: clean all
 
 test: all
-	test -d $(UNIT_TEST_PATH) && $(MAKE) -C $(UNIT_TEST_PATH) || true
 	./test.sh . $(PROJECT)
 
 testdev: dev
@@ -109,5 +108,11 @@ valgrind: dev
 	./valgrind.sh . $(PROJECT).dev
 
 -include $(DEP)
+
+ifndef VERBOSE
+ ifndef TRAVIS
+.SILENT:
+ endif
+endif
 
 .PHONY: all, dev, san, mecry, $(PROJECT), clean, fclean, re, test
