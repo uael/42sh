@@ -71,6 +71,7 @@ int					sh_lex(int fd, char **it, char **ln, t_lexcb *cb)
 		}
 		if (cb(fd, &toks, src.ln))
 			g_sh->status = 1;
+		break ;
 	}
 	if (st == OUF)
 		g_sh->status = 1;
