@@ -46,14 +46,14 @@ inline void		ft_exbind(int eno, t_ex_hdl hld, t_ex_hdl *out)
 	g_eno_hdls[eno] = hld;
 }
 
-inline void		ft_ex_unregister(int eno)
+inline void		ft_exunset(int eno)
 {
 	if (eno < 0 || eno > FT_ELAST)
 		return ;
 	ft_memset(g_eno_hdls + eno, 0, sizeof(t_ex_hdl));
 }
 
-inline t_ex_hdl	*ft_ex_get(int eno)
+inline t_ex_hdl	*ft_exget(int eno)
 {
 	if (eno < 0 || eno > FT_ELAST)
 		return (NULL);

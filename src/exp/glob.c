@@ -27,7 +27,7 @@ static int	globit(t_sds *word, t_vec *av, char *it)
 
 	ft_bzero(&gbuf, sizeof(t_glob));
 	if (ft_glob(it, GLOBUX_NOCHECK | GLOBUX_BRACE, &gbuf))
-		return (THROW(WUT));
+		return (ft_throw(WUT, FT_DBG));
 	if ((g_ifs && !*g_ifs) || !av)
 	{
 		ft_sdsapd(word, gbuf.gl_pathv[0]);

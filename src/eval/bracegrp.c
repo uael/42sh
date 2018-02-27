@@ -14,16 +14,11 @@
 
 static inline int	bracegrp(t_subshell *s)
 {
-	t_scope	*sh;
 	int		st;
 
-	sh = g_sh;
-	sh_scope();
-	ft_memcpy(g_sh, sh, sizeof(t_scope));
 	g_sh->tty = 0;
 	sh_eval(-1, &s->toks, &s->ln) ? (g_sh->status = 1) : 0;
 	st = g_sh->status;
-	sh_unscope();
 	return (st);
 }
 

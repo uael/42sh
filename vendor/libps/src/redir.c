@@ -30,9 +30,9 @@ inline int		ps_redirect(t_redirs *redirs, int *scope)
 	{
 		redir = redirs->buf + i++;
 		if (redir->to < 0 && close(redir->from))
-			return (THROW(WUT));
+			return (ft_throw(WUT, FT_DBG));
 		else if (redir->to >= 0 && dup2(redir->to, redir->from) < 0)
-			return (THROW(WUT));
+			return (ft_throw(WUT, FT_DBG));
 	}
 	return (YEP);
 }

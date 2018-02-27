@@ -14,12 +14,13 @@
 # define LIBFT_EX_H
 
 # ifdef DEBUG
-#  define THROW(RCODE) ft_ex_throw(RCODE, __FUNCTION__, __LINE__)
-#  define ENO_THROW(RCODE, ENO) ft_eno_throw(RCODE, ENO, __FUNCTION__, __LINE__)
+#  define FT_FUNC __FUNCTION__
+#  define FT_LINE __LINE__
 # else
-#  define THROW(RCODE) ft_ex_throw(RCODE, NULL, 0)
-#  define ENO_THROW(RCODE, ENO) ft_eno_throw(RCODE, ENO, NULL, 0)
+#  define FT_FUNC NULL
+#  define FT_LINE 0
 # endif
+# define FT_DBG FT_FUNC,FT_LINE
 
 # define EXALL 0
 
@@ -33,9 +34,9 @@ typedef struct	s_ex_hdl
 
 extern t_ex_hdl	ft_exhdl(t_ex_cb cb, void *arg);
 extern void		ft_exbind(int eno, t_ex_hdl hld, t_ex_hdl *out);
-extern void		ft_ex_unregister(int eno);
-extern t_ex_hdl	*ft_ex_get(int eno);
-extern int		ft_ex_throw(int rcode, char const *fn, int line);
-extern int		ft_eno_throw(int rcode, int eno, char const *msg, int line);
+extern void		ft_exunset(int eno);
+extern t_ex_hdl	*ft_exget(int eno);
+extern int		ft_throw(int rcode, char const *fn, int line);
+extern int		ft_ethrow(int rcode, int eno, char const *msg, int line);
 
 #endif

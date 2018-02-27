@@ -59,5 +59,6 @@ extern char		*ft_stpcpy(char *dest, char const *src);
 extern size_t	ft_strspn(const char *s, const char *accept);
 extern size_t	ft_strcspn(const char *s, const char *reject);
 extern char		*ft_strjoin(char const *s1, char const *s2);
+extern int		ft_stris(const char *s1, int (*cb)(int c));
 
 #endif

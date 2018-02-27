@@ -26,7 +26,7 @@ inline void	ft_deqdtor(t_deq *self, t_dtor idtor)
 		}
 		free(self->buf);
 	}
-	FT_INIT(self, t_deq);
+	ft_bzero(self, sizeof(t_deq));
 }
 
 void		ft_mapdtor(t_map *self, t_dtor kdtor, t_dtor vdtor)
@@ -102,5 +102,5 @@ inline void	ft_vecdtor(t_vec *self, t_dtor idtor)
 		}
 		free(self->buf);
 	}
-	FT_INIT(self, t_vec);
+	ft_bzero(self, sizeof(t_vec));
 }

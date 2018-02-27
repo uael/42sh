@@ -21,6 +21,11 @@ static t_map	*g_funcs = &g_funcs_stack;
 
 static inline void	funcdtor(t_func *func)
 {
+	if (func->next)
+	{
+		funcdtor(func->next);
+		free(func->next);
+	}
 	free((void *)func->ln);
 	ft_deqdtor(&func->body, NULL);
 	ft_bzero(func, sizeof(t_func));
@@ -35,6 +40,7 @@ inline void			sh_funcset(char const *name, t_deq *body, char const *ln)
 {
 	uint32_t	it;
 	char		*dname;
+	t_func		*fn;
 
 	if (!body)
 	{
@@ -42,24 +48,34 @@ inline void			sh_funcset(char const *name, t_deq *body, char const *ln)
 			ft_mapdel(g_funcs, it);
 		return ;
 	}
-	if (ft_mapget(g_funcs, (void *)name, &it))
+	dname = NULL;
+	if (!ft_mapget(g_funcs, (void *)name, &it) &&
+		!ft_mapput(g_funcs, dname = ft_strdup(name), &it))
+		return (dname ? free(dname) : (void)0);
+	fn = &((t_func *)g_funcs->vals)[it];
+	while (fn->next)
+		fn = fn->next;
+	if (fn->ln)
 	{
-		funcdtor(&((t_func *)g_funcs->vals)[it]);
-		dname = ((char **)g_funcs->keys)[it];
+		ft_bzero(fn->next = ft_malloc(sizeof(t_func)), sizeof(t_func));
+		fn = fn->next;
 	}
-	else if (!ft_mapput(g_funcs, dname = ft_strdup(name), &it))
-		return (free(dname));
-	((char **)g_funcs->vals)[it] = dname;
-	((t_func *)g_funcs->vals)[it].body = *body;
-	((t_func *)g_funcs->vals)[it].ln = ft_strdup(ln);
+	fn->body = *body;
+	fn->ln = ft_strdup(ln);
 	ft_bzero(body, sizeof(t_deq));
 }
 
 inline t_func		*sh_funcget(char const *name)
 {
 	uint32_t	it;
+	t_func		*fn;
 
 	if (ft_mapget(g_funcs, (void *)name, &it))
-		return (&((t_func *)g_funcs->vals)[it]);
+	{
+		fn = &((t_func *)g_funcs->vals)[it];
+		while (fn->next)
+			fn = fn->next;
+		return (fn);
+	}
 	return (NULL);
 }

@@ -44,7 +44,7 @@ inline char		*rl_histcat(char const *ln, size_t len, char c, char **out)
 	size_t		middle;
 
 	if (!g_hist_len)
-		ENO_THROW(WUT, EINVAL);
+		ft_ethrow(WUT, EINVAL, FT_DBG);
 	histln = g_hist + g_hist_len - 1;
 	if (c < 0)
 	{

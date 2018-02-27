@@ -25,5 +25,5 @@ inline int		ps_jobmark(t_job *job, pid_t pid, int status)
 				return (ps_procmark(proc, status));
 		return (WUT);
 	}
-	return ((pid == 0 || errno == ECHILD) ? WUT : THROW(WUT));
+	return ((pid == 0 || errno == ECHILD) ? WUT : ft_throw(WUT, FT_DBG));
 }

@@ -23,7 +23,7 @@ int				rl_screenpos(uint16_t *row, uint16_t *col)
 
 	i = 0;
 	if (ft_write(STDIN_FILENO, "\x1b[6n", 4) != 4)
-		return (THROW(WUT));
+		return (ft_throw(WUT, FT_DBG));
 	rd = 0;
 	ft_memset(buf, 0, 64);
 	while (i < 64)
@@ -49,7 +49,7 @@ int				rl_screensize(uint16_t *h, uint16_t *w)
 	struct winsize ws;
 
 	if (ioctl(STDIN_FILENO, TIOCGWINSZ, &ws))
-		return (THROW(WUT));
+		return (ft_throw(WUT, FT_DBG));
 	if (h)
 		*h = ws.ws_row;
 	if (w)

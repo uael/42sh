@@ -25,7 +25,7 @@ inline char		*sh_redirword(t_proc *proc, char *dst, t_deq *toks, char *ln)
 	tok = sh_tokpeek(toks);
 	ft_sdsctor(&word);
 	if (sh_expword(&word, ln + tok->pos, tok->len) ||
-		word.len >= PATH_MAX || !word.len)
+		word.len >= PATH_MAX - 10 || !word.len)
 	{
 		ft_sdsdtor(&word);
 		ps_procerr(proc, ft_strcat(ft_strncpy(buf, ln + tok->pos,
@@ -50,8 +50,8 @@ inline int		sh_evalampr(t_proc *proc, t_deq *toks, char **ln)
 		return (YEP);
 	if ((fd = open(buf, O_WRONLY | O_CREAT | O_TRUNC, 0644)) < 0)
 	{
-		ps_procerr(proc, ft_strcat(ft_strcat(buf, ": "),
-			ft_strerr(errno)), *ln, tok->pos);
+		ps_procerr(proc, ft_strcat(ft_strcat(ft_strcat(buf, ": "),
+			ft_strerr(errno)), "\n"), *ln, tok->pos);
 		return (YEP);
 	}
 	*(t_redir *)ft_vecpush((t_vec *)&proc->redirs) =

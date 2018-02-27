@@ -20,8 +20,6 @@
 # include "cty.h"
 # include "mem.h"
 
-# define FT_INIT(S, TY) ft_memset(S, 0, sizeof(TY))
-
 # define YEP (0)
 # define NOP (1)
 # define OUF (2)

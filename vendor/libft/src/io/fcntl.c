@@ -18,7 +18,7 @@ inline ssize_t	ft_read(int fd, void *buf, size_t sz)
 
 	while ((rd = read(fd, buf, sz)) < 0)
 		if (errno != EINTR && errno != EAGAIN)
-			return (THROW(WUT));
+			return (ft_throw(WUT, FT_DBG));
 	return (rd);
 }
 
@@ -28,7 +28,7 @@ inline ssize_t	ft_write(int fd, void const *buf, size_t sz)
 
 	while ((wr = write(fd, buf, sz)) < 0)
 		if (errno != EINTR && errno != EAGAIN)
-			return (THROW(WUT));
+			return (ft_throw(WUT, FT_DBG));
 	return (wr);
 }
 

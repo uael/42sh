@@ -27,7 +27,7 @@ inline void				ft_ifsdtor(t_ifs *self)
 {
 	if (self->buf)
 		free(self->buf);
-	FT_INIT(self, t_ifs);
+	ft_bzero(self, sizeof(t_ifs));
 }
 
 inline int				ft_ifsopen(t_ifs *self, char const *filename)

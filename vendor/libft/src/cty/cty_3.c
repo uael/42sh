@@ -20,6 +20,11 @@ inline int	ft_iscntrl(int c)
 	return (c < 32 || c == 127);
 }
 
+inline int	ft_iscoolc(int c)
+{
+	return (ft_isspace(c) || ft_isprint(c));
+}
+
 inline char	*ft_toprint(int c, char *buf)
 {
 	if (!buf)

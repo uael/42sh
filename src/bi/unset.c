@@ -37,7 +37,7 @@ inline int			sh_biunset(int ac, char **av)
 {
 	ft_exbind(EXALL, ft_exhdl(unsetexhdl, NULL), NULL);
 	if (ac == 1)
-		return (ENO_THROW(EXIT_FAILURE, ENOARG));
+		return (ft_ethrow(EXIT_FAILURE, ENOARG, FT_DBG));
 	while (*++av)
 	{
 		ft_exbind(EXALL, ft_exhdl(unsetexhdl, *av), NULL);

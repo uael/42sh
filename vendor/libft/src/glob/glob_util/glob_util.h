@@ -88,7 +88,7 @@ char const					*is_there_a_closing_bracket(char const *pattern, \
 /*
 ** in glob_list.c:
 */
-t_match						*matchctor(char const *path, size_t len, int);
+t_match						*matchctor(char const *path, size_t len, int esc);
 void						matchdtor(t_match *match);
 void						add_match_to_list(t_match *match, \
 											t_match **match_list);
@@ -122,7 +122,6 @@ int							glob_store_dir_name(char *path_buf, \
 											char const *prev_dir, \
 											char const *new_dir);
 void						remove_last_dir_from_path(char *path_buf);
-
 
 /*
 ** in glob_cmp.c

@@ -32,3 +32,12 @@ mc () {
 }
 mc
 mc run
+
+dupscope () {
+  echo "dup me plzzzz";
+  dupscope () {
+    echo dupped;
+  }
+  dupscope
+}
+dupscope
