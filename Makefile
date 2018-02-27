@@ -21,6 +21,7 @@ SRC_PATH = src
 OBJ_DIR ?= obj
 OBJ_PATH ?= $(OBJ_DIR)/rel
 3TH_PATH = vendor
+UNIT_TEST_PATH = test/unit
 
 LIBS = ps rl ft
 LIB_NAME = $(LIBS)
@@ -93,6 +94,18 @@ re: clean all
 
 test: all
 	./test.sh . $(PROJECT)
+
+testdev: dev
+	test -d $(UNIT_TEST_PATH) && $(MAKE) -C $(UNIT_TEST_PATH) debug || true
+	./test.sh . $(PROJECT).dev
+
+testsan: san
+	test -d $(UNIT_TEST_PATH) && $(MAKE) -C $(UNIT_TEST_PATH) sanitize || true
+	./test.sh . $(PROJECT).san
+
+valgrind: dev
+	test -d $(UNIT_TEST_PATH) && $(MAKE) -C $(UNIT_TEST_PATH) debug || true
+	./valgrind.sh . $(PROJECT).dev
 
 -include $(DEP)
 

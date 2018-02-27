@@ -1,0 +1,225 @@
+#******************************************************************************#
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: mcanal <mcanal@student.42.fr>              +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2014/11/29 13:16:03 by mcanal            #+#    #+#              #
+#    Updated: 2018/02/14 16:23:45 by mc               ###   ########.fr        #
+#                                                                              #
+#******************************************************************************#
+
+##
+## CUSTOM CONFIG
+##
+
+# name of the binary to make
+NAME =		flextest3000
+
+# file-names of the sources
+SRCS =		main.c		\
+			test_env.c	\
+			test_glob.c	\
+			test_glob_match.c
+
+# folder-names of the sources
+VPATH =		src						src/glob
+
+# where is the tested project?
+ROOT_DIR =	../..
+
+# libft
+LFT_DIR =	$(ROOT_DIR)/vendor/libft
+LFT_I_DIR = -I$(LFT_DIR)/include
+LFT =		$(LFT_DIR)/libft.a
+LFT_LIB =	-L$(LFT_DIR) -lft
+
+# librl
+LRL_DIR =	$(ROOT_DIR)/vendor/librl
+LRL_I_DIR = -I$(LRL_DIR)/include
+LRL =		$(LRL_DIR)/librl.a
+LRL_LIB =	-L$(LRL_DIR) -lrl
+
+# libps
+LPS_DIR =	$(ROOT_DIR)/vendor/libps
+LPS_I_DIR = -I$(LPS_DIR)/include
+LPS =		$(LPS_DIR)/libps.a
+LPS_LIB =	-L$(LPS_DIR) -lps
+
+# minunit "framework"
+MIN_DIR =	minunit
+MIN_I_DIR = -I$(MIN_DIR)
+MIN =		$(MIN_DIR)/minunit.h
+MIN_LIB =
+
+# folder-names containing headers files (prefix them with "-I")
+I_DIR =		-Iinclude	-I$(ROOT_DIR)/include	$(MIN_I_DIR)	$(LFT_I_DIR)	$(LRL_I_DIR)	$(LPS_I_DIR)
+
+# extra libraries needed for linking
+# LIBS =		$(LFT_LIB)		$(LRL_LIB)		$(LPS_LIB)		$(MIN_LIB)		-lm
+LIBS =		$(LFT)		$(LRL)		$(LPS)	-lm
+
+
+
+##
+## GLOBAL VARIABLES
+##
+
+# folder used to store all compilations sub-products (.o and .d mostly)
+O_DIR =		obj
+OBJS =		$(SRCS:%.c=$(O_DIR)/%.o)
+DEPS =		$(OBJS:%.o=%.d)
+
+
+TEST_O_DIR = $(ROOT_DIR)/obj/rel
+TEST_OBJS =	$(shell find $(TEST_O_DIR) -name \*.o 2>/dev/null | grep -v main) #TODO
+TEST_INCS =	$(shell find $(ROOT_DIR)/{include,vendor} -name \*.h 2>/dev/null | sed -E "s|(.*)/.*\.h|-I\1|" | sort | uniq) #fuck
+
+# specify flags for commands used in the following rules
+RM =		rm -f
+RMDIR =		rmdir -p
+MKDIR =		mkdir -p
+MAKE =		make
+MAKEFLAGS =	-j
+CC =		$(shell clang --version >/dev/null 2>&1 && echo clang || echo gcc)
+CFLAGS =	-Wall -Wextra -Werror -O2
+CPPFLAGS =
+LDFLAGS =
+LDLIBS =	$(LIBS)
+
+# guess os and architecture
+ifeq ($(OS), Windows_NT)
+  CPPFLAGS += -D WIN32
+  ifeq ($(PROCESSOR_ARCHITECTURE), AMD64)
+    CPPFLAGS += -D AMD64
+  else ifeq ($(PROCESSOR_ARCHITECTURE), x86)
+    CPPFLAGS += -D IA32
+  endif
+else
+  UNAME_S = $(shell uname -s)
+  ifeq ($(UNAME_S), Linux)
+    ECHO = echo -e
+    CPPFLAGS += -D LINUX
+    LDLIBS = -Wl,--whole-archive $(LIBS) -Wl,--no-whole-archive
+	LDFLAGS = -Wl,--allow-multiple-definition
+  else ifeq ($(UNAME_S), Darwin)
+    ECHO = echo
+    CPPFLAGS += -D OSX
+    LDLIBS = -Wl,-all_load $(LIBS) -Wl
+  endif
+  UNAME_P = $(shell uname -p)
+  ifeq ($(UNAME_P), unknown)
+    UNAME_P = $(shell uname -m)
+  endif
+  ifeq ($(UNAME_P), x86_64)
+    CPPFLAGS += -D AMD64
+  else ifneq ($(filter %86, $(UNAME_P)), )
+    CPPFLAGS += -D IA32
+  else ifneq ($(filter arm%, $(UNAME_P)), )
+    CPPFLAGS += -D ARM
+  endif
+endif
+
+# some colors for pretty printing
+WHITE =		\033[37;01m
+RED =		\033[31;01m
+GREEN =		\033[32;01m
+YELLOW =	\033[33;01m
+BLUE =		\033[34;01m
+BASIC =		\033[0m
+
+# default to silent Makefile, but you can run ´VERBOSE=t make´
+ifdef VERBOSE
+CPPFLAGS += -D VERBOSE
+else
+.SILENT:
+endif
+
+# just to avoid conflicts between rules and files/folders names
+.PHONY: all debug sanitize me_cry re clean fclean mrproper
+
+
+
+##
+## PUBLIC RULES
+##
+
+# classic build
+all: $(O_DIR)
+#	$(MAKE) -C $(ROOT_DIR) $(FLAGS)
+	$(MAKE) $(NAME) $(FLAGS)
+	./$(NAME)
+
+# build for gdb/valgrind debugging
+debug: FLAGS = \
+CFLAGS="-D DEBUG -g -ggdb" \
+LFT=$(LFT:.a=.dev.a) LRL=$(LRL:.a=.dev.a) LPS=$(LPS:.a=.dev.a) \
+TEST_O_DIR=$(TEST_O_DIR:rel=dev)
+debug: fclean all
+
+# build for clang runtime debugging (fsanitize)
+sanitize: FLAGS = \
+CFLAGS="-D DEBUG -g -ggdb -fsanitize=address,undefined -ferror-limit=5" \
+LFT=$(LFT:.a=.san.a) LRL=$(LRL:.a=.san.a) LPS=$(LPS:.a=.san.a) \
+TEST_O_DIR=$(TEST_O_DIR:rel=san)
+sanitize: fclean all
+
+# masochist build
+me_cry: FLAGS = \
+CFLAGS="-Wpedantic -Wshadow -Wconversion -Wcast-align \
+-Wstrict-prototypes -Wmissing-prototypes -Wunreachable-code -Winit-self \
+-Wmissing-declarations -Wfloat-equal -Wbad-function-cast -Wundef \
+-Waggregate-return -Wstrict-overflow=5 -Wold-style-definition  \
+-Wredundant-decls -Wall -Werror -Wextra"  #-Wcast-qual -Wpadded
+me_cry: fclean all
+
+# clean build and recompile
+re: fclean all
+
+# remove all generated .o and .d
+clean:
+	$(RM) $(OBJS)
+	$(RM) $(DEPS)
+
+# remove the generated binary, and all .o and .d
+fclean: clean
+	$(RM) $(NAME)
+
+# just clean everything this Makefile could have generated
+mrproper: fclean $(O_DIR)
+	$(RMDIR) $(O_DIR)
+	$(MAKE) -C $(ROOT_DIR) fclean
+
+
+
+##
+## PRIVATE RULES
+##
+
+# read dependencies list generated by -MMD flag
+-include $(DEPS)
+
+# create binary (link)
+$(NAME): $(OBJS) $(LFT) $(LRL) $(LPS) $(MIN) $(TEST_OBJS)
+ifndef VERBOSE
+	@$(ECHO) "$(BLUE)$(OBJS) $(TEST_OBJS)$(WHITE)->$(RED) $@ $(BASIC)"
+endif
+	$(CC) $(CFLAGS) $(I_DIR) $(TEST_INCS) $(OBJS) $(TEST_OBJS) $(LDLIBS) -o $@ $(LDFLAGS)
+ifndef VERBOSE
+	@$(ECHO) "$(WHITE)cflags:$(BASIC) $(CFLAGS)"
+	@$(ECHO) "$(WHITE)ccpflags:$(BASIC) $(CPPFLAGS)"
+	@$(ECHO) "$(WHITE)libs:$(BASIC) $(LIBS)"
+	@$(ECHO) "$(WHITE)compi:$(BASIC) $(CC)"
+endif
+
+# create object files (compile)
+$(O_DIR)/%.o: %.c
+ifndef VERBOSE
+	@$(ECHO) "$(WHITE)$<\t->$(BLUE) $@ $(BASIC)"
+endif
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(I_DIR) $(TEST_INCS) -MMD -c $< -o $@
+
+# create directory for compilation sub-products
+$(O_DIR):
+	$(MKDIR) $(O_DIR)
