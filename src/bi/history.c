@@ -14,26 +14,7 @@
 #include "ush/env.h"
 #include "ush/shell.h"
 
-enum 				u_opt
-{
-	HISTORY_C = 1 << 1,
-	HISTORY_D = 1 << 2,
-	HISTORY_W = 1 << 3,
-	HISTORY_A = 1 << 4,
-	HISTORY_R =  1 << 5,
-	HISTORY_P = 1 << 6,
-	HISTORY_S = 1 << 7
-};
-
-typedef	struct		s_opt
-{
-	uint8_t flags;
-	uint8_t offset;
-	char 	*filename;
-	char 	*arg;
-}					t_opt;
-
-static inline void	optinit(t_opt *opts)
+static inline void	optinit(t_histopt *opts)
 {
 	opts->flags = 0;
 	opts->offset = 0;
@@ -41,7 +22,7 @@ static inline void	optinit(t_opt *opts)
 	opts->arg = NULL;
 }
 
-static inline int	histparse(int ac, char *av[], t_opt *opts)
+static inline int	histparse(int ac, char *av[], t_histopt *opts)
 {
 	int		opt;
 
@@ -69,9 +50,9 @@ static inline int	histparse(int ac, char *av[], t_opt *opts)
 
 inline int			sh_bihistory(int ac, char **av, char **env)
 {
-	char 	*home;
-	char	buf[PATH_MAX];
-	t_opt	opt;
+	char		*home;
+	char		buf[PATH_MAX];
+	t_histopt	opt;
 
 	(void)env;
 	if (!g_sh->tty || histparse(ac, av, &opt) < 0)
@@ -81,15 +62,11 @@ inline int			sh_bihistory(int ac, char **av, char **env)
 	else if (opt.offset && (opt.flags & HISTORY_D))
 		rl_histdel(opt.offset);
 	else if (opt.filename && ((opt.flags & HISTORY_W) || opt.flags & HISTORY_A))
-	{
-		if ((home = sh_getenv("HOME")))
-			rl_histsave(ft_pathcat(ft_strcpy(buf, home), opt.filename));
-	}
+		(home = sh_getenv("HOME")) ? rl_histsave(ft_pathcat(ft_strcpy(buf,
+		home), opt.filename)) : 0;
 	else if (opt.filename && (opt.flags & HISTORY_R))
-	{
-		if ((home = sh_getenv("HOME")))
-			rl_histload(ft_pathcat(ft_strcpy(buf, home), opt.filename));
-	}
+		(home = sh_getenv("HOME")) ? rl_histload(ft_pathcat(ft_strcpy(buf,
+		home), opt.filename)) : 0;
 	else if (ac == 1)
 		rl_histdump();
 	return (EXIT_SUCCESS);
