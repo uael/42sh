@@ -53,6 +53,7 @@ inline int			sh_bihistory(int ac, char **av, char **env)
 	char		*home;
 	char		buf[PATH_MAX];
 	t_histopt	opt;
+	size_t		len;
 
 	(void)env;
 	if (!g_sh->tty || histparse(ac, av, &opt) < 0)
@@ -67,6 +68,9 @@ inline int			sh_bihistory(int ac, char **av, char **env)
 	else if (opt.filename && (opt.flags & HISTORY_R))
 		(home = sh_getenv("HOME")) ? rl_histload(ft_pathcat(ft_strcpy(buf,
 		home), opt.filename)) : 0;
+	else if (opt.arg && (opt.flags & HISTORY_S) && (len = strlen(opt.arg)) &&
+		(opt.arg[len] = '\n'))
+		rl_histadd(opt.arg, len + 1);
 	else if (ac == 1)
 		rl_histdump();
 	return (EXIT_SUCCESS);
