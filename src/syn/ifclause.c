@@ -1,38 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   eval/command.c                                     :+:      :+:    :+:   */
+/*   syn/check.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2018/01/06 11:10:01 by alucas-          ###   ########.fr       */
+/*   Updated: 2018/01/22 12:51:28 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ush/eval.h"
+#include "ush/syn.h"
 
-inline int			sh_evalcmd(t_proc *proc, int fd, t_deq *toks, char **ln)
+inline int	sh_synifclause(t_src *s, t_deq *toks, size_t *idx)
 {
-	t_tok	*tok;
 	int		st;
+	t_tok	*tok;
 
-	if (!(tok = sh_tokpeek(toks)))
-		return (NOP);
-	if (tok->id == TOK_FUNCTION)
-		return (sh_evalfuncdef(proc, fd, toks, ln));
-	if (!(st = sh_evalcompound(proc, fd, toks, ln)))
+	if ((st = sh_syncompoundlist(s, toks, idx,
+		(char const[]){TOK_THEN, '\0'})))
+		return (st);
+	++*idx;
+	while (1)
 	{
-		while ((tok = sh_tokpeek(toks)))
-			if (sh_tokis(tok, TOKS_REDIR))
-			{
-				if ((st = sh_evalredir(proc, toks, ln)))
-					return (st);
-			}
-			else
-				return (YEP);
+		if ((st = sh_syncompoundlist(s, toks, idx,
+			(char const[]){TOK_ELIF, TOK_ELSE, TOK_FI, '\0'})))
+			return (st);
+		tok = ft_deqat(toks, (*idx)++);
+		if (tok->id == TOK_FI)
+			return (YEP);
+		if (tok->id == TOK_ELSE)
+			break ;
 	}
-	else if (sh_tokis(tok, TOKS_REDIR | TOKS_WORD))
-		return (sh_evalsimple(proc, fd, toks, ln));
-	return (st);
+	if ((st = sh_syncompoundlist(s, toks, idx,
+		(char const[]){TOK_FI, '\0'})))
+		return (st);
+	++*idx;
+	return (YEP);
 }

@@ -1,28 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ush.h                                              :+:      :+:    :+:   */
+/*   syn/check.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2018/02/09 19:27:50 by mc               ###   ########.fr       */
+/*   Updated: 2018/01/22 12:51:28 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef USH_H
-# define USH_H
+#include "ush/syn.h"
 
-# include "ush/bi.h"
-# include "ush/env.h"
-# include "ush/err.h"
-# include "ush/lex.h"
-# include "ush/eval.h"
-# include "ush/exp.h"
-# include "ush/func.h"
-# include "ush/shell.h"
-# include "ush/syn.h"
-# include "ush/tok.h"
-# include "ush/var.h"
+inline int	sh_synlist(t_src *s, t_deq *toks, size_t *idx)
+{
+	int		st;
+	t_tok	*tok;
 
-#endif
+	if ((st = sh_synandor(s, toks, idx)))
+		return (st);
+	while (*idx < toks->len)
+	{
+		tok = ft_deqat(toks, *idx);
+		if (tok->id != '&' && tok->id != ';')
+			return (YEP);
+		++*idx;
+		if ((st = sh_synandor(s, toks, idx)))
+			return (st == NOP ? YEP : st);
+	}
+	return (YEP);
+}

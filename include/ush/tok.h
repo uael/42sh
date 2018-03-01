@@ -23,6 +23,23 @@
 # define ISWEOL(IT) (*(IT) == '\r' && *((IT) + 1) == '\n')
 # define ISEOL(IT) (ISREOL(IT) || ISWEOL(IT))
 
+
+# define TOK_ISWORD(I) ((I)==TOK_WORD)
+# define TOK_ISEND(ID) ((ID)==TOK_EOL||(ID)==TOK_END)
+
+# define LEXE(ST, FD) ((ST) < 0 || (FD) < 0 || !g_sh->tty)
+
+
+#define TOKS_REDIR (1 << 0)
+#define TOKS_WORD (1 << 1)
+#define TOKS_END (1 << 2)
+#define TOKS_LEFT (1 << 3)
+#define TOKS_RIGHT (1 << 4)
+#define TOKS_IDENT (1 << 5)
+#define TOKS_POSTFIX (1 << 6)
+#define TOKS_PREFIX (1 << 7)
+#define TOKS_OPERATOR (1 << 8)
+
 enum			e_tok
 {
 	TOK_END = '\0',
@@ -37,7 +54,6 @@ enum			e_tok
 	TOK_LAND,
 	TOK_LOR,
 	TOK_WORD,
-	TOK_BANG,
 	TOK_FI,
 	TOK_DONE,
 	TOK_DRBRA,
@@ -49,6 +65,7 @@ enum			e_tok
 	TOK_WHILE,
 	TOK_DLBRA,
 	TOK_FUNCTION,
+	TOK_BANG = '!',
 	TOK_AMP = '&',
 	TOK_LPAR = '(',
 	TOK_RPAR = ')',
@@ -68,9 +85,10 @@ typedef struct	s_tok
 	uint8_t		padding[3];
 }				t_tok;
 
+extern t_bool	sh_tokidis(uint8_t id, uint16_t flags);
+extern t_bool	sh_tokis(t_tok *tok, uint16_t flags);
 extern char		*sh_tokstr(t_tok *tok);
 extern t_tok	*sh_tokpeek(t_deq *toks);
 extern t_tok	*sh_toknext(t_deq *toks);
-extern t_tok	*sh_tokpos(t_tok *tok, char const *it, char const *ln);
 
 #endif

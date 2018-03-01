@@ -15,31 +15,6 @@
 
 # include "tok.h"
 
-# define TOK_ISREDIR_1(ID) ((ID)==TOK_RIN||(ID)==TOK_ROUT)
-# define TOK_ISREDIR_2(ID) ((ID)!=TOK_EOL&&((ID)>=TOK_HEREDOC&&(ID)<=TOK_AMPR))
-# define TOK_ISREDIR(ID) (TOK_ISREDIR_1(ID)||TOK_ISREDIR_2(ID))
-# define TOK_ISWORD(I) ((I)==TOK_WORD)
-# define TOK_ISEND(ID) ((ID)==TOK_EOL||(ID)==TOK_END)
-# define TOK_ISCMDM(ID) (TOK_ISWORD(ID)||TOK_ISREDIR(ID)||(ID)==TOK_DLBRA)
-# define TOK_ISLFT(ID) ((ID)=='('||(ID)=='{'||((ID)>=TOK_THEN&&(ID)<=TOK_DLBRA))
-# define TOK_ISRGT(ID) ((ID)==')'||(ID)=='}'||((ID)>=TOK_FI&&(ID)<=TOK_ELSE))
-# define TOK_ISCMPD(ID) ((ID)=='('||(ID)=='{'||((ID)>=TOK_IF&&(ID)<=TOK_WHILE))
-
-# define LEXE(ST, FD) ((ST) < 0 || (FD) < 0 || !g_sh->tty)
-# define PAT(...) ((char []){__VA_ARGS__,'\0'})
-
-# define TOKC_SEP ';','&'
-# define TOKC_LOG TOK_LAND,TOK_LOR
-# define TOKC_LFT1 '(',TOK_DLBRA,TOK_IF,TOK_ELSE,TOK_ELIF,TOK_THEN
-# define TOKC_LFT TOKC_LFT1,TOK_WHILE,TOK_DO
-# define TOKC_RGT ')',TOK_DRBRA,TOK_FI,TOK_DONE
-
-# define TOKS_NOSOLO ((const char *)PAT(TOKC_SEP,'|',TOKC_LOG))
-# define TOKS_RVAL ((const char *)PAT('|',TOKC_LOG,TOK_BANG))
-# define TOKS_OPEN ((const char*)PAT(TOKC_LFT))
-# define TOKS_CLOSE ((const char*)PAT(TOKC_RGT))
-# define TOKS_OPENPRV ((const char*)PAT(TOKC_LFT,TOKC_SEP,'|','\n'))
-
 typedef struct	s_src
 {
 	int			fd;

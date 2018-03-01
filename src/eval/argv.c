@@ -50,7 +50,7 @@ static inline int	makeargv(t_proc *proc, t_vec *av, t_deq *toks, char **ln)
 			av ? sh_expwords(av, *ln + tok->pos, tok->len) : 0;
 			tok = sh_toknext(toks);
 		}
-		else if (TOK_ISREDIR(tok->id))
+		else if (sh_tokis(tok, TOKS_REDIR))
 		{
 			if ((st = sh_evalredir(proc, toks, ln)))
 				return (st);

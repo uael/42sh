@@ -46,15 +46,15 @@ inline int			sh_evalsimple(t_proc *proc, int fd, t_deq *toks, char **ln)
 	if (tok && tok->id == TOK_WORD)
 		sh_evalassign(tok, toks, &vars, *ln);
 	tok = sh_tokpeek(toks);
-	while (tok && TOK_ISREDIR(tok->id))
+	while (tok && sh_tokis(tok, TOKS_REDIR))
 		if (sh_evalredir(proc, toks, ln) == OUF)
 			return (simpledone(OUF, &vars));
 		else
 			tok = sh_tokpeek(toks);
 	if (proc->kind == PROC_ERR)
-		while (tok && TOK_ISCMDM(tok->id))
+		while (tok && sh_tokis(tok, TOKS_REDIR | TOKS_WORD))
 			tok = sh_toknext(toks);
-	else if (tok && TOK_ISCMDM(tok->id))
+	else if (tok && sh_tokis(tok, TOKS_REDIR | TOKS_WORD))
 		return (simpledone(sh_evalargv(proc, &vars, toks, ln), &vars));
 	return (evalexport(&vars));
 }

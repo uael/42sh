@@ -12,43 +12,25 @@
 
 #include "ush/eval.h"
 
-static inline int	bracegrp(t_subshell *s)
-{
-	int		st;
-
-	g_sh->tty = 0;
-	sh_eval(-1, &s->toks, &s->ln) ? (g_sh->status = 1) : 0;
-	st = g_sh->status;
-	return (st);
-}
-
-static inline void	bracegrpdtor(t_subshell *s)
-{
-	ft_deqdtor(&s->toks, NULL);
-	free(s->ln);
-	free(s);
-}
-
 inline int			sh_evalbracegrp(t_proc *prc, int fd, t_deq *toks, char **ln)
 {
-	int			stack;
-	t_subshell	*sh;
 	t_tok		*tok;
 
 	(void)fd;
-	ft_deqctor(&(sh = ft_malloc(sizeof(t_subshell)))->toks, sizeof(t_tok));
-	ps_procfn(prc, (t_proccb *)bracegrp, (t_dtor)bracegrpdtor, sh);
-	stack = 0;
-	while ((tok = sh_toknext(toks))->id != '}' || stack)
+	(void)prc;
+	sh_toknext(toks);
+	while (1)
 	{
-		if (tok->id == '{')
-			++stack;
-		else if (tok->id == '}')
-			--stack;
-		*(t_tok *)ft_deqpush(&sh->toks) = *tok;
+		while ((tok = sh_tokpeek(toks)) && tok->id == '\n')
+			sh_toknext(toks);
+		sh_evallist(fd, toks, ln) ? 0 : (g_sh->status = 1);
+		while ((tok = sh_tokpeek(toks)) && tok->id == '\n')
+			sh_toknext(toks);
+		if (!(tok = sh_tokpeek(toks)))
+			return (NOP);
+		if (tok->id == '}')
+			break ;
 	}
 	sh_toknext(toks);
-	(*(t_tok *)ft_deqpush(&sh->toks)).id = TOK_END;
-	sh->ln = ft_strdup(*ln);
 	return (YEP);
 }

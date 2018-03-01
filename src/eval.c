@@ -12,7 +12,7 @@
 
 #include "ush/eval.h"
 
-#define UNEX "syntax error: Unexpected token `%s'"
+#define UNEX "syntax error2: Unexpected token `%s'"
 
 static inline int	evalfini(int ret, t_deq *toks)
 {

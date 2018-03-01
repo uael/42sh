@@ -12,12 +12,19 @@
 
 #include "ush/lex.h"
 #include "ush/shell.h"
+#include "ush/syn.h"
+
+static inline t_tok	*tokpos(t_tok *tok, char const *it, char const *ln)
+{
+	tok->pos = (uint16_t)(it - ln);
+	return (tok);
+}
 
 static inline int	tokenize(t_src *s, t_tok *tok)
 {
 	int st;
 
-	sh_tokpos(tok, *s->it, *s->ln);
+	tokpos(tok, *s->it, *s->ln);
 	ft_isdigit(**s->it) ? (void)(++tok->len && ++*s->it) : 0;
 	if (((st = sh_lexop(s, tok)) != NOP ||
 		(st = sh_lexword(s, tok)) != NOP))
@@ -40,12 +47,12 @@ inline int			sh_tokenize(t_src *s, t_tok *tok)
 		else if (**s->it && ft_strchr(sh_ifs(), **s->it))
 			++*s->it;
 		else if (ISEOL(*s->it))
-			return (((sh_tokpos(tok, (*s->it)++, *s->ln)->id = '\n')) & 0);
+			return (((tokpos(tok, (*s->it)++, *s->ln)->id = '\n')) & 0);
 		else if (**s->it == '#')
 			while (**s->it && !ISEOL(*s->it))
 				++*s->it;
 		else if (!**s->it)
-			return ((sh_tokpos(tok, *s->it, *s->ln)->id = TOK_END) & 0);
+			return ((tokpos(tok, *s->it, *s->ln)->id = TOK_END) & 0);
 		else
 			return (tokenize(s, tok));
 }
@@ -64,7 +71,7 @@ int					sh_lex(int fd, char **it, char **ln, t_lexcb *cb)
 	ft_deqctor(&toks, sizeof(t_tok));
 	while (!(st = sh_lexline(&src, &toks, 0)))
 	{
-		if (sh_lexcheck(&src, &toks))
+		if (sh_syncheck(&src, &toks))
 		{
 			g_sh->status = 1;
 			return (ft_dtor(OUF, (t_dtor)ft_deqdtor, &toks, NULL));
