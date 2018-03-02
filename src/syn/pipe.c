@@ -38,10 +38,8 @@ static int	pipesequence(t_src *s, t_deq *toks, size_t *idx)
 		tok = ft_deqat(toks, *idx);
 		if (tok->id != '|')
 			return (YEP);
-		pipe = *idx;
-		while (++*idx < toks->len)
-			if (((t_tok *)ft_deqat(toks, *idx))->id != '\n')
-				break ;
+		pipe = (*idx)++;
+		sh_synlinebreak(toks, idx);
 		if ((st = sh_syncmd(s, toks, idx)))
 			return (st == NOP ? pipeerr(s, toks, idx, pipe) : st);
 	}

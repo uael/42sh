@@ -34,28 +34,28 @@ static int	simplecommand(t_src *s, t_deq *toks, size_t *idx)
 inline int	sh_syncmd(t_src *s, t_deq *toks, size_t *idx)
 {
 	int		st;
-	t_tok	*tok;
+	t_tok	*t;
 
 	if (*idx >= toks->len)
 		return (NOP);
-	tok = ft_deqat(toks, *idx);
-	if (tok->id == TOK_FUNCTION)
+	t = ft_deqat(toks, *idx);
+	if (t->id == TOK_FUNCTION)
 		return (sh_synfuncdef(s, toks, idx));
-	if (sh_tokis(tok, TOKS_LEFT))
+	if (sh_tokis(t, TOKS_LEFT))
 	{
 		if ((st = sh_syncompoundcmd(s, toks, idx)))
 			return (st);
 		while (*idx < toks->len)
 		{
-			tok = ft_deqat(toks, *idx);
-			if (!sh_tokis(tok, TOKS_REDIR))
+			t = ft_deqat(toks, *idx);
+			if (!sh_tokis(t, TOKS_REDIR))
 				break ;
 			if ((st = sh_synredir(s, toks, idx)))
 				return (st);
 		}
 		return (YEP);
 	}
-	else if (sh_tokis(tok, TOKS_REDIR | TOKS_WORD))
+	else if (!sh_tokis(t, TOKS_RIGHT) && sh_tokis(t, TOKS_REDIR | TOKS_WORD))
 		return (simplecommand(s, toks, idx));
 	return (NOP);
 }

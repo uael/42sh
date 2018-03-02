@@ -20,7 +20,6 @@ inline int	sh_synifclause(t_src *s, t_deq *toks, size_t *idx)
 	if ((st = sh_syncompoundlist(s, toks, idx,
 		(char const[]){TOK_THEN, '\0'})))
 		return (st);
-	++*idx;
 	while (1)
 	{
 		if ((st = sh_syncompoundlist(s, toks, idx,

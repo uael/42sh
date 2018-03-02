@@ -25,6 +25,7 @@ typedef struct	s_scope
 	int			status;
 	pid_t		pid;
 	t_bool		tty;
+	t_bool		child;
 }				t_scope;
 
 extern t_scope	*g_sh;

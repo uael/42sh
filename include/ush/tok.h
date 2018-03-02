@@ -82,7 +82,6 @@ typedef struct	s_tok
 	uint16_t	len;
 	uint16_t	pos;
 	uint8_t		id;
-	uint8_t		padding[3];
 }				t_tok;
 
 extern t_bool	sh_tokidis(uint8_t id, uint16_t flags);

@@ -46,8 +46,8 @@ inline int			sh_lexreduce(t_src *s, t_deq *toks, size_t from)
 	while (from < toks->len)
 	{
 		tok = (t_tok *)ft_deqat(toks, from++);
-		if (prv && TOK_ISWORD(prv->id) && tok->id == '(' && from < toks->len &&
-			((t_tok *)ft_deqat(toks, from))->id == ')')
+		if (prv && sh_tokis(prv, TOKS_WORD) && tok->id == '(' &&
+			from < toks->len && ((t_tok *)ft_deqat(toks, from))->id == ')')
 		{
 			ft_deqrem(toks, from, NULL);
 			prv->id = TOK_FUNCTION;

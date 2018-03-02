@@ -14,17 +14,19 @@
 
 inline int			sh_evalcmd(t_proc *proc, int fd, t_deq *toks, char **ln)
 {
-	t_tok	*tok;
+	t_tok	*t;
 	int		st;
 
-	if (!(tok = sh_tokpeek(toks)))
+	if (!(t = sh_tokpeek(toks)))
 		return (NOP);
-	if (tok->id == TOK_FUNCTION)
+	if (t->id == TOK_FUNCTION)
 		return (sh_evalfuncdef(proc, fd, toks, ln));
-	if (!(st = sh_evalcompound(proc, fd, toks, ln)))
+	if (sh_tokis(t, TOKS_LEFT))
 	{
-		while ((tok = sh_tokpeek(toks)))
-			if (sh_tokis(tok, TOKS_REDIR))
+		if ((st = sh_evalcompound(proc, fd, toks, ln)))
+			return (st);
+		while ((t = sh_tokpeek(toks)))
+			if (sh_tokis(t, TOKS_REDIR))
 			{
 				if ((st = sh_evalredir(proc, toks, ln)))
 					return (st);
@@ -32,7 +34,7 @@ inline int			sh_evalcmd(t_proc *proc, int fd, t_deq *toks, char **ln)
 			else
 				return (YEP);
 	}
-	else if (sh_tokis(tok, TOKS_REDIR | TOKS_WORD))
+	else if (!sh_tokis(t, TOKS_RIGHT) && sh_tokis(t, TOKS_REDIR | TOKS_WORD))
 		return (sh_evalsimple(proc, fd, toks, ln));
-	return (st);
+	return (NOP);
 }

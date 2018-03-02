@@ -38,14 +38,10 @@ inline int	sh_synandor(t_src *s, t_deq *toks, size_t *idx)
 		tok = ft_deqat(toks, *idx);
 		if (tok->id != TOK_LOR && tok->id != TOK_LAND)
 			return (YEP);
-		andor = *idx;
-		while (++*idx < toks->len)
-			if (((t_tok *)ft_deqat(toks, *idx))->id != '\n')
-				break ;
-		if ((st = sh_synpipeline(s, toks, idx)) == NOP)
-			return (andorerr(s, toks, idx, andor));
-		else if (st)
-			return (st);
+		andor = (*idx)++;
+		sh_synlinebreak(toks, idx);
+		if ((st = sh_synpipeline(s, toks, idx)))
+			return (st == NOP ? andorerr(s, toks, idx, andor) : st);
 	}
 	return (YEP);
 }

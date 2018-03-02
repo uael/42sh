@@ -14,7 +14,7 @@
 
 static inline int		whileclause(t_while *s)
 {
-	g_sh->tty = 0;
+	g_sh->child = 1;
 	sh_eval(-1, &s->cond, &s->ln) ? (g_sh->status = 1) : 0;
 	while (!g_sh->status)
 	{
@@ -34,30 +34,49 @@ static inline void		whileclausedtor(t_while *s)
 	free(s);
 }
 
+static inline void		pushuntil(t_deq *dest, t_deq *src, char const *stop)
+{
+	t_tok	*tok;
+	int		depth;
+
+	depth = 0;
+	while (!ft_strchr(stop, (tok = sh_toknext(src))->id) || depth)
+	{
+		if (tok->id == TOK_DO)
+			++depth;
+		else if (tok->id == TOK_DONE)
+			--depth;
+		*(t_tok *)ft_deqpush(dest) = *tok;
+	}
+	(*(t_tok *)ft_deqpush(dest)).id = TOK_END;
+}
+
 static inline t_while	*whileclausector(t_deq *toks, char **ln)
 {
 	t_while	*whilec;
-	t_tok	*tok;
 
 	whilec = ft_malloc(sizeof(t_while));
 	ft_bzero(whilec, sizeof(t_while));
 	ft_deqctor(&whilec->cond, sizeof(t_tok));
+	pushuntil(&whilec->cond, toks, (char []){TOK_DO, '\0'});
 	ft_deqctor(&whilec->body, sizeof(t_tok));
-	while ((tok = sh_toknext(toks))->id != TOK_DO)
-		*(t_tok *)ft_deqpush(&whilec->cond) = *tok;
-	(*(t_tok *)ft_deqpush(&whilec->cond)).id = TOK_END;
-	while ((tok = sh_toknext(toks))->id != TOK_DONE)
-		*(t_tok *)ft_deqpush(&whilec->body) = *tok;
-	(*(t_tok *)ft_deqpush(&whilec->body)).id = TOK_END;
+	pushuntil(&whilec->body, toks, (char []){TOK_DONE, '\0'});
 	sh_toknext(toks);
 	whilec->ln = ft_strdup(*ln);
 	return (whilec);
 }
 
-inline int				sh_evalwhileclause(t_proc *prc, t_deq *toks,
-	char **ln)
+inline int				sh_evalwhileclause(t_proc *prc, t_deq *toks, char **ln)
 {
-	ps_procfn(prc, (t_proccb *)whileclause, (t_dtor)whileclausedtor,
-		whileclausector(toks, ln));
+	t_while	*whilec;
+
+	whilec = whileclausector(toks, ln);
+	if (g_sh->child)
+	{
+		whileclause(whilec);
+		whileclausedtor(whilec);
+		return (YEP);
+	}
+	ps_procfn(prc, (t_proccb *)whileclause, (t_dtor)whileclausedtor, whilec);
 	return (YEP);
 }

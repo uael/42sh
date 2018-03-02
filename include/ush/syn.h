@@ -16,6 +16,7 @@
 # include "lex.h"
 
 extern int	sh_syncheck(t_src *s, t_deq *toks);
+extern void	sh_synlinebreak(t_deq *toks, size_t const *idx);
 extern int	sh_synlist(t_src *s, t_deq *toks, size_t *idx);
 extern int	sh_synandor(t_src *s, t_deq *toks, size_t *idx);
 extern int	sh_synpipeline(t_src *s, t_deq *toks, size_t *idx);

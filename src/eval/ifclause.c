@@ -14,7 +14,7 @@
 
 static inline int	ifclause(t_if *s)
 {
-	g_sh->tty = 0;
+	g_sh->child = 1;
 	sh_eval(-1, &s->cond, &s->ln) ? (g_sh->status = 1) : 0;
 	if (!g_sh->status)
 		sh_eval(-1, &s->body, &s->ln) ? (g_sh->status = 1) : 0;
@@ -37,21 +37,21 @@ static inline void	ifclausedtor(t_if *s)
 	free(s);
 }
 
-static inline t_tok	*ifclauseinit(t_if *ifc, t_deq *toks)
+static inline void	pushuntil(t_deq *dest, t_deq *src, char const *stop)
 {
-	t_tok *tok;
+	t_tok	*tok;
+	int		depth;
 
-	ft_bzero(ifc, sizeof(t_if));
-	ft_deqctor(&ifc->cond, sizeof(t_tok));
-	ft_deqctor(&ifc->body, sizeof(t_tok));
-	while ((tok = sh_toknext(toks))->id != TOK_THEN)
-		*(t_tok *)ft_deqpush(&ifc->cond) = *tok;
-	(*(t_tok *)ft_deqpush(&ifc->cond)).id = TOK_END;
-	while ((tok = sh_toknext(toks))->id != TOK_ELSE && tok->id != TOK_ELIF &&
-		tok->id != TOK_FI)
-		*(t_tok *)ft_deqpush(&ifc->body) = *tok;
-	(*(t_tok *)ft_deqpush(&ifc->body)).id = TOK_END;
-	return (tok);
+	depth = 0;
+	while (!ft_strchr(stop, (tok = sh_toknext(src))->id) || depth)
+	{
+		if (tok->id == TOK_IF)
+			++depth;
+		else if (tok->id == TOK_FI)
+			--depth;
+		*(t_tok *)ft_deqpush(dest) = *tok;
+	}
+	(*(t_tok *)ft_deqpush(dest)).id = TOK_END;
 }
 
 static inline t_if	*ifclausector(int fd, t_deq *toks, char **ln)
@@ -60,14 +60,16 @@ static inline t_if	*ifclausector(int fd, t_deq *toks, char **ln)
 	t_tok	*tok;
 
 	ifc = ft_malloc(sizeof(t_if));
-	tok = ifclauseinit(ifc, toks);
-	if (tok->id == TOK_ELSE)
+	ft_bzero(ifc, sizeof(t_if));
+	ft_deqctor(&ifc->cond, sizeof(t_tok));
+	pushuntil(&ifc->cond, toks, (char []){TOK_THEN, '\0'});
+	ft_deqctor(&ifc->body, sizeof(t_tok));
+	pushuntil(&ifc->body, toks, (char []){TOK_ELSE, TOK_ELIF, TOK_FI, '\0'});
+	if ((tok = sh_tokpeek(toks))->id == TOK_ELSE)
 	{
 		ifc->elsekind = ELSE_ELSE;
 		ft_deqctor(&ifc->elsepart.body, sizeof(t_tok));
-		while ((tok = sh_toknext(toks))->id != TOK_FI)
-			*(t_tok *)ft_deqpush(&ifc->elsepart.body) = *tok;
-		(*(t_tok *)ft_deqpush(&ifc->elsepart.body)).id = TOK_END;
+		pushuntil(&ifc->body, toks, (char []){TOK_FI, '\0'});
 		sh_toknext(toks);
 	}
 	else if (tok->id == TOK_ELIF)
@@ -81,10 +83,17 @@ static inline t_if	*ifclausector(int fd, t_deq *toks, char **ln)
 	return (ifc);
 }
 
-inline int			sh_evalifclause(t_proc *prc, int fd, t_deq *toks,
-	char **ln)
+inline int			sh_evalifclause(t_proc *prc, int fd, t_deq *toks, char **ln)
 {
-	ps_procfn(prc, (t_proccb *)ifclause, (t_dtor)ifclausedtor,
-		ifclausector(fd, toks, ln));
+	t_if *ifc;
+
+	ifc = ifclausector(fd, toks, ln);
+	if (g_sh->child)
+	{
+		ifclause(ifc);
+		ifclausedtor(ifc);
+		return (YEP);
+	}
+	ps_procfn(prc, (t_proccb *)ifclause, (t_dtor)ifclausedtor, ifc);
 	return (YEP);
 }

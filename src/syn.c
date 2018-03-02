@@ -22,6 +22,16 @@ static int	synerr(t_src *s, t_deq *toks, size_t const *idx)
 	return (sh_evalerr(*s->ln, tok, ERR0, sh_tokstr(tok)));
 }
 
+inline void	sh_synlinebreak(t_deq *toks, size_t const *idx)
+{
+	while (*idx < toks->len)
+	{
+		if (((t_tok *)ft_deqat(toks, *idx))->id != '\n')
+			break ;
+		ft_deqrem(toks, *idx, NULL);
+	}
+}
+
 inline int	sh_syncheck(t_src *s, t_deq *toks)
 {
 	size_t	idx;

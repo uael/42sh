@@ -19,7 +19,6 @@ inline int	sh_synwhileclause(t_src *s, t_deq *toks, size_t *idx)
 	if ((st = sh_syncompoundlist(s, toks, idx,
 		(char const[]){TOK_DO, '\0'})))
 		return (st);
-	++*idx;
 	if ((st = sh_syncompoundlist(s, toks, idx,
 		(char const[]){TOK_DONE, '\0'})))
 		return (st);

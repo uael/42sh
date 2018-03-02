@@ -30,11 +30,7 @@ static int	compoundlist(t_src *s, t_deq *toks, size_t *idx)
 	int		st;
 	t_tok	*tok;
 
-	while (*idx < toks->len)
-		if (((t_tok *)ft_deqat(toks, *idx))->id != '\n')
-			break ;
-		else
-			++*idx;
+	sh_synlinebreak(toks, idx);
 	if ((st = sh_synterm(s, toks, idx)))
 		return (st);
 	if (*idx >= toks->len)
@@ -42,11 +38,7 @@ static int	compoundlist(t_src *s, t_deq *toks, size_t *idx)
 	tok = ft_deqat(toks, *idx);
 	if (tok->id == '&' || tok->id == ';')
 		++*idx;
-	while (*idx < toks->len)
-		if (((t_tok *)ft_deqat(toks, *idx))->id != '\n')
-			break ;
-		else
-			++*idx;
+	sh_synlinebreak(toks, idx);
 	return (YEP);
 }
 
@@ -55,22 +47,22 @@ inline int	sh_syncompoundlist(t_src *s, t_deq *toks, size_t *idx,
 {
 	int		st;
 	size_t	open;
+	t_tok	*tok;
 
 	open = (*idx)++;
 	while (1)
-		if (*idx >= toks->len)
-		{
-			if ((st = sh_lexline(s, toks, 1)))
-				return (st != OUF ? openerr(s, toks, idx, open) : st);
-		}
-		else if ((st = compoundlist(s, toks, idx)) && st != NOP)
+	{
+		if (*idx >= toks->len && (st = sh_lexline(s, toks, 1)))
+			return (st != OUF ? openerr(s, toks, idx, open) : st);
+		if ((st = compoundlist(s, toks, idx)) && st != NOP)
 			return (st);
-		else if (*idx >= toks->len)
+		if (*idx >= toks->len)
 			continue ;
-		else if (ft_strchr(stop, ((t_tok *)ft_deqat(toks, *idx))->id))
+		tok = (t_tok *)ft_deqat(toks, *idx);
+		if (ft_strchr(stop, tok->id))
 			return (YEP);
-		else
-			return (openerr(s, toks, idx, open));
+		return (openerr(s, toks, idx, open));
+	}
 }
 
 inline int	sh_syncompoundcmd(t_src *s, t_deq *toks, size_t *idx)

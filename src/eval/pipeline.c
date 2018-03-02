@@ -30,7 +30,7 @@ inline int			sh_evalpipeline(t_job *job, int fd, t_deq *toks, char **ln)
 	int		st;
 
 	ps_procctor(&proc);
-	if ((st = sh_evalcmd(&proc, fd, toks, ln)))
+	if ((st = sh_evalcmd(&proc, fd, toks, ln)) || !proc.kind)
 		return (ft_dtor(st, (t_dtor)ps_procdtor, &proc, NULL));
 	*(t_proc *)ft_vecpush((t_vec *)&job->procs) = proc;
 	while (1)
@@ -41,6 +41,7 @@ inline int			sh_evalpipeline(t_job *job, int fd, t_deq *toks, char **ln)
 			while ((eol = sh_toknext(toks)))
 				if (eol->id != TOK_EOL)
 					break ;
+			g_sh->child = 0;
 			ps_procctor(&proc);
 			if ((st = sh_evalcmd(&proc, fd, toks, ln)))
 				return (pipelineerr(st, &proc, toks, *ln));
