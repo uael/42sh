@@ -12,112 +12,112 @@
 
 #include "ush/eval.h"
 
-static void		evalif(t_ectx *ctx, t_tok *tok)
+static void		evalif(t_ctx *ctx, t_tok *tok)
 {
 
 }
 
-static void		evalwhile(t_ectx *ctx, t_tok *tok)
+static void		evalwhile(t_ctx *ctx, t_tok *tok)
 {
 
 }
 
-static void		evalfuncdef(t_ectx *ctx, t_tok *tok)
+static void		evalfuncdef(t_ctx *ctx, t_tok *tok)
 {
 
 }
 
-static void		evalsubshell(t_ectx *ctx, t_tok *tok)
+static void		evalsubshell(t_ctx *ctx, t_tok *tok)
 {
 
 }
 
-static void		evalbracegrp(t_ectx *ctx, t_tok *tok)
+static void		evalbracegrp(t_ctx *ctx, t_tok *tok)
 {
 
 }
 
-static void		evalampr(t_ectx *ctx, t_tok *tok)
+static void		evalampr(t_ctx *ctx, t_tok *tok)
 {
 
 }
 
-static void		evalcmp(t_ectx *ctx, t_tok *tok)
+static void		evalcmp(t_ctx *ctx, t_tok *tok)
 {
 
 }
 
-static void		evalheredoc(t_ectx *ctx, t_tok *tok)
+static void		evalheredoc(t_ctx *ctx, t_tok *tok)
 {
 
 }
 
-static void		evallamp(t_ectx *ctx, t_tok *tok)
+static void		evallamp(t_ctx *ctx, t_tok *tok)
 {
 
 }
 
-static void		evalramp(t_ectx *ctx, t_tok *tok)
+static void		evalramp(t_ctx *ctx, t_tok *tok)
 {
 
 }
 
-static void		evalraout(t_ectx *ctx, t_tok *tok)
+static void		evalraout(t_ctx *ctx, t_tok *tok)
 {
 
 }
 
-static void		evalrin(t_ectx *ctx, t_tok *tok)
+static void		evalrin(t_ctx *ctx, t_tok *tok)
 {
 
 }
 
-static void		evalrout(t_ectx *ctx, t_tok *tok)
+static void		evalrout(t_ctx *ctx, t_tok *tok)
 {
 
 }
 
-static void		evalword(t_ectx *ctx, t_tok *tok)
+static void		evalword(t_ctx *ctx, t_tok *tok)
 {
 
 }
 
-static void		evaltest(t_ectx *ctx, t_tok *tok)
+static void		evaltest(t_ctx *ctx, t_tok *tok)
 {
 
 }
 
-static void		evalassign(t_ectx *ctx, t_tok *tok)
+static void		evalassign(t_ctx *ctx, t_tok *tok)
 {
 
 }
 
-inline void		evalpipe(t_ectx *ctx, t_tok *tok)
+inline void		evalpipe(t_ctx *ctx, t_tok *tok)
 {
 
 }
 
-inline void		evaland(t_ectx *ctx, t_tok *tok)
+inline void		evaland(t_ctx *ctx, t_tok *tok)
 {
 
 }
 
-inline void		evalor(t_ectx *ctx, t_tok *tok)
+inline void		evalor(t_ctx *ctx, t_tok *tok)
 {
 
 }
 
-inline void		evalsemicolon(t_ectx *ctx, t_tok *tok)
+inline void		evalsemicolon(t_ctx *ctx, t_tok *tok)
 {
 
 }
 
-inline void		evalampersand(t_ectx *ctx, t_tok *tok)
+inline void		evalampersand(t_ctx *ctx, t_tok *tok)
 {
 
 }
 
-typedef void	(t_evalcb)(t_ectx *ctx, t_tok *tok);
+typedef void	(t_evalcb)(t_ctx *ctx, t_tok *tok);
 
 static t_evalcb	*g_eval[] = {
 	[TOK_IF] = evalif,
@@ -145,11 +145,11 @@ static t_evalcb	*g_eval[] = {
 
 inline void		eval(t_deq *toks, char const *ln)
 {
-	t_ectx	ctx;
+	t_ctx	ctx;
 	t_tok	*tok;
 	t_job	job;
 
-	ft_bzero(&ctx, sizeof(t_ectx));
+	ft_bzero(&ctx, sizeof(t_ctx));
 	ps_jobctor(ctx.job = &job);
 	ctx.ln = ln;
 	ctx.stop = toks->len;

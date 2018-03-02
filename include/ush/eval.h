@@ -55,7 +55,7 @@ typedef struct	s_while
 	char		*ln;
 }				t_while;
 
-typedef struct	s_ectx
+typedef struct	s_ctx
 {
 	t_deq		*toks;
 	size_t		stop;
@@ -63,7 +63,7 @@ typedef struct	s_ectx
 	t_job		*job;
 	t_proc		*proc;
 	t_map		vars;
-}				t_ectx;
+}				t_ctx;
 
 extern int		sh_eval(int fd, t_deq *toks, char **ln);
 extern int		sh_evallist(int fd, t_deq *toks, char **ln);
