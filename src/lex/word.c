@@ -17,6 +17,8 @@
 
 static inline uint8_t	wordid(char const *s, size_t l)
 {
+	char *eq;
+
 	if (l == 1 && *s == '{')
 		return ('{');
 	if (l == 1 && *s == '}')
@@ -45,6 +47,8 @@ static inline uint8_t	wordid(char const *s, size_t l)
 		return (TOK_WHILE);
 	if (l == 8 && !ft_strncmp("function", s, 8))
 		return (TOK_FUNCTION);
+	if ((eq = ft_strnchr(s, '=', l)) && sh_isident(s, eq - s))
+		return (TOK_ASSIGN);
 	return (TOK_WORD);
 }
 

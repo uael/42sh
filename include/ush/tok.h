@@ -54,6 +54,7 @@ enum			e_tok
 	TOK_LAND,
 	TOK_LOR,
 	TOK_WORD,
+	TOK_ASSIGN,
 	TOK_FI,
 	TOK_DONE,
 	TOK_DRBRA,

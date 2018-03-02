@@ -55,6 +55,16 @@ typedef struct	s_while
 	char		*ln;
 }				t_while;
 
+typedef struct	s_ectx
+{
+	t_deq		*toks;
+	size_t		stop;
+	char const	*ln;
+	t_job		job;
+	t_proc		proc;
+	t_map		vars;
+}				t_ectx;
+
 extern int		sh_eval(int fd, t_deq *toks, char **ln);
 extern int		sh_evallist(int fd, t_deq *toks, char **ln);
 extern int		sh_evalandor(t_job *j, int fd, t_deq *ts, char **ln);

@@ -45,9 +45,10 @@ static inline int	makeargv(t_proc *proc, t_vec *av, t_deq *toks, char **ln)
 
 	tok = sh_tokpeek(toks);
 	while (tok)
-		if (TOK_ISWORD(tok->id))
+		if (sh_tokis(tok, TOKS_WORD))
 		{
-			av ? sh_expwords(av, *ln + tok->pos, tok->len) : 0;
+			av && tok->id != TOK_DRBRA ?
+				sh_expwords(av, *ln + tok->pos, tok->len) : 0;
 			tok = sh_toknext(toks);
 		}
 		else if (sh_tokis(tok, TOKS_REDIR))
@@ -56,8 +57,6 @@ static inline int	makeargv(t_proc *proc, t_vec *av, t_deq *toks, char **ln)
 				return (st);
 			tok = sh_tokpeek(toks);
 		}
-		else if (tok->id == TOK_DRBRA)
-			tok = sh_toknext(toks);
 		else
 			break ;
 	return (YEP);
@@ -77,7 +76,7 @@ static inline char	*explodesome(t_vec *av, t_deq *t, char **ln)
 	else
 		while (!av->len)
 		{
-			if (!tok || !TOK_ISWORD(tok->id))
+			if (!tok || !sh_tokis(tok, TOKS_WORD))
 				return (NULL);
 			sh_expwords(av, *ln + tok->pos, tok->len);
 			tok = sh_toknext(t);
