@@ -19,16 +19,13 @@
 # include "err.h"
 # include "var.h"
 
+/* TODO: to remove { */
 # define ISREOL(IT) (*(IT) == '\n')
 # define ISWEOL(IT) (*(IT) == '\r' && *((IT) + 1) == '\n')
 # define ISEOL(IT) (ISREOL(IT) || ISWEOL(IT))
-
-
 # define TOK_ISWORD(I) ((I)==TOK_WORD)
-# define TOK_ISEND(ID) ((ID)==TOK_EOL||(ID)==TOK_END)
-
 # define LEXE(ST, FD) ((ST) < 0 || (FD) < 0 || !g_sh->tty)
-
+/* TODO: to remove } */
 
 #define TOKS_REDIR (1 << 0)
 #define TOKS_WORD (1 << 1)

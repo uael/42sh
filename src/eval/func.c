@@ -13,7 +13,7 @@
 #include "ush/eval.h"
 #include "ush/func.h"
 
-static uint8_t	g_end[] = {
+static uint8_t		g_end[] = {
 	['('] = ')',
 	['{'] = '}',
 	[TOK_IF] = TOK_FI,

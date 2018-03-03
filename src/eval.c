@@ -18,22 +18,224 @@ typedef void	(t_evalcb)(t_ctx *ctx, t_tok *tok);
 
 static t_evalcb	*g_eval[];
 
+static inline int	ifclause(t_if *s)
+{
+	MAX_INPUT
+	g_sh->child = 1;
+	eval(&s->cond, s->ln);
+	if (!g_sh->status)
+		eval(&s->body, s->ln);
+	else if (s->elsekind == ELSE_ELIF)
+		return (ifclause(s->elsepart.elif));
+	else if (s->elsekind == ELSE_ELSE)
+		eval(&s->elsepart.body, s->ln);
+	return (g_sh->status);
+}
+
+static inline void	ifclausedtor(t_if *s)
+{
+	if (s->elsekind == ELSE_ELIF)
+		ifclausedtor(s->elsepart.elif);
+	else if (s->elsekind == ELSE_ELSE)
+		ft_deqdtor(&s->elsepart.body, NULL);
+	ft_deqdtor(&s->cond, NULL);
+	ft_deqdtor(&s->body, NULL);
+	free(s->ln);
+	free(s);
+}
+
+static inline void	pushuntilb(t_deq *dest, t_deq *src, char const *stop)
+{
+	t_tok	*tok;
+	int		depth;
+
+	depth = 0;
+	while (!ft_strchr(stop, (tok = sh_toknext(src))->id) || depth)
+	{
+		if (tok->id == TOK_IF)
+			++depth;
+		else if (tok->id == TOK_FI)
+			--depth;
+		*(t_tok *)ft_deqpush(dest) = *tok;
+	}
+	(*(t_tok *)ft_deqpush(dest)).id = TOK_END;
+}
+
+static inline t_if	*ifclausector(t_deq *toks, char const *ln)
+{
+	t_if	*ifc;
+	t_tok	*tok;
+
+	ifc = ft_malloc(sizeof(t_if));
+	ft_bzero(ifc, sizeof(t_if));
+	ft_deqctor(&ifc->cond, sizeof(t_tok));
+	pushuntilb(&ifc->cond, toks, (char []){TOK_THEN, '\0'});
+	ft_deqctor(&ifc->body, sizeof(t_tok));
+	pushuntilb(&ifc->body, toks, (char []){TOK_ELSE, TOK_ELIF, TOK_FI, '\0'});
+	if ((tok = sh_tokpeek(toks))->id == TOK_ELSE)
+	{
+		ifc->elsekind = ELSE_ELSE;
+		ft_deqctor(&ifc->elsepart.body, sizeof(t_tok));
+		pushuntilb(&ifc->elsepart.body, toks, (char []){TOK_FI, '\0'});
+		sh_toknext(toks);
+	}
+	else if (tok->id == TOK_ELIF)
+	{
+		ifc->elsekind = ELSE_ELIF;
+		ifc->elsepart.elif = ifclausector(toks, ln);
+	}
+	else
+		sh_toknext(toks);
+	ifc->ln = ft_strdup(ln);
+	return (ifc);
+}
+
+
 static void		evalif(t_ctx *ctx, t_tok *tok)
 {
-	(void)ctx;
+	t_if *ifc;
+
 	(void)tok;
+	if (!ctx->proc)
+	{
+		ctx->proc = (t_proc *)ft_vecpush((t_vec *)&ctx->job->procs);
+		ps_procctor(ctx->proc);
+	}
+	ifc = ifclausector(ctx->toks, ctx->ln);
+	ps_procfn(ctx->proc, (t_proccb *)ifclause, (t_dtor)ifclausedtor, ifc);
+	ctx->proc->child = 0;
+}
+
+static inline int		whileclause(t_while *s)
+{
+	g_sh->child = 1;
+	eval(&s->cond, s->ln);
+	while (!g_sh->status)
+	{
+		s->body.cur = 0;
+		eval(&s->body, s->ln);
+		s->cond.cur = 0;
+		eval(&s->cond, s->ln);
+	}
+	return (g_sh->status);
+}
+
+static inline void		whileclausedtor(t_while *s)
+{
+	ft_deqdtor(&s->cond, NULL);
+	ft_deqdtor(&s->body, NULL);
+	free(s->ln);
+	free(s);
+}
+
+static inline void		pushuntila(t_deq *dest, t_deq *src, char const *stop)
+{
+	t_tok	*tok;
+	int		depth;
+
+	depth = 0;
+	while (!ft_strchr(stop, (tok = sh_toknext(src))->id) || depth)
+	{
+		if (tok->id == TOK_DO)
+			++depth;
+		else if (tok->id == TOK_DONE)
+			--depth;
+		*(t_tok *)ft_deqpush(dest) = *tok;
+	}
+	(*(t_tok *)ft_deqpush(dest)).id = TOK_END;
+}
+
+static inline t_while	*whileclausector(t_deq *toks, char const *ln)
+{
+	t_while	*whilec;
+
+	whilec = ft_malloc(sizeof(t_while));
+	ft_bzero(whilec, sizeof(t_while));
+	ft_deqctor(&whilec->cond, sizeof(t_tok));
+	pushuntila(&whilec->cond, toks, (char []){TOK_DO, '\0'});
+	ft_deqctor(&whilec->body, sizeof(t_tok));
+	pushuntila(&whilec->body, toks, (char []){TOK_DONE, '\0'});
+	sh_toknext(toks);
+	whilec->ln = ft_strdup(ln);
+	return (whilec);
 }
 
 static void		evalwhile(t_ctx *ctx, t_tok *tok)
 {
-	(void)ctx;
+	t_while	*whilec;
+
 	(void)tok;
+	if (!ctx->proc)
+	{
+		ctx->proc = (t_proc *)ft_vecpush((t_vec *)&ctx->job->procs);
+		ps_procctor(ctx->proc);
+	}
+	whilec = whileclausector(ctx->toks, ctx->ln);
+	ps_procfn(ctx->proc, (t_proccb *)whileclause, (t_dtor)whileclausedtor,
+		whilec);
+	ctx->proc->child = 0;
+}
+
+static uint8_t		g_end[] = {
+	['('] = ')',
+	['{'] = '}',
+	[TOK_IF] = TOK_FI,
+	[TOK_WHILE] = TOK_DONE,
+};
+
+static inline int	avcount(char *av[])
+{
+	int c;
+
+	c = 0;
+	while (*av++)
+		++c;
+	return (c);
+}
+
+static int			evalfn(t_proc *proc)
+{
+	t_func	*fn;
+	char	*av0;
+	char	*fname;
+
+	av0 = g_sh->av[0];
+	g_sh->av = proc->argv;
+	g_sh->ac = avcount(proc->argv);
+	g_sh->tty = 0;
+	fname = g_sh->av[0];
+	if (!(fn = sh_funcget(fname)))
+		return (EXIT_FAILURE);
+	g_sh->av[0] = av0;
+	eval(&fn->body, fn->ln);
+	g_sh->av[0] = fname;
+	return (g_sh->status);
 }
 
 static void		evalfuncdef(t_ctx *ctx, t_tok *tok)
 {
-	(void)ctx;
-	(void)tok;
+	t_tok		*beg;
+	t_tok		*name;
+	t_deq		body;
+	char const	*id;
+	int			depth;
+
+	depth = 1;
+	name = sh_toknext(ctx->toks);
+	beg = sh_toknext(ctx->toks);
+	ft_deqctor(&body, sizeof(t_tok));
+	while ((tok = sh_toknext(ctx->toks)))
+	{
+		if (tok->id == beg->id)
+			++depth;
+		else if (tok->id == g_end[beg->id] && !--depth)
+			break ;
+		*(t_tok *)ft_deqpush(&body) = *tok;
+	}
+	sh_toknext(ctx->toks);
+	id = ft_strndup(ctx->ln + name->pos, name->len);
+	sh_funcset(id, &body, ctx->ln);
+	free((void *)id);
 }
 
 static inline int	subshell(t_subshell *s)
@@ -353,12 +555,13 @@ static char		**makeenv(t_map *vars, t_bool *owned)
 	return (e->buf);
 }
 
-static void		makeargv(t_ctx *ctx, t_tok *tok, t_vec *av)
+static void		makeargv(t_ctx *ctx, t_tok *tok, t_vec *av, t_bool c)
 {
 	while (tok)
 		if (sh_tokis(tok, TOKS_WORD))
 		{
-			av ? sh_expwords(av, ctx->ln + tok->pos, tok->len) : 0;
+			av && (!c || tok->id != TOK_DRBRA) ?
+				sh_expwords(av, ctx->ln + tok->pos, tok->len) : 0;
 			tok = sh_toknext(ctx->toks);
 		}
 		else if (sh_tokis(tok, TOKS_REDIR))
@@ -401,26 +604,50 @@ static void		evalword(t_ctx *ctx, t_tok *tok)
 	{
 		ft_vecdtor(&av, (t_dtor)ft_pfree);
 		ps_procbit(ctx->proc, (t_bool)(own ? 1 : 0));
-		return (makeargv(ctx, tok, NULL));
+		return (makeargv(ctx, tok, NULL, 0));
 	}
 	if (sh_funcget(bin))
 	{
 		ctx->proc->kind = PROC_FN;
-		ctx->proc->u.fn.cb = (t_proccb *)sh_evalfn;
+		ctx->proc->u.fn.cb = (t_proccb *)evalfn;
 		ctx->proc->u.fn.dtor = NULL;
 		ctx->proc->u.fn.data = NULL;
 	}
 	else
 		ps_procexe(ctx->proc, "PATH", bin, ctx->proc->envv);
-	makeargv(ctx, tok, &av);
+	makeargv(ctx, tok, &av, 0);
 	*(char **)ft_vecpush(&av) = NULL;
 	ctx->proc->argv = av.buf;
 }
 
 static void		evaltest(t_ctx *ctx, t_tok *tok)
 {
-	(void)ctx;
-	(void)tok;
+	t_vec	av;
+	char	*bin;
+
+	ft_vecctor(&av, sizeof(char *));
+	if (!ctx->proc)
+	{
+		ctx->proc = (t_proc *)ft_vecpush((t_vec *)&ctx->job->procs);
+		ps_procctor(ctx->proc);
+	}
+	tok = sh_toknext(ctx->toks);
+	*(char **)ft_vecpush(&av) = ft_strdup("test");
+	bin = ((char **)av.buf)[0];
+	ctx->proc->envv = makeenv(&ctx->vars, &ctx->proc->ownenv);
+	if (sh_funcget(bin))
+	{
+		ctx->proc->kind = PROC_FN;
+		ctx->proc->u.fn.cb = (t_proccb *)evalfn;
+		ctx->proc->u.fn.dtor = NULL;
+		ctx->proc->u.fn.data = NULL;
+	}
+	else
+		ps_procexe(ctx->proc, "PATH", bin, ctx->proc->envv);
+	makeargv(ctx, tok, &av, 1);
+	sh_toknext(ctx->toks);
+	*(char **)ft_vecpush(&av) = NULL;
+	ctx->proc->argv = av.buf;
 }
 
 static void		evalassign(t_ctx *ctx, t_tok *tok)
@@ -488,7 +715,6 @@ static int		evalexport(t_map *vars)
 static void		evalpipe(t_ctx *ctx, t_tok *tok)
 {
 	(void)tok;
-	ctx->scope = 0;
 	evalexport(&ctx->vars);
 	sh_toknext(ctx->toks);
 	ctx->proc = (t_proc *)ft_vecpush((t_vec *)&ctx->job->procs);
@@ -498,7 +724,6 @@ static void		evalpipe(t_ctx *ctx, t_tok *tok)
 static void		evaland(t_ctx *ctx, t_tok *tok)
 {
 	(void)tok;
-	ctx->scope = 0;
 	evalexport(&ctx->vars);
 	sh_toknext(ctx->toks);
 	ctx->job->next = ft_malloc(sizeof(t_job));
@@ -511,7 +736,6 @@ static void		evaland(t_ctx *ctx, t_tok *tok)
 static void		evalor(t_ctx *ctx, t_tok *tok)
 {
 	(void)tok;
-	ctx->scope = 0;
 	evalexport(&ctx->vars);
 	sh_toknext(ctx->toks);
 	ctx->job->next = ft_malloc(sizeof(t_job));
@@ -524,9 +748,10 @@ static void		evalor(t_ctx *ctx, t_tok *tok)
 static void		evalsemicolon(t_ctx *ctx, t_tok *tok)
 {
 	(void)tok;
-	ctx->scope = 0;
-	evalexport(&ctx->vars);
 	sh_toknext(ctx->toks);
+	if (!ctx->root->procs.len)
+		return ;
+	evalexport(&ctx->vars);
 	g_sh->status = ps_joblaunch(ctx->root, 1);
 	ps_jobctor(ctx->root);
 	ctx->proc = NULL;
@@ -535,7 +760,6 @@ static void		evalsemicolon(t_ctx *ctx, t_tok *tok)
 static void		evalampersand(t_ctx *ctx, t_tok *tok)
 {
 	(void)tok;
-	ctx->scope = 0;
 	evalexport(&ctx->vars);
 	sh_toknext(ctx->toks);
 	g_sh->status = ps_joblaunch(ps_poolpush(ctx->root), 0);

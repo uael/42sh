@@ -27,6 +27,10 @@ static inline uint8_t	wordid(char const *s, size_t l)
 		return ('!');
 	if (l == 2 && !ft_strncmp("if", s, 2))
 		return (TOK_IF);
+	if (l == 2 && !ft_strncmp("[[", s, 2))
+		return (TOK_DLBRA);
+	if (l == 2 && !ft_strncmp("]]", s, 2))
+		return (TOK_DRBRA);
 	if (l == 2 && !ft_strncmp("fi", s, 2))
 		return (TOK_FI);
 	if (l >= 2 && !ft_strncmp("do", s, 2))

@@ -20,16 +20,16 @@ inline int	sh_synifclause(t_src *s, t_deq *toks, size_t *idx)
 	if ((st = sh_syncompoundlist(s, toks, idx,
 		(char const[]){TOK_THEN, '\0'})))
 		return (st);
-	while (1)
+	if ((st = sh_syncompoundlist(s, toks, idx,
+		(char const[]){TOK_ELIF, TOK_ELSE, TOK_FI, '\0'})))
+		return (st);
+	tok = ft_deqat(toks, *idx);
+	if (tok->id == TOK_ELIF)
+		return (sh_synifclause(s, toks, idx));
+	if (tok->id == TOK_FI)
 	{
-		if ((st = sh_syncompoundlist(s, toks, idx,
-			(char const[]){TOK_ELIF, TOK_ELSE, TOK_FI, '\0'})))
-			return (st);
-		tok = ft_deqat(toks, (*idx)++);
-		if (tok->id == TOK_FI)
-			return (YEP);
-		if (tok->id == TOK_ELSE)
-			break ;
+		++*idx;
+		return (YEP);
 	}
 	if ((st = sh_syncompoundlist(s, toks, idx,
 		(char const[]){TOK_FI, '\0'})))

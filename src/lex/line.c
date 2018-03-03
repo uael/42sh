@@ -32,7 +32,7 @@ inline int			sh_lexline(t_src *src, t_deq *toks, t_bool new)
 		ft_bzero(tok = (t_tok *)ft_deqpush(toks), sizeof(t_tok));
 		if ((st = sh_tokenize(src, tok)))
 			return (st);
-		if (TOK_ISEND(tok->id))
+		if (sh_tokis(tok, TOKS_END))
 			return (sh_lexreduce(src, toks, cur));
 	}
 }

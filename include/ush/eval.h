@@ -64,8 +64,6 @@ typedef struct	s_ctx
 	t_job		*job;
 	t_proc		*proc;
 	t_map		vars;
-	t_bool		scope;
-	t_bool		group;
 }				t_ctx;
 
 void		eval(t_deq *toks, char const *ln);
