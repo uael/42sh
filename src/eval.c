@@ -20,7 +20,6 @@ static t_evalcb	*g_eval[];
 
 static inline int	ifclause(t_if *s)
 {
-	MAX_INPUT
 	g_sh->child = 1;
 	eval(&s->cond, s->ln);
 	if (!g_sh->status)
