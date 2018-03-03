@@ -61,6 +61,7 @@ int					sh_lex(int fd, char **it, char **ln, t_lexcb *cb)
 {
 	t_src	src;
 	t_deq	toks;
+	t_tok	*tok;
 	int		st;
 
 	if (!*it || !**it)
@@ -71,13 +72,15 @@ int					sh_lex(int fd, char **it, char **ln, t_lexcb *cb)
 	ft_deqctor(&toks, sizeof(t_tok));
 	while (!(st = sh_lexline(&src, &toks, 0)))
 	{
+		if (ft_deqlen(&toks) == 1 && (tok = sh_tokpeek(&toks)) &&
+			tok->id == '\n')
+			continue ;
 		if (sh_syncheck(&src, &toks))
 		{
 			g_sh->status = 1;
 			return (ft_dtor(OUF, (t_dtor)ft_deqdtor, &toks, NULL));
 		}
-		if (cb(fd, &toks, src.ln))
-			g_sh->status = 1;
+		cb(&toks, *src.ln);
 	}
 	if (st == OUF)
 		g_sh->status = 1;

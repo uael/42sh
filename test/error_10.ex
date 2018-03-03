@@ -1,1 +1,1 @@
-.: Is a directory
+ush: .: Is a directory

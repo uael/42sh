@@ -84,7 +84,7 @@ inline int			sh_run(int fd, char *ln)
 	while (!(st = rl_getline(fd, sh_prompt(SH_PROMPT(), buf), &ln)))
 	{
 		it = ln;
-		st = sh_lex(fd, &it, &ln, sh_eval);
+		st = sh_lex(fd, &it, &ln, eval);
 		if (st < 0 || (!g_sh->tty && st == OUF))
 			break ;
 	}

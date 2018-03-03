@@ -22,7 +22,7 @@ typedef struct	s_src
 	char		**ln;
 }				t_src;
 
-typedef int		(t_lexcb)(int fd, t_deq *toks, char **ln);
+typedef void	(t_lexcb)(t_deq *toks, char const *ln);
 
 extern size_t	sh_synbracket(t_src *s, t_deq *a, t_tok *o, size_t i);
 extern int		sh_syn(t_src *s, t_tok **a, t_tok *b);

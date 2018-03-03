@@ -95,8 +95,8 @@ int						ps_joblaunch(t_job *job, int fg)
 		proc = jobpeek(job, &i);
 		ps_jobpipe(job, i, fds, io);
 		proc->close = fds[0];
-		proc->child = (t_bool)(job->procs.len > 1 || proc->kind == PROC_EXE ||
-			proc->kind == PROC_FN);
+		if (!proc->child)
+			proc->child = (t_bool)(job->procs.len > 1 || proc->kind == PROC_EXE);
 		if (ps_procfork(proc, &job->pgid, io, fg))
 			return (ft_dtor(!job->bang, (t_dtor)ps_jobdtor, job, NULL));
 		io[STDIN_FILENO] != STDIN_FILENO ? close(io[STDIN_FILENO]) : 0;

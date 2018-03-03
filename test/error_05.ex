@@ -1,3 +1,3 @@
-ush: syntax error: Expected `<command>' after `&&' got `<newline>'
+ush: syntax error: Expected `<pipeline>' after `&&' got `<EOF>'
 ls &&
      ^

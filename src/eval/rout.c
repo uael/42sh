@@ -26,12 +26,6 @@ inline int		sh_evalrout(t_proc *proc, t_deq *toks, char **ln)
 		return (sh_evalerr(*ln, tok, UEH, sh_tokstr(tok)));
 	if (!sh_redirword(proc, buf, toks, *ln))
 		return (YEP);
-	if ((r.to = open(buf, O_WRONLY | O_CREAT | O_TRUNC, 0644)) < 0)
-	{
-		ps_procerr(proc, ft_strcat(ft_strcat(ft_strcat(buf, ": "),
-			ft_strerr(errno)), "\n"), *ln, tok->pos);
-		return (YEP);
-	}
 	r.from = ft_isdigit(*(*ln + op->pos)) ? *(*ln + op->pos) - '0' : 1;
 	*(t_redir *)ft_vecpush((t_vec *)&proc->redirs) = r;
 	return (YEP);

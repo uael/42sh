@@ -24,6 +24,8 @@ inline int	sh_synterm(t_src *s, t_deq *toks, size_t *idx)
 		tok = ft_deqat(toks, *idx);
 		if (tok->id == '&' || tok->id == ';')
 			++*idx;
+		if (*idx < toks->len && ((t_tok *)ft_deqat(toks, *idx))->id == '\n')
+			++*idx;
 		sh_synlinebreak(toks, idx);
 		if ((st = sh_synandor(s, toks, idx)))
 			return (st == NOP ? YEP : st);

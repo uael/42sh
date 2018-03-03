@@ -1,3 +1,3 @@
-ush: syntax error: Unexpected token `(' after `)'
+ush: syntax error: Unexpected token `('
 (echo a) (echo b)
          ^

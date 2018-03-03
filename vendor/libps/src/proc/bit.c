@@ -14,7 +14,6 @@
 
 inline void		ps_procbit(t_proc *proc, t_bool bit)
 {
-	ps_procctor(proc);
 	proc->kind = PROC_BIT;
 	proc->u.bit = bit;
 }

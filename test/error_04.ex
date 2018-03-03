@@ -1,3 +1,3 @@
-ush: syntax error: Unexpected token `;'
+ush: syntax error: Expected `<pipeline>' after `&&' got `;'
 ls && ;
       ^

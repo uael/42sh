@@ -54,9 +54,5 @@ inline int		sh_evalampr(t_proc *proc, t_deq *toks, char **ln)
 			ft_strerr(errno)), "\n"), *ln, tok->pos);
 		return (YEP);
 	}
-	*(t_redir *)ft_vecpush((t_vec *)&proc->redirs) =
-		(t_redir){fd, STDOUT_FILENO};
-	*(t_redir *)ft_vecpush((t_vec *)&proc->redirs) =
-		(t_redir){fd, STDERR_FILENO};
 	return (YEP);
 }

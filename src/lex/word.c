@@ -47,7 +47,7 @@ static inline uint8_t	wordid(char const *s, size_t l)
 		return (TOK_WHILE);
 	if (l == 8 && !ft_strncmp("function", s, 8))
 		return (TOK_FUNCTION);
-	if ((eq = ft_strnchr(s, '=', l)) && sh_isident(s, eq - s))
+	if ((eq = ft_strnchr(s, '=', l)) && (eq > s) &&  sh_isident(s, eq - s))
 		return (TOK_ASSIGN);
 	return (TOK_WORD);
 }
