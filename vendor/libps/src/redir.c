@@ -44,6 +44,8 @@ inline int		ps_redirect(t_redirs *redirs, int *scope)
 			if ((redir->fd = open(redir->word, redir->flags, 0644)) < 0)
 				return (g_errcb("%s: %e\n", redir->word, errno));
 			dup2(redir->fd, redir->from);
+			if (redir->from2 >= 0)
+				dup2(redir->fd, redir->from2);
 		}
 		else if (!ft_strcmp("-", redir->word))
 			close(redir->from);
