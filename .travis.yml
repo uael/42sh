@@ -5,6 +5,6 @@ os: osx
 script:
   - unset TRAVIS_COMMIT_MESSAGE
   - git clone https://github.com/uael/42ShellTester.git st
-  - make
-  - RELOU=mc make test
-  - bash st/42ShellTester.sh --reference bash $PWD/42sh
+  - make san
+  - make testsan
+  - bash st/42ShellTester.sh --reference bash $PWD/42sh.san
