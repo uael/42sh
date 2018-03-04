@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 20:57:25 by mc                #+#    #+#             */
-/*   Updated: 2018/03/04 13:07:10 by mc               ###   ########.fr       */
+/*   Updated: 2018/03/04 17:42:05 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,9 +122,9 @@ int							glob_store_dir_name(char *path_buf, \
 void						remove_last_dir_from_path(char *path_buf);
 
 /*
-** in glob_cmp.c
+** in glob_sanitize.c
 */
-int							super_cmp(const void *a, const void *b, size_t n);
+char						*glob_sanitize_pattern(char *dst, const char *src);
 
 /*
 **  in glob_show.c

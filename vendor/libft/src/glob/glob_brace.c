@@ -6,7 +6,7 @@
 /*   By: mcanal <mc.maxcanal@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/23 17:55:44 by mcanal            #+#    #+#             */
-/*   Updated: 2018/03/04 13:23:36 by mc               ###   ########.fr       */
+/*   Updated: 2018/03/04 18:12:18 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ static int			glob_boom(t_glob_env *e, char const *brace_buf)
 
 	pat_save = e->pattern;
 	match_save = e->match_list;
+    glob_sanitize_pattern((char *)brace_buf, brace_buf);
 	e->pattern = brace_buf;
 	e->match_list = NULL;
 	glob_climb_tree(e);
