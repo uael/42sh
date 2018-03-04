@@ -6,17 +6,42 @@
 /*   By: mcanal <mc.maxcanal@gmail.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/23 17:55:44 by mcanal            #+#    #+#             */
-/*   Updated: 2018/02/26 03:45:54 by mc               ###   ########.fr       */
+/*   Updated: 2018/03/04 13:23:36 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "glob_climb_tree.h"
 
+static int			glob_boom(t_glob_env *e, char const *brace_buf)
+{
+	char const	*pat_save;
+	t_match		*match_save;
+	t_match		*link;
+
+	pat_save = e->pattern;
+	match_save = e->match_list;
+	e->pattern = brace_buf;
+	e->match_list = NULL;
+	glob_climb_tree(e);
+	if (!e->match_list)
+		matchctoradd(e->pattern, TRUE, \
+					!(*(e->flags) & GLOBUX_NOSORT), &e->match_list); //TODO: noescape?
+    if (match_save)
+    {
+        link = match_save;
+        while (link->next)
+            link = link->next; //TODO: iiirk
+        link->next = e->match_list;
+        e->match_list = match_save;
+    }
+	e->pattern = pat_save;
+	return (-1);
+}
+
 static int			glob_copy_pattern_and_boom(t_glob_env *e, \
 						char const *pat_end, char const *pat, size_t pat_size)
 {
 	char		brace_buf[PATH_MAX];
-	char const	*pat_save;
 	size_t		before_size;
 	size_t		after_size;
 
@@ -28,18 +53,7 @@ static int			glob_copy_pattern_and_boom(t_glob_env *e, \
 	ft_memcpy(brace_buf, e->pattern, before_size);
 	ft_memcpy(brace_buf + before_size, pat, pat_size);
 	ft_memcpy(brace_buf + before_size + pat_size, pat_end, after_size + 1);
-	pat_save = e->pattern;
-	e->pattern = brace_buf;
-	before_size = list_len(e->match_list);
-	glob_climb_tree(e);
-	if (before_size == list_len(e->match_list))
-	{
-		*(e->flags) |= GLOBUX_APPEND;
-		glob_climb_tree(e);
-		*(e->flags) &= ~GLOBUX_APPEND;
-	}
-	e->pattern = pat_save;
-	return (-1);
+	return (glob_boom(e, brace_buf));
 }
 
 static int			glob_find_sub_brace(t_glob_env *e, char const *comma, \
@@ -56,12 +70,14 @@ static int			glob_find_sub_brace(t_glob_env *e, char const *comma, \
 								comma, pat_end));
 }
 
-static int			glob_check_brace(t_glob_env *e)
+int					glob_brace(t_glob_env *e)
 {
 	char const	*pat_start;
 	char const	*pat_end;
 	char const	*comma;
 
+	if (!(*(e->flags) & GLOBUX_BRACE))
+		return (GLOBUX_SUCCESS);
 	if (!(pat_start = glob_find_opening_brace(e->pattern, e->pattern)))
 		return (GLOBUX_SUCCESS);
 	if (!(pat_end = is_there_a_closing_bracket(pat_start, *(e->flags), '}', \
@@ -70,11 +86,4 @@ static int			glob_check_brace(t_glob_env *e)
 	if (!(comma = glob_find_comma(pat_start + 1, pat_end)))
 		return (GLOBUX_SUCCESS);
 	return (glob_find_sub_brace(e, comma, pat_start, pat_end));
-}
-
-int					glob_brace(t_glob_env *e)
-{
-	if (!(*(e->flags) & GLOBUX_BRACE))
-		return (GLOBUX_SUCCESS);
-	return (glob_check_brace(e));
 }

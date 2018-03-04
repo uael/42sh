@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 20:57:25 by mc                #+#    #+#             */
-/*   Updated: 2018/02/26 01:11:43 by mc               ###   ########.fr       */
+/*   Updated: 2018/03/04 13:07:10 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,10 +90,8 @@ char const					*is_there_a_closing_bracket(char const *pattern, \
 */
 t_match						*matchctor(char const *path, size_t len, int esc);
 void						matchdtor(t_match *match);
-void						add_match_to_list(t_match *match, \
-											t_match **match_list);
 int							matchctoradd(char const *path, int escape, \
-											t_match **match_list);
+										int sort, t_match **match_list);
 size_t						list_len(t_match *match_list);
 
 /*
