@@ -77,7 +77,10 @@ void		sh_eval(t_deq *toks, char const *ln)
 	while (ctx.toks->cur < ctx.stop && ctx.toks->cur < ctx.toks->len)
 	{
 		tok = ft_deqbeg(ctx.toks);
-		g_eval[tok->id](&ctx, tok);
+		if (!g_eval[tok->id])
+			sh_toknext(ctx.toks);
+		else
+			g_eval[tok->id](&ctx, tok);
 		if (tok->id == TOK_END)
 			break ;
 	}
