@@ -14,28 +14,41 @@
 
 #include "../ps.h"
 
-static t_bool	jobfini(t_job *job)
+static t_bool	jobnext(t_job *job, int st)
 {
 	t_job	*next;
+	t_andor	andor;
+
+	andor = job->andor;
+	while (andor != ANDOR_NONE)
+	{
+		next = job->next;
+		job->next = NULL;
+		ps_jobdtor(job);
+		ft_memcpy(job, next, sizeof(t_job));
+		free(next);
+		if ((andor == ANDOR_OR && st) || (andor == ANDOR_AND && !st))
+			break ;
+		andor = job->andor;
+	}
+	if (!andor)
+	{
+		ps_jobdtor(job);
+		return (1);
+	}
+	job->bg = 1;
+	ps_joblaunch(job, 0);
+	return (0);
+}
+
+static t_bool	jobfini(t_job *job)
+{
 	int		st;
 
 	st = !job->procs.len ? 1 : job->procs.buf[job->procs.len - 1].status;
 	if (job->bang)
 		st = st ? 0 : 1;
-	if (!(job->andor == ANDOR_OR && st) && !(job->andor == ANDOR_AND && !st))
-	{
-		ps_jobdtor(job);
-		return (1);
-	}
-	next = job->next;
-	job->next = NULL;
-	ps_jobdtor(job);
-	next->idx = job->idx;
-	ft_memcpy(job, next, sizeof(t_job));
-	free(next);
-	job->bg = 1;
-	ps_joblaunch(job, 0);
-	return (0);
+	return (jobnext(job, st));
 }
 
 inline void		ps_poolnotify(void)
