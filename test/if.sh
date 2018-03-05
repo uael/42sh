@@ -29,3 +29,25 @@ else
 fi
 
 if while false; do echo b; done; then echo a; fi
+
+if
+echo a
+then
+if
+echo b
+then
+if
+echo c
+then
+if
+echo d
+then
+if
+echo e
+then
+echo f
+fi
+fi
+fi
+fi
+fi
