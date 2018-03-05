@@ -12,7 +12,7 @@
 
 #include "libft/ds.h"
 
-t_bool					ft_setget(t_set *self, void *key, uint32_t *out)
+t_bool					ft_setget(t_set *self, void *k, uint32_t *out)
 {
 	uint32_t	i;
 	uint32_t	last;
@@ -23,23 +23,24 @@ t_bool					ft_setget(t_set *self, void *key, uint32_t *out)
 		return (0);
 	step = 0;
 	mask = self->cap - 1;
-	i = self->hasher.hash(key) & mask;
+	i = self->hasher.hash(k) & mask;
 	last = i;
-	while (!BUCKET_ISEMPTY(self->bucks, i) && (BUCKET_ISDEL(self->bucks, i) || !
-		self->hasher.eq(*(void **)((char *)self->keys + (i * self->ksz)), key)))
+	while ((self->bucks[i] & BUCKET_EMPTY) != BUCKET_EMPTY &&
+		((self->bucks[i] & BUCKET_DELETED) == BUCKET_DELETED ||
+		!self->hasher.eq(*(void **)((char *)self->keys + (i * self->ksz)), k)))
 	{
 		i = (i + (++step)) & mask;
 		if (i == last)
 			return (0);
 	}
-	if (BUCKET_ISEITHER(self->bucks, i))
+	if (self->bucks[i] & BUCKET_BOTH)
 		return (0);
 	if (out)
 		*out = i;
 	return (1);
 }
 
-static inline uint32_t	setput(t_set *self, void *key)
+static inline uint32_t	setput(t_set *s, void *key)
 {
 	uint32_t i;
 	uint32_t last;
@@ -47,16 +48,16 @@ static inline uint32_t	setput(t_set *self, void *key)
 	uint32_t step;
 
 	step = 0;
-	if (self->occupieds >= self->upper_bound)
-		ft_setrsz(self, self->cap > (self->len << 1)
-			? self->cap - 1 : self->cap + 1);
-	mask = self->cap - 1;
-	i = self->hasher.hash(key) & mask;
+	if (s->occupieds >= s->upper_bound)
+		ft_setrsz(s, s->cap > (s->len << 1)
+			? s->cap - 1 : s->cap + 1);
+	mask = s->cap - 1;
+	i = s->hasher.hash(key) & mask;
 	last = i;
 	while (1)
-		if (self->bucks[i] & BUCKET_EMPTY || (!(self->bucks[i] &
-			BUCKET_DELETED) && self->hasher.eq(*(void **)((char *)self->keys +
-			(i * self->ksz)), key)))
+		if (s->bucks[i] & BUCKET_EMPTY ||
+			(!(s->bucks[i] & BUCKET_DELETED) &&
+			s->hasher.eq(*(void **)((char *)s->keys + (i * s->ksz)), key)))
 			break ;
 		else if ((i = (i + (++step)) & mask) == last)
 			break ;
@@ -70,18 +71,18 @@ t_bool					ft_setput(t_set *self, void *key, uint32_t *out)
 	x = setput(self, key);
 	if (out)
 		*out = x;
-	if (BUCKET_ISEMPTY(self->bucks, x))
+	if ((self->bucks[x] & BUCKET_EMPTY) == BUCKET_EMPTY)
 	{
 		*(void **)((char *)self->keys + (x * self->ksz)) = key;
-		BUCKET_SET_ISBOTH_FALSE(self->bucks, x);
+		self->bucks[x] = 0;
 		++self->len;
 		++self->occupieds;
 		return (1);
 	}
-	else if (BUCKET_ISDEL(self->bucks, x))
+	else if ((self->bucks[x] & BUCKET_DELETED) == BUCKET_DELETED)
 	{
 		*(void **)((char *)self->keys + (x * self->ksz)) = key;
-		BUCKET_SET_ISBOTH_FALSE(self->bucks, x);
+		self->bucks[x] = 0;
 		++self->len;
 		return (1);
 	}

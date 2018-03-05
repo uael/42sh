@@ -52,7 +52,7 @@ inline uint8_t		sh_unscope(void)
 		it = 0;
 		while (it < sh->funcs.cap)
 		{
-			if (BUCKET_ISPOPULATED(sh->funcs.bucks, it))
+			if (!(sh->funcs.bucks[it] & BUCKET_BOTH))
 			{
 				sh_funcset(((char **)sh->funcs.keys)[it],
 					&((t_func *)sh->funcs.vals)[it].body,

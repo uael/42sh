@@ -30,7 +30,7 @@ inline int		sh_vardump(char **envv)
 			ft_putl(STDOUT_FILENO, *envv++);
 	while (it < g_locals->cap)
 	{
-		if (BUCKET_ISPOPULATED(g_locals->bucks, it))
+		if (!(g_locals->bucks[it] & BUCKET_BOTH))
 		{
 			val = ((char **)g_locals->vals)[it];
 			ft_putf(STDOUT_FILENO, ft_strlen(val) ? "%s=%s\n" : "%s=''\n",

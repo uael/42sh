@@ -12,7 +12,7 @@
 
 #include "libft/ds.h"
 
-t_bool					ft_mapget(t_map *self, void *key, uint32_t *out)
+t_bool					ft_mapget(t_map *self, void *k, uint32_t *out)
 {
 	uint32_t i;
 	uint32_t last;
@@ -23,16 +23,17 @@ t_bool					ft_mapget(t_map *self, void *key, uint32_t *out)
 		return (0);
 	step = 0;
 	mask = self->cap - 1;
-	i = self->hasher.hash(key) & mask;
+	i = self->hasher.hash(k) & mask;
 	last = i;
-	while (!BUCKET_ISEMPTY(self->bucks, i) && (BUCKET_ISDEL(self->bucks, i) || !
-		self->hasher.eq(*(void **)((char *)self->keys + (i * self->ksz)), key)))
+	while (((self->bucks)[i] & BUCKET_EMPTY) != BUCKET_EMPTY &&
+		(((self->bucks)[i] & BUCKET_DELETED) == BUCKET_DELETED ||
+		!self->hasher.eq(*(void **)((char *)self->keys + (i * self->ksz)), k)))
 	{
 		i = (i + (++step)) & mask;
 		if (i == last)
 			return (0);
 	}
-	if (BUCKET_ISEITHER(self->bucks, i))
+	if (self->bucks[i] & BUCKET_BOTH)
 		return (0);
 	if (out)
 		*out = i;
@@ -70,18 +71,18 @@ t_bool					ft_mapput(t_map *self, void *key, uint32_t *out)
 	x = mapput(self, key);
 	if (out)
 		*out = x;
-	if (BUCKET_ISEMPTY(self->bucks, x))
+	if ((self->bucks[x] & BUCKET_EMPTY) == BUCKET_EMPTY)
 	{
 		*(void **)((char *)self->keys + (x * self->ksz)) = key;
-		BUCKET_SET_ISBOTH_FALSE(self->bucks, x);
+		self->bucks[x] = 0;
 		++self->len;
 		++self->occupieds;
 		return (1);
 	}
-	else if (BUCKET_ISDEL(self->bucks, x))
+	else if ((self->bucks[x] & BUCKET_DELETED) == BUCKET_DELETED)
 	{
 		*(void **)((char *)self->keys + (x * self->ksz)) = key;
-		BUCKET_SET_ISBOTH_FALSE(self->bucks, x);
+		self->bucks[x] = 0;
 		++self->len;
 		return (1);
 	}
@@ -90,9 +91,9 @@ t_bool					ft_mapput(t_map *self, void *key, uint32_t *out)
 
 t_bool					ft_mapdel(t_map *map, uint32_t it)
 {
-	if (it != map->cap && BUCKET_ISPOPULATED(map->bucks, it))
+	if (it != map->cap && !(map->bucks[it] & BUCKET_BOTH))
 	{
-		BUCKET_SET_ISDEL_TRUE(map->bucks, it);
+		map->bucks[it] |= BUCKET_DELETED;
 		--map->len;
 		return (1);
 	}

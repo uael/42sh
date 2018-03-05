@@ -29,11 +29,11 @@ static char	**makeenv(t_map *vars, t_bool *owned)
 	it = 0;
 	while (it < vars->cap)
 	{
-		if (BUCKET_ISPOPULATED(vars->bucks, it))
+		if (!(vars->bucks[it] & BUCKET_BOTH))
 		{
 			ft_setenv(e, ((char **)vars->keys)[it], ((char **)vars->vals)[it]);
 			ft_pfree((void **)&((char **)vars->vals)[it]);
-			BUCKET_SET_ISDEL_TRUE(vars->bucks, it);
+			vars->bucks[it] |= BUCKET_DELETED;
 			--vars->len;
 		}
 		++it;

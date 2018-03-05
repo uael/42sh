@@ -62,11 +62,11 @@ inline void	sh_evalexport(t_map *vars)
 	it = 0;
 	while (it < vars->cap)
 	{
-		if (BUCKET_ISPOPULATED(vars->bucks, it))
+		if (!(vars->bucks[it] & BUCKET_BOTH))
 		{
 			sh_varset(((char **)vars->keys)[it], ((char **)vars->vals)[it]);
 			ft_pfree((void **)&((char **)vars->vals)[it]);
-			BUCKET_SET_ISDEL_TRUE(vars->bucks, it);
+			vars->bucks[it] |= BUCKET_DELETED;
 			--vars->len;
 		}
 		++it;
