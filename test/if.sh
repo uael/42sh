@@ -27,3 +27,5 @@ elif true; then
 else
   echo foo;
 fi
+
+if while false; do echo b; done; then echo a; fi

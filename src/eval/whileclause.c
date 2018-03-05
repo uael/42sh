@@ -23,7 +23,7 @@ static int		whileclause(t_while *s)
 		s->cond.cur = 0;
 		sh_eval(&s->cond, s->ln);
 	}
-	return (g_sh->status);
+	return (g_sh->status = 0);
 }
 
 static void		whileclausedtor(t_while *s)
