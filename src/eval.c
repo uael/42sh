@@ -640,7 +640,6 @@ static void		evalword(t_ctx *ctx, t_tok *tok)
 static void		evaltest(t_ctx *ctx, t_tok *tok)
 {
 	t_vec	av;
-	char	*bin;
 
 	ft_vecctor(&av, sizeof(char *));
 	if (!ctx->proc)
@@ -650,19 +649,9 @@ static void		evaltest(t_ctx *ctx, t_tok *tok)
 	}
 	tok = sh_toknext(ctx->toks);
 	*(char **)ft_vecpush(&av) = ft_strdup("test");
-	bin = ((char **)av.buf)[0];
 	ctx->proc->envv = makeenv(&ctx->vars, &ctx->proc->ownenv);
-	if (sh_funcget(bin))
-	{
-		ctx->proc->kind = PROC_FN;
-		ctx->proc->u.fn.cb = (t_proccb *)evalfn;
-		ctx->proc->u.fn.dtor = NULL;
-		ctx->proc->u.fn.data = NULL;
-	}
-	else
-		ps_procexe(ctx->proc, "PATH", bin, ctx->proc->envv);
+	ps_procexe(ctx->proc, "PATH", ((char **)av.buf)[0], ctx->proc->envv);
 	makeargv(ctx, tok, &av, 1);
-	sh_toknext(ctx->toks);
 	*(char **)ft_vecpush(&av) = NULL;
 	ctx->proc->argv = av.buf;
 }

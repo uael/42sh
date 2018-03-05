@@ -44,33 +44,28 @@ inline uint8_t		sh_scope(void)
 inline uint8_t		sh_unscope(void)
 {
 	uint32_t	it;
-	t_scope		*scope;
+	t_scope		*sh;
 
 	if (g_shlvl == 0)
-	{
-		sh_err("Already at minimum shell level\n");
-		rl_dtor();
-		sh_exit(EXIT_FAILURE, NULL);
-	}
-	scope = g_sh;
-	--g_shlvl;
-	if (g_shlvl > 0 && !g_sh->child)
+		sh_exit(EXIT_FAILURE, "Already at minimum shell level\n");
+	sh = g_sh;
+	if (--g_shlvl > 0 && !g_sh->child)
 	{
 		g_sh = g_lvls + g_shlvl - 1;
 		it = 0;
-		while (it < scope->funcs.cap)
+		while (it < sh->funcs.cap)
 		{
-			if (BUCKET_ISPOPULATED(scope->funcs.bucks, it))
+			if (BUCKET_ISPOPULATED(sh->funcs.bucks, it))
 			{
-				sh_funcset(((char **)scope->funcs.keys)[it],
-					&((t_func *)scope->funcs.vals)[it].body,
-					((t_func *)scope->funcs.vals)[it].ln);
-				ft_bzero(&((t_func *)scope->funcs.vals)[it].body, sizeof(t_deq));
+				sh_funcset(((char **)sh->funcs.keys)[it],
+					&((t_func *)sh->funcs.vals)[it].body,
+					((t_func *)sh->funcs.vals)[it].ln);
+				ft_bzero(&((t_func *)sh->funcs.vals)[it].body, sizeof(t_deq));
 			}
 			++it;
 		}
 	}
-	ft_mapdtor(&scope->funcs, (t_dtor)ft_pfree, (t_dtor)sh_funcdtor);
+	ft_mapdtor(&sh->funcs, (t_dtor)ft_pfree, (t_dtor)sh_funcdtor);
 	return (g_shlvl);
 }
 
