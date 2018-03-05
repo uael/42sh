@@ -15,16 +15,13 @@
 
 # include <libft.h>
 
-struct s_fn;
-
-typedef struct	s_fn
+typedef struct	s_func
 {
 	char const	*ln;
 	t_deq		body;
-	struct s_fn	*next;
 }				t_func;
 
-extern void		sh_funcdtor(void);
+extern void		sh_funcdtor(t_func *func);
 extern void		sh_funcset(char const *name, t_deq *body, char const *ln);
 extern t_func	*sh_funcget(char const *name);
 

@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdio.h>
 #include "ush/eval.h"
 #include "ush/exp.h"
 #include "ush/func.h"
@@ -186,8 +187,11 @@ static inline int	avcount(char *av[])
 	int c;
 
 	c = 0;
-	while (*av++)
+	while (*av)
+	{
+		++av;
 		++c;
+	}
 	return (c);
 }
 
@@ -198,15 +202,22 @@ static int			evalfn(t_proc *proc)
 	char	*fname;
 
 	av0 = g_sh->av[0];
+	if (!sh_scope())
+		return (g_sh->status);
 	g_sh->av = proc->argv;
 	g_sh->ac = avcount(proc->argv);
 	g_sh->tty = 0;
 	fname = g_sh->av[0];
 	if (!(fn = sh_funcget(fname)))
+	{
+		sh_unscope();
 		return (EXIT_FAILURE);
+	}
 	g_sh->av[0] = av0;
+	fn->body.cur = 0;
 	eval(&fn->body, fn->ln);
 	g_sh->av[0] = fname;
+	sh_unscope();
 	return (g_sh->status);
 }
 
@@ -222,14 +233,16 @@ static void		evalfuncdef(t_ctx *ctx, t_tok *tok)
 	name = sh_toknext(ctx->toks);
 	beg = sh_toknext(ctx->toks);
 	ft_deqctor(&body, sizeof(t_tok));
+	*(t_tok *)ft_deqpush(&body) = *beg;
 	while ((tok = sh_toknext(ctx->toks)))
 	{
+		*(t_tok *)ft_deqpush(&body) = *tok;
 		if (tok->id == beg->id)
 			++depth;
 		else if (tok->id == g_end[beg->id] && !--depth)
 			break ;
-		*(t_tok *)ft_deqpush(&body) = *tok;
 	}
+	((t_tok *)ft_deqpush(&body))->id = TOK_END;
 	sh_toknext(ctx->toks);
 	id = ft_strndup(ctx->ln + name->pos, name->len);
 	sh_funcset(id, &body, ctx->ln);
@@ -239,6 +252,12 @@ static void		evalfuncdef(t_ctx *ctx, t_tok *tok)
 static inline int	subshell(t_subshell *s)
 {
 	g_sh->child = 1;
+	eval(&s->toks, s->ln);
+	return (g_sh->status);
+}
+
+static inline int	bracegrp(t_subshell *s)
+{
 	eval(&s->toks, s->ln);
 	return (g_sh->status);
 }
@@ -303,7 +322,7 @@ static void		evalbracegrp(t_ctx *ctx, t_tok *tok)
 	sh_toknext(ctx->toks);
 	(*(t_tok *)ft_deqpush(&sh.toks)).id = TOK_END;
 	sh.ln = ft_strdup(ctx->ln);
-	ps_procfn(ctx->proc, (t_proccb *)subshell, (t_dtor)subshelldtor,
+	ps_procfn(ctx->proc, (t_proccb *)bracegrp, (t_dtor)subshelldtor,
 		ft_memdup(&sh, sizeof(t_subshell)));
 	ctx->proc->child = 0;
 }

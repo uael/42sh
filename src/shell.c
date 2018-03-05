@@ -14,12 +14,7 @@
 
 #include "ush.h"
 
-#define SH_PROMPT() (g_sh->status==0?" \033[32m❯\033[0m ":" \033[31m❯\033[0m ")
-
-static t_scope		g_lvls[SHLVL_MAX] =
-{
-	{ 0, NULL, 0, 0, 0, 0 }
-};
+static t_scope		g_lvls[SHLVL_MAX];
 t_scope				*g_sh;
 uint8_t				g_shlvl;
 int					g_shfd = -1;
@@ -28,22 +23,53 @@ inline uint8_t		sh_scope(void)
 {
 	if (g_shlvl == SHLVL_MAX)
 	{
-		sh_err("Too many shell level\n");
-		sh_exit(EXIT_FAILURE, NULL);
+		sh_err("Too many recursion level\n");
+		return (0);
+	}
+	if (g_shlvl == 0)
+	{
+		ft_bzero(g_lvls, sizeof(t_scope) * SHLVL_MAX);
+		ft_mapctor(&g_lvls->funcs, g_strhash, sizeof(char *), sizeof(t_func));
 	}
 	g_sh = g_lvls + g_shlvl++;
+	if (g_shlvl > 1)
+	{
+		ft_memcpy(g_sh, g_lvls + g_shlvl - 2, sizeof(t_scope));
+		g_sh->prev = g_lvls + g_shlvl - 2;
+	}
+	ft_mapctor(&g_sh->funcs, g_strhash, sizeof(char *), sizeof(t_func));
 	return (g_shlvl);
 }
 
 inline uint8_t		sh_unscope(void)
 {
-	if (g_shlvl == 1)
+	uint32_t	it;
+	t_scope		*scope;
+
+	if (g_shlvl == 0)
 	{
 		sh_err("Already at minimum shell level\n");
 		rl_dtor();
 		sh_exit(EXIT_FAILURE, NULL);
 	}
-	g_sh = g_lvls + --g_shlvl;
+	scope = g_sh;
+	if (g_shlvl > 1)
+	{
+		g_sh = g_lvls + --g_shlvl - 1;
+		it = 0;
+		while (it < scope->funcs.cap)
+		{
+			if (BUCKET_ISPOPULATED(scope->funcs.bucks, it))
+			{
+				sh_funcset(((char **)scope->funcs.keys)[it],
+					&((t_func *)scope->funcs.vals)[it].body,
+					((t_func *)scope->funcs.vals)[it].ln);
+				ft_bzero(&((t_func *)scope->funcs.vals)[it].body, sizeof(t_deq));
+			}
+			++it;
+		}
+	}
+	ft_mapdtor(&scope->funcs, (t_dtor)ft_pfree, (t_dtor)sh_funcdtor);
 	return (g_shlvl);
 }
 
@@ -79,9 +105,11 @@ inline int			sh_run(int fd, char *ln)
 	char	*it;
 	int		st;
 	char	buf[PATH_MAX];
+	char	*prompt;
 
 	sh_init(fd);
-	while (!(st = rl_getline(fd, sh_prompt(SH_PROMPT(), buf), &ln)))
+	prompt = !g_sh->status ?" \033[32m❯\033[0m " : " \033[31m❯\033[0m ";
+	while (!(st = rl_getline(fd, sh_prompt(prompt, buf), &ln)))
 	{
 		it = ln;
 		st = sh_lex(fd, &it, &ln, eval);
@@ -106,7 +134,7 @@ int					sh_exit(int exitno, char const *fmt, ...)
 	ps_dtor();
 	sh_envdtor();
 	sh_vardtor();
-	sh_funcdtor();
+	sh_unscope();
 	if (fmt)
 	{
 		va_start(ap, fmt);

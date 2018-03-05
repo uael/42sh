@@ -18,7 +18,7 @@
 
 # define SHLVL_MAX 255
 
-typedef struct	s_scope
+typedef struct	s_sc
 {
 	int			ac;
 	char		**av;
@@ -26,6 +26,8 @@ typedef struct	s_scope
 	pid_t		pid;
 	t_bool		tty;
 	t_bool		child;
+	t_map		funcs;
+	struct s_sc	*prev;
 }				t_scope;
 
 extern t_scope	*g_sh;
