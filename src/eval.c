@@ -20,7 +20,6 @@ static t_evalcb	*g_eval[];
 
 static inline int	ifclause(t_if *s)
 {
-	g_sh->child = 1;
 	eval(&s->cond, s->ln);
 	if (!g_sh->status)
 		eval(&s->body, s->ln);
@@ -172,7 +171,7 @@ static void		evalwhile(t_ctx *ctx, t_tok *tok)
 	whilec = whileclausector(ctx->toks, ctx->ln);
 	ps_procfn(ctx->proc, (t_proccb *)whileclause, (t_dtor)whileclausedtor,
 		whilec);
-	ctx->proc->child = 0;
+	ctx->proc->child = (t_bool)(g_sh->child ? 0 : 1);
 }
 
 static uint8_t		g_end[] = {
