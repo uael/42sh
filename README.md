@@ -27,7 +27,7 @@
 
 ## Optional feature highly appreciated:
 - [x] Job Control and builtins `job`, `fg`, `bg` and operand `&`.
-- [X] Shell Scripting: bang (!), variable assignements, brace group, if, while and functions
+- [X] Shell Scripting: bang (!), variable assignements, brace group, if, while, for and functions
 
 ## Bonuses
 - [X] Advanced dollar expansion `$(..)`, `$((..))`, `$[..]`
