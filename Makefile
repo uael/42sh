@@ -17,7 +17,7 @@ WWFLAGS = $(WFLAGS) -Wpedantic -Wshadow -Wconversion -Wcast-align \
   -Wmissing-declarations -Wfloat-equal -Wbad-function-cast -Wundef \
   -Waggregate-return -Wstrict-overflow=5 -Wold-style-definition -Wpadded \
   -Wredundant-decls -Wall -Werror -Wextra
-RCFLAGS = $(WFLAGS) -O2 -fomit-frame-pointer
+RCFLAGS = $(WFLAGS) -O2
 DCFLAGS = $(WFLAGS) -g3 -DDEBUG
 SCFLAGS = -fsanitize=address,undefined -ferror-limit=5 $(DCFLAGS)
 CC ?= gcc
