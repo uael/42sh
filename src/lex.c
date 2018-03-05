@@ -96,7 +96,7 @@ int					sh_lex(int fd, char **it, char **ln, t_lexcb *cb)
 			return (ft_dtor(OUF, (t_dtor)ft_deqdtor, &deq, NULL));
 		}
 		cb(&deq, *src.ln);
-    break ;
+		break ;
 	}
 	st == OUF ? (g_sh->status = 1) : 0;
 	return (ft_dtor(st, (t_dtor)ft_deqdtor, &deq, NULL));
