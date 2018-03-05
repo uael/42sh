@@ -38,6 +38,8 @@ inline void			sh_funcset(char const *name, t_deq *body, char const *ln)
 		return (dname ? free(dname) : (void)0);
 	fn = &((t_func *)g_sh->funcs.vals)[it];
 	ft_deqdtor(&fn->body, NULL);
+	if (fn->ln)
+		free((void *)fn->ln);
 	fn->body = *body;
 	fn->ln = ft_strdup(ln);
 	ft_bzero(body, sizeof(t_deq));

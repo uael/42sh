@@ -53,9 +53,10 @@ inline uint8_t		sh_unscope(void)
 		sh_exit(EXIT_FAILURE, NULL);
 	}
 	scope = g_sh;
-	if (g_shlvl > 1)
+	--g_shlvl;
+	if (g_shlvl > 0 && !g_sh->child)
 	{
-		g_sh = g_lvls + --g_shlvl - 1;
+		g_sh = g_lvls + g_shlvl - 1;
 		it = 0;
 		while (it < scope->funcs.cap)
 		{
