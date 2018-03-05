@@ -12,8 +12,7 @@
 
 #include "ush/lex.h"
 
-
-inline int			sh_lexline(t_src *src, t_deq *toks, t_bool new)
+inline int	sh_lexline(t_src *src, t_deq *toks, t_bool new)
 {
 	int		st;
 	t_tok	*tok;

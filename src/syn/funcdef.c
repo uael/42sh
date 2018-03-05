@@ -16,7 +16,7 @@ inline int	sh_synfuncdef(t_src *s, t_deq *toks, size_t *idx)
 {
 	int		st;
 	t_tok	*tok;
-	
+
 	if (++*idx >= toks->len)
 		return (NOP);
 	if (!sh_tokis(tok = ft_deqat(toks, *idx), TOKS_WORD))

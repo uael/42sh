@@ -58,9 +58,9 @@ static t_while	*whileclausector(t_deq *toks, char const *ln)
 	whilec = ft_malloc(sizeof(t_while));
 	ft_bzero(whilec, sizeof(t_while));
 	ft_deqctor(&whilec->cond, sizeof(t_tok));
-	pushuntila(&whilec->cond, toks, (char []){TOK_DO, '\0'});
+	pushuntila(&whilec->cond, toks, (char[]){TOK_DO, '\0'});
 	ft_deqctor(&whilec->body, sizeof(t_tok));
-	pushuntila(&whilec->body, toks, (char []){TOK_DONE, '\0'});
+	pushuntila(&whilec->body, toks, (char[]){TOK_DONE, '\0'});
 	sh_toknext(toks);
 	whilec->ln = ft_strdup(ln);
 	return (whilec);

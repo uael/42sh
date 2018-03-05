@@ -32,24 +32,40 @@ static inline int	tokenize(t_src *s, t_tok *tok)
 	return (sh_synerr(*s->ln, *s->it, "Unexpected token `%c'", **s->it));
 }
 
+inline int			sh_lexbslash(t_src *s)
+{
+	int st;
+
+	if (**s->it == '\\' &&
+		((sh_isreol(*s->it + 1) && !*(*s->it + 2)) ||
+		((sh_isweol(*s->it + 1) && !*(*s->it + 3)))))
+	{
+		*s->it += sh_isreol(*s->it + 1) ? 2 : 3;
+		if (s->fd >= 0 && (st = rl_catline(s->fd, -2, s->ln, s->it)))
+			return (st);
+	}
+	return (YEP);
+}
+
 inline int			sh_tokenize(t_src *s, t_tok *tok)
 {
 	int st;
 
 	while (1)
-		if (**s->it == '\\' && ((ISREOL(*s->it + 1) && !*(*s->it + 2)) ||
-			((ISWEOL(*s->it + 1) && !*(*s->it + 3)))))
+		if (**s->it == '\\' &&
+			((sh_isreol(*s->it + 1) && !*(*s->it + 2)) ||
+			((sh_isweol(*s->it + 1) && !*(*s->it + 3)))))
 		{
-			*s->it += ISREOL(*s->it + 1) ? 2 : 3;
+			*s->it += sh_isreol(*s->it + 1) ? 2 : 3;
 			if (s->fd >= 0 && (st = rl_catline(s->fd, -2, s->ln, s->it)))
 				return (st);
 		}
 		else if (**s->it && ft_strchr(sh_ifs(), **s->it))
 			++*s->it;
-		else if (ISEOL(*s->it))
+		else if (sh_iseol(*s->it))
 			return (((tokpos(tok, (*s->it)++, *s->ln)->id = '\n')) & 0);
 		else if (**s->it == '#')
-			while (**s->it && !ISEOL(*s->it))
+			while (**s->it && !sh_iseol(*s->it))
 				++*s->it;
 		else if (!**s->it)
 			return ((tokpos(tok, *s->it, *s->ln)->id = TOK_END) & 0);
@@ -60,7 +76,7 @@ inline int			sh_tokenize(t_src *s, t_tok *tok)
 int					sh_lex(int fd, char **it, char **ln, t_lexcb *cb)
 {
 	t_src	src;
-	t_deq	toks;
+	t_deq	deq;
 	t_tok	*tok;
 	int		st;
 
@@ -69,20 +85,19 @@ int					sh_lex(int fd, char **it, char **ln, t_lexcb *cb)
 	src.fd = fd;
 	src.it = it;
 	src.ln = ln ? ln : it;
-	ft_deqctor(&toks, sizeof(t_tok));
-	while (!(st = sh_lexline(&src, &toks, 0)))
+	ft_deqctor(&deq, sizeof(t_tok));
+	while (!(st = sh_lexline(&src, &deq, 0)))
 	{
-		if (ft_deqlen(&toks) == 1 && (tok = sh_tokpeek(&toks)) &&
-			tok->id == '\n')
+		if (ft_deqlen(&deq) == 1 && (tok = sh_tokpeek(&deq)) && tok->id == '\n')
 			continue ;
-		if (sh_syncheck(&src, &toks))
+		if (sh_syncheck(&src, &deq))
 		{
 			g_sh->status = 1;
-			return (ft_dtor(OUF, (t_dtor)ft_deqdtor, &toks, NULL));
+			return (ft_dtor(OUF, (t_dtor)ft_deqdtor, &deq, NULL));
 		}
-		cb(&toks, *src.ln);
+		cb(&deq, *src.ln);
 	}
 	if (st == OUF)
 		g_sh->status = 1;
-	return (ft_dtor(st, (t_dtor)ft_deqdtor, &toks, NULL));
+	return (ft_dtor(st, (t_dtor)ft_deqdtor, &deq, NULL));
 }

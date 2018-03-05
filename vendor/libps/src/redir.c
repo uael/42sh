@@ -27,6 +27,21 @@ static void		redirectscope(t_redirs *redirs, int *scope)
 	}
 }
 
+static int		aggregate(t_redir *redir)
+{
+	if (!ft_strcmp("-", redir->word))
+		close(redir->from);
+	else if (!ft_isdigit(*redir->word) || ft_strlen(redir->word) != 1)
+		return (g_errcb("%s: ambiguous redirect\n", redir->word));
+	else
+	{
+		dup2(redir->fd = *redir->word - '0', redir->from);
+		if (redir->from2 >= 0)
+			dup2(redir->fd, redir->from2);
+	}
+	return (YEP);
+}
+
 inline int		ps_redirect(t_redirs *redirs, int *scope)
 {
 	size_t	i;
@@ -47,16 +62,8 @@ inline int		ps_redirect(t_redirs *redirs, int *scope)
 			if (redir->from2 >= 0)
 				dup2(redir->fd, redir->from2);
 		}
-		else if (!ft_strcmp("-", redir->word))
-			close(redir->from);
-		else if (!ft_isdigit(*redir->word) || ft_strlen(redir->word) != 1)
-			return (g_errcb("%s: ambiguous redirect\n", redir->word));
-		else
-		{
-			dup2(redir->fd = *redir->word - '0', redir->from);
-			if (redir->from2 >= 0)
-				dup2(redir->fd, redir->from2);
-		}
+		else if (aggregate(redir))
+			return (OUF);
 	}
 	return (YEP);
 }

@@ -82,14 +82,14 @@ inline int				sh_biexport(int ac, char **a, char **envv)
 		if (*a[i] == '=')
 			return (ft_retf(EXIT_FAILURE, N"%s: bad assignment\n", a[i]));
 		else if ((val = ft_strchr(a[i], '=')))
-			if (!sh_isname(a[i]))
+			if (!sh_isident(a[i], val - a[i]))
 				return (ft_retf(1, N"%s: not an identifier\n", a[i]));
 			else
 			{
 				*val = '\0';
 				export(a[i], ++val, envv);
 			}
-		else if (sh_isname(a[i]))
+		else if (sh_isident(a[i], ft_strlen(a[i])))
 			export(a[i], NULL, envv);
 		else
 			return (ft_retf(EXIT_FAILURE, N"%s: Invalid argument\n", a[i]));

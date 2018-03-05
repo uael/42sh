@@ -64,7 +64,7 @@ inline static void	readarg(int ac, char **av, char *ln, int i)
 	{
 		if (!(chr = ft_strmchr(ln, " \t\n")))
 		{
-			sh_isname(av[i]) ? sh_varset(av[i], ln) : 0;
+			sh_isident(av[i], ft_strlen(av[i])) ? sh_varset(av[i], ln) : 0;
 			break ;
 		}
 		if (i + 1 < ac)
@@ -73,7 +73,7 @@ inline static void	readarg(int ac, char **av, char *ln, int i)
 			while (ft_strchr(" \t\n", *chr))
 				++chr;
 		}
-		sh_isname(av[i]) ? sh_varset(av[i++], ln) : 0;
+		sh_isident(av[i], ft_strlen(av[i])) ? sh_varset(av[i++], ln) : 0;
 		ln = chr;
 	}
 }

@@ -26,30 +26,17 @@ inline t_bool	sh_isident(char const *word, size_t n)
 	return (1);
 }
 
-inline t_bool	sh_isname(char *word)
+inline t_bool	sh_iseol(char const *it)
 {
-	if (!ft_isalpha(*word) && *word != '_')
-		return (0);
-	++word;
-	while (*word && *word != '=')
-	{
-		if (!ft_isalnum(*word) && *word != '_')
-			return (0);
-		++word;
-	}
-	return (1);
+	return ((t_bool)(sh_isreol(it) || sh_isweol(it)));
 }
 
-inline int		sh_lexbslash(t_src *s)
+inline t_bool	sh_isreol(char const *it)
 {
-	int st;
+	return ((t_bool)(*it == '\n'));
+}
 
-	if (**s->it == '\\' && ((ISREOL(*s->it + 1) && !*(*s->it + 2)) ||
-		((ISWEOL(*s->it + 1) && !*(*s->it + 3)))))
-	{
-		*s->it += ISREOL(*s->it + 1) ? 2 : 3;
-		if (s->fd >= 0 && (st = rl_catline(s->fd, -2, s->ln, s->it)))
-			return (st);
-	}
-	return (YEP);
+inline t_bool	sh_isweol(char const *it)
+{
+	return ((t_bool)(*it == '\r' && *(it + 1) == '\n'));
 }

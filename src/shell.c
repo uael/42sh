@@ -101,7 +101,7 @@ inline int			sh_run(int fd, char *ln)
 	char	*prompt;
 
 	sh_init(fd);
-	prompt = !g_sh->status ?" \033[32m❯\033[0m " : " \033[31m❯\033[0m ";
+	prompt = !g_sh->status ? " \033[32m❯\033[0m " : " \033[31m❯\033[0m ";
 	while (!(st = rl_getline(fd, sh_prompt(prompt, buf), &ln)))
 	{
 		it = ln;

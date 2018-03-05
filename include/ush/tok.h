@@ -19,23 +19,15 @@
 # include "err.h"
 # include "var.h"
 
-/* TODO: to remove { */
-# define ISREOL(IT) (*(IT) == '\n')
-# define ISWEOL(IT) (*(IT) == '\r' && *((IT) + 1) == '\n')
-# define ISEOL(IT) (ISREOL(IT) || ISWEOL(IT))
-# define TOK_ISWORD(I) ((I)==TOK_WORD)
-# define LEXE(ST, FD) ((ST) < 0 || (FD) < 0 || !g_sh->tty)
-/* TODO: to remove } */
-
-#define TOKS_REDIR (1 << 0)
-#define TOKS_WORD (1 << 1)
-#define TOKS_END (1 << 2)
-#define TOKS_LEFT (1 << 3)
-#define TOKS_RIGHT (1 << 4)
-#define TOKS_IDENT (1 << 5)
-#define TOKS_POSTFIX (1 << 6)
-#define TOKS_PREFIX (1 << 7)
-#define TOKS_OPERATOR (1 << 8)
+# define TOKS_REDIR (1 << 0)
+# define TOKS_WORD (1 << 1)
+# define TOKS_END (1 << 2)
+# define TOKS_LEFT (1 << 3)
+# define TOKS_RIGHT (1 << 4)
+# define TOKS_IDENT (1 << 5)
+# define TOKS_POSTFIX (1 << 6)
+# define TOKS_PREFIX (1 << 7)
+# define TOKS_OPERATOR (1 << 8)
 
 enum			e_tok
 {

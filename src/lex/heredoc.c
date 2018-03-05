@@ -18,11 +18,12 @@
 static inline int	heredoc(t_src *s, t_tok *tok, char const *eof, size_t eofl)
 {
 	++tok->len;
-	if ((!**s->it || ISEOL(*s->it)) && (tok->len == eofl + 1 ||
-		(tok->len > eofl && ISREOL(*s->ln + tok->pos + tok->len - (eofl + 2))))
+	if ((!**s->it || sh_iseol(*s->it)) && (tok->len == eofl + 1 ||
+		(tok->len > eofl &&
+			sh_isreol(*s->ln + tok->pos + tok->len - (eofl + 2))))
 		&& !ft_strncmp(*s->ln + tok->pos + tok->len - (eofl + 1), eof, eofl))
 	{
-		tok->len -= eofl + ISREOL(*s->it);
+		tok->len -= eofl + sh_isreol(*s->it);
 		++*s->it;
 		return (YEP);
 	}
@@ -44,13 +45,13 @@ inline int			sh_lexheredoc(t_src *s, t_tok *tok)
 	while (!st)
 		if (!**s->it && (s->fd < 0 ||
 			((st = rl_catline(s->fd, 0, s->ln, s->it)) && st != OUF)))
-			st = LEXE(st, s->fd) ?
+			st = (st < 0 || s->fd < 0 || !g_sh->tty) ?
 				sh_synerr(*s->ln, *s->it, UEE"`%s'", eof) : OUF;
 		else if (!**s->it)
 			break ;
 		else
 		{
-			if (ISWEOL(*s->it))
+			if (sh_isweol(*s->it))
 				++*s->it;
 			if (!heredoc(s, tok, eof, eofl))
 				break ;

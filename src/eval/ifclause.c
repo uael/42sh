@@ -61,14 +61,14 @@ static t_if	*ifclausector(t_deq *toks, char const *ln)
 	ifc = ft_malloc(sizeof(t_if));
 	ft_bzero(ifc, sizeof(t_if));
 	ft_deqctor(&ifc->cond, sizeof(t_tok));
-	pushuntilb(&ifc->cond, toks, (char []){TOK_THEN, '\0'});
+	pushuntilb(&ifc->cond, toks, (char[]){TOK_THEN, '\0'});
 	ft_deqctor(&ifc->body, sizeof(t_tok));
-	pushuntilb(&ifc->body, toks, (char []){TOK_ELSE, TOK_ELIF, TOK_FI, '\0'});
+	pushuntilb(&ifc->body, toks, (char[]){TOK_ELSE, TOK_ELIF, TOK_FI, '\0'});
 	if ((tok = sh_tokpeek(toks))->id == TOK_ELSE)
 	{
 		ifc->elsekind = ELSE_ELSE;
 		ft_deqctor(&ifc->elsepart.body, sizeof(t_tok));
-		pushuntilb(&ifc->elsepart.body, toks, (char []){TOK_FI, '\0'});
+		pushuntilb(&ifc->elsepart.body, toks, (char[]){TOK_FI, '\0'});
 		sh_toknext(toks);
 	}
 	else if (tok->id == TOK_ELIF)

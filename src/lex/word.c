@@ -15,24 +15,10 @@
 
 #define UEC "parse error: Unexpected EOF while looking for matching `%c'"
 
-static inline uint8_t	wordid(char const *s, size_t l)
+static inline uint8_t	wordid2(char const *s, size_t l)
 {
 	char *eq;
 
-	if (l == 1 && *s == '{')
-		return ('{');
-	if (l == 1 && *s == '}')
-		return ('}');
-	if (l == 1 && *s == '!')
-		return ('!');
-	if (l == 2 && !ft_strncmp("if", s, 2))
-		return (TOK_IF);
-	if (l == 2 && !ft_strncmp("[[", s, 2))
-		return (TOK_DLBRA);
-	if (l == 2 && !ft_strncmp("]]", s, 2))
-		return (TOK_DRBRA);
-	if (l == 2 && !ft_strncmp("fi", s, 2))
-		return (TOK_FI);
 	if (l >= 2 && !ft_strncmp("do", s, 2))
 	{
 		if (l == 2)
@@ -56,20 +42,44 @@ static inline uint8_t	wordid(char const *s, size_t l)
 	return (TOK_WORD);
 }
 
+static inline uint8_t	wordid(char const *s, size_t l)
+{
+	if (l == 1 && *s == '{')
+		return ('{');
+	if (l == 1 && *s == '}')
+		return ('}');
+	if (l == 1 && *s == '!')
+		return ('!');
+	if (l == 2 && !ft_strncmp("if", s, 2))
+		return (TOK_IF);
+	if (l == 2 && !ft_strncmp("[[", s, 2))
+		return (TOK_DLBRA);
+	if (l == 2 && !ft_strncmp("]]", s, 2))
+		return (TOK_DRBRA);
+	if (l == 2 && !ft_strncmp("fi", s, 2))
+		return (TOK_FI);
+	return (wordid2(s, l));
+}
+
+static inline int		showe(int st, t_src *s)
+{
+	return (st < 0 || s->fd < 0 || !g_sh->tty);
+}
+
 static inline int		quote(t_src *s, t_tok *tok, char q)
 {
-	int		st;
-	int		bs;
+	int bs;
+	int st;
 
 	bs = 0;
 	st = 0;
-	(void)(++tok->len && (q = *(*s->it)++));
+	(void)((q = *(*s->it)++) && ++tok->len);
 	while (!st)
 		if (!bs && q == '"' && (st = sh_lexbslash(s)))
 			return (st);
 		else if (!**s->it && (s->fd < 0 ||
 			(st = rl_catline(s->fd, 0, s->ln, s->it)) || !**s->it))
-			return (LEXE(st, s->fd) ? sh_synerr(*s->ln, *s->it, UEC, q) : OUF);
+			return (showe(st, s) ? sh_synerr(*s->ln, *s->it, UEC, q) : OUF);
 		else if (bs && q != '\'')
 			(void)((++tok->len && ++*s->it) && (bs = 0));
 		else if (**s->it == q && (++tok->len && ++*s->it))
@@ -86,8 +96,8 @@ static inline int		quote(t_src *s, t_tok *tok, char q)
 
 inline int				sh_lexword(t_src *s, t_tok *tok)
 {
-	int		st;
-	int		bs;
+	int st;
+	int bs;
 
 	st = 0;
 	bs = 0;

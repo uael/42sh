@@ -81,7 +81,7 @@ static char	*evalbin(t_ctx *ctx, t_tok *tok, t_vec *av)
 		}
 		else
 			break ;
-	return  (av->len ? ((char **)av->buf)[0] : "true");
+	return (av->len ? ((char **)av->buf)[0] : "true");
 }
 
 inline void	sh_evalword(t_ctx *ctx, t_tok *tok)
