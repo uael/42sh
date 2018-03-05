@@ -12,44 +12,81 @@
 
 #include "ush/eval.h"
 
-#define UNEX "syntax error: Unexpected token `%s'"
-
-static inline int	evalfini(int ret, t_deq *toks)
+static void	evalsemicolon(t_ctx *ctx, t_tok *tok)
 {
-	t_tok	*tok;
-
-	if (ret > 0)
-	{
-		tok = sh_tokpeek(toks);
-		while (tok)
-			if (tok->id != TOK_EOL && tok->id != TOK_END)
-				tok = sh_toknext(toks);
-			else
-			{
-				sh_toknext(toks);
-				break ;
-			}
-	}
-	toks->cur = toks->len;
-	return (ret ? NOP : YEP);
+	(void)tok;
+	sh_toknext(ctx->toks);
+	if (!ctx->root->procs.len)
+		return ;
+	sh_evalexport(&ctx->vars);
+	g_sh->status = ps_joblaunch(ctx->root, 1);
+	ps_jobctor(ctx->root);
+	ctx->proc = NULL;
 }
 
-inline int			sh_eval(int fd, t_deq *toks, char **ln)
+static void	evalampersand(t_ctx *ctx, t_tok *tok)
 {
-	t_tok	*tok;
-	int		st;
+	(void)tok;
+	sh_evalexport(&ctx->vars);
+	sh_toknext(ctx->toks);
+	g_sh->status = ps_joblaunch(ps_poolpush(ctx->root), 0);
+	ps_jobctor(ctx->root);
+	ctx->proc = NULL;
+}
 
-	st = 0;
-	while (!st)
+t_evalcb	*g_eval[] = {
+	[TOK_IF] = sh_evalif,
+	[TOK_WHILE] = sh_evalwhile,
+	[TOK_FOR] = sh_evalfor,
+	[TOK_FUNCTION] = sh_evalfuncdef,
+	[TOK_AMPR] = sh_evalampr,
+	[TOK_CMP] = sh_evalcmp,
+	[TOK_HEREDOC] = sh_evalheredoc,
+	[TOK_HERENOW] = sh_evalherenow,
+	[TOK_LAMP] = sh_evallamp,
+	[TOK_RAMP] = sh_evalramp,
+	[TOK_RAOUT] = sh_evalraout,
+	[TOK_WORD] = sh_evalword,
+	[TOK_DLBRA] = sh_evaltest,
+	[TOK_ASSIGN] = sh_evalassign,
+	[TOK_LAND] = sh_evaland,
+	[TOK_LOR] = sh_evalor,
+	[TOK_PIPEAND] = sh_evalpipeand,
+	['!'] = sh_evalbang,
+	['('] = sh_evalsubshell,
+	['{'] = sh_evalbracegrp,
+	['<'] = sh_evalrin,
+	['>'] = sh_evalrout,
+	['|'] = sh_evalpipe,
+	[';'] = evalsemicolon,
+	['\n'] = evalsemicolon,
+	['\0'] = evalsemicolon,
+	['&'] = evalampersand,
+};
+
+void		sh_eval(t_deq *toks, char const *ln)
+{
+	t_ctx	ctx;
+	t_tok	*tok;
+	t_job	job;
+
+	ft_bzero(&ctx, sizeof(t_ctx));
+	ps_jobctor(ctx.root = &job);
+	ft_mapctor(&ctx.vars, g_strhash, sizeof(char *), sizeof(char *));
+	ctx.job = ctx.root;
+	ctx.ln = ln;
+	ctx.stop = toks->len;
+	ctx.toks = toks;
+	while (ctx.toks->cur < ctx.stop && ctx.toks->cur < ctx.toks->len)
 	{
-		sh_evallinebreak(toks);
-		if (!sh_tokpeek(toks))
-			return (evalfini(YEP, toks));
-		if ((st = sh_evallist(fd, toks, ln)) == OUF)
-			return (evalfini(OUF, toks));
-		if (!(tok = sh_tokpeek(toks)) || tok->id == TOK_END)
-			return (evalfini(YEP, toks));
+		tok = ft_deqbeg(ctx.toks);
+		if (!g_eval[tok->id])
+			sh_toknext(ctx.toks);
+		else
+			g_eval[tok->id](&ctx, tok);
+		if (tok->id == TOK_END)
+			break ;
 	}
-	tok = sh_tokpeek(toks);
-	return (evalfini(sh_evalerr(*ln, tok, UNEX, sh_tokstr(tok)), toks));
+	ps_jobdtor(ctx.root);
+	ft_mapdtor(&ctx.vars, (t_dtor)ft_pfree, (t_dtor)ft_pfree);
 }

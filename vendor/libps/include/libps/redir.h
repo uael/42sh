@@ -17,8 +17,12 @@
 
 typedef struct	s_redir
 {
-	int			to;
+	int			kind;
+	char		*word;
 	int			from;
+	int			from2;
+	int			flags;
+	int			fd;
 }				t_redir;
 
 typedef struct	s_redirs

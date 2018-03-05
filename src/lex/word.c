@@ -13,23 +13,77 @@
 #include "ush/lex.h"
 #include "ush/shell.h"
 
-#define ISQUOTE(IT) (*(IT) == '\'' || *(IT) == '"' || *(IT) == '`')
 #define UEC "parse error: Unexpected EOF while looking for matching `%c'"
 
-static inline int	quote(t_src *s, t_tok *tok, char q)
+static inline uint8_t	wordid2(char const *s, size_t l)
 {
-	int		st;
-	int		bs;
+	char *eq;
+
+	if (l >= 2 && !ft_strncmp("do", s, 2))
+	{
+		if (l == 2)
+			return (TOK_DO);
+		if (l < 4 || ft_strncmp("ne", s + 2, 2))
+			return (TOK_WORD);
+		return (TOK_DONE);
+	}
+	if (l == 4 && !ft_strncmp("elif", s, 4))
+		return (TOK_ELIF);
+	if (l == 4 && !ft_strncmp("else", s, 4))
+		return (TOK_ELSE);
+	if (l == 4 && !ft_strncmp("then", s, 4))
+		return (TOK_THEN);
+	if (l == 5 && !ft_strncmp("while", s, 5))
+		return (TOK_WHILE);
+	if (l == 8 && !ft_strncmp("function", s, 8))
+		return (TOK_FUNCTION);
+	if ((eq = ft_strnchr(s, '=', l)) && (eq > s) && sh_isident(s, eq - s))
+		return (TOK_ASSIGN);
+	return (TOK_WORD);
+}
+
+static inline uint8_t	wordid(char const *s, size_t l)
+{
+	if (l == 1 && *s == '{')
+		return ('{');
+	if (l == 1 && *s == '}')
+		return ('}');
+	if (l == 1 && *s == '!')
+		return ('!');
+	if (l == 2 && !ft_strncmp("if", s, 2))
+		return (TOK_IF);
+	if (l == 2 && !ft_strncmp("[[", s, 2))
+		return (TOK_DLBRA);
+	if (l == 2 && !ft_strncmp("]]", s, 2))
+		return (TOK_DRBRA);
+	if (l == 2 && !ft_strncmp("fi", s, 2))
+		return (TOK_FI);
+	if (l == 3 && !ft_strncmp("for", s, 3))
+		return (TOK_FOR);
+	if (l == 2 && !ft_strncmp("in", s, 2))
+		return (TOK_IN);
+	return (wordid2(s, l));
+}
+
+static inline int		showe(int st, t_src *s)
+{
+	return (st < 0 || s->fd < 0 || !g_sh->tty);
+}
+
+static inline int		quote(t_src *s, t_tok *tok, char q)
+{
+	int bs;
+	int st;
 
 	bs = 0;
 	st = 0;
-	(void)(++tok->len && (q = *(*s->it)++));
+	(void)((q = *(*s->it)++) && ++tok->len);
 	while (!st)
 		if (!bs && q == '"' && (st = sh_lexbslash(s)))
 			return (st);
 		else if (!**s->it && (s->fd < 0 ||
 			(st = rl_catline(s->fd, 0, s->ln, s->it)) || !**s->it))
-			return (LEXE(st, s->fd) ? sh_synerr(*s->ln, *s->it, UEC, q) : OUF);
+			return (showe(st, s) ? sh_synerr(*s->ln, *s->it, UEC, q) : OUF);
 		else if (bs && q != '\'')
 			(void)((++tok->len && ++*s->it) && (bs = 0));
 		else if (**s->it == q && (++tok->len && ++*s->it))
@@ -44,10 +98,10 @@ static inline int	quote(t_src *s, t_tok *tok, char q)
 	return (st);
 }
 
-inline int			sh_lexword(t_src *s, t_tok *tok)
+inline int				sh_lexword(t_src *s, t_tok *tok)
 {
-	int		st;
-	int		bs;
+	int st;
+	int bs;
 
 	st = 0;
 	bs = 0;
@@ -57,7 +111,7 @@ inline int			sh_lexword(t_src *s, t_tok *tok)
 			break ;
 		else if (bs)
 			(void)((++tok->len && ++*s->it) && (bs = 0));
-		else if (!(bs = **s->it == '\\') && ISQUOTE(*s->it))
+		else if (!(bs = **s->it == '\\') && ft_strchr("\"'`", **s->it))
 			st = quote(s, tok, 0);
 		else if (**s->it == '$' && *(*s->it + 1) &&
 			!ft_isspace(*(*s->it + 1)) &&
@@ -67,6 +121,6 @@ inline int			sh_lexword(t_src *s, t_tok *tok)
 			(void)(++tok->len && ++*s->it);
 	if (st || !tok->len)
 		return (st ? st : NOP);
-	tok->id = TOK_WORD;
+	tok->id = wordid(*s->ln + tok->pos, tok->len);
 	return (st);
 }

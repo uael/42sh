@@ -19,9 +19,15 @@
 # include "err.h"
 # include "var.h"
 
-# define ISREOL(IT) (*(IT) == '\n')
-# define ISWEOL(IT) (*(IT) == '\r' && *((IT) + 1) == '\n')
-# define ISEOL(IT) (ISREOL(IT) || ISWEOL(IT))
+# define TOKS_REDIR (1 << 0)
+# define TOKS_WORD (1 << 1)
+# define TOKS_END (1 << 2)
+# define TOKS_LEFT (1 << 3)
+# define TOKS_RIGHT (1 << 4)
+# define TOKS_IDENT (1 << 5)
+# define TOKS_POSTFIX (1 << 6)
+# define TOKS_PREFIX (1 << 7)
+# define TOKS_OPERATOR (1 << 8)
 
 enum			e_tok
 {
@@ -32,12 +38,12 @@ enum			e_tok
 	TOK_RAMP,
 	TOK_CMP,
 	TOK_EOL = '\n',
-	TOK_RPOUT = TOK_EOL + 1,
+	TOK_PIPEAND = TOK_EOL + 1,
 	TOK_AMPR,
 	TOK_LAND,
 	TOK_LOR,
 	TOK_WORD,
-	TOK_BANG,
+	TOK_ASSIGN,
 	TOK_FI,
 	TOK_DONE,
 	TOK_DRBRA,
@@ -48,7 +54,11 @@ enum			e_tok
 	TOK_IF,
 	TOK_WHILE,
 	TOK_DLBRA,
+	TOK_FOR,
+	TOK_IN,
+	TOK_HERENOW,
 	TOK_FUNCTION,
+	TOK_BANG = '!',
 	TOK_AMP = '&',
 	TOK_LPAR = '(',
 	TOK_RPAR = ')',
@@ -65,12 +75,12 @@ typedef struct	s_tok
 	uint16_t	len;
 	uint16_t	pos;
 	uint8_t		id;
-	uint8_t		padding[3];
 }				t_tok;
 
+extern t_bool	sh_tokidis(uint8_t id, uint16_t flags);
+extern t_bool	sh_tokis(t_tok *tok, uint16_t flags);
 extern char		*sh_tokstr(t_tok *tok);
 extern t_tok	*sh_tokpeek(t_deq *toks);
 extern t_tok	*sh_toknext(t_deq *toks);
-extern t_tok	*sh_tokpos(t_tok *tok, char const *it, char const *ln);
 
 #endif

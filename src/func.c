@@ -11,29 +11,13 @@
 /* ************************************************************************** */
 
 #include "ush/func.h"
+#include "ush/shell.h"
 
-static t_map	g_funcs_stack =
+inline void			sh_funcdtor(t_func *func)
 {
-	0, 0, 0, 0, NULL, { (t_hashfn *)ft_strhash, (t_eqfn *)ft_streq },
-	sizeof(char *), sizeof(t_func), NULL, NULL
-};
-static t_map	*g_funcs = &g_funcs_stack;
-
-static inline void	funcdtor(t_func *func)
-{
-	if (func->next)
-	{
-		funcdtor(func->next);
-		free(func->next);
-	}
 	free((void *)func->ln);
 	ft_deqdtor(&func->body, NULL);
 	ft_bzero(func, sizeof(t_func));
-}
-
-inline void			sh_funcdtor(void)
-{
-	ft_mapdtor(g_funcs, (t_dtor)ft_pfree, (t_dtor)funcdtor);
 }
 
 inline void			sh_funcset(char const *name, t_deq *body, char const *ln)
@@ -44,22 +28,18 @@ inline void			sh_funcset(char const *name, t_deq *body, char const *ln)
 
 	if (!body)
 	{
-		if (ft_mapget(g_funcs, (void *)name, &it))
-			ft_mapdel(g_funcs, it);
+		if (ft_mapget(&g_sh->funcs, (void *)name, &it))
+			ft_mapdel(&g_sh->funcs, it);
 		return ;
 	}
 	dname = NULL;
-	if (!ft_mapget(g_funcs, (void *)name, &it) &&
-		!ft_mapput(g_funcs, dname = ft_strdup(name), &it))
+	if (!ft_mapget(&g_sh->funcs, (void *)name, &it) &&
+		!ft_mapput(&g_sh->funcs, dname = ft_strdup(name), &it))
 		return (dname ? free(dname) : (void)0);
-	fn = &((t_func *)g_funcs->vals)[it];
-	while (fn->next)
-		fn = fn->next;
+	fn = &((t_func *)g_sh->funcs.vals)[it];
+	ft_deqdtor(&fn->body, NULL);
 	if (fn->ln)
-	{
-		ft_bzero(fn->next = ft_malloc(sizeof(t_func)), sizeof(t_func));
-		fn = fn->next;
-	}
+		free((void *)fn->ln);
 	fn->body = *body;
 	fn->ln = ft_strdup(ln);
 	ft_bzero(body, sizeof(t_deq));
@@ -68,14 +48,14 @@ inline void			sh_funcset(char const *name, t_deq *body, char const *ln)
 inline t_func		*sh_funcget(char const *name)
 {
 	uint32_t	it;
-	t_func		*fn;
+	t_scope		*scope;
 
-	if (ft_mapget(g_funcs, (void *)name, &it))
+	scope = g_sh;
+	while (scope)
 	{
-		fn = &((t_func *)g_funcs->vals)[it];
-		while (fn->next)
-			fn = fn->next;
-		return (fn);
+		if (ft_mapget(&scope->funcs, (void *)name, &it))
+			return (&((t_func *)scope->funcs.vals)[it]);
+		scope = scope->prev;
 	}
 	return (NULL);
 }

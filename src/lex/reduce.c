@@ -46,8 +46,8 @@ inline int			sh_lexreduce(t_src *s, t_deq *toks, size_t from)
 	while (from < toks->len)
 	{
 		tok = (t_tok *)ft_deqat(toks, from++);
-		if (prv && TOK_ISWORD(prv->id) && tok->id == '(' && from < toks->len &&
-			((t_tok *)ft_deqat(toks, from))->id == ')')
+		if (prv && sh_tokis(prv, TOKS_WORD) && tok->id == '(' &&
+			from < toks->len && ((t_tok *)ft_deqat(toks, from))->id == ')')
 		{
 			ft_deqrem(toks, from, NULL);
 			prv->id = TOK_FUNCTION;
@@ -55,7 +55,7 @@ inline int			sh_lexreduce(t_src *s, t_deq *toks, size_t from)
 			tok->pos = prv->pos;
 			tok->len = prv->len;
 		}
-		else if (TOK_ISWORD(tok->id) && prv && prv->id == TOK_HEREDOC)
+		else if (sh_tokis(tok, TOKS_WORD) && prv && prv->id == TOK_HEREDOC)
 			if (sh_lexheredoc(s, tok))
 				return (OUF);
 		if ((prv = tok)->id == TOK_END || tok->id == TOK_EOL)

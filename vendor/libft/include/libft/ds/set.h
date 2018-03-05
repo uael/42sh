@@ -30,7 +30,7 @@ typedef struct	s_set
 extern void		ft_setctor(t_set *set, t_hasher hasher, size_t ksz);
 extern void		ft_setdtor(t_set *set, t_dtor kdtor);
 extern void		ft_setclr(t_set *set);
-extern t_bool	ft_setget(t_set *set, void *key, uint32_t *out);
+extern t_bool	ft_setget(t_set *set, void *k, uint32_t *out);
 extern t_bool	ft_setput(t_set *set, void *key, uint32_t *out);
 extern size_t	ft_setrsz(t_set *set, uint32_t sz);
 

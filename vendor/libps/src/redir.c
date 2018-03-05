@@ -12,7 +12,7 @@
 
 #include "ps.h"
 
-inline int		ps_redirect(t_redirs *redirs, int *scope)
+static void		redirectscope(t_redirs *redirs, int *scope)
 {
 	size_t	i;
 	t_redir	*redir;
@@ -25,14 +25,45 @@ inline int		ps_redirect(t_redirs *redirs, int *scope)
 			scope[redir->from] < 0)
 			scope[redir->from] = dup(redir->from);
 	}
+}
+
+static int		aggregate(t_redir *redir)
+{
+	if (!ft_strcmp("-", redir->word))
+		close(redir->from);
+	else if (!ft_isdigit(*redir->word) || ft_strlen(redir->word) != 1)
+		return (g_errcb("%s: ambiguous redirect\n", redir->word));
+	else
+	{
+		dup2(redir->fd = *redir->word - '0', redir->from);
+		if (redir->from2 >= 0)
+			dup2(redir->fd, redir->from2);
+	}
+	return (YEP);
+}
+
+inline int		ps_redirect(t_redirs *redirs, int *scope)
+{
+	size_t	i;
+	t_redir	*redir;
+
+	redirectscope(redirs, scope);
 	i = 0;
 	while (i < redirs->len)
 	{
 		redir = redirs->buf + i++;
-		if (redir->to < 0 && close(redir->from))
-			return (ft_throw(WUT, FT_DBG));
-		else if (redir->to >= 0 && dup2(redir->to, redir->from) < 0)
-			return (ft_throw(WUT, FT_DBG));
+		if (redir->kind == 2)
+			return (g_errcb("%s: ambiguous redirect\n", redir->word));
+		else if (redir->kind == 1)
+		{
+			if ((redir->fd = open(redir->word, redir->flags, 0644)) < 0)
+				return (g_errcb("%s: %e\n", redir->word, errno));
+			dup2(redir->fd, redir->from);
+			if (redir->from2 >= 0)
+				dup2(redir->fd, redir->from2);
+		}
+		else if (aggregate(redir))
+			return (OUF);
 	}
 	return (YEP);
 }
@@ -44,6 +75,10 @@ inline void		ps_redirectclose(t_redirs *redirs)
 
 	i = 0;
 	while (i < redirs->len)
-		if ((redir = redirs->buf + i++)->to > 2)
-			close(redir->to);
+	{
+		if ((redir = redirs->buf + i++)->fd > 2)
+			close(redir->fd);
+		if (redir->word)
+			free(redir->word);
+	}
 }

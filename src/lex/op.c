@@ -22,8 +22,6 @@ static inline int	opright(t_src *s, t_tok *tok)
 		return ((tok->id = TOK_RAOUT) & 0);
 	if (**s->it == '&' && ++*s->it)
 		return ((tok->id = TOK_RAMP) & 0);
-	if (**s->it == '|' && ++*s->it)
-		return ((tok->id = TOK_RPOUT) & 0);
 	return ((tok->id = '>') & 0);
 }
 
@@ -33,8 +31,14 @@ static inline int	opleft(t_src *s, t_tok *tok)
 
 	if (++*s->it && (st = sh_lexbslash(s)))
 		return (st);
-	if (**s->it == '<' && ++*s->it)
+	if (**s->it == '<')
+	{
+		if (++*s->it && (st = sh_lexbslash(s)))
+			return (st);
+		if (**s->it == '<' && ++*s->it)
+			return ((tok->id = TOK_HERENOW) & 0);
 		return ((tok->id = TOK_HEREDOC) & 0);
+	}
 	if (**s->it == '>' && ++*s->it)
 		return ((tok->id = TOK_CMP) & 0);
 	if (**s->it == '&' && ++*s->it)
@@ -63,6 +67,8 @@ static inline int	opor(t_src *s, t_tok *tok)
 		return (st);
 	if (**s->it == '|' && ++*s->it)
 		return ((tok->id = TOK_LOR) & 0);
+	if (**s->it == '&' && ++*s->it)
+		return ((tok->id = TOK_PIPEAND) & 0);
 	return ((tok->id = '|') & 0);
 }
 

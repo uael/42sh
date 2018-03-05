@@ -16,12 +16,12 @@ static inline char	hswap(t_set *self, void **key, uint32_t i)
 {
 	void			*tmp;
 
-	if (i < self->cap && !BUCKET_ISEITHER(self->bucks, i))
+	if (i < self->cap && !(self->bucks[i] & BUCKET_BOTH))
 	{
 		tmp = *(void **)((char *)self->keys + (i * self->ksz));
 		*(void **)((char *)self->keys + (i * self->ksz)) = *key;
 		*key = tmp;
-		BUCKET_SET_ISDEL_TRUE(self->bucks, i);
+		self->bucks[i] |= BUCKET_DELETED;
 	}
 	else
 	{
@@ -40,14 +40,14 @@ static inline void	reh1(t_set *self, uint32_t sz, uint8_t *bucks, uint32_t j)
 
 	step = 0;
 	key = *(void **)((char *)self->keys + (j * self->ksz));
-	BUCKET_SET_ISDEL_TRUE(self->bucks, j);
+	self->bucks[j] |= BUCKET_DELETED;
 	while (1)
 	{
 		k = self->hasher.hash(key);
 		i = k & (sz - 1);
-		while (!BUCKET_ISEMPTY(bucks, i))
+		while ((bucks[i] & BUCKET_EMPTY) != BUCKET_EMPTY)
 			i = (i + (++step)) & (sz - 1);
-		BUCKET_SET_ISEMPTY_FALSE(bucks, i);
+		bucks[i] &= ~BUCKET_EMPTY;
 		if (hswap(self, &key, i))
 			break ;
 	}
@@ -60,7 +60,7 @@ static inline void	reh(t_set *self, uint32_t sz, uint8_t *bucks)
 	j = 0;
 	while (j != self->cap)
 	{
-		if (BUCKET_ISEITHER(self->bucks, j) == 0)
+		if (!(self->bucks[j] & BUCKET_BOTH))
 			reh1(self, sz, bucks, j);
 		++j;
 	}

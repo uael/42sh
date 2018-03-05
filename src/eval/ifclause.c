@@ -12,20 +12,19 @@
 
 #include "ush/eval.h"
 
-static inline int	ifclause(t_if *s)
+static int	ifclause(t_if *s)
 {
-	g_sh->tty = 0;
-	sh_eval(-1, &s->cond, &s->ln) ? (g_sh->status = 1) : 0;
+	sh_eval(&s->cond, s->ln);
 	if (!g_sh->status)
-		sh_eval(-1, &s->body, &s->ln) ? (g_sh->status = 1) : 0;
+		sh_eval(&s->body, s->ln);
 	else if (s->elsekind == ELSE_ELIF)
 		return (ifclause(s->elsepart.elif));
 	else if (s->elsekind == ELSE_ELSE)
-		sh_eval(-1, &s->elsepart.body, &s->ln) ? (g_sh->status = 1) : 0;
+		sh_eval(&s->elsepart.body, s->ln);
 	return (g_sh->status);
 }
 
-static inline void	ifclausedtor(t_if *s)
+static void	ifclausedtor(t_if *s)
 {
 	if (s->elsekind == ELSE_ELIF)
 		ifclausedtor(s->elsepart.elif);
@@ -37,54 +36,63 @@ static inline void	ifclausedtor(t_if *s)
 	free(s);
 }
 
-static inline t_tok	*ifclauseinit(t_if *ifc, t_deq *toks)
+static void	pushuntilb(t_deq *dest, t_deq *src, char const *stop)
 {
-	t_tok *tok;
+	t_tok	*tok;
+	int		depth;
 
-	ft_bzero(ifc, sizeof(t_if));
-	ft_deqctor(&ifc->cond, sizeof(t_tok));
-	ft_deqctor(&ifc->body, sizeof(t_tok));
-	while ((tok = sh_toknext(toks))->id != TOK_THEN)
-		*(t_tok *)ft_deqpush(&ifc->cond) = *tok;
-	(*(t_tok *)ft_deqpush(&ifc->cond)).id = TOK_END;
-	while ((tok = sh_toknext(toks))->id != TOK_ELSE && tok->id != TOK_ELIF &&
-		tok->id != TOK_FI)
-		*(t_tok *)ft_deqpush(&ifc->body) = *tok;
-	(*(t_tok *)ft_deqpush(&ifc->body)).id = TOK_END;
-	return (tok);
+	depth = 0;
+	while (!ft_strchr(stop, (tok = sh_toknext(src))->id) || depth)
+	{
+		if (tok->id == TOK_IF)
+			++depth;
+		else if (tok->id == TOK_FI)
+			--depth;
+		*(t_tok *)ft_deqpush(dest) = *tok;
+	}
+	(*(t_tok *)ft_deqpush(dest)).id = TOK_END;
 }
 
-static inline t_if	*ifclausector(int fd, t_deq *toks, char **ln)
+static t_if	*ifclausector(t_deq *toks, char const *ln)
 {
 	t_if	*ifc;
 	t_tok	*tok;
 
 	ifc = ft_malloc(sizeof(t_if));
-	tok = ifclauseinit(ifc, toks);
-	if (tok->id == TOK_ELSE)
+	ft_bzero(ifc, sizeof(t_if));
+	ft_deqctor(&ifc->cond, sizeof(t_tok));
+	pushuntilb(&ifc->cond, toks, (char[]){TOK_THEN, '\0'});
+	ft_deqctor(&ifc->body, sizeof(t_tok));
+	pushuntilb(&ifc->body, toks, (char[]){TOK_ELSE, TOK_ELIF, TOK_FI, '\0'});
+	if ((tok = sh_tokpeek(toks))->id == TOK_ELSE)
 	{
 		ifc->elsekind = ELSE_ELSE;
 		ft_deqctor(&ifc->elsepart.body, sizeof(t_tok));
-		while ((tok = sh_toknext(toks))->id != TOK_FI)
-			*(t_tok *)ft_deqpush(&ifc->elsepart.body) = *tok;
-		(*(t_tok *)ft_deqpush(&ifc->elsepart.body)).id = TOK_END;
+		pushuntilb(&ifc->elsepart.body, toks, (char[]){TOK_FI, '\0'});
 		sh_toknext(toks);
 	}
 	else if (tok->id == TOK_ELIF)
 	{
 		ifc->elsekind = ELSE_ELIF;
-		ifc->elsepart.elif = ifclausector(fd, toks, ln);
+		ifc->elsepart.elif = ifclausector(toks, ln);
 	}
 	else
 		sh_toknext(toks);
-	ifc->ln = ft_strdup(*ln);
+	ifc->ln = ft_strdup(ln);
 	return (ifc);
 }
 
-inline int			sh_evalifclause(t_proc *prc, int fd, t_deq *toks,
-	char **ln)
+inline void	sh_evalif(t_ctx *ctx, t_tok *tok)
 {
-	ps_procfn(prc, (t_proccb *)ifclause, (t_dtor)ifclausedtor,
-		ifclausector(fd, toks, ln));
-	return (YEP);
+	t_if *ifc;
+
+	(void)tok;
+	if (!ctx->proc)
+	{
+		ctx->proc = (t_proc *)ft_vecpush((t_vec *)&ctx->job->procs);
+		ps_procctor(ctx->proc);
+	}
+	ifc = ifclausector(ctx->toks, ctx->ln);
+	ps_procfn(ctx->proc, (t_proccb *)ifclause, (t_dtor)ifclausedtor, ifc);
+	ctx->proc->child = 0;
 }

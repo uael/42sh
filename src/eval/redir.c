@@ -11,29 +11,144 @@
 /* ************************************************************************** */
 
 #include "ush/eval.h"
+#include "ush/exp.h"
 
-#define UNEXPTD "Unexpected redirection `%s' for empty command line"
-
-inline int		sh_evalredir(t_proc *proc, t_deq *toks, char **ln)
+inline void	sh_evalampr(t_ctx *ctx, t_tok *tok)
 {
-	t_tok	*tok;
+	t_sds	file;
+	t_tok	*word;
+	int		kind;
 
-	tok = sh_tokpeek(toks);
-	if (tok->id == '<')
-		return (sh_evalrin(proc, toks, ln));
-	if (tok->id == '>' || tok->id == TOK_RPOUT)
-		return (sh_evalrout(proc, toks, ln));
-	if (tok->id == TOK_CMP)
-		return (sh_evalcmp(proc, toks, ln));
-	if (tok->id == TOK_RAOUT)
-		return (sh_evalraout(proc, toks, ln));
-	if (tok->id == TOK_AMPR)
-		return (sh_evalampr(proc, toks, ln));
-	if (tok->id == TOK_HEREDOC)
-		return (sh_evalheredoc(proc, toks, ln));
-	if (tok->id == TOK_LAMP)
-		return (sh_evallamp(proc, toks, ln));
-	if (tok->id == TOK_RAMP)
-		return (sh_evalramp(proc, toks, ln));
-	return (sh_evalerr(*ln, tok, UNEXPTD, sh_tokstr(tok)));
+	(void)tok;
+	if (!ctx->proc)
+	{
+		ctx->proc = (t_proc *)ft_vecpush((t_vec *)&ctx->job->procs);
+		ps_procctor(ctx->proc);
+	}
+	word = sh_toknext(ctx->toks);
+	ft_sdsctor(&file);
+	kind = 1;
+	sh_expword(&file, ctx->ln + word->pos, word->len);
+	if (!file.len)
+	{
+		kind = 2;
+		ft_sdsmpush(&file, ctx->ln + word->pos, word->len);
+	}
+	*(t_redir *)ft_vecpush((t_vec *)&ctx->proc->redirs) = (t_redir){
+		kind, file.buf,
+		STDOUT_FILENO, STDERR_FILENO, O_WRONLY | O_CREAT | O_TRUNC, 0
+	};
+	sh_toknext(ctx->toks);
+}
+
+inline void	sh_evalcmp(t_ctx *ctx, t_tok *tok)
+{
+	t_sds	file;
+	t_tok	*word;
+	int		kind;
+
+	if (!ctx->proc)
+	{
+		ctx->proc = (t_proc *)ft_vecpush((t_vec *)&ctx->job->procs);
+		ps_procctor(ctx->proc);
+	}
+	word = sh_toknext(ctx->toks);
+	ft_sdsctor(&file);
+	kind = 1;
+	sh_expword(&file, ctx->ln + word->pos, word->len);
+	if (!file.len)
+	{
+		kind = 2;
+		ft_sdsmpush(&file, ctx->ln + word->pos, word->len);
+	}
+	*(t_redir *)ft_vecpush((t_vec *)&ctx->proc->redirs) = (t_redir){
+		kind, file.buf, ft_isdigit(*(ctx->ln + tok->pos))
+			? *(ctx->ln + tok->pos) - '0' : STDIN_FILENO, -1,
+		O_RDWR | O_CREAT, 0
+	};
+	sh_toknext(ctx->toks);
+}
+
+inline void	sh_evalraout(t_ctx *ctx, t_tok *tok)
+{
+	t_sds	file;
+	t_tok	*word;
+	int		kind;
+
+	if (!ctx->proc)
+	{
+		ctx->proc = (t_proc *)ft_vecpush((t_vec *)&ctx->job->procs);
+		ps_procctor(ctx->proc);
+	}
+	word = sh_toknext(ctx->toks);
+	ft_sdsctor(&file);
+	kind = 1;
+	sh_expword(&file, ctx->ln + word->pos, word->len);
+	if (!file.len)
+	{
+		kind = 2;
+		ft_sdsmpush(&file, ctx->ln + word->pos, word->len);
+	}
+	*(t_redir *)ft_vecpush((t_vec *)&ctx->proc->redirs) = (t_redir){
+		kind, file.buf, ft_isdigit(*(ctx->ln + tok->pos))
+			? *(ctx->ln + tok->pos) - '0' : STDOUT_FILENO, -1,
+		O_WRONLY | O_CREAT | O_APPEND, 0
+	};
+	sh_toknext(ctx->toks);
+}
+
+inline void	sh_evalrin(t_ctx *ctx, t_tok *tok)
+{
+	t_sds	file;
+	t_tok	*word;
+	int		kind;
+
+	if (!ctx->proc)
+	{
+		ctx->proc = (t_proc *)ft_vecpush((t_vec *)&ctx->job->procs);
+		ps_procctor(ctx->proc);
+	}
+	word = sh_toknext(ctx->toks);
+	ft_sdsctor(&file);
+	kind = 1;
+	sh_expword(&file, ctx->ln + word->pos, word->len);
+	if (!file.len)
+	{
+		kind = 2;
+		ft_sdsmpush(&file, ctx->ln + word->pos, word->len);
+	}
+	*(t_redir *)ft_vecpush((t_vec *)&ctx->proc->redirs) = (t_redir){
+		kind, file.buf, ft_isdigit(*(ctx->ln + tok->pos))
+			? *(ctx->ln + tok->pos) - '0' : STDIN_FILENO, -1,
+		O_RDONLY, 0
+	};
+	sh_toknext(ctx->toks);
+}
+
+inline void	sh_evalrout(t_ctx *ctx, t_tok *tok)
+{
+	t_sds	file;
+	t_tok	*word;
+	int		kind;
+
+	if (!ctx->proc)
+	{
+		ctx->proc = (t_proc *)ft_vecpush((t_vec *)&ctx->job->procs);
+		ps_procctor(ctx->proc);
+	}
+	word = sh_toknext(ctx->toks);
+	ft_sdsctor(&file);
+	kind = 1;
+	sh_expword(&file, ctx->ln + word->pos, word->len);
+	if (!file.len)
+	{
+		kind = 2;
+		ft_sdsmpush(&file, ctx->ln + word->pos, word->len);
+	}
+	*(t_redir *)ft_vecpush((t_vec *)&ctx->proc->redirs) = (t_redir){
+		kind, file.buf, ft_isdigit(*(ctx->ln + tok->pos))
+			? *(ctx->ln + tok->pos) - '0' : STDOUT_FILENO, -1,
+		O_WRONLY | O_CREAT | O_TRUNC, 0
+	};
+	sh_toknext(ctx->toks);
 }

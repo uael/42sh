@@ -21,6 +21,7 @@
 # include "ush/exp.h"
 # include "ush/func.h"
 # include "ush/shell.h"
+# include "ush/syn.h"
 # include "ush/tok.h"
 # include "ush/var.h"
 
