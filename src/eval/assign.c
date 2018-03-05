@@ -13,45 +13,62 @@
 #include "ush/eval.h"
 #include "ush/exp.h"
 
-static char		g_var[MAX_INPUT + 1];
-
-static inline void	assignset(t_map *map, char *val)
+static void	assignset(t_ctx *ctx, char *var, char *val)
 {
 	uint32_t	it;
-	char		*dvar;
 
-	if (ft_mapget(map, g_var, &it))
+	if (ft_mapget(&ctx->vars, var, &it))
 	{
-		free(((char **)map->vals)[it]);
-		((char **)map->vals)[it] = val;
+		free(var);
+		free(((char **)ctx->vars.vals)[it]);
+		((char **)ctx->vars.vals)[it] = val;
 	}
-	else if (ft_mapput(map, dvar = ft_strdup(g_var), &it))
-		((char **)map->vals)[it] = val;
+	else if (ft_mapput(&ctx->vars, var, &it))
+		((char **)ctx->vars.vals)[it] = val;
 	else
 	{
-		free(dvar);
+		free(var);
 		free(val);
 	}
 }
 
-inline int			sh_evalassign(t_tok *tok, t_deq *toks, t_map *map, char *ln)
+inline void	sh_evalassign(t_ctx *ctx, t_tok *tok)
 {
 	char		*eq;
+	char		*var;
 	t_sds		val;
 
-	while (tok && tok->id == TOK_WORD)
+	if (!ctx->proc)
 	{
-		if (!(eq = ft_strnchr(ln + tok->pos, '=', tok->len)) ||
-			(eq == ln + tok->pos && ++tok->pos))
-			break ;
-		ft_strncpy(g_var, ln + tok->pos, eq - (ln + tok->pos));
-		if (!sh_isname(g_var))
-			break ;
-		ft_sdsctor(&val);
-		sh_expword(&val, eq + 1, tok->len - (eq - ln - tok->pos) - 1);
-		assignset(map, val.len ? val.buf : ft_strdup(""));
-		g_sh->status = 0;
-		tok = sh_toknext(toks);
+		ctx->proc = (t_proc *)ft_vecpush((t_vec *)&ctx->job->procs);
+		ps_procctor(ctx->proc);
 	}
-	return (YEP);
+	sh_toknext(ctx->toks);
+	eq = ft_strnchr(ctx->ln + tok->pos, '=', tok->len);
+	var = ft_strndup(ctx->ln + tok->pos, eq - (ctx->ln + tok->pos));
+	ft_sdsctor(&val);
+	sh_expword(&val, eq + 1, tok->len - (eq - ctx->ln - tok->pos) - 1);
+	!val.len ? (*ft_sdspush(&val) = '\0') : 0;
+	ps_procbit(ctx->proc, 0);
+	assignset(ctx, var, val.buf);
+}
+
+inline void	sh_evalexport(t_map *vars)
+{
+	uint32_t it;
+
+	if (!vars->len)
+		return ;
+	it = 0;
+	while (it < vars->cap)
+	{
+		if (BUCKET_ISPOPULATED(vars->bucks, it))
+		{
+			sh_varset(((char **)vars->keys)[it], ((char **)vars->vals)[it]);
+			ft_pfree((void **)&((char **)vars->vals)[it]);
+			BUCKET_SET_ISDEL_TRUE(vars->bucks, it);
+			--vars->len;
+		}
+		++it;
+	}
 }

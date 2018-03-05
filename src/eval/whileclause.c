@@ -12,21 +12,21 @@
 
 #include "ush/eval.h"
 
-static inline int		whileclause(t_while *s)
+static int		whileclause(t_while *s)
 {
 	g_sh->child = 1;
-	sh_eval(-1, &s->cond, &s->ln) ? (g_sh->status = 1) : 0;
+	sh_eval(&s->cond, s->ln);
 	while (!g_sh->status)
 	{
 		s->body.cur = 0;
-		sh_eval(-1, &s->body, &s->ln) ? (g_sh->status = 1) : 0;
+		sh_eval(&s->body, s->ln);
 		s->cond.cur = 0;
-		sh_eval(-1, &s->cond, &s->ln) ? (g_sh->status = 1) : 0;
+		sh_eval(&s->cond, s->ln);
 	}
 	return (g_sh->status);
 }
 
-static inline void		whileclausedtor(t_while *s)
+static void		whileclausedtor(t_while *s)
 {
 	ft_deqdtor(&s->cond, NULL);
 	ft_deqdtor(&s->body, NULL);
@@ -34,7 +34,7 @@ static inline void		whileclausedtor(t_while *s)
 	free(s);
 }
 
-static inline void		pushuntil(t_deq *dest, t_deq *src, char const *stop)
+static void		pushuntila(t_deq *dest, t_deq *src, char const *stop)
 {
 	t_tok	*tok;
 	int		depth;
@@ -51,32 +51,33 @@ static inline void		pushuntil(t_deq *dest, t_deq *src, char const *stop)
 	(*(t_tok *)ft_deqpush(dest)).id = TOK_END;
 }
 
-static inline t_while	*whileclausector(t_deq *toks, char **ln)
+static t_while	*whileclausector(t_deq *toks, char const *ln)
 {
 	t_while	*whilec;
 
 	whilec = ft_malloc(sizeof(t_while));
 	ft_bzero(whilec, sizeof(t_while));
 	ft_deqctor(&whilec->cond, sizeof(t_tok));
-	pushuntil(&whilec->cond, toks, (char []){TOK_DO, '\0'});
+	pushuntila(&whilec->cond, toks, (char []){TOK_DO, '\0'});
 	ft_deqctor(&whilec->body, sizeof(t_tok));
-	pushuntil(&whilec->body, toks, (char []){TOK_DONE, '\0'});
+	pushuntila(&whilec->body, toks, (char []){TOK_DONE, '\0'});
 	sh_toknext(toks);
-	whilec->ln = ft_strdup(*ln);
+	whilec->ln = ft_strdup(ln);
 	return (whilec);
 }
 
-inline int				sh_evalwhileclause(t_proc *prc, t_deq *toks, char **ln)
+inline void		sh_evalwhile(t_ctx *ctx, t_tok *tok)
 {
 	t_while	*whilec;
 
-	whilec = whileclausector(toks, ln);
-	if (g_sh->child)
+	(void)tok;
+	if (!ctx->proc)
 	{
-		whileclause(whilec);
-		whileclausedtor(whilec);
-		return (YEP);
+		ctx->proc = (t_proc *)ft_vecpush((t_vec *)&ctx->job->procs);
+		ps_procctor(ctx->proc);
 	}
-	ps_procfn(prc, (t_proccb *)whileclause, (t_dtor)whileclausedtor, whilec);
-	return (YEP);
+	whilec = whileclausector(ctx->toks, ctx->ln);
+	ps_procfn(ctx->proc, (t_proccb *)whileclause, (t_dtor)whileclausedtor,
+		whilec);
+	ctx->proc->child = (t_bool)(g_sh->child ? 0 : 1);
 }

@@ -66,39 +66,32 @@ typedef struct	s_ctx
 	t_map		vars;
 }				t_ctx;
 
-void		eval(t_deq *toks, char const *ln);
+typedef void	(t_evalcb)(t_ctx *ctx, t_tok *tok);
 
-extern int		sh_eval(int fd, t_deq *toks, char **ln);
-extern int		sh_evallist(int fd, t_deq *toks, char **ln);
-extern int		sh_evalandor(t_job *j, int fd, t_deq *ts, char **ln);
-extern int		sh_evalpipeline(t_job *job, int fd, t_deq *toks, char **ln);
+extern t_evalcb	*g_eval[];
 
-extern int		sh_evalcmd(t_proc *proc, int fd, t_deq *toks, char **ln);
-extern int		sh_evalsimple(t_proc *proc, int fd, t_deq *toks, char **ln);
-extern int		sh_evalcompound(t_proc *proc, int fd, t_deq *toks, char **ln);
-extern int		sh_evalsubshell(t_proc *proc, int fd, t_deq *toks, char **ln);
-extern int		sh_evalbracegrp(t_proc *proc, int fd, t_deq *toks, char **ln);
-extern int		sh_evalifclause(t_proc *prc, int fd, t_deq *toks, char **ln);
-extern int		sh_evalwhileclause(t_proc *prc, t_deq *toks, char **ln);
+extern void		sh_eval(t_deq *toks, char const *ln);
+extern void		sh_evalexport(t_map *vars);
+extern void		sh_evalif(t_ctx *ctx, t_tok *tok);
+extern void		sh_evalwhile(t_ctx *ctx, t_tok *tok);
+extern void		sh_evalfuncdef(t_ctx *ctx, t_tok *tok);
+extern void		sh_evalampr(t_ctx *ctx, t_tok *tok);
+extern void		sh_evalcmp(t_ctx *ctx, t_tok *tok);
+extern void		sh_evalheredoc(t_ctx *ctx, t_tok *tok);
+extern void		sh_evallamp(t_ctx *ctx, t_tok *tok);
+extern void		sh_evalramp(t_ctx *ctx, t_tok *tok);
+extern void		sh_evalraout(t_ctx *ctx, t_tok *tok);
+extern void		sh_evalword(t_ctx *ctx, t_tok *tok);
+extern void		sh_evaltest(t_ctx *ctx, t_tok *tok);
+extern void		sh_evalassign(t_ctx *ctx, t_tok *tok);
+extern void		sh_evaland(t_ctx *ctx, t_tok *tok);
+extern void		sh_evalor(t_ctx *ctx, t_tok *tok);
+extern void		sh_evalbang(t_ctx *ctx, t_tok *tok);
+extern void		sh_evalsubshell(t_ctx *ctx, t_tok *tok);
+extern void		sh_evalbracegrp(t_ctx *ctx, t_tok *tok);
+extern void		sh_evalrin(t_ctx *ctx, t_tok *tok);
+extern void		sh_evalrout(t_ctx *ctx, t_tok *tok);
+extern void		sh_evalpipe(t_ctx *ctx, t_tok *tok);
 extern int		sh_evalfn(t_proc *proc);
-extern int		sh_evalfuncdef(t_proc *proc, int fd, t_deq *toks, char **ln);
-extern int		sh_evalargv(t_proc *proc, t_map *v, t_deq *toks, char **ln);
-extern int		sh_evalredir(t_proc *proc, t_deq *toks, char **ln);
-extern char		*sh_redirword(t_proc *proc, char *dst, t_deq *toks, char *ln);
-extern int		sh_evalrin(t_proc *proc, t_deq *toks, char **ln);
-extern int		sh_evalrout(t_proc *proc, t_deq *toks, char **ln);
-extern int		sh_evalcmp(t_proc *proc, t_deq *toks, char **ln);
-extern int		sh_evalraout(t_proc *proc, t_deq *toks, char **ln);
-extern int		sh_evalheredoc(t_proc *proc, t_deq *toks, char **ln);
-extern int		sh_evallamp(t_proc *proc, t_deq *toks, char **ln);
-extern int		sh_evalramp(t_proc *proc, t_deq *toks, char **ln);
-extern int		sh_evalampr(t_proc *proc, t_deq *toks, char **ln);
-
-extern int		sh_evalassign(t_tok *tok, t_deq *toks, t_map *map, char *ln);
-extern int		sh_evalnewlines(t_deq *toks);
-extern int		sh_evallinebreak(t_deq *toks);
-extern int		sh_evalsepop(t_deq *toks);
-extern int		sh_evalsep(t_deq *toks);
-extern int		sh_evalsepseq(t_deq *toks);
 
 #endif

@@ -27,10 +27,7 @@ inline uint8_t		sh_scope(void)
 		return (0);
 	}
 	if (g_shlvl == 0)
-	{
 		ft_bzero(g_lvls, sizeof(t_scope) * SHLVL_MAX);
-		ft_mapctor(&g_lvls->funcs, g_strhash, sizeof(char *), sizeof(t_func));
-	}
 	g_sh = g_lvls + g_shlvl++;
 	if (g_shlvl > 1)
 	{
@@ -108,7 +105,7 @@ inline int			sh_run(int fd, char *ln)
 	while (!(st = rl_getline(fd, sh_prompt(prompt, buf), &ln)))
 	{
 		it = ln;
-		st = sh_lex(fd, &it, &ln, eval);
+		st = sh_lex(fd, &it, &ln, sh_eval);
 		if (st < 0 || (!g_sh->tty && st == OUF))
 			break ;
 	}
