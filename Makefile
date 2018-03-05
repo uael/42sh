@@ -17,7 +17,7 @@ WWFLAGS = $(WFLAGS) -Wpedantic -Wshadow -Wconversion -Wcast-align \
   -Wmissing-declarations -Wfloat-equal -Wbad-function-cast -Wundef \
   -Waggregate-return -Wstrict-overflow=5 -Wold-style-definition -Wpadded \
   -Wredundant-decls -Wall -Werror -Wextra
-RCFLAGS = $(WFLAGS) -O2 -fomit-frame-pointer
+RCFLAGS = $(WFLAGS) -O2
 DCFLAGS = $(WFLAGS) -g3 -DDEBUG
 SCFLAGS = -fsanitize=address,undefined -ferror-limit=5 $(DCFLAGS)
 CC ?= gcc
@@ -43,22 +43,21 @@ SRC_NAME = \
 	comp.c \
 	env.c \
 	err.c \
-	eval.c eval/ampr.c eval/andor.c eval/argv.c eval/assign.c eval/cmd.c \
-	eval/cmp.c eval/compound.c eval/heredoc.c eval/ifclause.c eval/lamp.c \
-	eval/list.c eval/pipeline.c eval/ramp.c eval/raout.c eval/redir.c \
-	eval/rin.c eval/rout.c eval/sep.c eval/simple.c eval/subshell.c \
-	eval/whileclause.c eval/bracegrp.c eval/func.c \
+	eval.c eval/assign.c eval/compound.c eval/func.c eval/ifclause.c \
+	eval/operator.c eval/redir.c eval/redir_1.c eval/whileclause.c eval/word.c \
 	exp.c exp/backslash.c exp/backtick.c exp/brace.c exp/dollars.c \
 	exp/glob.c exp/quote.c exp/tilde.c \
 	exp/arith.c exp/arith/eval.c \
 	exp/comm.c exp/comm/read.c \
 	exp/param.c exp/param/env.c exp/param/subst.c exp/param/val.c \
 	func.c \
-	lex.c lex/check.c lex/dollar.c lex/heredoc.c lex/line.c lex/op.c \
-	lex/reduce.c lex/syn.c lex/utils.c lex/word.c \
+	lex.c lex/dollar.c lex/heredoc.c lex/line.c lex/op.c lex/reduce.c \
+	lex/utils.c lex/word.c \
 	main.c \
 	prompt.c \
 	shell.c \
+	syn.c syn/andor.c syn/cmd.c syn/compound.c syn/funcdef.c syn/ifclause.c \
+	syn/list.c syn/pipe.c syn/redir.c syn/term.c syn/whileclause.c \
 	tok.c \
 	var.c
 

@@ -1,40 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lex/check.c                                        :+:      :+:    :+:   */
+/*   syn/check.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2018/01/22 12:51:28 by cmalfroy         ###   ########.fr       */
+/*   Updated: 2018/01/22 12:51:28 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ush/lex.h"
+#include "ush/syn.h"
 
-#define ERR0 "syntax error: Unexpected closing token `%s'"
-
-inline int	sh_lexcheck(t_src *s, t_deq *toks)
+inline int	sh_synterm(t_src *s, t_deq *toks, size_t *idx)
 {
-	size_t	i;
-	t_tok	*t;
-	t_tok	*p;
+	int		st;
+	t_tok	*tok;
 
-	i = 0;
-	p = NULL;
-	while (i < toks->len)
+	if ((st = sh_synandor(s, toks, idx)))
+		return (st);
+	while (*idx < toks->len)
 	{
-		if (sh_syn(s, &p, t = ft_deqat(toks, i)))
-			return (OUF);
-		if (TOK_ISRGT(t->id))
-			return (sh_synerr(*s->ln, *s->ln + t->pos, ERR0, sh_tokstr(t)));
-		if (TOK_ISLFT(t->id))
-		{
-			if (!(i = sh_synbracket(s, toks, t, i)))
-				return (OUF);
-			p = ft_deqat(toks, i);
-		}
-		++i;
+		tok = ft_deqat(toks, *idx);
+		if (tok->id == '&' || tok->id == ';')
+			++*idx;
+		if (*idx < toks->len && ((t_tok *)ft_deqat(toks, *idx))->id == '\n')
+			++*idx;
+		sh_synlinebreak(toks, idx);
+		if ((st = sh_synandor(s, toks, idx)))
+			return (st == NOP ? YEP : st);
 	}
 	return (YEP);
 }

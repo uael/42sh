@@ -41,3 +41,27 @@ dupscope () {
   dupscope
 }
 dupscope
+dupscope
+dupscope () (
+  echo "dup me plzzzz2";
+  dupscope () (
+    echo dupped2;
+  )
+  dupscope
+)
+dupscope
+dupscope
+echo $LOL
+function exportlol {
+    export LOL=lol
+}
+exportlol
+echo $LOL
+LOL=
+exportlol () (
+    echo $LOL
+    export LOL=lol
+    echo $LOL
+)
+exportlol
+echo $LOL

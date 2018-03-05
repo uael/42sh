@@ -40,8 +40,8 @@ void		ft_mapdtor(t_map *self, t_dtor kdtor, t_dtor vdtor)
 			it = 0;
 			while (it < self->cap)
 			{
-				if (BUCKET_ISPOPULATED(self->bucks, it) ||
-					BUCKET_ISDEL(self->bucks, it))
+				if (!(self->bucks[it] & BUCKET_BOTH) ||
+					(self->bucks[it] & BUCKET_DELETED) == BUCKET_DELETED)
 				{
 					if (kdtor)
 						kdtor(self->keys + (it * self->ksz));
@@ -68,8 +68,8 @@ void		ft_setdtor(t_set *self, t_dtor kdtor)
 			it = 0;
 			while (it < self->cap)
 			{
-				if (BUCKET_ISPOPULATED(self->bucks, it) ||
-					BUCKET_ISDEL(self->bucks, it))
+				if (!(self->bucks[it] & BUCKET_BOTH) ||
+					(self->bucks[it] & BUCKET_DELETED) == BUCKET_DELETED)
 					kdtor(self->keys + (it * self->ksz));
 				++it;
 			}

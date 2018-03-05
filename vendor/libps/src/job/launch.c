@@ -84,7 +84,7 @@ static inline t_proc	*jobpeek(t_job *job, size_t *i)
 int						ps_joblaunch(t_job *job, int fg)
 {
 	size_t	i;
-	t_proc	*proc;
+	t_proc	*prc;
 	int		fds[2];
 	int		io[3];
 
@@ -92,12 +92,12 @@ int						ps_joblaunch(t_job *job, int fg)
 	ft_memcpy(io, STD_FILENOS, 3 * sizeof(int));
 	while (i < job->procs.len)
 	{
-		proc = jobpeek(job, &i);
+		prc = jobpeek(job, &i);
 		ps_jobpipe(job, i, fds, io);
-		proc->close = fds[0];
-		proc->child = (t_bool)(job->procs.len > 1 || proc->kind == PROC_EXE ||
-			proc->kind == PROC_FN);
-		if (ps_procfork(proc, &job->pgid, io, fg))
+		prc->close = fds[0];
+		if (!prc->child)
+			prc->child = (t_bool)(job->procs.len > 1 || prc->kind == PROC_EXE);
+		if (ps_procfork(prc, &job->pgid, io, fg))
 			return (ft_dtor(!job->bang, (t_dtor)ps_jobdtor, job, NULL));
 		io[STDIN_FILENO] != STDIN_FILENO ? close(io[STDIN_FILENO]) : 0;
 		io[STDOUT_FILENO] != STDOUT_FILENO ? close(io[STDOUT_FILENO]) : 0;

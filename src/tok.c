@@ -25,6 +25,7 @@ static char		*g_tokidsstr[] = {
 	[TOK_LAND] = "&&",
 	[TOK_LOR] = "||",
 	[TOK_WORD] = "<word>",
+	[TOK_ASSIGN] = "<word>",
 	[TOK_BANG] = "!",
 	[TOK_IF] = "if",
 	[TOK_THEN] = "then",
@@ -48,6 +49,55 @@ static char		*g_tokidsstr[] = {
 	[TOK_RCUR] = "}",
 };
 
+static uint16_t		g_tokdef[UINT8_MAX] = {
+	[TOK_END] = TOKS_END | TOKS_POSTFIX,
+	[TOK_HEREDOC] = TOKS_REDIR,
+	[TOK_RAOUT] = TOKS_REDIR,
+	[TOK_LAMP] = TOKS_REDIR,
+	[TOK_RAMP] = TOKS_REDIR,
+	[TOK_CMP] = TOKS_REDIR,
+	[TOK_EOL] = TOKS_END | TOKS_POSTFIX,
+	[TOK_RPOUT] = TOKS_REDIR,
+	[TOK_AMPR] = TOKS_REDIR,
+	[TOK_LAND] = TOKS_OPERATOR,
+	[TOK_LOR] = TOKS_OPERATOR,
+	[TOK_WORD] = TOKS_WORD,
+	[TOK_ASSIGN] = TOKS_WORD,
+	[TOK_BANG] = TOKS_PREFIX | TOKS_WORD,
+	[TOK_IF] = TOKS_IDENT | TOKS_WORD | TOKS_LEFT,
+	[TOK_THEN] = TOKS_IDENT | TOKS_WORD | TOKS_LEFT | TOKS_RIGHT,
+	[TOK_ELIF] = TOKS_IDENT | TOKS_WORD | TOKS_LEFT | TOKS_RIGHT,
+	[TOK_ELSE] = TOKS_IDENT | TOKS_WORD | TOKS_LEFT | TOKS_RIGHT,
+	[TOK_FI] = TOKS_IDENT | TOKS_WORD | TOKS_RIGHT,
+	[TOK_WHILE] = TOKS_IDENT | TOKS_WORD | TOKS_LEFT,
+	[TOK_DO] = TOKS_IDENT | TOKS_WORD | TOKS_LEFT | TOKS_RIGHT,
+	[TOK_DONE] = TOKS_IDENT | TOKS_WORD | TOKS_RIGHT,
+	[TOK_FUNCTION] = TOKS_IDENT | TOKS_WORD | TOKS_LEFT,
+	[TOK_DLBRA] = TOKS_WORD,
+	[TOK_DRBRA] = TOKS_WORD,
+	[TOK_AMP] = TOKS_POSTFIX,
+	[TOK_LPAR] = TOKS_LEFT,
+	[TOK_RPAR] = TOKS_RIGHT,
+	[TOK_SEMICOLON] = TOKS_POSTFIX,
+	[TOK_RIN] = TOKS_REDIR,
+	[TOK_ROUT] = TOKS_REDIR,
+	[TOK_PIPE] = TOKS_OPERATOR,
+	[TOK_LCUR] = TOKS_WORD | TOKS_LEFT,
+	[TOK_RCUR] = TOKS_WORD | TOKS_RIGHT,
+};
+
+inline t_bool	sh_tokidis(uint8_t id, uint16_t flags)
+{
+	return ((t_bool)(g_tokdef[id] & flags));
+}
+
+inline t_bool	sh_tokis(t_tok *tok, uint16_t flags)
+{
+	if (!tok)
+		return (0);
+	return (sh_tokidis(tok->id, flags));
+}
+
 inline char		*sh_tokstr(t_tok *tok)
 {
 	char *ret;
@@ -70,10 +120,4 @@ inline t_tok	*sh_toknext(t_deq *toks)
 {
 	ft_deqsht(toks, NULL);
 	return (sh_tokpeek(toks));
-}
-
-inline t_tok	*sh_tokpos(t_tok *tok, char const *it, char const *ln)
-{
-	tok->pos = (uint16_t)(it - ln);
-	return (tok);
 }

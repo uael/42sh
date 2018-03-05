@@ -1,38 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   eval/command.c                                     :+:      :+:    :+:   */
+/*   syn/check.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2018/01/06 11:10:01 by alucas-          ###   ########.fr       */
+/*   Updated: 2018/01/22 12:51:28 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ush/eval.h"
+#include "ush/syn.h"
 
-inline int			sh_evalcmd(t_proc *proc, int fd, t_deq *toks, char **ln)
+inline int	sh_synlist(t_src *s, t_deq *toks, size_t *idx)
 {
-	t_tok	*tok;
 	int		st;
+	t_tok	*tok;
 
-	if (!(tok = sh_tokpeek(toks)))
-		return (NOP);
-	if (tok->id == TOK_FUNCTION)
-		return (sh_evalfuncdef(proc, fd, toks, ln));
-	if (TOK_ISCMDM(tok->id))
-		return (sh_evalsimple(proc, fd, toks, ln));
-	else if (!(st = sh_evalcompound(proc, fd, toks, ln)))
+	if ((st = sh_synandor(s, toks, idx)))
+		return (st);
+	while (*idx < toks->len)
 	{
-		while ((tok = sh_tokpeek(toks)))
-			if (TOK_ISREDIR(tok->id))
-			{
-				if ((st = sh_evalredir(proc, toks, ln)))
-					return (st);
-			}
-			else
-				return (YEP);
+		tok = ft_deqat(toks, *idx);
+		if (tok->id != '&' && tok->id != ';')
+			return (YEP);
+		++*idx;
+		if ((st = sh_synandor(s, toks, idx)))
+			return (st == NOP ? YEP : st);
 	}
-	return (st);
+	return (YEP);
 }

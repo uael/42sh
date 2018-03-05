@@ -41,7 +41,8 @@ inline int			sh_biunset(int ac, char **av)
 	while (*++av)
 	{
 		ft_exbind(EXALL, ft_exhdl(unsetexhdl, *av), NULL);
-		if (sh_isname(*av) && !ft_strchr(*av, '=') && sh_varget(*av, NULL))
+		if (sh_isident(*av, ft_strlen(*av)) &&
+			!ft_strchr(*av, '=') && sh_varget(*av, NULL))
 			sh_varset(*av, NULL);
 		else
 			sh_unsetenv(*av, 1);

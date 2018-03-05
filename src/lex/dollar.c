@@ -44,7 +44,7 @@ static int	brackets(t_src *s, t_tok *tok)
 		else if (!**s->it && (s->fd < 0 ||
 			(st = rl_catline(s->fd, 0, s->ln, s->it)) || !**s->it))
 		{
-			return (LEXE(st, s->fd) ?
+			return ((st < 0 || s->fd < 0 || !g_sh->tty) ?
 				sh_synerr(*s->ln, *s->it, UEE, stack[i - 1]) : OUF);
 		}
 		else if (ft_strchr("[{(", **s->it))

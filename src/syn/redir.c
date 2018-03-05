@@ -1,42 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lex/utils.c                                        :+:      :+:    :+:   */
+/*   syn/redir.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2018/01/22 12:51:28 by cmalfroy         ###   ########.fr       */
+/*   Updated: 2018/01/22 12:51:28 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ush/lex.h"
+#include "ush/syn.h"
 
-inline t_bool	sh_isident(char const *word, size_t n)
+#define ERR0 "syntax error: Expected `%s' after redirection `%s' got `%s'"
+
+inline int	sh_synredir(t_src *src, t_deq *toks, size_t *idx)
 {
-	if (!n || (!ft_isalpha(*word) && *word != '_'))
-		return (0);
-	++word;
-	while (--n)
+	t_tok	*tok;
+	t_tok	*op;
+
+	op = ft_deqat(toks, *idx);
+	tok = ++*idx >= toks->len ? NULL : ft_deqat(toks, *idx);
+	if (!tok || !sh_tokis(tok, TOKS_WORD))
 	{
-		if (!ft_isalnum(*word) && *word != '_')
-			return (0);
-		++word;
+		return (sh_evalerr(*src->ln, tok, ERR0,
+			"<word>", sh_tokstr(op), sh_tokstr(tok)));
 	}
-	return (1);
-}
-
-inline t_bool	sh_iseol(char const *it)
-{
-	return ((t_bool)(sh_isreol(it) || sh_isweol(it)));
-}
-
-inline t_bool	sh_isreol(char const *it)
-{
-	return ((t_bool)(*it == '\n'));
-}
-
-inline t_bool	sh_isweol(char const *it)
-{
-	return ((t_bool)(*it == '\r' && *(it + 1) == '\n'));
+	++*idx;
+	return (YEP);
 }

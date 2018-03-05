@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
 #include "edit.h"
 #include "visual.h"
 #include "read.h"

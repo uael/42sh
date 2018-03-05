@@ -1,42 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lex/utils.c                                        :+:      :+:    :+:   */
+/*   syn/check.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2018/01/22 12:51:28 by cmalfroy         ###   ########.fr       */
+/*   Updated: 2018/01/22 12:51:28 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ush/lex.h"
+#include "ush/syn.h"
 
-inline t_bool	sh_isident(char const *word, size_t n)
+inline int	sh_synifclause(t_src *s, t_deq *toks, size_t *idx)
 {
-	if (!n || (!ft_isalpha(*word) && *word != '_'))
-		return (0);
-	++word;
-	while (--n)
+	int		st;
+	t_tok	*tok;
+
+	if ((st = sh_syncompoundlist(s, toks, idx,
+		(char const[]){TOK_THEN, '\0'})))
+		return (st);
+	if ((st = sh_syncompoundlist(s, toks, idx,
+		(char const[]){TOK_ELIF, TOK_ELSE, TOK_FI, '\0'})))
+		return (st);
+	tok = ft_deqat(toks, *idx);
+	if (tok->id == TOK_ELIF)
+		return (sh_synifclause(s, toks, idx));
+	if (tok->id == TOK_FI)
 	{
-		if (!ft_isalnum(*word) && *word != '_')
-			return (0);
-		++word;
+		++*idx;
+		return (YEP);
 	}
-	return (1);
-}
-
-inline t_bool	sh_iseol(char const *it)
-{
-	return ((t_bool)(sh_isreol(it) || sh_isweol(it)));
-}
-
-inline t_bool	sh_isreol(char const *it)
-{
-	return ((t_bool)(*it == '\n'));
-}
-
-inline t_bool	sh_isweol(char const *it)
-{
-	return ((t_bool)(*it == '\r' && *(it + 1) == '\n'));
+	if ((st = sh_syncompoundlist(s, toks, idx,
+		(char const[]){TOK_FI, '\0'})))
+		return (st);
+	++*idx;
+	return (YEP);
 }
