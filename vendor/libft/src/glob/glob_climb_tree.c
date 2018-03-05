@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 22:23:43 by mc                #+#    #+#             */
-/*   Updated: 2018/03/04 13:12:23 by mc               ###   ########.fr       */
+/*   Updated: 2018/03/05 22:27:59 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static int	glob_just_copy_pattern(t_glob_env *e)
 		return (GLOBUX_SUCCESS);
 	if (!(*(e->flags) & GLOBUX_NOCHECK))
 		return (GLOBUX_NOMATCH);
-	*e->flags |= GLOBUX_NOMATCH;
+	*(e->flags) |= GLOBUX_NOMATCH_FLAG;
 	return (matchctoradd(e->pattern, TRUE, \
 						!(*(e->flags) & GLOBUX_NOSORT), &e->match_list));
 }
