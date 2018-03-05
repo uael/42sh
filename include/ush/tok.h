@@ -54,6 +54,8 @@ enum			e_tok
 	TOK_IF,
 	TOK_WHILE,
 	TOK_DLBRA,
+	TOK_FOR,
+	TOK_IN,
 	TOK_HERENOW,
 	TOK_FUNCTION,
 	TOK_BANG = '!',

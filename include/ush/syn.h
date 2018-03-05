@@ -23,6 +23,7 @@ extern int	sh_synpipeline(t_src *s, t_deq *toks, size_t *idx);
 extern int	sh_syncmd(t_src *s, t_deq *toks, size_t *idx);
 extern int	sh_syncompoundcmd(t_src *s, t_deq *toks, size_t *idx);
 extern int	sh_synwhileclause(t_src *s, t_deq *toks, size_t *idx);
+extern int	sh_synforclause(t_src *s, t_deq *toks, size_t *idx);
 extern int	sh_synifclause(t_src *s, t_deq *toks, size_t *idx);
 extern int	sh_syncompoundlist(t_src *s, t_deq *t, size_t *i, char const *e);
 extern int	sh_synfuncdef(t_src *s, t_deq *toks, size_t *idx);

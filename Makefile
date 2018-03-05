@@ -29,8 +29,9 @@ SRC_NAME = \
 	comp.c \
 	env.c \
 	err.c \
-	eval.c eval/assign.c eval/compound.c eval/func.c eval/ifclause.c \
-	eval/operator.c eval/redir.c eval/redir_1.c eval/whileclause.c eval/word.c \
+	eval.c eval/assign.c eval/compound.c eval/forclause.c eval/func.c \
+	eval/ifclause.c eval/operator.c eval/redir.c eval/redir_1.c \
+	eval/whileclause.c eval/word.c \
 	exp.c exp/backslash.c exp/backtick.c exp/brace.c exp/dollars.c \
 	exp/glob.c exp/quote.c exp/tilde.c \
 	exp/arith.c exp/arith/eval.c \
@@ -42,8 +43,9 @@ SRC_NAME = \
 	main.c \
 	prompt.c \
 	shell.c \
-	syn.c syn/andor.c syn/cmd.c syn/compound.c syn/funcdef.c syn/ifclause.c \
-	syn/list.c syn/pipe.c syn/redir.c syn/term.c syn/whileclause.c \
+	syn.c syn/andor.c syn/cmd.c syn/compound.c syn/forclause.c syn/funcdef.c \
+	syn/ifclause.c syn/list.c syn/pipe.c syn/redir.c syn/term.c \
+	syn/whileclause.c \
 	tok.c \
 	var.c
 

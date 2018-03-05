@@ -25,8 +25,6 @@ inline int	sh_synfuncdef(t_src *s, t_deq *toks, size_t *idx)
 		return (NOP);
 	if (++*idx >= toks->len)
 		return (NOP);
-	if (!sh_tokis(ft_deqat(toks, *idx), TOKS_LEFT))
-		return (NOP);
 	if ((st = sh_syncompoundcmd(s, toks, idx)))
 		return (st);
 	while (*idx < toks->len)

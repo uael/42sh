@@ -65,29 +65,30 @@ inline int	sh_syncompoundlist(t_src *s, t_deq *toks, size_t *idx,
 	}
 }
 
+static int	compoundgrp(t_src *s, t_deq *toks, size_t *idx, uint8_t stop)
+{
+	int st;
+
+	if ((st = sh_syncompoundlist(s, toks, idx, (char []){stop, '\0'})))
+		return (st);
+	++*idx;
+	return (YEP);
+}
+
 inline int	sh_syncompoundcmd(t_src *s, t_deq *toks, size_t *idx)
 {
-	int		st;
-	t_tok	*tok;
+	t_tok *tok;
 
 	tok = ft_deqat(toks, *idx);
 	if (tok->id == '{')
-	{
-		if ((st = sh_syncompoundlist(s, toks, idx, "}")))
-			return (st);
-		++*idx;
-		return (YEP);
-	}
+		return (compoundgrp(s, toks, idx, '}'));
 	else if (tok->id == '(')
-	{
-		if ((st = sh_syncompoundlist(s, toks, idx, ")")))
-			return (st);
-		++*idx;
-		return (YEP);
-	}
+		return (compoundgrp(s, toks, idx, ')'));
 	else if (tok->id == TOK_IF)
 		return (sh_synifclause(s, toks, idx));
 	else if (tok->id == TOK_WHILE)
 		return (sh_synwhileclause(s, toks, idx));
+	else if (tok->id == TOK_FOR)
+		return (sh_synforclause(s, toks, idx));
 	return (NOP);
 }

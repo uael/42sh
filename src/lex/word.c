@@ -58,6 +58,10 @@ static inline uint8_t	wordid(char const *s, size_t l)
 		return (TOK_DRBRA);
 	if (l == 2 && !ft_strncmp("fi", s, 2))
 		return (TOK_FI);
+	if (l == 3 && !ft_strncmp("for", s, 3))
+		return (TOK_FOR);
+	if (l == 2 && !ft_strncmp("in", s, 2))
+		return (TOK_IN);
 	return (wordid2(s, l));
 }
 
