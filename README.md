@@ -33,5 +33,5 @@
 - [X] Advanced dollar expansion `$(..)`, `$((..))`, `$[..]`
 - [X] Tilde expansion `~`, `~<username>`, `~-`, `~+`
 - [X] Range expansion `{<START>..<END>}` and `{<START>..<END>..<INCREMENT>}`
-- [ ] Advanced redirections operator `&>`, `<>`, todo: `<<<` and `|&`
+- [X] Advanced redirections operator `&>`, `<>`, `<<<` and `|&`
 - [ ] Aliases
