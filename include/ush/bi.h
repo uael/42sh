@@ -15,6 +15,25 @@
 
 # include <libps.h>
 
+enum			e_opt
+{
+	HISTORY_C = 1 << 1,
+	HISTORY_D = 1 << 2,
+	HISTORY_W = 1 << 3,
+	HISTORY_A = 1 << 4,
+	HISTORY_R = 1 << 5,
+	HISTORY_P = 1 << 6,
+	HISTORY_S = 1 << 7
+};
+
+typedef	struct	s_histopt
+{
+	uint8_t	flags;
+	uint8_t	offset;
+	char	*filename;
+	char	*arg;
+}				t_histopt;
+
 extern void		sh_biregister(void);
 extern int		sh_biecho(int ac, char **argv, char **env);
 extern int		sh_biexit(int ac, char **av, char **env);
