@@ -93,6 +93,7 @@ extern void		sh_evalbracegrp(t_ctx *ctx, t_tok *tok);
 extern void		sh_evalrin(t_ctx *ctx, t_tok *tok);
 extern void		sh_evalrout(t_ctx *ctx, t_tok *tok);
 extern void		sh_evalpipe(t_ctx *ctx, t_tok *tok);
+extern void		sh_evalpipeand(t_ctx *ctx, t_tok *tok);
 extern int		sh_evalfn(t_proc *proc);
 
 #endif

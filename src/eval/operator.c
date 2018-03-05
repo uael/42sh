@@ -28,6 +28,18 @@ inline void	sh_evalpipe(t_ctx *ctx, t_tok *tok)
 	ps_procctor(ctx->proc);
 }
 
+inline void	sh_evalpipeand(t_ctx *ctx, t_tok *tok)
+{
+	(void)tok;
+	sh_evalexport(&ctx->vars);
+	sh_toknext(ctx->toks);
+	*(t_redir *)ft_vecpush((t_vec *)&ctx->proc->redirs) = (t_redir){
+		0, ft_strdup("1"), STDERR_FILENO, -1, 0, 0
+	};
+	ctx->proc = (t_proc *)ft_vecpush((t_vec *)&ctx->job->procs);
+	ps_procctor(ctx->proc);
+}
+
 inline void	sh_evaland(t_ctx *ctx, t_tok *tok)
 {
 	(void)tok;

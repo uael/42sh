@@ -50,6 +50,7 @@ t_evalcb	*g_eval[] = {
 	[TOK_ASSIGN] = sh_evalassign,
 	[TOK_LAND] = sh_evaland,
 	[TOK_LOR] = sh_evalor,
+	[TOK_PIPEAND] = sh_evalpipeand,
 	['!'] = sh_evalbang,
 	['('] = sh_evalsubshell,
 	['{'] = sh_evalbracegrp,

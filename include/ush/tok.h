@@ -38,7 +38,7 @@ enum			e_tok
 	TOK_RAMP,
 	TOK_CMP,
 	TOK_EOL = '\n',
-	TOK_RPOUT = TOK_EOL + 1,
+	TOK_PIPEAND = TOK_EOL + 1,
 	TOK_AMPR,
 	TOK_LAND,
 	TOK_LOR,

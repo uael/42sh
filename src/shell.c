@@ -98,11 +98,10 @@ inline int			sh_run(int fd, char *ln)
 	char	*it;
 	int		st;
 	char	buf[PATH_MAX];
-	char	*prompt;
 
 	sh_init(fd);
-	prompt = !g_sh->status ? " \033[32m❯\033[0m " : " \033[31m❯\033[0m ";
-	while (!(st = rl_getline(fd, sh_prompt(prompt, buf), &ln)))
+	while (!(st = rl_getline(fd, sh_prompt(!g_sh->status
+		? " \033[32m❯\033[0m " : " \033[31m❯\033[0m ", buf), &ln)))
 	{
 		it = ln;
 		st = sh_lex(fd, &it, &ln, sh_eval);
