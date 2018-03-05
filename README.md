@@ -39,3 +39,27 @@
 - [X] Binary hashtable
 - [X] Rights in the PATH
 - [ ] Aliases
+
+## Usage
+```
+Usage: ./42sh [option] [script-file] [script arguments...]
+ush options:
+	--help: this *useful* help message!
+ush keymap:
+	<ctrl+A|home>: Go to begin of line.
+	<ctrl+E|end>: Go to end of line.
+	<ctrl+V>: Enter visual mode.
+	<ctrl+Y>: Yank in visual mode.
+	<ctrl+P>: Paste.
+	<ctrl+D>: Exit or delete in visual mode.
+	<ctrl+C>: Cancel line edition.
+	<ctrl+L>: Clear the screen.
+	<shift+[left|right]>: Move per word.
+	<shift+[up|down]>: Move per line.
+	<up>: Go up in the history.
+	<down>: Go down in the history.
+	!!: Retype the last command.
+	!n: Retype the n command from the begin of history.
+	!-n: Retype the -n command from the last command.
+	!name: Search for a command beginning with name.
+```  
