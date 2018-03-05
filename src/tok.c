@@ -15,6 +15,7 @@
 static char		*g_tokidsstr[] = {
 	[TOK_END] = "<EOF>",
 	[TOK_HEREDOC] = "<<",
+	[TOK_HERENOW] = "<<<",
 	[TOK_RAOUT] = ">>",
 	[TOK_LAMP] = "<&",
 	[TOK_RAMP] = ">&",
@@ -52,6 +53,7 @@ static char		*g_tokidsstr[] = {
 static uint16_t		g_tokdef[UINT8_MAX] = {
 	[TOK_END] = TOKS_END | TOKS_POSTFIX,
 	[TOK_HEREDOC] = TOKS_REDIR,
+	[TOK_HERENOW] = TOKS_REDIR,
 	[TOK_RAOUT] = TOKS_REDIR,
 	[TOK_LAMP] = TOKS_REDIR,
 	[TOK_RAMP] = TOKS_REDIR,

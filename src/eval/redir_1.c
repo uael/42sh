@@ -89,3 +89,28 @@ inline void	sh_evalheredoc(t_ctx *ctx, t_tok *tok)
 		return ;
 	ctx->proc->in = ft_strndup(ctx->ln + tok->pos, tok->len);
 }
+
+inline void	sh_evalherenow(t_ctx *ctx, t_tok *tok)
+{
+	int		fd;
+	t_sds	word;
+
+	(void)tok;
+	if (!ctx->proc)
+	{
+		ctx->proc = (t_proc *)ft_vecpush((t_vec *)&ctx->job->procs);
+		ps_procctor(ctx->proc);
+	}
+	if (ctx->proc->in)
+		free(ctx->proc->in);
+	ctx->proc->in = NULL;
+	fd = ft_isdigit(*(ctx->ln + tok->pos)) ? *(ctx->ln + tok->pos) - '0' : 0;
+	tok = sh_toknext(ctx->toks);
+	sh_toknext(ctx->toks);
+	if (fd != 0)
+		return ;
+	ft_sdsctor(&word);
+	sh_expword(&word, ctx->ln + tok->pos, tok->len);
+	*ft_sdspush(&word) = '\n';
+	ctx->proc->in = word.buf;
+}
