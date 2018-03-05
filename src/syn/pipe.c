@@ -36,7 +36,7 @@ static int	pipesequence(t_src *s, t_deq *toks, size_t *idx)
 	while (*idx < toks->len)
 	{
 		tok = ft_deqat(toks, *idx);
-		if (tok->id != '|')
+		if (tok->id != '|' && tok->id != TOK_PIPEAND)
 			return (YEP);
 		pipe = (*idx)++;
 		sh_synlinebreak(toks, idx);
