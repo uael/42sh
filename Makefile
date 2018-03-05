@@ -12,7 +12,7 @@
 
 PROJECT ?= 42sh
 WFLAGS = -Werror -Wextra -Wall
-RCFLAGS = $(WFLAGS) -O2 -fsanitize=address
+RCFLAGS = $(WFLAGS) -O2
 CC ?= gcc
 
 INC_PATH = include
