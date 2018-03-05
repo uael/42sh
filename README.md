@@ -28,3 +28,10 @@
 ## Optional feature highly appreciated:
 - [x] Job Control and builtins `job`, `fg`, `bg` and operand `&`.
 - [X] Shell Scripting: bang (!), variable assignements, brace group, if, while and functions
+
+## Bonuses
+- [X] Advanced dollar expansion `$(..)`, `$((..))`, `$[..]`
+- [X] Tilde expansion `~`, `~<username>`, `~-`, `~+`
+- [X] Range expansion `{<START>..<END>}` and `{<START>..<END>..<INCREMENT>}`
+- [ ] Advanced redirections operator `&>`, `<>`, todo: `<<<` and `|&`
+- [ ] Aliases
