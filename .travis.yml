@@ -10,5 +10,4 @@ script:
   - git clone https://github.com/uael/42ShellTester.git st
   - make
   - make test
-  - make valgrind
   - bash st/42ShellTester.sh --reference bash $PWD/42sh
