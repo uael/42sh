@@ -38,7 +38,7 @@
 - [X] Inline variables `[name=value] binary [arguments...]`
 - [X] Binary hashtable
 - [X] Rights in the PATH
-- [ ] Aliases
+- [X] Aliases, builtin alias `alias [-p] [name[=value] …]` and expansion
 
 ## Usage
 ```
