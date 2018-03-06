@@ -12,21 +12,19 @@
 
 #include "ush.h"
 
-#define ENV_I (1 << 0)
-#define M_DUP "Duplicate option"
 #define ENV "env: "
 #define EHELP1 "usage: env [-i] [-P utilpath] [-u name]\n"
 #define EHELP EHELP1 "           [name=value ...] [utility [argument ...]]\n"
 
-static void		envgetopt(char o, char *a, char **alt, t_vec *e)
+static void		envgetopt(char o, char *a, char **altpath, t_vec *e)
 {
 	if (o == 'P')
-		*alt = a;
+		*altpath = a;
 	else if (!ft_strchr(a, '='))
 		ft_unsetenv(e, a, 1);
 }
 
-static int		env_parse_opts(char **av, void **o, t_vec *e)
+static int		env_parse_opts(char **av, char **altpath, t_vec *e)
 {
 	int			i;
 	char		*a;
@@ -36,13 +34,11 @@ static int		env_parse_opts(char **av, void **o, t_vec *e)
 		if (*a == '-')
 		{
 			while (*++a)
-				if (*a == 'i' && !(*((uint8_t *)o[0]) & ENV_I))
-					*((uint8_t *)o[0]) |= ENV_I;
-				else if (*a == 'i')
-					return (ft_retf(NOP, ENV"%c: "M_DUP"\n", *a) & 0);
+				if (*a == 'i')
+					ft_vecclr(e, (t_dtor)ft_pfree);
 				else if (ft_strchr("Pu", *a))
 				{
-					envgetopt(*a, *(a + 1) ? a + 1 : av[++i], (char **)o[1], e);
+					envgetopt(*a, *(a + 1) ? a + 1 : av[++i], altpath, e);
 					break ;
 				}
 				else
@@ -78,22 +74,21 @@ inline int		sh_bienv(int ac, char **av, char **ev)
 {
 	int		i;
 	int		s;
-	uint8_t	flag;
 	char	*alt;
 	t_vec	ve;
 
+	(void)ac;
 	ft_vecctor(&ve, sizeof(char *));
-	flag = 0;
 	alt = NULL;
-	i = (ac & 0) - 1;
+	i = -1;
 	while (ev[++i])
 		*(char **)ft_vecpush(&ve) = ft_strdup(ev[i]);
-	if ((s = env_parse_opts(av, (void *[2]){&flag, &alt}, &ve)) <= 0)
+	if ((s = env_parse_opts(av, &alt, &ve)) <= 0)
 		return (ft_retf(NOP, EHELP));
-	(flag & ENV_I) ? ft_vecclr(&ve, (t_dtor)ft_pfree) : 0;
 	*(char **)ft_vecpush(&ve) = NULL;
-	if (!*(av + s) && (i = -1))
+	if (!*(av + s))
 	{
+		i = -1;
 		ev = ve.buf;
 		while (ev[++i])
 			(void)(ft_putl(STDOUT_FILENO, ev[i]) && ft_pfree((void **)&ev[i]));
