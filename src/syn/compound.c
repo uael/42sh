@@ -69,7 +69,7 @@ static int	compoundgrp(t_src *s, t_deq *toks, size_t *idx, uint8_t stop)
 {
 	int st;
 
-	if ((st = sh_syncompoundlist(s, toks, idx, (char []){stop, '\0'})))
+	if ((st = sh_syncompoundlist(s, toks, idx, (char[]){stop, '\0'})))
 		return (st);
 	++*idx;
 	return (YEP);

@@ -90,3 +90,22 @@ void		sh_eval(t_deq *toks, char const *ln)
 	ps_jobdtor(ctx.root);
 	ft_mapdtor(&ctx.vars, (t_dtor)ft_pfree, (t_dtor)ft_pfree);
 }
+
+void		sh_pushuntil(t_deq *d, t_deq *s, char const *stop, char const *oc)
+{
+	t_tok	*tok;
+	int		depth;
+
+	depth = 0;
+	while (!ft_strchr(stop, (tok = sh_toknext(s))->id) || depth)
+	{
+		if (tok->id == oc[0])
+			++depth;
+		else if (tok->id == oc[1])
+			--depth;
+		if (d)
+			*(t_tok *)ft_deqpush(d) = *tok;
+	}
+	if (d)
+		(*(t_tok *)ft_deqpush(d)).id = TOK_END;
+}

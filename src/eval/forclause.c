@@ -13,25 +13,6 @@
 #include <ush.h>
 #include "ush/eval.h"
 
-static void		pushuntil(t_deq *dest, t_deq *src, char const *stop)
-{
-	t_tok	*tok;
-	int		depth;
-
-	depth = 0;
-	while (!ft_strchr(stop, (tok = sh_toknext(src))->id) || depth)
-	{
-		if (tok->id == TOK_DO)
-			++depth;
-		else if (tok->id == TOK_DONE)
-			--depth;
-		if (dest)
-			*(t_tok *)ft_deqpush(dest) = *tok;
-	}
-	if (dest)
-		(*(t_tok *)ft_deqpush(dest)).id = TOK_END;
-}
-
 static int		forclause(t_for *s)
 {
 	char	*word;
@@ -72,16 +53,33 @@ static t_for	*forclausector(t_ctx *ctx, t_tok *tok, t_tok *name)
 	sh_toknext(ctx->toks);
 	forc.name = ft_strndup(ctx->ln + name->pos, name->len);
 	ft_deqctor(&forc.body, sizeof(t_tok));
-	pushuntil(&forc.body, ctx->toks, (char[]){TOK_DONE, '\0'});
+	sh_pushuntil(&forc.body, ctx->toks, (char[]){TOK_DONE, '\0'},
+		(char[]){TOK_DO, TOK_DONE});
 	sh_toknext(ctx->toks);
 	forc.ln = ft_strdup(ctx->ln);
 	return (ft_memdup(&forc, sizeof(t_for)));
 }
 
+static void		emptyfor(t_ctx *ctx, t_tok *tok)
+{
+	int depth;
+
+	ps_procbit(ctx->proc, 0);
+	depth = 0;
+	while (tok)
+	{
+		if (tok->id == TOK_DO)
+			++depth;
+		else if (tok->id == TOK_DONE && !--depth)
+			break ;
+		tok = sh_toknext(ctx->toks);
+	}
+	sh_toknext(ctx->toks);
+}
+
 inline void		sh_evalfor(t_ctx *ctx, t_tok *tok)
 {
-	t_tok	*name;
-	int		depth;
+	t_tok *name;
 
 	name = sh_toknext(ctx->toks);
 	if (!ctx->proc)
@@ -91,20 +89,7 @@ inline void		sh_evalfor(t_ctx *ctx, t_tok *tok)
 	}
 	if ((tok = sh_toknext(ctx->toks))->id != TOK_IN ||
 		!sh_tokis(tok = sh_toknext(ctx->toks), TOKS_WORD))
-	{
-		ps_procbit(ctx->proc, 0);
-		depth = 0;
-		while (1)
-		{
-			if (tok->id == TOK_DO)
-				++depth;
-			else if (tok->id == TOK_DONE && !--depth)
-				break ;
-			tok = sh_toknext(ctx->toks);
-		}
-		sh_toknext(ctx->toks);
-		return ;
-	}
+		return (emptyfor(ctx, tok));
 	ps_procfn(ctx->proc, (t_proccb *)forclause, (t_dtor)forclausedtor,
 		forclausector(ctx, tok, name));
 	ctx->proc->child = (t_bool)(g_sh->child ? 0 : 1);

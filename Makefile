@@ -94,6 +94,9 @@ re: clean all
 test: all
 	./test.sh . $(PROJECT)
 
+norme:
+	norminette include src vendor/lib??/{include,src}
+
 -include $(DEP)
 
 ifndef VERBOSE
@@ -102,4 +105,4 @@ ifndef VERBOSE
  endif
 endif
 
-.PHONY: all, $(PROJECT), clean, fclean, re, test
+.PHONY: all, $(PROJECT), clean, fclean, re, test, norme
