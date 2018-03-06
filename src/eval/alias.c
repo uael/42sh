@@ -14,7 +14,7 @@
 #include "ush/eval.h"
 #include "ush/exp.h"
 
-inline void	makebin(t_ctx *ctx, t_tok *tok, t_vec *av)
+static void	makebin(t_ctx *ctx, t_tok *tok, t_vec *av)
 {
 	while (!av->len)
 		if (sh_tokis(tok, TOKS_REDIR))
