@@ -10,5 +10,4 @@ script:
   - git clone https://github.com/uael/42ShellTester.git st
   - make
   - make test
-  - bash st/42ShellTester.sh --reference bash $PWD/42sh
-  - bash st/42ShellTester.sh --reference bash --filter bonuses $PWD/42sh
+  - bash st/42ShellTester.sh --pending --reference bash $PWD/42sh

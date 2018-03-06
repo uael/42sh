@@ -18,34 +18,12 @@
 #define EHELP1 "usage: env [-i] [-P utilpath] [-u name]\n"
 #define EHELP EHELP1 "           [name=value ...] [utility [argument ...]]\n"
 
-static int		envrmvar(t_vec *env, char *var)
-{
-	size_t	i;
-	char	**it;
-
-	if (!env->len)
-		return (0);
-	i = 0;
-	while (i < ft_veclen(env))
-		if ((it = ft_vecat(env, i)) && *it &&
-			ft_strbegw(var, *it) && (*it)[ft_strlen(var)] == '=')
-		{
-			ft_vecrem(env, i, it);
-			free(*it);
-			g_env = env->buf;
-			return (1);
-		}
-		else
-			++i;
-	return (0);
-}
-
 static void		envgetopt(char o, char *a, char **alt, t_vec *e)
 {
 	if (o == 'P')
 		*alt = a;
 	else if (!ft_strchr(a, '='))
-		envrmvar(e, a);
+		ft_unsetenv(e, a, 1);
 }
 
 static int		env_parse_opts(char **av, void **o, t_vec *e)
@@ -107,12 +85,12 @@ inline int		sh_bienv(int ac, char **av, char **ev)
 	ft_vecctor(&ve, sizeof(char *));
 	flag = 0;
 	alt = NULL;
+	i = (ac & 0) - 1;
+	while (ev[++i])
+		*(char **)ft_vecpush(&ve) = ft_strdup(ev[i]);
 	if ((s = env_parse_opts(av, (void *[2]){&flag, &alt}, &ve)) <= 0)
 		return (ft_retf(NOP, EHELP));
-	i = (ac & 0) - 1;
-	if (!(flag & ENV_I))
-		while (ev[++i])
-			*(char **)ft_vecpush(&ve) = ft_strdup(ev[i]);
+	(flag & ENV_I) ? ft_vecclr(&ve, (t_dtor)ft_pfree) : 0;
 	*(char **)ft_vecpush(&ve) = NULL;
 	if (!*(av + s) && (i = -1))
 	{
