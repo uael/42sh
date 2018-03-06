@@ -36,21 +36,9 @@ static void	ifclausedtor(t_if *s)
 	free(s);
 }
 
-static void	pushuntilb(t_deq *dest, t_deq *src, char const *stop)
+static void	pushuntil(t_deq *dest, t_deq *src, char const *stop)
 {
-	t_tok	*tok;
-	int		depth;
-
-	depth = 0;
-	while (!ft_strchr(stop, (tok = sh_toknext(src))->id) || depth)
-	{
-		if (tok->id == TOK_IF)
-			++depth;
-		else if (tok->id == TOK_FI)
-			--depth;
-		*(t_tok *)ft_deqpush(dest) = *tok;
-	}
-	(*(t_tok *)ft_deqpush(dest)).id = TOK_END;
+	sh_pushuntil(dest, src, stop, (char[]){TOK_IF, TOK_FI});
 }
 
 static t_if	*ifclausector(t_deq *toks, char const *ln)
@@ -61,14 +49,14 @@ static t_if	*ifclausector(t_deq *toks, char const *ln)
 	ifc = ft_malloc(sizeof(t_if));
 	ft_bzero(ifc, sizeof(t_if));
 	ft_deqctor(&ifc->cond, sizeof(t_tok));
-	pushuntilb(&ifc->cond, toks, (char[]){TOK_THEN, '\0'});
+	pushuntil(&ifc->cond, toks, (char[]){TOK_THEN, '\0'});
 	ft_deqctor(&ifc->body, sizeof(t_tok));
-	pushuntilb(&ifc->body, toks, (char[]){TOK_ELSE, TOK_ELIF, TOK_FI, '\0'});
+	pushuntil(&ifc->body, toks, (char[]){TOK_ELSE, TOK_ELIF, TOK_FI, '\0'});
 	if ((tok = sh_tokpeek(toks))->id == TOK_ELSE)
 	{
 		ifc->elsekind = ELSE_ELSE;
 		ft_deqctor(&ifc->elsepart.body, sizeof(t_tok));
-		pushuntilb(&ifc->elsepart.body, toks, (char[]){TOK_FI, '\0'});
+		pushuntil(&ifc->elsepart.body, toks, (char[]){TOK_FI, '\0'});
 		sh_toknext(toks);
 	}
 	else if (tok->id == TOK_ELIF)

@@ -54,8 +54,14 @@ static inline int	opand(t_src *s, t_tok *tok)
 		return (st);
 	if (**s->it == '&' && ++*s->it)
 		return ((tok->id = TOK_LAND) & 0);
-	if (**s->it == '>' && ++*s->it)
+	if (**s->it == '>')
+	{
+		if (++*s->it && (st = sh_lexbslash(s)))
+			return (st);
+		if (**s->it == '>' && ++*s->it)
+			return ((tok->id = TOK_AMPRA) & 0);
 		return ((tok->id = TOK_AMPR) & 0);
+	}
 	return ((tok->id = '&') & 0);
 }
 

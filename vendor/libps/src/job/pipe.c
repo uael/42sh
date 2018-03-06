@@ -17,7 +17,7 @@ inline void		ps_jobpipe(t_job *job, size_t i, int *fds, int *io)
 	if (i < job->procs.len)
 	{
 		if (pipe(fds) < 0)
-			g_fatalcb(ft_throw(WUT, FT_DBG), NULL);
+			exit(ft_throw(WUT, FT_DBG));
 		io[STDOUT_FILENO] = fds[1];
 	}
 	else

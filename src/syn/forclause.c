@@ -13,6 +13,7 @@
 #include "ush/syn.h"
 
 #define ERR0 "syntax error: Expected `%s' after `%s' got `%s'"
+#define ERR1 "syntax error: Expected `%s' got `%s'"
 
 static int	readerr(t_src *s, t_deq *toks, size_t const *idx, size_t open)
 {
@@ -55,7 +56,7 @@ static int	wordlist(t_src *src, t_tok *tok, t_deq *toks, size_t *idx)
 			break ;
 	}
 	if (tok->id != '\n' && tok->id != ';')
-		return (NOP);
+		return (sh_evalerr(*src->ln, tok, ERR1, "; or <EOL>", sh_tokstr(tok)));
 	return (readuntil(src, toks, idx, (char[]){TOK_DO, '\0'}));
 }
 
@@ -65,11 +66,11 @@ inline int	sh_synforclause(t_src *s, t_deq *toks, size_t *idx)
 	t_tok	*tok;
 
 	if (++*idx >= toks->len)
-		return (NOP);
+		return (sh_evalerr(*s->ln, NULL, ERR1, "<name>", sh_tokstr(NULL)));
 	if (!sh_tokis(tok = ft_deqat(toks, *idx), TOKS_WORD))
-		return (NOP);
+		return (sh_evalerr(*s->ln, tok, ERR1, "<word>", sh_tokstr(tok)));
 	if (!sh_isident(*s->ln + tok->pos, tok->len))
-		return (NOP);
+		return (sh_evalerr(*s->ln, tok, ERR1, "<identifier>", sh_tokstr(tok)));
 	if ((st = readuntil(s, toks, idx, (char[]){TOK_IN, TOK_DO, '\0'})))
 		return (st);
 	tok = ft_deqat(toks, *idx);

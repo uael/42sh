@@ -16,7 +16,7 @@
 
 static t_scope		g_lvls[SHLVL_MAX];
 t_scope				*g_sh;
-uint8_t				g_shlvl;
+uint8_t				g_shlvl = 0;
 int					g_shfd = -1;
 
 inline uint8_t		sh_scope(void)
@@ -72,7 +72,7 @@ static inline void	sh_init(int fd)
 	char	buf[PATH_MAX];
 
 	sh_biregister();
-	ps_init(fd, sh_err, sh_exit);
+	ps_init(fd, sh_err);
 	g_sh->pid = getpgrp();
 	if (!(g_sh->tty = (t_bool)isatty(fd)))
 		return ;

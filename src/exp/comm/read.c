@@ -41,26 +41,24 @@ static void	onifs(char const *out, int *copying, t_sds *word, t_vec *av)
 	word->len = 0;
 }
 
-static int	commsplit(char *buf, t_sds *w, t_vec *av)
+static int	commsplit(char *buf, t_sds *w, t_vec *av, int *copying)
 {
 	char	*out;
-	int		copying;
 	int		eol;
 
 	out = buf - 1;
-	copying = 0;
 	eol = 0;
 	while (*++out)
 		if (ft_strchr(g_ifs, *out))
-			onifs(out, &copying, w, av);
+			onifs(out, copying, w, av);
 		else
 		{
-			if (copying == 3)
+			if (*copying == 3)
 			{
 				*(char **)ft_vecpush(av) = ft_strdup(w->len ? w->buf : "");
 				w->len = 0;
 			}
-			copying = 1;
+			*copying = 1;
 			if (*out == '\n')
 				++eol;
 			else
@@ -75,8 +73,10 @@ void		sh_expcommread(int fd, t_sds *word, t_vec *av)
 	ssize_t	ret;
 	char	buf[128 + 1];
 	int		eol;
+	int		copying;
 
 	eol = 0;
+	copying = 0;
 	while ((ret = read(fd, buf, 128)) > 0)
 		if (!av)
 		{
@@ -86,7 +86,7 @@ void		sh_expcommread(int fd, t_sds *word, t_vec *av)
 		else
 		{
 			buf[ret] = '\0';
-			eol = commsplit(buf, word, av);
+			eol = commsplit(buf, word, av, &copying);
 		}
 	while (eol-- && word->len > 0 && *ft_sdsback(word) == '\n')
 		word->buf[--word->len] = '\0';

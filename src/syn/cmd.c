@@ -17,7 +17,6 @@ static int	simplecommand(t_src *s, t_deq *toks, size_t *idx)
 	int		st;
 	t_tok	*tok;
 
-	++*idx;
 	while (*idx < toks->len)
 	{
 		tok = ft_deqat(toks, *idx);

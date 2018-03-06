@@ -111,7 +111,7 @@ inline int		ps_procexelaunch(struct s_proc *prc)
 		else
 			g_errcb(st == PROC_NOTFOUND && !ft_strchr(prc->argv[0], '/') ?
 			"%s: Command not found\n" : "%s: %e\n", prc->argv[0], errno);
-		g_fatalcb(st, NULL);
+		exit(st);
 	}
 	execve(buf, prc->argv, prc->envv);
 	g_errcb("%s: %e\n", prc->argv[0], errno);

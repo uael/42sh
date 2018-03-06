@@ -24,6 +24,9 @@ static void		redirectscope(t_redirs *redirs, int *scope)
 		if (scope && redir->from >= 0 && redir->from <= 2 &&
 			scope[redir->from] < 0)
 			scope[redir->from] = dup(redir->from);
+		if (scope && redir->from2 >= 0 && redir->from2 <= 2 &&
+			scope[redir->from2] < 0)
+			scope[redir->from2] = dup(redir->from2);
 	}
 }
 
