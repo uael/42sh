@@ -36,7 +36,7 @@ static void		untilclausedtor(t_loop *s)
 
 static t_loop	*untilclausector(t_deq *toks, char const *ln)
 {
-	t_loop	*untilc;
+	t_loop *untilc;
 
 	untilc = ft_malloc(sizeof(t_loop));
 	ft_bzero(untilc, sizeof(t_loop));
