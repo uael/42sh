@@ -21,15 +21,23 @@ static char const	*g_usage = "usage: alias [-p] [name[=value] …]\n"
 
 static int	aliasopt(int ac, char **av)
 {
-	int opt;
+	int		opt;
+	t_bool	p;
 
+	p = 0;
 	g_optind = 1;
 	while ((opt = ft_getopt(ac, av, "p")) != -1)
 		if (opt == 'p')
-			sh_aliasdump();
+		{
+			if (!p)
+			{
+				sh_aliasdump();
+				p = 1;
+			}
+		}
 		else
 			return (WUT);
-	if (g_optind == ac)
+	if (g_optind == ac && !p)
 		sh_aliasdump();
 	return (g_optind);
 }
