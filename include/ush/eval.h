@@ -48,7 +48,7 @@ typedef struct	s_if
 	t_else		elsepart;
 }				t_if;
 
-typedef struct	s_while
+typedef struct	s_loop
 {
 	t_deq		body;
 	t_deq		cond;
