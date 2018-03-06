@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/08 23:54:42 by mc                #+#    #+#             */
-/*   Updated: 2018/02/26 01:04:43 by mc               ###   ########.fr       */
+/*   Updated: 2018/03/04 17:41:24 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,32 +51,24 @@ static int		copy_match_to_glob_struct(t_match *match_list, t_glob *pglob)
 		match_list = match_list->next;
 	}
 	*av = NULL;
-	if (!(pglob->gl_flags & GLOBUX_NOSORT))
-		ft_shellsort((pglob->gl_flags & GLOBUX_DOOFFS) ? \
-					pglob->gl_pathv : pglob->gl_pathv + pglob->gl_offs, \
-					pglob->gl_pathc, sizeof(char *), super_cmp);
 	return (GLOBUX_SUCCESS);
-}
-
-static void		glbnvctor(t_glob_env *glob_env, char const *pattern, \
-						int flags, t_glob *pglob)
-{
-	ft_bzero(glob_env, sizeof(t_glob_env));
-	glob_env->pattern = pattern;
-	pglob->gl_flags = flags;
-	glob_env->flags = &(pglob->gl_flags);
 }
 
 int				ft_glob(const char *pattern, int flags, t_glob *pglob)
 {
 	t_glob_env		glob_env;
+    char            pat_buf[PATH_MAX];
 	int				ret;
 
 	if ((flags & ~__GLOBUX_FLAGS))
 		return (GLOBUX_NOSYS);
 	if (!(flags & GLOBUX_NOCHECK) && !*pattern)
 		return (GLOBUX_NOMATCH);
-	glbnvctor(&glob_env, pattern, flags, pglob);
+	ft_bzero(&glob_env, sizeof(t_glob_env));
+	glob_sanitize_pattern(pat_buf, pattern);
+	pglob->gl_flags = flags;
+	glob_env.flags = &(pglob->gl_flags);
+    glob_env.pattern = pat_buf;
 	if ((ret = glob_climb_tree(&glob_env)))
 	{
 		matchdtor(glob_env.match_list);

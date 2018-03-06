@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/13 09:57:56 by mc                #+#    #+#             */
-/*   Updated: 2018/02/25 22:49:30 by mc               ###   ########.fr       */
+/*   Updated: 2018/03/04 13:24:31 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,20 +43,40 @@ void		matchdtor(t_match *match)
 	}
 }
 
-void		add_match_to_list(t_match *match, t_match **match_list)
+static void insert_sorted(t_match *match, t_match **match_list)
 {
-	match->next = *match_list;
-	*match_list = match;
+    t_match     *link;
+    t_match     *prev;
+
+    link = *match_list;
+    prev = NULL;
+    while (link && ft_strcmp((char *)link->buf, (char *)match->buf) < 0)
+    {
+        prev = link;
+        link = link->next;
+    }
+    if (prev)
+        prev->next = match;
+    match->next = link;
+    if (link == *match_list)
+        *match_list = match;
 }
 
-int			matchctoradd(char const *path, int escape, t_match **match_list)
+int			matchctoradd(char const *path, int escape, \
+                         int sort, t_match **match_list)
 {
 	t_match		*match;
 
 	match = matchctor(path, ft_strlen(path), escape);
 	if (!match)
 		return (GLOBUX_NOSPACE);
-	add_match_to_list(match, match_list);
+    if (!sort || !*match_list)
+    {
+        match->next = *match_list;
+        *match_list = match;
+        return (GLOBUX_SUCCESS);
+    }
+    insert_sorted(match, match_list);
 	return (GLOBUX_SUCCESS);
 }
 

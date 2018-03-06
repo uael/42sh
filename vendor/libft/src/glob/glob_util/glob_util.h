@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 20:57:25 by mc                #+#    #+#             */
-/*   Updated: 2018/02/26 01:11:43 by mc               ###   ########.fr       */
+/*   Updated: 2018/03/04 17:42:05 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,17 +83,15 @@ struct						s_glob_env
 char const					*is_magic(char *magic_buf, char const *pattern, \
 								int *flags);
 char const					*is_there_a_closing_bracket(char const *pattern, \
-													int flags, char c);
+													int flags, char c, char o);
 
 /*
 ** in glob_list.c:
 */
 t_match						*matchctor(char const *path, size_t len, int esc);
 void						matchdtor(t_match *match);
-void						add_match_to_list(t_match *match, \
-											t_match **match_list);
 int							matchctoradd(char const *path, int escape, \
-											t_match **match_list);
+										int sort, t_match **match_list);
 size_t						list_len(t_match *match_list);
 
 /*
@@ -124,9 +122,9 @@ int							glob_store_dir_name(char *path_buf, \
 void						remove_last_dir_from_path(char *path_buf);
 
 /*
-** in glob_cmp.c
+** in glob_sanitize.c
 */
-int							super_cmp(const void *a, const void *b, size_t n);
+char						*glob_sanitize_pattern(char *dst, const char *src);
 
 /*
 **  in glob_show.c

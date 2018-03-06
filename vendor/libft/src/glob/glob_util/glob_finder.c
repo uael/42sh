@@ -14,11 +14,20 @@
 
 char const	*glob_find_comma(char const *pat, char const *pat_end)
 {
-	if (pat >= pat_end)
-		return (NULL);
-	if (*pat == ',')
-		return (pat);
-	return (glob_find_comma(pat + 1, pat_end));
+	int depth;
+
+	depth = 0;
+	while (pat < pat_end)
+	{
+		if (*pat == '{')
+			++depth;
+		else if (*pat == '}')
+			--depth;
+		else if (!depth && *pat == ',')
+			return (pat);
+		++pat;
+	}
+	return (NULL);
 }
 
 char const	*glob_find_opening_brace(char const *pat, char const *pat_start)
