@@ -17,7 +17,7 @@ t_screen		*g_screen = &g_stack_screen;
 
 int				rl_screenpos(uint16_t *row, uint16_t *col)
 {
-	char	buf[64];
+	char	buf[64 + 1];
 	size_t	i;
 	ssize_t	rd;
 

@@ -34,6 +34,16 @@ typedef	struct	s_histopt
 	char	*arg;
 }				t_histopt;
 
+typedef struct	s_readopt
+{
+	ssize_t		timeout;
+	char		delim;
+	int			fd;
+	char		*prompt;
+	uint8_t		flags;
+	int			nchars;
+}				t_readopt;
+
 extern void		sh_biregister(void);
 extern int		sh_bialias(int ac, char **av);
 extern int		sh_biecho(int ac, char **argv, char **env);

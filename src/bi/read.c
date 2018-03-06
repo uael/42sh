@@ -20,14 +20,9 @@
 #define READ_I 1 << 6
 #define READ_L 1 << 7
 
-static ssize_t		g_timeout = 0;
-static char			g_delim = '\n';
-static int			g_fd = STDIN_FILENO;
-static char			*g_prompt = NULL;
-static uint8_t		g_flags = 0;
-static int			g_nchars = 0;
+static char			**g_renv;
 
-static inline int	readparse(int ac, char *av[])
+static inline int	readparse(int ac, char *av[], t_readopt *ropt)
 {
 	int		opt;
 	int64_t	time;
@@ -35,22 +30,22 @@ static inline int	readparse(int ac, char *av[])
 	g_optind = 1;
 	while ((opt = ft_getopt(ac, av, "rst:n:u:p:d:")) != -1)
 		if (opt == 'r')
-			g_flags |= READ_R;
+			ropt->flags |= READ_R;
 		else if (opt == 's')
-			g_flags |= READ_S;
-		else if (opt == 't' && (g_flags |= READ_T))
+			ropt->flags |= READ_S;
+		else if (opt == 't' && (ropt->flags |= READ_T))
 			if ((time = ft_atoi(g_optarg)))
-				g_timeout = time;
+				ropt->timeout = time;
 			else
-				g_timeout = -1;
-		else if (opt == 'n' && (g_flags |= READ_L))
-			g_nchars = (int)ft_atoi(g_optarg);
-		else if (opt == 'u' && (g_flags |= READ_U))
-			g_fd = (int)ft_atoi(g_optarg);
+				ropt->timeout = -1;
+		else if (opt == 'n' && (ropt->flags |= READ_L))
+			ropt->nchars = (int)ft_atoi(g_optarg);
+		else if (opt == 'u' && (ropt->flags |= READ_U))
+			ropt->fd = (int)ft_atoi(g_optarg);
 		else if (opt == 'p')
-			g_prompt = g_optarg;
-		else if (opt == 'd' && (g_flags |= READ_D))
-			g_delim = *g_optarg;
+			ropt->prompt = g_optarg;
+		else if (opt == 'd' && (ropt->flags |= READ_D))
+			ropt->delim = *g_optarg;
 		else
 			return (WUT);
 	return (g_optind);
@@ -58,11 +53,14 @@ static inline int	readparse(int ac, char *av[])
 
 inline static void	readarg(int ac, char **av, char *ln, int i)
 {
-	char	*chr;
+	char *chr;
+	char *ifs;
 
+	if (!(ifs = ft_getenv(g_renv, "IFS")))
+		ifs = " \t\n";
 	while (*ln && i < ac)
 	{
-		if (!(chr = ft_strmchr(ln, " \t\n")))
+		if (!(chr = ft_strmchr(ln, ifs)))
 		{
 			sh_isident(av[i], ft_strlen(av[i])) ? sh_varset(av[i], ln) : 0;
 			break ;
@@ -70,7 +68,7 @@ inline static void	readarg(int ac, char **av, char *ln, int i)
 		if (i + 1 < ac)
 		{
 			*chr++ = '\0';
-			while (ft_strchr(" \t\n", *chr))
+			while (ft_strchr(ifs, *chr))
 				++chr;
 		}
 		sh_isident(av[i], ft_strlen(av[i])) ? sh_varset(av[i++], ln) : 0;
@@ -78,7 +76,7 @@ inline static void	readarg(int ac, char **av, char *ln, int i)
 	}
 }
 
-inline static int	readloop(t_sds *ln)
+inline static int	readloop(t_sds *ln, t_readopt *ropt)
 {
 	int		i;
 	int		esc;
@@ -87,24 +85,31 @@ inline static int	readloop(t_sds *ln)
 
 	esc = 0;
 	i = 0;
-	if (g_prompt && (g_flags & READ_I))
-		ft_puts(1, g_prompt);
+	if (ropt->prompt && (ropt->flags & READ_I))
+		ft_puts(1, ropt->prompt);
 	while (1)
 	{
-		if ((ret = (int)read(g_fd, buf, 1)) <= 0)
+		if ((ret = (int)read(ropt->fd, buf, 1)) <= 0)
 			return (ret);
 		buf[ret] = 0;
-		ft_putc(1, (char)(g_flags & READ_S ? 0 : *buf));
-		if (!esc && *buf == g_delim)
+		ft_putc(1, (char)(ropt->flags & READ_S ? 0 : *buf));
+		if (!esc && *buf == ropt->delim)
 			break ;
-		esc = esc ? 0 : !(g_flags & READ_R) && (*buf == '\\');
+		esc = esc ? 0 : !(ropt->flags & READ_R) && (*buf == '\\');
 		ft_sdsapd(ln, buf);
-		if (*buf == '\n' && !(g_flags & (READ_R | READ_S | READ_I)))
+		if (*buf == '\n' && !(ropt->flags & (READ_R | READ_S | READ_I)))
 			ft_puts(1, "> ");
-		if ((g_flags & READ_L) && ++i >= g_nchars)
+		if ((ropt->flags & READ_L) && ++i >= ropt->nchars)
 			break ;
 	}
 	return (0);
+}
+
+static void			optinit(t_readopt *ropt, char **env)
+{
+	ft_bzero(ropt, sizeof(t_readopt));
+	ropt->delim = '\n';
+	g_renv = env;
 }
 
 inline int			sh_biread(int ac, char **av, char **env)
@@ -113,21 +118,23 @@ inline int			sh_biread(int ac, char **av, char **env)
 	int				i;
 	struct termios	term;
 	int				st;
+	t_readopt		opt;
 
-	(void)env;
+	optinit(&opt, env);
 	ft_sdsctor(&ln);
-	if (!isatty(STDIN_FILENO) || (i = readparse(ac, av)) < 0 || g_timeout == -1)
+	if (!isatty(STDIN_FILENO) || (i = readparse(ac, av, &opt)) < 0 ||
+		opt.timeout == -1)
 		return (EXIT_FAILURE);
-	g_flags |= READ_I;
+	opt.flags |= READ_I;
 	if (tcgetattr(STDIN_FILENO, &term))
 		return (ft_retf(EXIT_FAILURE, "read: %e\n", errno));
 	term.c_lflag &= ~(ECHO | ICANON);
-	term.c_cc[VTIME] = (cc_t)(g_timeout * 10);
-	term.c_cc[VMIN] = (cc_t)(g_timeout ? 0 : 1);
-	term.c_cc[VEOL] = (cc_t)g_delim;
+	term.c_cc[VTIME] = (cc_t)(opt.timeout * 10);
+	term.c_cc[VMIN] = (cc_t)(opt.timeout ? 0 : 1);
+	term.c_cc[VEOL] = (cc_t)opt.delim;
 	if (tcsetattr(STDIN_FILENO, TCSANOW, &term))
 		return (ft_retf(EXIT_FAILURE, "read: %e\n", errno));
-	if ((st = readloop(&ln)) || !ln.buf)
+	if ((st = readloop(&ln, &opt)) || !ln.buf)
 		return (ft_dtor(st ? st : EXIT_FAILURE, (t_dtor)ft_sdsdtor, &ln, NULL));
 	ac == i ? sh_varset("REPLY", ln.buf) : readarg(ac, av, ln.buf, i);
 	ft_sdsdtor(&ln);

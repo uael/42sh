@@ -76,6 +76,8 @@ static inline void	sh_init(int fd)
 	g_sh->pid = getpgrp();
 	if (!(g_sh->tty = (t_bool)isatty(fd)))
 		return ;
+	sh_aliasset("l", ft_strdup("ls -lhG"));
+	sh_aliasset("starwars", ft_strdup("telnet towel.blinkenlights.nl"));
 	rl_complete(sh_complete);
 	if ((home = sh_getenv("HOME")) &&
 		rl_histload(ft_pathcat(ft_strcpy(buf, home), ".ushst")) < 0)

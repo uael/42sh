@@ -54,8 +54,8 @@ static int	globit(t_sds *word, t_vec *av, char *it)
 
 	ft_bzero(&gbuf, sizeof(t_glob));
 	if (ft_glob(it, GLOBUX_NOCHECK | GLOBUX_BRACE, &gbuf))
-		return (ft_throw(WUT, FT_DBG));
-	if ((gbuf.gl_flags & GLOBUX_NOMATCH) && gbuf.gl_pathc > 1)
+		return (WUT);
+	if ((gbuf.gl_flags & GLOBUX_NOMATCH_FLAG) && gbuf.gl_pathc > 1)
 		return (globexpall(&gbuf, word, av));
 	match = 0;
 	if ((g_ifs && !*g_ifs) || !av)

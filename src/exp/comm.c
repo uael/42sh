@@ -53,7 +53,7 @@ int			sh_expcomm(t_sds *word, char **words, t_vec *av)
 					return (sh_expcommexec(word, &comm, av));
 			}
 		}
-		else if (**words == ')' && !quoted)
+		else if (**words == '(' && !quoted)
 			++depth;
 		*ft_sdspush(&comm) = **words;
 		++*words;
