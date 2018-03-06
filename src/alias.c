@@ -55,14 +55,13 @@ inline void		sh_aliasset(char const *alias, char const *val)
 			ft_mapdel(g_alias, it);
 	}
 	else if (ft_mapget(g_alias, (void *)alias, &it))
-	{
 		free(((char **)g_alias->vals)[it]);
-		((char **)g_alias->vals)[it] = ft_strdup(val);
+	else if (!ft_mapput(g_alias, dalias = ft_strdup(alias), &it))
+	{
+		free((void *)val);
+		return (free(dalias));
 	}
-	else if (ft_mapput(g_alias, dalias = ft_strdup(alias), &it))
-		((char **)g_alias->vals)[it] = ft_strdup(val);
-	else
-		free(dalias);
+	((char **)g_alias->vals)[it] = (char *)val;
 }
 
 inline char		*sh_aliasget(char const *alias)

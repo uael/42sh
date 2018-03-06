@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "libft/io.h"
-#include "libft/math.h"
 
 inline ssize_t	ft_puts(int fd, char const *s)
 {

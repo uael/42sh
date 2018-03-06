@@ -126,6 +126,7 @@ int					sh_exit(int exitno, char const *fmt, ...)
 	ps_dtor();
 	sh_envdtor();
 	sh_vardtor();
+	sh_aliasdtor();
 	sh_unscope();
 	if (fmt)
 	{

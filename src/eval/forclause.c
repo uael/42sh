@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <ush.h>
 #include "ush/eval.h"
+#include "ush/exp.h"
 
 static int		forclause(t_for *s)
 {
