@@ -45,8 +45,8 @@ void		matchdtor(t_match *match)
 
 static void	insert_sorted(t_match *match, t_match **match_list)
 {
-	t_match	 *link;
-	t_match	 *prev;
+	t_match *link;
+	t_match *prev;
 
 	link = *match_list;
 	prev = NULL;
@@ -63,7 +63,7 @@ static void	insert_sorted(t_match *match, t_match **match_list)
 }
 
 int			matchctoradd(char const *path, int escape, \
-						 int sort, t_match **match_list)
+							int sort, t_match **match_list)
 {
 	t_match		*match;
 
