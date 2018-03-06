@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/08 23:55:49 by mc                #+#    #+#             */
-/*   Updated: 2018/02/26 01:11:21 by mc               ###   ########.fr       */
+/*   Updated: 2018/03/05 22:27:35 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@
 # define GLOBUX_PERIOD (1 << 7)
 
 # define GLOBUX_MAGCHAR (1 << 8)
-# define GLOBUX_ALTDIRFUNC (1 << 9)
+# define GLOBUX_NOMATCH_FLAG (1 << 9)
 # define GLOBUX_BRACE (1 << 10)
 # define GLOBUX_NOMAGIC (1 << 11)
 # define GLOBUX_TILDE (1 << 12)
@@ -63,13 +63,13 @@
 # define GLOBUX_TILDE_CHECK (1 << 14)
 
 /*
-** Not implemented:
-** GLOBUX_ALTDIRFUNC | GLOBUX_TILDE | GLOBUX_TILDE_CHECK
+** Not implemented: (handled in ush)
+** GLOBUX_TILDE | GLOBUX_TILDE_CHECK
 */
 # define FLAGS_A (GLOBUX_ERR | GLOBUX_MARK | GLOBUX_NOSORT | GLOBUX_ONLYDIR)
 # define FLAGS_B (GLOBUX_DOOFFS | GLOBUX_NOESCAPE | GLOBUX_NOCHECK)
 # define FLAGS_C (GLOBUX_PERIOD | GLOBUX_BRACE | GLOBUX_NOMAGIC | GLOBUX_APPEND)
-# define __GLOBUX_FLAGS	(FLAGS_A | FLAGS_B | FLAGS_C)
+# define __GLOBUX_FLAGS	(FLAGS_A | FLAGS_B | FLAGS_C | GLOBUX_NOMATCH_FLAG)
 
 /*
 ** Error returns from `globctor'.

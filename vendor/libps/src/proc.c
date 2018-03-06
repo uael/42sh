@@ -64,7 +64,7 @@ static inline int	prepare(t_proc *prc, pid_t pgid, int *io, int fg)
 	{
 		prc->child ? 0 : ft_dup2std(prc->scope, STD_FILENOS);
 		if (prc->child)
-			exit(EXIT_FAILURE);
+			g_fatalcb(EXIT_FAILURE, NULL);
 		prc->status = EXIT_FAILURE;
 		return (WUT);
 	}
@@ -94,7 +94,7 @@ int					ps_proclaunch(t_proc *proc, pid_t pgid, int *io, int fg)
 	if (proc->child)
 	{
 		ps_procdtor(proc);
-		exit(st);
+		g_fatalcb(st, NULL);
 	}
 	ft_dup2std(proc->scope, STD_FILENOS);
 	return (YEP);
