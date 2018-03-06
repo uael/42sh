@@ -15,7 +15,7 @@
 
 inline int	ft_pfree(void **ptr)
 {
-	if (!ptr)
+	if (!ptr || !*ptr)
 		return (YEP);
 	free(*ptr);
 	*ptr = NULL;

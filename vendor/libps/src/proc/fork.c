@@ -21,7 +21,7 @@ inline int		ps_procfork(t_proc *p, pid_t *pgid, int *io, int fg)
 	if (!p->child || !(pid = fork()))
 		return (ps_proclaunch(p, pgid ? *pgid : 0, io, fg));
 	else if (pid < 0)
-		g_fatalcb(ft_throw(WUT, FT_DBG), NULL);
+		exit(ft_throw(WUT, FT_DBG));
 	else
 	{
 		p->pid = pid;

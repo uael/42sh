@@ -22,7 +22,6 @@
 extern t_map		*g_binaries;
 extern t_map		*g_builtins;
 extern t_errcb		*g_errcb;
-extern t_fatalcb	*g_fatalcb;
 extern t_bool		g_tty;
 extern pid_t		g_pgid;
 extern pid_t		g_pid;
