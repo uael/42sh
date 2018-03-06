@@ -131,5 +131,5 @@ inline int			sh_biread(int ac, char **av, char **env)
 		return (ft_dtor(st ? st : EXIT_FAILURE, (t_dtor)ft_sdsdtor, &ln, NULL));
 	ac == i ? sh_varset("REPLY", ln.buf) : readarg(ac, av, ln.buf, i);
 	ft_sdsdtor(&ln);
-	return (YEP);
+	return (EXIT_SUCCESS);
 }

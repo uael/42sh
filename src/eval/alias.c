@@ -34,10 +34,12 @@ static void	makebin(t_ctx *ctx, t_tok *tok, t_vec *av)
 inline char	*sh_evalalias(t_ctx *ctx, t_tok *tok, t_vec *av, char const *alias)
 {
 	t_vec	words;
+	char	*cmd;
+	int		cmp;
 
 	ft_vecctor(&words, sizeof(char *));
 	sh_expwords(&words, alias, ft_strlen(alias));
-	free(((char **)av->buf)[0]);
+	cmd = ((char **)av->buf)[0];
 	ft_vecsht(av, NULL);
 	while (ft_veclen(&words))
 	{
@@ -49,6 +51,8 @@ inline char	*sh_evalalias(t_ctx *ctx, t_tok *tok, t_vec *av, char const *alias)
 	makebin(ctx, tok, av);
 	if (!av->len)
 		return ("true");
-	return ((alias = sh_aliasget(((char **)av->buf)[0])) ?
+	cmp = ft_strcmp(((char **)av->buf)[0], cmd);
+	free(cmd);
+	return (cmp && (alias = sh_aliasget(((char **)av->buf)[0])) ?
 		sh_evalalias(ctx, tok, av, alias) : ((char **)av->buf)[0]);
 }
