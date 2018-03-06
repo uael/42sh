@@ -11,3 +11,4 @@ script:
   - make
   - make test
   - bash st/42ShellTester.sh --all --pending --reference bash $PWD/42sh
+  - make valgrind
