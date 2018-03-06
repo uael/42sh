@@ -26,14 +26,16 @@ static t_map		g_builtins_stack = {
 t_map				*g_binaries = &g_binaries_stack;
 t_map				*g_builtins = &g_builtins_stack;
 t_errcb				*g_errcb;
+t_fatalcb			*g_fatalcb;
 t_bool				g_tty = 0;
 pid_t				g_pgid = 0;
 pid_t				g_pid = 0;
 TTY					g_tcmode;
 
-inline int			ps_init(int fd, t_errcb *errcb)
+inline int			ps_init(int fd, t_errcb *errcb, t_fatalcb *fatalcb)
 {
 	g_errcb = errcb;
+	g_fatalcb = fatalcb;
 	tcgetattr(fd, &g_tcmode);
 	g_tty = (t_bool)isatty(fd);
 	g_pgid = getpid();

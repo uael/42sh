@@ -22,7 +22,7 @@
 typedef int		(t_errcb)(char const *fmt, ...);
 typedef int		(t_fatalcb)(int code, char const *fmt, ...);
 
-extern int		ps_init(int fd, t_errcb *errcb);
+extern int		ps_init(int fd, t_errcb *errcb, t_fatalcb *fatalcb);
 extern void		ps_dtor(void);
 extern pid_t	ps_lastpid(void);
 

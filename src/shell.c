@@ -72,7 +72,7 @@ static inline void	sh_init(int fd)
 	char	buf[PATH_MAX];
 
 	sh_biregister();
-	ps_init(fd, sh_err);
+	ps_init(fd, sh_err, sh_exit);
 	g_sh->pid = getpgrp();
 	if (!(g_sh->tty = (t_bool)isatty(fd)))
 		return ;
@@ -126,7 +126,8 @@ int					sh_exit(int exitno, char const *fmt, ...)
 	ps_dtor();
 	sh_envdtor();
 	sh_vardtor();
-	sh_unscope();
+	if (!g_sh->child)
+		sh_unscope();
 	if (fmt)
 	{
 		va_start(ap, fmt);
