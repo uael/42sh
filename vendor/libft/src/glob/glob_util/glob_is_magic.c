@@ -20,21 +20,26 @@ static t_bool		is_escaped(char const *pattern, char const *pat, int flags)
 {
 	if ((flags & GLOBUX_NOESCAPE))
 		return (FALSE);
-	return (pat != pattern && *(pat - 1) == '\\');
+	return ((t_bool)(pat != pattern && *(pat - 1) == '\\'));
 }
 
 char const			*is_there_a_closing_bracket(char const *pattern, \
-												int flags, char c)
+												int flags, char c, char o)
 {
 	char const		*pat;
+	int				depth;
 
 	pat = pattern;
+	depth = 0;
 	while (*pat)
 	{
-		if (*pat == c && pat != pattern + 1)
+		if (*pat == o)
+			++depth;
+		else if (*pat == c && !--depth && pat != pattern + 1)
 		{
 			if (!is_escaped(pattern, pat, flags))
 				return (pat);
+			++depth;
 		}
 		pat++;
 	}
@@ -80,7 +85,7 @@ char const			*is_magic(char *magic_buf, char const *pattern, int *flags)
 		else if (*pat == '[')
 		{
 			if (!is_escaped(pattern, pat, *flags) \
-				&& is_there_a_closing_bracket(pat, *flags, ']'))
+				&& is_there_a_closing_bracket(pat, *flags, ']', '['))
 			{
 				*flags |= GLOBUX_MAGCHAR;
 				return (previous_dir(magic_buf, pattern, pat));

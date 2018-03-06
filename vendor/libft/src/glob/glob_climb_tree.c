@@ -6,7 +6,7 @@
 /*   By: mc <mc.maxcanal@gmail.com>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/09 22:23:43 by mc                #+#    #+#             */
-/*   Updated: 2018/02/26 11:46:47 by mc               ###   ########.fr       */
+/*   Updated: 2018/03/05 22:27:59 by mc               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,13 @@
 
 static int	glob_just_copy_pattern(t_glob_env *e)
 {
-	if (e->match_list && !(*(e->flags) & GLOBUX_APPEND))
+	if (e->match_list)
 		return (GLOBUX_SUCCESS);
 	if (!(*(e->flags) & GLOBUX_NOCHECK))
 		return (GLOBUX_NOMATCH);
-	return (matchctoradd(e->pattern, TRUE, &e->match_list));
+	*(e->flags) |= GLOBUX_NOMATCH_FLAG;
+	return (matchctoradd(e->pattern, TRUE, \
+						!(*(e->flags) & GLOBUX_NOSORT), &e->match_list));
 }
 
 static int	glob_pre_check_file(t_glob_env *e, struct dirent *d)
@@ -53,7 +55,8 @@ static int	glob_check_file(t_glob_env *e, struct dirent *d, \
 		if ((*(e->flags) & (GLOBUX_MARK | GLOBUX_ONLYDIR)) \
 				&& len && *(path_buf + len - 1) != '/')
 			ft_memcpy(path_buf + len, "/", 2);
-		if (matchctoradd(path_buf, FALSE, &e->match_list))
+		if (matchctoradd(path_buf, FALSE, \
+						!(*(e->flags) & GLOBUX_NOSORT), &e->match_list))
 			return (GLOBUX_NOSPACE);
 		if (*(e->flags) & (GLOBUX_MARK | GLOBUX_ONLYDIR))
 			*(path_buf + len) = '\0';
@@ -111,7 +114,10 @@ int			glob_climb_tree(t_glob_env *e)
 	}
 	if ((*(e->flags) & GLOBUX_NOMAGIC) \
 			|| !ft_strcmp("/", e->pattern) || !ft_strcmp("./", e->pattern))
-		return (matchctoradd(e->pattern, FALSE, &e->match_list));
+	{
+		return (matchctoradd(e->pattern, FALSE, \
+							!(*(e->flags) & GLOBUX_NOSORT), &e->match_list));
+	}
 	if (depth > MAX_DEPTH || depth < 1)
 		return (GLOBUX_NOSPACE);
 	if ((ret = glob_read_dir(e, depth, magic == e->pattern ? NULL : magic)))
