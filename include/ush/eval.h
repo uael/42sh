@@ -81,6 +81,7 @@ extern t_evalcb	*g_eval[];
 extern void		sh_pushuntil(t_deq *d, t_deq *s, char const *st, char const *o);
 
 extern void		sh_eval(t_deq *toks, char const *ln);
+extern char		*sh_evalalias(t_ctx *ctx, t_tok *tok, t_vec *av, char const *a);
 extern void		sh_evalexport(t_map *vars);
 extern void		sh_evalif(t_ctx *ctx, t_tok *tok);
 extern void		sh_evalwhile(t_ctx *ctx, t_tok *tok);

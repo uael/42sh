@@ -35,6 +35,7 @@ typedef	struct	s_histopt
 }				t_histopt;
 
 extern void		sh_biregister(void);
+extern int		sh_bialias(int ac, char **av);
 extern int		sh_biecho(int ac, char **argv, char **env);
 extern int		sh_biexit(int ac, char **av, char **env);
 extern int		sh_biunsetenv(int ac, char **av, char **env);

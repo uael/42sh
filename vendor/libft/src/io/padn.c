@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "libft/io.h"
-#include "libft/math.h"
 
 inline ssize_t	ft_padnl(int fd, int64_t n, uint8_t base, size_t pad)
 {

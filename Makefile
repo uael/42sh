@@ -38,13 +38,14 @@ LIB_NAME = $(LIBS)
 endif
 3TH_NAME = libft librl libps
 SRC_NAME = \
-	bi.c bi/cd.c bi/echo.c bi/env.c bi/exit.c bi/export.c bi/setenv.c \
-	bi/unset.c bi/unsetenv.c bi/history.c bi/read.c\
+	alias.c \
+	bi.c bi/alias.c bi/cd.c bi/echo.c bi/env.c bi/exit.c bi/export.c \
+	bi/setenv.c bi/unset.c bi/unsetenv.c bi/history.c bi/read.c \
 	comp.c \
 	env.c \
 	err.c \
-	eval.c eval/assign.c eval/compound.c eval/forclause.c eval/func.c \
-	eval/ifclause.c eval/operator.c eval/redir.c eval/redir_1.c \
+	eval.c eval/alias.c eval/assign.c eval/compound.c eval/forclause.c \
+	eval/func.c eval/ifclause.c eval/operator.c eval/redir.c eval/redir_1.c \
 	eval/untilclause.c eval/whileclause.c eval/word.c \
 	exp.c exp/backslash.c exp/backtick.c exp/brace.c exp/dollars.c \
 	exp/glob.c exp/quote.c exp/tilde.c \

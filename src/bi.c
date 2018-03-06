@@ -14,6 +14,7 @@
 
 inline void	sh_biregister(void)
 {
+	ps_biregister("alias", (t_procbi *)sh_bialias);
 	ps_biregister("cd", sh_bicd);
 	ps_biregister("echo", sh_biecho);
 	ps_biregister("env", sh_bienv);

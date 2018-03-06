@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   eval/argv.c                                        :+:      :+:    :+:   */
+/*   eval/word.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "ush/alias.h"
 #include "ush/eval.h"
 #include "ush/exp.h"
 #include "ush/func.h"
@@ -62,6 +63,8 @@ static void	makeargv(t_ctx *ctx, t_tok *tok, t_vec *av, t_bool c)
 
 static char	*evalbin(t_ctx *ctx, t_tok *tok, t_vec *av)
 {
+	char *alias;
+
 	ft_vecctor(av, sizeof(char *));
 	if (!ctx->proc)
 	{
@@ -81,7 +84,10 @@ static char	*evalbin(t_ctx *ctx, t_tok *tok, t_vec *av)
 		}
 		else
 			break ;
-	return (av->len ? ((char **)av->buf)[0] : "true");
+	if (!av->len)
+		return ("true");
+	return ((alias = sh_aliasget(((char **)av->buf)[0])) ?
+		sh_evalalias(ctx, tok, av, alias) : ((char **)av->buf)[0]);
 }
 
 inline void	sh_evalword(t_ctx *ctx, t_tok *tok)
