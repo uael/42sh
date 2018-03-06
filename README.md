@@ -1,6 +1,9 @@
 # 42sh
 [![Build Status](https://travis-ci.org/uael/42sh.svg?branch=master)](https://travis-ci.org/uael/42sh)
 
+## Grade:
+### 125/100 (outstanding project * 5)
+
 ## Subject:
 
 [Subject](https://cdn.intra.42.fr/pdf/pdf/183/42sh.fr.pdf)
