@@ -12,7 +12,6 @@
 
 #include "glob_util.h"
 
-
 /*
 ** remove all the ugly stuffs from patterns (mostly extraneous slashes)
 ** note: dst and src might overlap

@@ -43,40 +43,40 @@ void		matchdtor(t_match *match)
 	}
 }
 
-static void insert_sorted(t_match *match, t_match **match_list)
+static void	insert_sorted(t_match *match, t_match **match_list)
 {
-    t_match     *link;
-    t_match     *prev;
+	t_match	 *link;
+	t_match	 *prev;
 
-    link = *match_list;
-    prev = NULL;
-    while (link && ft_strcmp((char *)link->buf, (char *)match->buf) < 0)
-    {
-        prev = link;
-        link = link->next;
-    }
-    if (prev)
-        prev->next = match;
-    match->next = link;
-    if (link == *match_list)
-        *match_list = match;
+	link = *match_list;
+	prev = NULL;
+	while (link && ft_strcmp((char *)link->buf, (char *)match->buf) < 0)
+	{
+		prev = link;
+		link = link->next;
+	}
+	if (prev)
+		prev->next = match;
+	match->next = link;
+	if (link == *match_list)
+		*match_list = match;
 }
 
 int			matchctoradd(char const *path, int escape, \
-                         int sort, t_match **match_list)
+						 int sort, t_match **match_list)
 {
 	t_match		*match;
 
 	match = matchctor(path, ft_strlen(path), escape);
 	if (!match)
 		return (GLOBUX_NOSPACE);
-    if (!sort || !*match_list)
-    {
-        match->next = *match_list;
-        *match_list = match;
-        return (GLOBUX_SUCCESS);
-    }
-    insert_sorted(match, match_list);
+	if (!sort || !*match_list)
+	{
+		match->next = *match_list;
+		*match_list = match;
+		return (GLOBUX_SUCCESS);
+	}
+	insert_sorted(match, match_list);
 	return (GLOBUX_SUCCESS);
 }
 

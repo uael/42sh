@@ -20,21 +20,21 @@ static int			glob_boom(t_glob_env *e, char const *brace_buf)
 
 	pat_save = e->pattern;
 	match_save = e->match_list;
-    glob_sanitize_pattern((char *)brace_buf, brace_buf);
+	glob_sanitize_pattern((char *)brace_buf, brace_buf);
 	e->pattern = brace_buf;
 	e->match_list = NULL;
 	glob_climb_tree(e);
 	if (!e->match_list)
 		matchctoradd(e->pattern, TRUE, \
-					!(*(e->flags) & GLOBUX_NOSORT), &e->match_list); //TODO: noescape?
-    if (match_save)
-    {
-        link = match_save;
-        while (link->next)
-            link = link->next; //TODO: iiirk
-        link->next = e->match_list;
-        e->match_list = match_save;
-    }
+					!(*(e->flags) & GLOBUX_NOSORT), &e->match_list);
+	if (match_save)
+	{
+		link = match_save;
+		while (link->next)
+			link = link->next;
+		link->next = e->match_list;
+		e->match_list = match_save;
+	}
 	e->pattern = pat_save;
 	return (-1);
 }
@@ -47,7 +47,7 @@ static int			glob_copy_pattern_and_boom(t_glob_env *e, \
 	size_t		after_size;
 
 	before_size = (size_t)\
-        (glob_find_opening_brace(e->pattern, e->pattern) - e->pattern);
+		(glob_find_opening_brace(e->pattern, e->pattern) - e->pattern);
 	after_size = ft_strlen(pat_end);
 	if (!(before_size + pat_size + after_size) \
 			|| before_size + pat_size + after_size + 1 > PATH_MAX)

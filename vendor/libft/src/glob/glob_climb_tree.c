@@ -114,8 +114,10 @@ int			glob_climb_tree(t_glob_env *e)
 	}
 	if ((*(e->flags) & GLOBUX_NOMAGIC) \
 			|| !ft_strcmp("/", e->pattern) || !ft_strcmp("./", e->pattern))
+	{
 		return (matchctoradd(e->pattern, FALSE, \
 							!(*(e->flags) & GLOBUX_NOSORT), &e->match_list));
+	}
 	if (depth > MAX_DEPTH || depth < 1)
 		return (GLOBUX_NOSPACE);
 	if ((ret = glob_read_dir(e, depth, magic == e->pattern ? NULL : magic)))

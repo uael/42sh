@@ -57,7 +57,7 @@ static int		copy_match_to_glob_struct(t_match *match_list, t_glob *pglob)
 int				ft_glob(const char *pattern, int flags, t_glob *pglob)
 {
 	t_glob_env		glob_env;
-    char            pat_buf[PATH_MAX];
+	char			pat_buf[PATH_MAX];
 	int				ret;
 
 	if ((flags & ~__GLOBUX_FLAGS))
@@ -68,7 +68,7 @@ int				ft_glob(const char *pattern, int flags, t_glob *pglob)
 	glob_sanitize_pattern(pat_buf, pattern);
 	pglob->gl_flags = flags;
 	glob_env.flags = &(pglob->gl_flags);
-    glob_env.pattern = pat_buf;
+	glob_env.pattern = pat_buf;
 	if ((ret = glob_climb_tree(&glob_env)))
 	{
 		matchdtor(glob_env.match_list);
