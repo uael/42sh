@@ -33,7 +33,7 @@
 - [X] Advanced dollar expansion `$(..)`, `$((..))`, `$[..]`
 - [X] Tilde expansion `~`, `~<username>`, `~-`, `~+`
 - [X] Range expansion `{<START>..<END>}` and `{<START>..<END>..<INCREMENT>}`
-- [X] Advanced redirections operator `&>`, `<>`, `<<<` and `|&`
+- [X] Advanced redirections operator `&>`, `&>>`, `<>`, `<<<` and `|&`
 - [X] Builtin env advanced options `-u name` and `[name=value]`
 - [X] Inline variables `[name=value] binary [arguments...]`
 - [X] Binary hashtable

@@ -41,6 +41,7 @@ t_evalcb	*g_eval[] = {
 	[TOK_FOR] = sh_evalfor,
 	[TOK_FUNCTION] = sh_evalfuncdef,
 	[TOK_AMPR] = sh_evalampr,
+	[TOK_AMPRA] = sh_evalampra,
 	[TOK_CMP] = sh_evalcmp,
 	[TOK_HEREDOC] = sh_evalheredoc,
 	[TOK_HERENOW] = sh_evalherenow,

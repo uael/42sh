@@ -88,6 +88,7 @@ extern void		sh_evaluntil(t_ctx *ctx, t_tok *tok);
 extern void		sh_evalfor(t_ctx *ctx, t_tok *tok);
 extern void		sh_evalfuncdef(t_ctx *ctx, t_tok *tok);
 extern void		sh_evalampr(t_ctx *ctx, t_tok *tok);
+extern void		sh_evalampra(t_ctx *ctx, t_tok *tok);
 extern void		sh_evalcmp(t_ctx *ctx, t_tok *tok);
 extern void		sh_evalheredoc(t_ctx *ctx, t_tok *tok);
 extern void		sh_evalherenow(t_ctx *ctx, t_tok *tok);

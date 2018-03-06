@@ -114,3 +114,31 @@ inline void	sh_evalherenow(t_ctx *ctx, t_tok *tok)
 	*ft_sdspush(&word) = '\n';
 	ctx->proc->in = word.buf;
 }
+
+inline void	sh_evalampra(t_ctx *ctx, t_tok *tok)
+{
+	t_sds	file;
+	t_tok	*word;
+	int		kind;
+
+	(void)tok;
+	if (!ctx->proc)
+	{
+		ctx->proc = (t_proc *)ft_vecpush((t_vec *)&ctx->job->procs);
+		ps_procctor(ctx->proc);
+	}
+	word = sh_toknext(ctx->toks);
+	ft_sdsctor(&file);
+	kind = 1;
+	sh_expword(&file, ctx->ln + word->pos, word->len);
+	if (!file.len)
+	{
+		kind = 2;
+		ft_sdsmpush(&file, ctx->ln + word->pos, word->len);
+	}
+	*(t_redir *)ft_vecpush((t_vec *)&ctx->proc->redirs) = (t_redir){
+		kind, file.buf,
+		STDOUT_FILENO, STDERR_FILENO, O_WRONLY | O_CREAT | O_APPEND, 0
+	};
+	sh_toknext(ctx->toks);
+}

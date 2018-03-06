@@ -40,6 +40,7 @@ enum			e_tok
 	TOK_EOL = '\n',
 	TOK_PIPEAND = TOK_EOL + 1,
 	TOK_AMPR,
+	TOK_AMPRA,
 	TOK_LAND,
 	TOK_LOR,
 	TOK_WORD,
