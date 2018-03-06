@@ -37,6 +37,7 @@ static void	evalampersand(t_ctx *ctx, t_tok *tok)
 t_evalcb	*g_eval[] = {
 	[TOK_IF] = sh_evalif,
 	[TOK_WHILE] = sh_evalwhile,
+	[TOK_UNTIL] = sh_evaluntil,
 	[TOK_FOR] = sh_evalfor,
 	[TOK_FUNCTION] = sh_evalfuncdef,
 	[TOK_AMPR] = sh_evalampr,

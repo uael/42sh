@@ -53,7 +53,7 @@ typedef struct	s_while
 	t_deq		body;
 	t_deq		cond;
 	char		*ln;
-}				t_while;
+}				t_loop;
 
 typedef struct	s_for
 {
@@ -84,6 +84,7 @@ extern void		sh_eval(t_deq *toks, char const *ln);
 extern void		sh_evalexport(t_map *vars);
 extern void		sh_evalif(t_ctx *ctx, t_tok *tok);
 extern void		sh_evalwhile(t_ctx *ctx, t_tok *tok);
+extern void		sh_evaluntil(t_ctx *ctx, t_tok *tok);
 extern void		sh_evalfor(t_ctx *ctx, t_tok *tok);
 extern void		sh_evalfuncdef(t_ctx *ctx, t_tok *tok);
 extern void		sh_evalampr(t_ctx *ctx, t_tok *tok);

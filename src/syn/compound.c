@@ -88,6 +88,8 @@ inline int	sh_syncompoundcmd(t_src *s, t_deq *toks, size_t *idx)
 		return (sh_synifclause(s, toks, idx));
 	else if (tok->id == TOK_WHILE)
 		return (sh_synwhileclause(s, toks, idx));
+	else if (tok->id == TOK_UNTIL)
+		return (sh_synwhileclause(s, toks, idx));
 	else if (tok->id == TOK_FOR)
 		return (sh_synforclause(s, toks, idx));
 	return (NOP);
