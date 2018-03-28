@@ -1,0 +1,13 @@
+abc
+def
+/tmp
+ghi
+zut$
+=== 1
+abc echo === 1
+=== 1.1
+abc !
+=== 1.2
+abc echo === 1.2
+=== 1.3
+abc !

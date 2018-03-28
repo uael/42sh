@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2018/01/06 11:10:01 by alucas-          ###   ########.fr       */
+/*   Updated: 2018/03/28 10:26:54 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ static inline int	prepare(t_proc *prc, pid_t pgid, int *io, int fg)
 	{
 		prc->child ? 0 : ft_dup2std(prc->scope, STD_FILENOS);
 		if (prc->child)
-			g_fatalcb(EXIT_FAILURE, NULL);
+			exit(EXIT_FAILURE);
 		prc->status = EXIT_FAILURE;
 		return (WUT);
 	}
@@ -94,7 +94,7 @@ int					ps_proclaunch(t_proc *proc, pid_t pgid, int *io, int fg)
 	if (proc->child)
 	{
 		ps_procdtor(proc);
-		g_fatalcb(st, NULL);
+		exit(st);
 	}
 	ft_dup2std(proc->scope, STD_FILENOS);
 	return (YEP);

@@ -1,0 +1,2 @@
+42sh: cd: no OLDPWD
+42sh: cd: ./toto: No such file or directory

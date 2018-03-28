@@ -1,0 +1,14 @@
+42sh: history expansion: !1 : event not found
+42sh: history expansion: !-1 : event not found
+42sh: history expansion: !-3 : event not found
+42sh: history expansion: !3 : event not found
+42sh: history expansion: !-3 : event not found
+42sh: history expansion: !3 : event not found
+42sh: history expansion: !999999999999999999999999999 : event not found
+42sh: history expansion: !-999999999999999999999999999 : event not found
+42sh: history expansion: !999999999999999999999999999 : event not found
+42sh: history expansion: !-999999999999999999999999999 : event not found
+42sh: history expansion: !-0 : event not found
+42sh: history expansion: !0 : event not found
+42sh: history expansion: !-0 : event not found
+42sh: history expansion: !0 : event not found

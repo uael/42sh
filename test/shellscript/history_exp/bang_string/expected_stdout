@@ -1,0 +1,13 @@
+abc
+def
+/tmp
+ghi
+zut$
+test1
+======== EXP ========
+test1
+test1
+test1 d
+pwd echo test1 d
+test2
+test2

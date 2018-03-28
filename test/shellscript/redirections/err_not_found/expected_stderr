@@ -1,0 +1,3 @@
+42sh: execution: can't open DOES_NOT_EXIST: No such file or directory
+cat: /tmp/redir_not_exist_cat: No such file or directory
+rm: /tmp/redir_not_exist_cat: No such file or directory

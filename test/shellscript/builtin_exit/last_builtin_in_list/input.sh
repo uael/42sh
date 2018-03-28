@@ -1,0 +1,2 @@
+true
+exit z; exit

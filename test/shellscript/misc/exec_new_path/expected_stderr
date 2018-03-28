@@ -1,0 +1,8 @@
+1 fail
+42sh: execution: command not found: myexec
+5 fail
+42sh: execution: command not found: myexec
+6 fail
+42sh: execution: command not found: ./test_binary_path/myexec
+7 fail
+42sh: execution: command not found: myexec

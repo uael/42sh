@@ -1,0 +1,4 @@
+42sh: execution: can't open /tmp/redir_no_cmd_input: No such file or directory
+42sh: execution: 3: Bad file descriptor
+42sh: execution: 3: Bad file descriptor
+42sh: execution: 3: Bad file descriptor

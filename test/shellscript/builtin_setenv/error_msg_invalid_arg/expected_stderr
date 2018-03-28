@@ -1,0 +1,3 @@
+42sh: setenv: 123: not a valid identifier
+42sh: setenv: -: not a valid identifier
+42sh: setenv: ?: not a valid identifier

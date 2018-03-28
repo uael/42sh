@@ -1,0 +1,12 @@
+42sh: execution: command not found: ls
+42sh: execution: command not found: ls
+usage: route [-dnqtv] command [[modifiers] args]
+42sh: execution: command not found: route
+42sh: execution: command not found: route
+usage: route [-dnqtv] command [[modifiers] args]
+42sh: execution: command not found: ls
+42sh: execution: command not found: ls
+42sh: execution: command not found: route
+42sh: execution: command not found: route
+42sh: execution: command not found: route
+usage: route [-dnqtv] command [[modifiers] args]

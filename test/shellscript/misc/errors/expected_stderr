@@ -1,0 +1,8 @@
+env: illegal option -- x
+usage: env [-i] [name=value]... [utility [argument...]]
+42sh: setenv: /bin/sh: not a valid identifier
+42sh: cd: no home directory (HOME not set)
+42sh: cd: /tmp/xyz.bash: No such file or directory
+42sh: cd: /bin/sh: Not a directory
+42sh: cd: /tmp/cd-notthere: No such file or directory
+42sh: execution: can't open no_such_file: No such file or directory

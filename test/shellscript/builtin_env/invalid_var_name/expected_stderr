@@ -1,0 +1,4 @@
+42sh: env: 42SHTESTS1: not a valid identifier
+42sh: env: : not a valid identifier
+42sh: env: : not a valid identifier
+42sh: env: 0: not a valid identifier

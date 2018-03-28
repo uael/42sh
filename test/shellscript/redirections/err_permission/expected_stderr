@@ -1,0 +1,2 @@
+42sh: execution: can't open /tmp/redirs_file: Permission denied
+cat: /tmp/redirs_file: Permission denied

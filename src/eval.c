@@ -21,6 +21,7 @@ static void	evalsemicolon(t_ctx *ctx, t_tok *tok)
 	sh_evalexport(&ctx->vars);
 	g_sh->status = ps_joblaunch(ctx->root, 1);
 	ps_jobctor(ctx->root);
+	ctx->job = ctx->root;
 	ctx->proc = NULL;
 }
 
@@ -31,6 +32,7 @@ static void	evalampersand(t_ctx *ctx, t_tok *tok)
 	sh_toknext(ctx->toks);
 	g_sh->status = ps_joblaunch(ps_poolpush(ctx->root), 0);
 	ps_jobctor(ctx->root);
+	ctx->job = ctx->root;
 	ctx->proc = NULL;
 }
 

@@ -1,0 +1,3 @@
+read: illegal option: z
+usage: read [-r] var...
+  -r                            Do not treat a <backslash> character in any special way.

@@ -1,0 +1,9 @@
+42sh: parser: unexpected token RPAREN: )
+42sh: parser: unexpected token SEMI: ;
+42sh: parser: unexpected token PIPE: |
+42sh: parser: unexpected token RPAREN: )
+42sh: parser: unexpected token AND_IF: &&
+42sh: parser: unexpected token RPAREN: )
+42sh: parser: unexpected token RPAREN: )
+42sh: parser: unexpected token RPAREN: )
+42sh: parser: unexpected token SEMI: ;

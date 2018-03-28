@@ -1,0 +1,2 @@
+exit
+echo bbb
